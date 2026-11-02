@@ -20,17 +20,26 @@ function raidActive(){return !!raid&&raidMode()&&battleSessionActive();}
 function raidAuthority(){return !online||isHost;}
 function raidHeroes(){return fighters.filter(p=>!p.raidBoss&&!p.shadowClone);}
 function raidWorldStopped(){return raidActive()&&raid.move==='world'&&raid.at<DIO_STOP_T;}
-function raidFrozen(p){
- if(!raidWorldStopped())return false;
- if(p?.raidBoss)return raid.counterIds.length>0;
- return !p||p.cid!=='jotaro'||!raid.counterIds.includes(p.id);
+// In a raid, Jotaro alone can move inside HIS time stop. Teammates and DIO freeze.
+function raidJotaroStopId(){
+ if(!raidActive()||raidWorldStopped())return '';
+ if(raid.jotaroStopId&&raid.frame<raid.jotaroStopUntil)return raid.jotaroStopId;
+ return raidHeroes().find(h=>!h.out&&h.cid==='jotaro'&&h.timeStopSelfT>0)?.id||'';
 }
-function raidCanHurtBoss(p){return !!p&&!p.out&&!sameTeam(p,byId(RAID_BOSS_ID))&&(!raidWorldStopped()||p.cid==='jotaro'&&raid.counterIds.includes(p.id));}
-function raidCounterWindow(p){return raidWorldStopped()&&p?.cid==='jotaro'&&!p.out&&!raid.counterIds.includes(p.id);}
+function raidFrozen(p){
+ if(raidWorldStopped()){
+  if(p?.raidBoss)return raid.counterIds.length>0;
+  return !p||p.cid!=='jotaro'||!raid.counterIds.includes(p.id);
+ }
+ const stopper=raidJotaroStopId();
+ return !!stopper&&(!p||p.id!==stopper);
+}
+function raidCanHurtBoss(p){return !!p&&!p.out&&!sameTeam(p,byId(RAID_BOSS_ID))&&!raidFrozen(p)&&(!raidWorldStopped()||p.cid==='jotaro'&&raid.counterIds.includes(p.id));}
+function raidCounterWindow(p){return raidWorldStopped()&&p?.cid==='jotaro'&&!p.out&&!raid.counterIds.includes(p.id)&&p.energy>=100;}
 const raidAnimeStopActiveBase=animeTimeStopActive;
 animeTimeStopActive=function(){return raidWorldStopped()||raidAnimeStopActiveBase();};
 function raidInit(){
- raid={boss:'dio',frame:0,move:'fight',at:0,serial:1,counterIds:[],result:'',phase:1,nextWorld:1200,nextControl:0};
+ raid={boss:'dio',frame:0,move:'fight',at:0,serial:1,counterIds:[],result:'',phase:1,nextWorld:1200,nextControl:0,jotaroStopId:'',jotaroStopUntil:0};
  raidFx=[];raidLastWire=-1;
  stage=RAID_CITY;
  raidHeroes().forEach(p=>{delete p.raidHp;p.s=2;p.team=1;p.raidCounterSerial=0;});
@@ -69,7 +78,7 @@ hostStart=async function(){
  await roomRef.child('gm').set({...gmCache,mode:'raid',boss:'dio',hostId:myId,protocol:NET_PROTOCOL,map:'wide',wpn:0,cpuN:0,teamMode:1,stocks:2,players,ph:'play',round:(gmCache.round||0)+1,w:'',wt:0,raidResult:''});
 };
 function raidBeginWorld(){
- if(!raidActive()||!raidAuthority()||raidWorldStopped())return false;
+ if(!raidActive()||!raidAuthority()||raidWorldStopped()||raidJotaroStopId())return false;
  const p=byId(RAID_BOSS_ID);if(!p||p.out||p.timeStopT||p.domainT)return false;
  raid.move='world';raid.at=0;raid.serial++;raid.counterIds=[];raid.nextWorld=raid.frame+(raid.phase===2?1440:1800);
  raidStopActions();
@@ -89,24 +98,29 @@ function raidTick(){
  if(!raidAuthority())return;
  const boss=byId(RAID_BOSS_ID);if(!boss||raid.result)return;
  raid.frame++;raid.phase=boss.raidHp<=3200?2:1;
+ if(raid.jotaroStopId&&raid.frame>=raid.jotaroStopUntil){raid.jotaroStopId='';raid.jotaroStopUntil=0;raidReleaseHits();}
  if(boss.raidHp<=0){raidFinish(true,'DIO撃破');return;}
  if(raidHeroes().every(p=>p.out)){raidFinish(false,'全員戦闘不能');return;}
  if(raidWorldStopped()&&++raid.at>=DIO_STOP_T){raid.move='fight';raid.counterIds=[];raidReleaseHits();}
 }
 function raidCounter(p){
  if(!raidCounterWindow(p)||p.raidCounterSerial===raid.serial)return false;
- p.raidCounterSerial=raid.serial;const e={k:'raid-counter',id:p.id,serial:raid.serial};
- if(raidAuthority())raidAcceptCounter({...e,by:p.owner});else send(e);return true;
+ // A dropped request must not permanently consume the sole counter attempt.
+ if(p.raidPendingSerial===raid.serial&&raid.frame-(p.raidPendingAt||0)<15)return false;
+ p.raidPendingSerial=raid.serial;p.raidPendingAt=raid.frame;
+ const e={k:'raid-counter',id:p.id,serial:raid.serial};
+ if(raidAuthority())raidAcceptCounter({...e,by:p.owner});else send(e);
+ return true;
 }
 function raidAcceptCounter(e){
  const p=byId(e.id);if(!raidAuthority()||e.serial!==raid.serial||e.by!==p?.owner||!raidCounterWindow(p))return;
- raid.counterIds.push(p.id);byId(RAID_BOSS_ID).inv=0;raidGrantCounter(p);
+ p.raidCounterSerial=raid.serial;raid.counterIds.push(p.id);byId(RAID_BOSS_ID).inv=0;raidGrantCounter(p);
  const cutin={id:p.id,x:p.x,y:p.y-35,raidCounter:raid.serial};
  if(online)requestCinematic('timestop',cutin);else beginJotaroTimeStopCutin(cutin);
 }
 function raidGrantCounter(p){
  if(!p||p.raidGrantSerial===raid.serial)return;
- p.raidGrantSerial=raid.serial;clearActs(p);p.kb=p.stn=p.timeStopT=p.domainT=p.spc=p.cd=0;p.vx=p.vy=0;p.energy=0;p.timeStopSelfT=DIO_STOP_T-raid.at;
+ p.raidGrantSerial=raid.serial;p.raidCounterSerial=raid.serial;clearActs(p);p.kb=p.stn=p.timeStopT=p.domainT=p.spc=p.cd=0;p.vx=p.vy=0;p.energy=0;p.timeStopSelfT=Math.max(1,DIO_STOP_T-raid.at);
 }
 function raidFinish(win,reason){
  if(!raid||raid.result||!raidAuthority())return;
@@ -207,7 +221,7 @@ resolveProj=function(q,t){
  return raidProjBase(q,t);
 };
 const raidInvulnBase=isInvuln;
-isInvuln=function(p){return raidWorldStopped()&&p&&!p.raidBoss&&raidFrozen(p)?false:raidInvulnBase(p);};
+isInvuln=function(p){if(raidJotaroStopId()&&p?.raidBoss)return false;return raidWorldStopped()&&p&&!p.raidBoss&&raidFrozen(p)?false:raidInvulnBase(p);};
 applyHit=function(t,h,bk,id){
  if(raidActive()){
   if(sameTeam(byId(id),t))return 0;
@@ -234,7 +248,7 @@ meleeCheck=function(p){
  return raidMeleeCheckBase(p);
 };
 const raidPauseBase=pausedObject;
-pausedObject=function(id){return raidWorldStopped()?raidFrozen(byId(id)):raidPauseBase(id);};
+pausedObject=function(id){return raidWorldStopped()||raidJotaroStopId()?raidFrozen(byId(id)):raidPauseBase(id);};
 const raidStepBase=stepFighter;
 stepFighter=function(p,i){
  if(!raidActive())return raidStepBase(p,i);
@@ -265,14 +279,25 @@ endFreeze=function(){
  return raidEndFreezeBase();
 };
 const raidTimeBase=animeTimeStop,raidAreaBase=animeArea;
-animeTimeStop=function(p){if(raidActive()&&raidWorldStopped()){raidCounter(p);return;}return raidTimeBase(p);};
+animeTimeStop=function(p){
+ if(raidActive()&&raidWorldStopped()){if(!raidCounter(p)&&!p.cpu)sfxNo();return;}
+ if(raidActive()&&raidJotaroStopId()){if(!p.cpu)sfxNo();return;}
+ return raidTimeBase(p);
+};
 animeArea=function(e){
  if(!raidActive())return raidAreaBase(e);
  if(['domain','timestop'].includes(e.kind)){
   const p=byId(e.id);if(!p||p.out||raidWorldStopped())return;
   const boss=byId(RAID_BOSS_ID),inRange=e.kind==='timestop'||Math.hypot(boss.x-(e.x??p.x),boss.y-34-(e.y??p.y-34))<=(e.range||255);
-  if(inRange&&raidAuthority()&&((e.kind==='domain'&&p.cid==='gojo')||(e.kind==='timestop'&&p.cid==='jotaro'))&&raid.frame>=raid.nextControl){
-   const boss=byId(RAID_BOSS_ID);if(e.kind==='timestop')boss.timeStopT=120;else boss.domainT=75;raid.nextControl=raid.frame+1080;
+  if(e.kind==='timestop'&&p.cid==='jotaro'){
+   // animeTimeStop already checked/consumed 100 energy on the casting owner.
+   // The host publishes the single moving actor to all peers. Do not set
+   // boss.timeStopT: raidFrozen handles this and will not leave a stale timer.
+   if(!raid.jotaroStopId&&!raidWorldStopped()&&(raidAuthority()||isLocal(p))){
+    raid.jotaroStopId=p.id;raid.jotaroStopUntil=raid.frame+JOTARO_STOP_T;
+   }
+  }else if(inRange&&raidAuthority()&&e.kind==='domain'&&p.cid==='gojo'&&raid.frame>=raid.nextControl){
+   boss.domainT=75;raid.nextControl=raid.frame+1080;
   }
   return;
  }
@@ -288,7 +313,7 @@ function raidReadSnapshot(v){
  const r=v?.raid;if(!r||v.rd!==curRound||!['fight','world'].includes(r.move)||!['frame','at','serial','phase'].every(k=>Number.isFinite(r[k]))||r.frame<raidLastWire)return;
  if(r.at<0||r.at>DIO_STOP_T||r.frame<0||!Number.isSafeInteger(r.frame)||r.serial<0)return;
  const stopped=raidWorldStopped();raidLastWire=r.frame;
- raid={...r,counterIds:(Array.isArray(r.counterIds)?r.counterIds:[]).filter(id=>byId(id)?.cid==='jotaro').slice(0,4)};
+ raid={...r,counterIds:(Array.isArray(r.counterIds)?r.counterIds:[]).filter(id=>byId(id)?.cid==='jotaro').slice(0,4),jotaroStopId:byId(r.jotaroStopId)?.cid==='jotaro'?r.jotaroStopId:'',jotaroStopUntil:Number.isFinite(r.jotaroStopUntil)&&r.jotaroStopUntil>=r.frame&&r.jotaroStopUntil<=r.frame+JOTARO_STOP_T+5?r.jotaroStopUntil:0};
  if(!stopped&&raidWorldStopped())raidStopActions();
  for(const id of raid.counterIds){const p=byId(id);if(p&&isLocal(p))raidGrantCounter(p);}
  if(stopped&&!raidWorldStopped())raidReleaseHits();
@@ -494,8 +519,9 @@ const raidControlsBase=updateControlUI;
 updateControlUI=function(){
  const r=raidControlsBase();if(!raidActive())return r;const p=byId(myId);
  if(raidWorldStopped()){
-  const b=document.getElementById('btn-g');b.classList.toggle('ready',raidCounterWindow(p));setTxt(b.querySelector('small'),raidCounterWindow(p)?'時止め返し！':'時間停止中');
-  setTxt(document.getElementById('combat-hint'),raidFrozen(p)?p?.cid==='jotaro'?'下＋特殊で時止め返し':'時間停止中：反撃できるのは承太郎だけ':'止め返した承太郎だけが行動可能');
+  const ready=raidCounterWindow(p),jotaro=p?.cid==='jotaro';
+  const b=document.getElementById('btn-g');b.classList.toggle('ready',ready);setTxt(b.querySelector('small'),ready?'時止め返し！':jotaro?'ゲージ不足':'時間停止中');
+  setTxt(document.getElementById('combat-hint'),raidFrozen(p)?jotaro?'ゲージ '+Math.floor(p.energy||0)+'/100：MAXでのみ時止め返し可能':'ザ・ワールド！ 承太郎以外は動けない':'スタープラチナ発動！ DIOを攻めろ');
  }
  return r;
 };
