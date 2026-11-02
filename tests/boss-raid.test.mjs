@@ -50,12 +50,16 @@ test('DIO can act during his own World; only a countering Jotaro can stop him an
  const g=raidGame('kaneki',3);ground(g);stop(g);g.run(`var j=raidHeroes().find(p=>p.cid==='jotaro'),oldX=hero.x;`);
  assert.equal(g.run('raidFrozen(boss)'),false);assert.equal(g.run('raidCounter(hero)'),false);
  g.run(`stepFighter(hero,{...blankInput(),r:true});raidBossDamage(hero,100);`);assert.equal(g.run('hero.x'),g.run('oldX'));assert.equal(g.run('boss.raidHp'),6400);
- assert.equal(g.run('raidCounter(j)'),true);assert.equal(g.run('raidFrozen(boss)'),true);assert.equal(g.run('raidFrozen(j)'),false);
+ g.run('j.energy=100');assert.equal(g.run('raidCounter(j)'),true);assert.equal(g.run('raidFrozen(boss)'),true);assert.equal(g.run('raidFrozen(j)'),false);
  assert.equal(g.run('raidHeroes().filter(p=>p!==j).every(p=>raidFrozen(p))'),true);
  assert.equal(g.run('raidBossDamage(j,35)'),35);assert.equal(g.run('boss.raidHp'),6365);assert.equal(g.run('raidBossDamage(hero,90)'),0);
 });
-test('Jotaro down-special counters while frozen without a bespoke damage gauge or reaction deadline',()=>{
- const g=raidGame('jotaro',0);ground(g);stop(g);g.run(`raid.at=225;hero.energy=0;hero.spc=99;hero.kb=40;stepFighter(hero,{...blankInput(),sc:1,gd:true,s:true})`);
+test('DIO time-stop counter requires 100 gauge even while frozen, and consumes it',()=>{
+ const g=raidGame('jotaro',0);ground(g);stop(g);
+ g.run(`raid.at=225;hero.energy=0;hero.spc=99;hero.kb=40;stepFighter(hero,{...blankInput(),sc:1,gd:true,s:true})`);
+ assert.equal(g.run('raid.counterIds.includes(myId)'),false);
+ assert.equal(g.run('hero.kb'),40);
+ g.run(`hero.energy=100;stepFighter(hero,{...blankInput(),sc:2,gd:true,s:true})`);
  assert.equal(g.run('raid.counterIds.includes(myId)'),true);assert.equal(g.run('hero.kb'),0);assert.equal(g.run('hero.energy'),0);
  assert.equal(g.run('raid.breakDamage'),undefined);
 });
@@ -77,13 +81,20 @@ test('ordinary counter damage is credited against DIO HP instead of an unused pe
 });
 test('CPU Jotaro counters and uses normal attacks on the stopped NPC',()=>{
  const g=raidGame('kaneki',1);ground(g);g.run(`var j=raidHeroes()[1];j.x=500;j.y=stage.plats[0].y;j.g=true;j.groundPl=0;`);stop(g);
- g.run('for(let i=0;i<150;i++){frameCount++;simulateFrame()}');
+ g.run('j.energy=100;for(let i=0;i<150;i++){frameCount++;simulateFrame()}');
  assert.equal(g.run('raid.counterIds.includes(j.id)'),true);assert.ok(g.run('j.stats.dealt')>0);assert.ok(g.run('boss.raidHp')<6400);assert.equal(g.run('j.s'),2);
 });
-test('friendly time stop and domain keep ordinary ally movement and bounded boss control',()=>{
- const g=raidGame('jotaro',1);g.run(`animeArea({id:myId,kind:'timestop'})`);assert.equal(g.run('byId(RAID_BOSS_ID).timeStopT'),120);
- assert.equal(g.run('raidHeroes().some(p=>p.timeStopT>0)'),false);
- g.run(`byId(RAID_BOSS_ID).timeStopT=0;animeArea({id:myId,kind:'timestop'})`);assert.equal(g.run('byId(RAID_BOSS_ID).timeStopT'),0);
+test('Jotaro full-gauge time stop freezes DIO and ALL allied fighters, not Jotaro',()=>{
+ const g=raidGame('jotaro',2);
+ g.run('var j=byId(myId);j.energy=100;animeTimeStop(j)');
+ assert.equal(g.run('j.energy'),0);
+ assert.equal(g.run('raidFrozen(j)'),false);
+ assert.equal(g.run('raidFrozen(byId(RAID_BOSS_ID))'),true);
+ assert.equal(g.run('raidHeroes().filter(p=>p!==j).every(p=>raidFrozen(p))'),true);
+ assert.equal(g.run('byId(RAID_BOSS_ID).timeStopT'),0);
+ g.run('raid.jotaroStopId="";j.timeStopSelfT=0');
+ assert.equal(g.run('raidFrozen(byId(RAID_BOSS_ID))'),false);
+ assert.equal(g.run('raidHeroes().filter(p=>p!==j).every(p=>!raidFrozen(p))'),true);
 });
 test('clear, rematch and normal-mode cleanup use separate victory conditions',()=>{
  const g=raidGame('kaneki',2);g.run(`byId(RAID_BOSS_ID).raidHp=10;raidBossDamage(byId(myId),12)`);assert.equal(g.run('raid.result'),'clear');assert.equal(g.run('bt.winnerTeam'),1);
@@ -106,7 +117,7 @@ function linkedRaid(){
 }
 test('two clients: guest Jotaro counters, host HP resolves once, and owner acknowledgment restores control',()=>{
  const {host,guest,guestWrites,snapshot}=linkedRaid();stop(host);snapshot();assert.equal(guest.run('raid.at'),30);
- guest.run('byId(myId).spc=99;byId(myId).kb=40;raidCounter(byId(myId))');host.ctx.event=guestWrites[0];host.run('receiveNetEvent(event)');snapshot();
+ guest.run('byId(myId).energy=100;byId(myId).spc=99;byId(myId).kb=40;raidCounter(byId(myId))');host.run('byId(guestId).energy=100');host.ctx.event=guestWrites[0];host.run('receiveNetEvent(event)');snapshot();
  assert.equal(guest.run('byId(myId).spc+byId(myId).kb'),0);assert.equal(host.run('raidFrozen(byId(myId))'),true);assert.equal(host.run('raidFrozen(byId(RAID_BOSS_ID))'),true);
  guest.run(`send({k:'mh',to:RAID_BOSS_ID,a:myId,ax:500,f:1,c:'#fff',mv:{dm:30,k0:3,ks:0,up:0,kind:'ora'}})`);
  host.ctx.event=guestWrites.at(-1);host.run('receiveNetEvent(event);receiveNetEvent(event)');finishCutins(host);assert.equal(host.run('byId(RAID_BOSS_ID).raidHp'),6370);snapshot();assert.equal(guest.run('byId(RAID_BOSS_ID).raidHp'),6370);
@@ -136,7 +147,9 @@ test('DIO cut-in pauses the encounter clock; Jotaro cannot move or attack withou
  const g=raidGame('jotaro',0);ground(g);g.run(`raidBeginWorld();var startAt=raid.at,oldX=hero.x;for(let i=0;i<20;i++){frameCount++;simulateFrame()}`);
  assert.equal(g.run('fz.dioWorld'),true);assert.equal(g.run('raid.at'),g.run('startAt'));assert.ok(g.run('freezeT')>0);finishCutins(g);
  g.run(`stepFighter(hero,{...blankInput(),r:true});`);assert.equal(g.run('hero.x'),g.run('oldX'));assert.equal(g.run('raidFrozen(hero)'),true);assert.equal(g.run('raidFrozen(boss)'),false);
- g.run(`stepFighter(hero,{...blankInput(),sc:1,gd:true,s:true});`);assert.equal(g.run('fz.att'),g.run('myId'));assert.ok(g.run('freezeT')>0);assert.equal(g.run('raidFrozen(boss)'),true);
+ g.run(`stepFighter(hero,{...blankInput(),sc:1,gd:true,s:true});`);assert.equal(g.run('raid.counterIds.length'),0);
+ g.run(`hero.energy=100;stepFighter(hero,{...blankInput(),sc:2,gd:true,s:true});`);
+ assert.equal(g.run('fz.att'),g.run('myId'));assert.ok(g.run('freezeT')>0);assert.equal(g.run('raidFrozen(boss)'),true);
 });
 test('World strikes bypass ordinary passive defenses only after actual collision',()=>{
  const g=raidGame('gojo',0);ground(g);stop(g);
@@ -151,7 +164,7 @@ test('world cut-in and its counter synchronize through host-owned cinematic even
  const {host,guest,hostWrites,guestWrites,snapshot}=linkedRaid();host.run('raidBeginWorld()');
  const dio=hostWrites.find(e=>e.k==='cinx');assert.equal(dio.kind,'timestop');assert.ok(dio.data.raidWorld);
  guest.ctx.event=JSON.parse(JSON.stringify(dio));guest.run('receiveNetEvent(event)');assert.equal(guest.run('fz.dioWorld'),true);assert.ok(guest.run('freezeT')>0);assert.equal(guest.run('raidFrozen(byId(myId))'),true);
- finishCutins(host);finishCutins(guest);snapshot();guest.run('raidCounter(byId(myId))');host.ctx.event=guestWrites.find(e=>e.k==='raid-counter');host.run('receiveNetEvent(event)');
+ finishCutins(host);finishCutins(guest);snapshot();guest.run('byId(myId).energy=100;raidCounter(byId(myId))');host.run('byId(guestId).energy=100');host.ctx.event=guestWrites.find(e=>e.k==='raid-counter');host.run('receiveNetEvent(event)');
  const counter=hostWrites.find(e=>e.k==='cinx'&&e.data?.raidCounter);guest.ctx.event=JSON.parse(JSON.stringify(counter));guest.run('receiveNetEvent(event)');assert.equal(guest.run('fz.att'),guest.run('myId'));assert.equal(guest.run('raidFrozen(byId(RAID_BOSS_ID))'),true);
  const invalid=linkedRaid();invalid.guest.ctx.event={...dio,by:'imposter',rd:1,uid:'forged',cid:'forged'};invalid.guest.run('receiveNetEvent(event)');assert.equal(invalid.guest.run('freezeT'),0);
 });
@@ -160,4 +173,32 @@ test('after the cut-in DIO really moves and attacks while an unactivated Jotaro 
  g.run(`var victimX=hero.x,startX=boss.x;for(let i=0;i<50;i++){frameCount++;simulateFrame()}`);
  assert.equal(g.run('hero.x'),g.run('victimX'));assert.equal(g.run('hero.d'),0);assert.equal(g.run('raid.counterIds.length'),0);
  assert.notEqual(g.run('boss.x'),g.run('startX'));assert.ok(g.run('hero.stoppedHits?.length||0')>0);
+});
+
+test('DIO gains a telegraphed heavy strike and enters a final escalation under 1,250 HP',()=>{
+ const g=raidGame('karate',0);ground(g);
+ g.run("dioMove(boss,'dioSlam');boss.a=15;meleeCheck(boss)");
+ assert.ok(g.run('hero.d')>=25);
+ g.run('boss.raidHp=3200;raidTick()');assert.equal(g.run('raid.phase'),2);
+ g.run('boss.raidHp=1250;raidTick()');assert.equal(g.run('raid.phase'),3);
+ assert.ok(g.run('raidFx.some(q=>q.kind==="phase"&&q.phase===3)'));
+ assert.ok(g.run('fighterConfig(boss).spd')>1.5);
+});
+test('a no-gauge Jotaro CPU never gets a free DIO counter',()=>{
+ const g=raidGame('kaneki',1);ground(g);stop(g);
+ g.run('var j=raidHeroes()[1];j.energy=0;raid.at=30;for(let i=0;i<25;i++){frameCount++;aiStep(j)}');
+ assert.equal(g.run('raid.counterIds.length'),0);
+ assert.equal(g.run('raidFrozen(j)'),true);
+});
+test('remote Jotaro time stop locks all allies via owner-verified area event',()=>{
+ const {host,guest,guestWrites,snapshot}=linkedRaid();
+ guest.run('var j=byId(myId);j.energy=100;animeTimeStop(j)');
+ const ev=guestWrites.find(e=>e.k==='animearea'&&e.kind==='timestop');
+ assert.ok(ev);
+ host.ctx.event=ev;host.run('receiveNetEvent(event)');
+ assert.equal(host.run('raidJotaroStopId()'),guest.run('myId'));
+ assert.equal(host.run('raidFrozen(byId(RAID_BOSS_ID))'),true);
+ assert.equal(host.run('raidHeroes().filter(p=>p.id!==guestId).every(p=>raidFrozen(p))'),true);
+ snapshot();
+ assert.equal(guest.run('raidFrozen(byId(hostId))'),true);
 });
