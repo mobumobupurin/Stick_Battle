@@ -10,7 +10,8 @@ const DIO_MOVES={
  dioRush:{type:'normal',act0:3,act1:31,end:48,reach:78,R:31,yo:36,multi:4,dm:2.4,k0:1.2,ks:.008,up:.12,cd:16},
  dioThrow:{type:'normal',act0:9,act1:10,end:24,reach:0,R:0,yo:34,noHit:true,cd:6},
  dioRoller:{type:'heavy',act0:17,act1:18,end:54,reach:0,R:0,yo:34,noHit:true,cd:13},
- dioRise:{type:'normal',act0:2,act1:16,end:27,reach:18,R:34,yo:53,dm:18,k0:11,ks:.10,up:1.1,cd:7}
+ dioRise:{type:'normal',act0:2,act1:16,end:27,reach:18,R:34,yo:53,dm:18,k0:11,ks:.10,up:1.1,cd:7},
+ dioSlam:{type:'heavy',act0:15,act1:19,end:42,reach:75,R:48,yo:34,dm:25,k0:16,ks:.12,up:.82,cd:17}
 };
 Object.assign(MOVE_DEF,DIO_MOVES);
 let raid=null,raidFx=[],raidLastWire=-1;
@@ -39,7 +40,7 @@ function raidCounterWindow(p){return raidWorldStopped()&&p?.cid==='jotaro'&&!p.o
 const raidAnimeStopActiveBase=animeTimeStopActive;
 animeTimeStopActive=function(){return raidWorldStopped()||raidAnimeStopActiveBase();};
 function raidInit(){
- raid={boss:'dio',frame:0,move:'fight',at:0,serial:1,counterIds:[],result:'',phase:1,nextWorld:1200,nextControl:0,jotaroStopId:'',jotaroStopUntil:0};
+ raid={boss:'dio',frame:0,move:'fight',at:0,serial:1,counterIds:[],result:'',phase:1,nextWorld:1020,nextControl:0,jotaroStopId:'',jotaroStopUntil:0};
  raidFx=[];raidLastWire=-1;
  stage=RAID_CITY;
  raidHeroes().forEach(p=>{delete p.raidHp;p.s=2;p.team=1;p.raidCounterSerial=0;});
@@ -55,7 +56,7 @@ const raidStartCommonBase=startBattleCommon;
 startBattleCommon=function(...args){raid=null;const r=raidStartCommonBase(...args);if(raidMode())raidInit();return r;};
 const raidSizeBase=fighterSize,raidConfigBase=fighterConfig;
 fighterSize=function(p){return p.raidBoss?DIO_BODY.size:raidSizeBase(p);};
-fighterConfig=function(p){return p.raidBoss?(raidWorldStopped()?{...DIO_BODY,spd:1.85}:DIO_BODY):raidConfigBase(p);};
+fighterConfig=function(p){return p.raidBoss?(raidWorldStopped()?{...DIO_BODY,spd:1.85}:raidActive()&&raid.phase>=3?{...DIO_BODY,spd:1.65}:raidActive()&&raid.phase===2?{...DIO_BODY,spd:1.46}:DIO_BODY):raidConfigBase(p);};
 const raidOfflineBase=startBattleOffline;
 startBattleOffline=function(){
  if(offlineMode!=='raid')return raidOfflineBase();
@@ -80,7 +81,7 @@ hostStart=async function(){
 function raidBeginWorld(){
  if(!raidActive()||!raidAuthority()||raidWorldStopped()||raidJotaroStopId())return false;
  const p=byId(RAID_BOSS_ID);if(!p||p.out||p.timeStopT||p.domainT)return false;
- raid.move='world';raid.at=0;raid.serial++;raid.counterIds=[];raid.nextWorld=raid.frame+(raid.phase===2?1440:1800);
+ raid.move='world';raid.at=0;raid.serial++;raid.counterIds=[];raid.nextWorld=raid.frame+(raid.phase>=3?960:raid.phase===2?1320:1620);
  raidStopActions();
  clearActs(p);p.cd=12;p.kb=p.stn=0;p.vx=p.vy=0;
  p.dioWorldTarget='';
@@ -92,12 +93,29 @@ function raidStopActions(){for(const p of fighters)if(!p.raidBoss&&isLocal(p)&&!
 function raidReleaseHits(){
  for(const p of fighters)if(isLocal(p)&&p.raidHeldHits){p.raidHeldHits=false;if(!p.timeStopT)releaseStoppedHits(p);}
 }
+function raidPhaseSurge(phase){
+ const boss=byId(RAID_BOSS_ID);if(!boss||boss.out)return;
+ const finale=phase>=3;
+ raidFx.push({kind:'phase',phase,life:130});
+ shake=Math.max(shake,finale?25:17);
+ burst(boss.x,boss.y-55,finale?64:40,finale?12:8,finale?'#ee5851':'#f0c779',12);
+ ring(boss.x,boss.y-40,finale?40:30,28);
+ popups.push({x:boss.x,y:boss.y-125,txt:finale?'DIO 最終暴走！':'DIO 本気の第二段階！',life:100,max:100,size:34,c:finale?'#ff665d':'#ffdf9b'});
+ tone(finale?80:145,finale?30:65,.7,.18,'sawtooth');
+}
 function raidTick(){
  if(!raidActive()||bt.phase!=='play'||freezeT>0)return;
  for(const q of raidFx)q.life--;raidFx=raidFx.filter(q=>q.life>0);
  if(!raidAuthority())return;
  const boss=byId(RAID_BOSS_ID);if(!boss||raid.result)return;
- raid.frame++;raid.phase=boss.raidHp<=3200?2:1;
+ raid.frame++;
+ const previous=raid.phase;
+ raid.phase=boss.raidHp<=1250?3:boss.raidHp<=3200?2:1;
+ if(raid.phase>previous){
+  raidPhaseSurge(raid.phase);
+  raid.nextWorld=Math.min(raid.nextWorld,raid.frame+(raid.phase===3?240:450));
+ }
+ if(boss.dioExposed>0)boss.dioExposed--;
  if(raid.jotaroStopId&&raid.frame>=raid.jotaroStopUntil){raid.jotaroStopId='';raid.jotaroStopUntil=0;raidReleaseHits();}
  if(boss.raidHp<=0){raidFinish(true,'DIO撃破');return;}
  if(raidHeroes().every(p=>p.out)){raidFinish(false,'全員戦闘不能');return;}
@@ -132,22 +150,24 @@ function raidFinish(win,reason){
 // All NPC attacks use the same active frames, melee/projectile collisions and victim ownership as PvP.
 function dioMove(p,kind){
  if(p.a||p.kb||p.stn||p.cd||p.timeStopT||p.domainT)return false;
- p.mv={...mkMv(kind)};if(raid.phase===2){p.mv.dm*=1.2;p.mv.k0*=1.1;}
+ p.mv={...mkMv(kind)};if(raid.phase>=2){p.mv.dm*=raid.phase>=3?1.34:1.2;p.mv.k0*=raid.phase>=3?1.23:1.1;}
  p.a=1;p.hit={};p.ch=p.sph=0;p.dioCastFired=false;
- if(kind==='dioRush'||kind==='dioRoller')p.arm=kind==='dioRush'?34:28;
- if(kind==='dioRoller'){p.vy=-15;p.g=false;p.dioRollerCd=raid.phase===2?330:450;}
- if(kind==='dioThrow')p.dioKnifeCd=raid.phase===2?95:130;
+ if(['dioRush','dioRoller','dioSlam'].includes(kind))p.arm=kind==='dioRush'?34:kind==='dioSlam'?12:28;
+ if(kind==='dioSlam'||kind==='dioRoller')
+  popups.push({x:p.x,y:p.y-108,txt:kind==='dioSlam'?'ザ・ワールドの強打！':'ロードローラーだッ！',life:42,max:42,size:24,c:'#f8d18a'});
+ if(kind==='dioRoller'){p.vy=-15;p.g=false;p.dioRollerCd=raid.phase>=3?235:raid.phase===2?320:450;p.dioExposed=115;}
+ if(kind==='dioThrow')p.dioKnifeCd=raid.phase>=3?65:raid.phase===2?90:125;
  return true;
 }
 function dioProjectile(p,kind,target){
- const knife=kind==='dioKnife',count=knife?(raid.phase===2?5:3):1;
+ const knife=kind==='dioKnife',count=knife?(raid.phase>=3?7:raid.phase===2?5:3):1;
  for(let i=0;i<count;i++){
   const aim=target?constrain((target.y-32-(p.y-35))/Math.max(60,Math.abs(target.x-p.x)),-.65,.65):0;
   const vy=knife?aim*17+(i-(count-1)/2)*2.1:4;
-  const q={pid:p.id+'_'+(objSeq++),o:p.id,kind,x:p.x+p.f*(knife?27:55),y:p.y-(knife?35:75),vx:p.f*(knife?19:3.5),vy,dir:p.f,rot:0,life:knife?65:100,r:knife?5:43,dm:(knife?6:24)*(raid.phase===2?1.12:1),k0:knife?5:13,ks:knife?.045:.095,up:knife?.3:.65,pierce:knife?0:1};
+  const q={pid:p.id+'_'+(objSeq++),o:p.id,kind,x:p.x+p.f*(knife?27:55),y:p.y-(knife?35:75),vx:p.f*(knife?19:3.5),vy,dir:p.f,rot:0,life:knife?65:100,r:knife?5:62,dm:(knife?6:29)*(raid.phase>=3?1.25:raid.phase===2?1.12:1),k0:knife?5:15,ks:knife?.045:.10,up:knife?.3:.65,pierce:knife?0:1};
   projs.push({...q,local:true,hitIds:{}});send({k:'proj',q});
  }
- if(knife)tone(1100,450,.12,.06,'triangle');else noiseHit(.15,.14,300);
+ if(knife)tone(1100,450,.12,.06,'triangle');else{noiseHit(.55,.28,240);shake=Math.max(shake,13);burst(p.x,p.y-70,25,8,'#ebd190',11);}
 }
 function dioAiStep(p){
  const I={...p.ai.inp,l:false,r:false,u:false,d:false,a:false,s:false,gd:false,neutralSpecial:false,sideSpecial:0};p.ai.inp=I;
@@ -155,7 +175,7 @@ function dioAiStep(p){
  for(const k of ['dioKnifeCd','dioRollerCd','dioBlinkCd','dioJumpCd'])if(p[k]>0)p[k]--;
  let target=nearestFoe(p);if(!target)return;
  if(raidWorldStopped()){
-  const targets=raidHeroes().filter(h=>!h.out),next=targets[Math.floor(raid.at/60)%Math.max(1,targets.length)];
+  const targets=raidHeroes().filter(h=>!h.out),next=targets[Math.floor(raid.at/(raid.phase>=3?42:60))%Math.max(1,targets.length)];
   if(next){target=next;if(p.dioWorldTarget!==next.id){
    p.dioWorldTarget=next.id;clearActs(p);p.cd=0;p.dioThink=0;
    // DIO traverses stopped time to attack actual opponents. No remote area damage.
@@ -178,23 +198,24 @@ function dioAiStep(p){
  if(p.a||p.cd)return;
  p.f=dir;
  // Short think intervals, counter-dodging and instant follow-ups make DIO an aggressive NPC.
- if(--p.dioThink>0)return;p.dioThink=raid.phase===2?5:8;
+ if(--p.dioThink>0)return;p.dioThink=raid.phase>=3?3:raid.phase===2?5:8;
  if(!raidWorldStopped()&&!p.dioBlinkCd&&(dist>190||target.ch>16)&&dist<600){
   const x=constrain(target.x+dir*70,30,stage.w-30);
-  if(stage.plats.some(pl=>x>=pl.x+10&&x<=pl.x+pl.w-10&&Math.abs(pl.y-target.y)<45)){p.x=x;p.y=target.y;p.g=target.g;p.vx=0;p.f=-dir;p.inv=8;p.dioBlinkCd=raid.phase===2?210:300;}
+  if(stage.plats.some(pl=>x>=pl.x+10&&x<=pl.x+pl.w-10&&Math.abs(pl.y-target.y)<45)){p.x=x;p.y=target.y;p.g=target.g;p.vx=0;p.f=-dir;p.inv=8;p.dioBlinkCd=raid.phase>=3?125:raid.phase===2?185:300;burst(p.x,p.y-50,18,8,'#e7c779',9);ring(p.x,p.y-48,22,13);}
   return;
  }
  if(!raidWorldStopped()&&target.a>0&&dist<110&&p.dgc===0&&p.g&&Math.random()<.28){I.l=dir<0;I.r=dir>0;I.cc++;return;}
- if(dist<145&&Math.abs(dy)<65){
-  if(!p.dioRollerCd&&Math.random()<.24){dioMove(p,'dioRoller');return;}
-  dioMove(p,Math.random()<.64?'dioRush':dist<65?'dioJab':'dioKick');
- }else if(!p.dioKnifeCd&&dist<620)dioMove(p,'dioThrow');
+ if(dist<155&&Math.abs(dy)<80){
+  if(!p.dioRollerCd&&Math.random()<(raid.phase>=3?.42:raid.phase===2?.31:.21)){dioMove(p,'dioRoller');return;}
+  const v=Math.random();
+  dioMove(p,v<(raid.phase>=3?.31:raid.phase===2?.18:.07)?'dioSlam':v<.72?'dioRush':dist<65?'dioJab':'dioKick');
+ }else if(!p.dioKnifeCd&&dist<680)dioMove(p,'dioThrow');
 }
 const raidHitBase=applyHit,raidMeleeBase=resolveMelee,raidProjBase=resolveProj;
 function raidBossDamage(p,damage,meta={}){
  if(!raidActive()||!raidAuthority()||bt.phase!=='play'||!raidCanHurtBoss(p)||!Number.isFinite(damage)||damage<=0)return 0;
  const boss=byId(RAID_BOSS_ID);if(!boss||boss.out||isInvuln(boss))return 0;
- const dm=Math.min(boss.raidHp,Math.min(150,damage));boss.raidHp=Math.max(0,boss.raidHp-dm);
+ const dm=Math.min(boss.raidHp,Math.min(150,damage*(boss.dioExposed>0?1.4:1)));boss.raidHp=Math.max(0,boss.raidHp-dm);
  // DIO reacts to hits and is launched using ordinary physics; HP does not become an accumulating %.
  if(!raidFrozen(boss)&&!boss.arm){
   raidHitBase(boss,{dm,k0:meta.k0||4,ks:0,up:meta.up||.4,f:meta.f||Math.sign(boss.x-p.x)||1,ko:false},false,p.id);
@@ -312,8 +333,9 @@ stateOf=function(p){const s=raidStateBase(p);if(raidActive()){if(raidFrozen(p)){
 function raidReadSnapshot(v){
  const r=v?.raid;if(!r||v.rd!==curRound||!['fight','world'].includes(r.move)||!['frame','at','serial','phase'].every(k=>Number.isFinite(r[k]))||r.frame<raidLastWire)return;
  if(r.at<0||r.at>DIO_STOP_T||r.frame<0||!Number.isSafeInteger(r.frame)||r.serial<0)return;
- const stopped=raidWorldStopped();raidLastWire=r.frame;
+ const stopped=raidWorldStopped(),previousPhase=raid?.phase||1;raidLastWire=r.frame;
  raid={...r,counterIds:(Array.isArray(r.counterIds)?r.counterIds:[]).filter(id=>byId(id)?.cid==='jotaro').slice(0,4),jotaroStopId:byId(r.jotaroStopId)?.cid==='jotaro'?r.jotaroStopId:'',jotaroStopUntil:Number.isFinite(r.jotaroStopUntil)&&r.jotaroStopUntil>=r.frame&&r.jotaroStopUntil<=r.frame+JOTARO_STOP_T+5?r.jotaroStopUntil:0};
+ if(raid.phase>previousPhase)raidPhaseSurge(raid.phase);
  if(!stopped&&raidWorldStopped())raidStopActions();
  for(const id of raid.counterIds){const p=byId(id);if(p&&isLocal(p))raidGrantCounter(p);}
  if(stopped&&!raidWorldStopped())raidReleaseHits();
