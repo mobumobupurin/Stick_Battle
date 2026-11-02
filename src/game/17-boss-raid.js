@@ -489,7 +489,11 @@ drawFighter=function(p){
   if(p.out)return;const c=drawingContext,kind=p.mv?.kind,active=isActive(p),attack=p.a>0;
   const gait=!raidFrozen(p)&&!p.timeStopT&&p.g&&Math.abs(p.vx)>.4?Math.sin(visualFrame*.32)*Math.min(1,Math.abs(p.vx)/5):0;
   c.save();c.translate(p.x,p.y);if(p.kb>0)c.rotate(p.r||0);
-  if(attack&&['dioRush','dioKick','dioRise'].includes(kind)||raidWorldStopped()){
+  if(raid.phase>=2&&!raidFrozen(p)){
+   c.save();c.globalAlpha=raid.phase>=3?.25:.14;c.fillStyle=raid.phase>=3?'#ee443a':'#e7b95c';
+   c.beginPath();c.ellipse(0,-54,raid.phase>=3?82:63,112,0,0,Math.PI*2);c.fill();c.restore();
+  }
+  if(attack&&['dioRush','dioKick','dioSlam','dioRise'].includes(kind)||raidWorldStopped()){
    c.save();c.globalAlpha=.68;raidDrawBody(c,p.f*22,-7,.60,true,active?1:0,p.f);c.restore();
   }
   raidDrawBody(c,0,-Math.abs(gait)*2,.57,false,active?1:0,p.f,gait);
@@ -518,24 +522,40 @@ drawProjs=function(){
 };
 const raidBackdropBase=paintAnimeBackdrop;
 paintAnimeBackdrop=function(){
- raidBackdropBase();if(!raidWorldStopped())return;
- const c=drawingContext;c.save();c.fillStyle='#17152b66';c.fillRect(0,0,stage.w,stage.h);c.restore();
+ raidBackdropBase();if(!raidActive())return;
+ const c=drawingContext;c.save();
+ if(raid.phase>=2){c.fillStyle=raid.phase>=3?'#55121b26':'#45251a14';c.fillRect(0,0,stage.w,stage.h);}
+ if(raidWorldStopped()){c.fillStyle='#17152b66';c.fillRect(0,0,stage.w,stage.h);}
+ if(raidJotaroStopId()){c.fillStyle='#55416f36';c.fillRect(0,0,stage.w,stage.h);}
+ c.restore();
 };
 function raidHudEnsure(){
  let h=document.getElementById('raid-boss-hud');if(h)return h;
  h=document.createElement('div');h.id='raid-boss-hud';h.innerHTML='<div class="raid-hud-top"><b>DIO <span id="raid-phase"></span></b><span id="raid-health"></span></div><div class="raid-hp-track" role="progressbar" aria-label="DIOの体力" aria-valuemin="0" aria-valuemax="6400"><div class="raid-hp-fill"></div></div>';
- document.getElementById('wrap').appendChild(h);return h;
+ document.getElementById('wrap').appendChild(h);
+ const warn=document.createElement('div');warn.id='raid-threat';warn.setAttribute('aria-live','polite');warn.style.display='none';document.getElementById('wrap').appendChild(warn);
+ return h;
 }
 const raidHudBase=drawHUD;
 drawHUD=function(){
  const active=raidActive(),h=raidHudEnsure();h.style.display=active&&!(freezeT>0&&fzType==='timestopcin')?'block':'none';document.getElementById('game').classList.toggle('raid-battle',active);
- if(!active)return raidHudBase();
+ const warn=document.getElementById('raid-threat');
+ if(!active){if(warn)warn.style.display='none';return raidHudBase();}
+ const bossNow=byId(RAID_BOSS_ID),cue=raidFx.find(e=>e.kind==='phase'&&e.life>0);
+ let warning='',danger=false;
+ if(cue){warning=cue.phase>=3?'FINAL PHASE — DIO 最終暴走':'PHASE 2 — DIOが本気を出した！';danger=true;}
+ else if(raidWorldStopped()){warning='THE WORLD — 残り '+Math.ceil((DIO_STOP_T-raid.at)/60)+'秒 ／ '+(raidCounterWindow(byId(myId))?'承太郎は下＋特殊で対抗！':'時は止まった');danger=true;}
+ else if(raidJotaroStopId()){warning='STAR PLATINUM : THE WORLD — 承太郎以外は停止中';}
+ else if(bossNow?.mv?.kind==='dioRoller'&&bossNow.a<20){warning='危険！ ロードローラー落下！';danger=true;}
+ else if(bossNow?.mv?.kind==='dioSlam'&&bossNow.a<20){warning='危険！ ザ・ワールドの強打！';danger=true;}
+ if(warn){warn.style.display=warning?'block':'none';if(warning){setTxt(warn,warning);warn.classList.toggle('raid-threat-danger',danger);}}
+
  const boss=byId(RAID_BOSS_ID),heroes=raidHeroes(),roster=document.getElementById('battle-roster'),key='raid|'+heroes.map(p=>p.id+':'+p.cid).join('|');
  if(hudKey!==key){hudKey=key;roster.style.setProperty('--columns',heroes.length);roster.style.setProperty('--pc-columns',heroes.length);roster.innerHTML=heroes.map(p=>`<div class="hud-card ${p.id===myId?'me':''}"><div class="hud-portrait">${portrait(p.cid)}</div><div class="hud-info"><div class="hud-name">${esc(p.label)}</div><div class="hud-damage"></div></div><div class="hud-stocks"></div><div class="hud-skill"></div><div class="hud-meter"></div></div>`).join('');}
  heroes.forEach((p,i)=>{const el=roster.children[i];if(!el)return;el.classList.toggle('out',p.out);const damage=el.querySelector('.hud-damage');setTxt(damage,Math.round(p.d)+'%');damage.style.color=p.d<60?'#fff9e9':p.d<110?'#ffc363':'#ff6453';setTxt(el.querySelector('.hud-stocks'),p.out?'脱落':'残機 '+p.s);const meter=animeHud(p);setTxt(el.querySelector('.hud-skill'),p.out?'観戦中':raidFrozen(p)?'時間停止中':meter?.label||CC(p.cid).name);setVar(el,'--meter',Math.round(meter?.m||0)+'%');});
- setTxt(document.getElementById('raid-health'),Math.ceil(boss.raidHp).toLocaleString()+' / 6,400');setTxt(document.getElementById('raid-phase'),raid.phase===2?' / 本気':'');
+ setTxt(document.getElementById('raid-health'),Math.ceil(boss.raidHp).toLocaleString()+' / 6,400');setTxt(document.getElementById('raid-phase'),raid.phase>=3?' / 最終暴走':raid.phase===2?' / 本気':'');
  setVar(h,'--hp',boss.raidHp/6400*100+'%');h.querySelector('[role="progressbar"]').setAttribute('aria-valuenow',Math.ceil(boss.raidHp));
- setTxt(document.getElementById('match-label'),'CO-OP / VS DIO');setTxt(document.getElementById('match-stage'),stage.name+' / 味方は残機2・ダメージ％');
+ setTxt(document.getElementById('match-label'),'CO-OP / VS DIO');setTxt(document.getElementById('match-stage'),stage.name+' / 味方は残機2・ダメージ％'+(boss.dioExposed>0?' / DIOに隙あり！':'') );
 };
 const raidControlsBase=updateControlUI;
 updateControlUI=function(){
