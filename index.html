@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>STICK BATTLE ONLINE — スティックバトルオンライン</title>
+<meta name="theme-color" content="#0c1019">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="STICK BATTLE">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -232,6 +237,51 @@ input,textarea,select{touch-action:manipulation}.mu{width:100%;border-collapse:c
 #training-banner{width:min(850px,100%);font-size:11px;color:#8edce5}
 @media(max-width:720px){.mode-grid #go-cpu{grid-row:auto}.extra-choice{grid-template-columns:1fr}.extra-choice .big{min-height:135px}.tour-cols{min-width:390px;gap:6px}.tour-col{min-width:115px}.tour-board{padding:11px}}
 
+
+/* Compact four-button touch layout inspired by directional swipe fighters. */
+body.swipe-special-input #acts{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(62px,1fr));grid-template-areas:'c s' 'j a';max-width:270px;margin-left:auto;gap:12px}
+body.swipe-special-input #acts #btn-v,body.swipe-special-input #acts #btn-h,body.swipe-special-input #acts #btn-g{display:none!important}
+body.swipe-special-input #btn-s{font-size:17px!important;background:#7654b2!important;overflow:visible}
+body.swipe-special-input #btn-s:before{content:'↑    ↔    ↓';display:block;position:absolute;top:4px;left:0;right:0;color:#e8d9ff;font-size:11px;letter-spacing:2px;pointer-events:none}
+body.swipe-special-input #btn-s small{font-size:8px!important;line-height:1.15}
+body.swipe-special-input #btn-a{font-size:19px!important}
+body.swipe-special-input #acts button{min-height:62px;touch-action:none}
+@media(orientation:landscape) and (max-height:560px){body.swipe-special-input #acts{position:absolute;right:0;bottom:16px;width:156px;max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(61px,1fr));grid-template-areas:'c s' 'j a';gap:7px}body.left-handed.swipe-special-input #acts{left:0;right:auto}}
+@media(max-width:360px){body.swipe-special-input #acts{gap:6px;grid-template-rows:repeat(2,minmax(58px,1fr))}}
+
+/* Landscape iPhone Safari: use the visible viewport instead of guessing browser chrome height.
+   The fight remains in the center; controls live in safe-area-aware side rails. */
+@media(orientation:landscape) and (max-height:560px){
+ html,body{height:var(--sbo-visible-height,100dvh);max-height:var(--sbo-visible-height,100dvh);overflow:hidden}
+ body:not(.desktop-controls) #game{
+  --sbo-left-rail:clamp(100px,14vw,138px);
+  --sbo-right-rail:clamp(148px,19vw,185px);
+  position:relative;width:100%;max-width:none;height:100%;min-height:0;overflow:hidden;
+  padding:0 calc(var(--sbo-right-rail) + env(safe-area-inset-right)) 0 calc(var(--sbo-left-rail) + env(safe-area-inset-left));
+ }
+ body:not(.desktop-controls) #bar{position:absolute;z-index:3;left:0;top:0;width:100%;height:32px;padding:2px calc(8px + env(safe-area-inset-right)) 2px calc(8px + env(safe-area-inset-left));}
+ body:not(.desktop-controls) #arena-shell{height:100%;min-height:0;width:100%;padding:34px 0 14px;gap:3px;justify-content:center;}
+ body:not(.desktop-controls) #wrap{max-height:none;max-width:100%;width:100%;height:auto;min-height:0;aspect-ratio:16/9;}
+ body:not(.desktop-controls) #battle-roster{gap:3px;}
+ body:not(.desktop-controls) #stick-zone{left:env(safe-area-inset-left);bottom:8px;width:var(--sbo-left-rail);height:calc(100% - 48px);}
+ body:not(.desktop-controls) #acts{right:env(safe-area-inset-right);bottom:12px;width:var(--sbo-right-rail);max-width:none;}
+ body:not(.desktop-controls) #combat-hint{left:calc(var(--sbo-left-rail) + env(safe-area-inset-left));right:calc(var(--sbo-right-rail) + env(safe-area-inset-right));bottom:0;}
+ body.left-handed:not(.desktop-controls) #game{padding-left:calc(var(--sbo-right-rail) + env(safe-area-inset-left));padding-right:calc(var(--sbo-left-rail) + env(safe-area-inset-right));}
+ body.left-handed:not(.desktop-controls) #stick-zone{left:auto;right:env(safe-area-inset-right);}
+ body.left-handed:not(.desktop-controls) #acts{left:env(safe-area-inset-left);right:auto;}
+ body.left-handed:not(.desktop-controls) #combat-hint{left:calc(var(--sbo-right-rail) + env(safe-area-inset-left));right:calc(var(--sbo-left-rail) + env(safe-area-inset-right));}
+ body.swipe-special-input:not(.desktop-controls) #acts{width:var(--sbo-right-rail);grid-template-rows:repeat(2,minmax(48px,1fr));gap:8px;}
+ body.swipe-special-input:not(.desktop-controls) #acts button{min-height:48px;}
+}
+@media(orientation:landscape) and (max-height:350px){
+ body:not(.desktop-controls) #game{--sbo-left-rail:100px;--sbo-right-rail:138px}
+ body:not(.desktop-controls) #arena-shell{padding-top:29px;padding-bottom:9px}
+ body:not(.desktop-controls) #bar{height:28px}
+ body:not(.desktop-controls) #battle-roster .hud-card{height:34px}
+ body:not(.desktop-controls) #battle-roster .hud-portrait{display:none}
+ body.swipe-special-input:not(.desktop-controls) #acts{bottom:6px;gap:5px}
+ body.swipe-special-input:not(.desktop-controls) #acts button{min-height:44px}
+}
 </style>
 
 <style>
@@ -651,7 +701,7 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
           <div class="howto-control-item"><span class="howto-control-key">左スティック</span><div><b>移動</b><small>下に倒すと足場から降りる</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key">跳ぶ</span><div><b>ジャンプ</b><small>空中でもう1回ジャンプできる</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key key-attack">攻撃</span><div><b>通常攻撃 ／ 溜め攻撃</b><small>タップで攻撃、長押しして離すと強攻撃</small></div></div>
-          <div class="howto-control-item"><span class="howto-control-key key-special">特殊・上下技</span><div><b>キャラ固有の技</b><small>↑上技・↓下技のボタンで技が変わる</small></div></div>
+          <div class="howto-control-item"><span class="howto-control-key key-special">特殊技</span><div><b>タップ＝B / ↑上B / ↔横B / ↓下B</b><small>特殊ボタンをスワイプ。設定から従来の個別ボタンにも変更できます</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key key-defense">カウンター</span><div><b>防御 ／ 回避</b><small>そのまま押すとカウンター、移動しながら押すと回避</small></div></div>
         </div>
       </div>
@@ -708,7 +758,7 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
       <button id="btn-v">↑ 上技<small>上必殺技</small></button>
       <button id="btn-c">カウンター<br>／回避</button>
       <button id="btn-a">攻撃<small>長押しで溜め → 離す</small></button>
-      <button id="btn-s">特殊<small>キャラ固有</small></button>
+      <button id="btn-s">特殊<small>タップ / スワイプ</small></button>
       <button id="btn-j">跳ぶ<small>JUMP</small></button>
       <button id="btn-g">↓ 下技<small>＝特殊</small></button>
     </div>
@@ -719,12 +769,13 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
 
 <dialog id="settings-dialog"><h2>AUDIO & CONTROLS</h2>
 <label class="setting-row">操作画面<select id="pref-controls"><option value="auto">自動判定</option><option value="keyboard">PC：キーボード</option><option value="touch">スマホ：タッチ</option></select></label>
-<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
+<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="swipe">スライド操作（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>\n<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
 <label class="setting-row">バトルBGM<input id="pref-music" type="checkbox"></label>
 <label class="setting-row">光刺激を抑える<input id="pref-lowFlash" type="checkbox"></label>
 <label class="setting-row">画面の揺れ<input id="pref-shake" type="checkbox"></label>
 <label class="setting-row">左右の操作を入れ替え<input id="pref-left" type="checkbox"></label>
-<p>移動エリアは触れた場所が中心になります。上技ボタンで「上＋特殊」を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
+<p>iPhoneのSafariのアドレスバーが気になる場合は、共有メニュー → ホーム画面に追加 →「Webアプリとして開く」をオンにすると、ブラウザのツールバーがない表示で起動できます。ゲームプレイは横画面推奨です。</p>
+<p>スライド操作：特殊ボタンをタップ＝B、上へスライド＝上B、左右＝横B、下＝下B。特殊ボタンを押し続けると、溜め技にも対応します。従来の個別ボタン式には設定から戻せます。</p>\n<p>移動エリアは触れた場所が中心になります。上技ボタンで「上＋特殊」を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
 <button id="settings-close">閉じる</button></dialog>
 
 <dialog id="bracket-dialog" aria-label="トーナメント表">
@@ -5446,6 +5497,58 @@ const press={j:false,a:false,s:false,c:false,x:false,v:false,g:false,h:false};
 const heldKeys=new Set(),st={x:0,y:0};
 const stickEl=document.getElementById('stick'),knob=document.getElementById('knob'),stickZone=document.getElementById('stick-zone');
 let stickId=null,scx=0,scy=0,stickUp=false,inputUnfocused=false;
+const SPECIAL_SWIPE_THRESHOLD=19;
+const SPECIAL_HOLD_DELAY=145;
+let specialGesture=null;
+let swipeSideDirection=0;
+function swipeSpecialEnabled(){return typeof prefs!=='undefined'&&prefs.specialInput==='swipe';}
+function specialGestureKey(dx,dy){
+ if(Math.hypot(dx,dy)<SPECIAL_SWIPE_THRESHOLD)return '';
+ if(Math.abs(dx)>Math.abs(dy)*1.12)return 'h';
+ return dy<0?'v':'g';
+}
+function specialGestureTrigger(key,held=false){
+ if(!key)return;
+ const b=document.getElementById('btn-s');
+ if(held){touch[key]=true;b.classList.add('on');}
+ else press[key]=true;
+}
+function finishSpecialGesture(e,cancelled=false){
+ const gesture=specialGesture;
+ if(!gesture||e&&e.pointerId!==gesture.id)return;
+ clearTimeout(gesture.timer);
+ if(cancelled)cancelControl(gesture.fired||'s');
+ if(!cancelled&&!gesture.fired){
+  const dx=(e?.clientX??gesture.x)-gesture.x;
+  const key=specialGestureKey(dx,(e?.clientY??gesture.y)-gesture.y)||'s';
+  if(key==='h')swipeSideDirection=Math.sign(dx)||1;
+  specialGestureTrigger(key);
+ }
+ if(gesture.fired){touch[gesture.fired]=false;if(!cancelled&&!gesture.ack)press[gesture.fired]=true;}
+ specialGesture=null;
+ const b=document.getElementById('btn-s');b.classList.remove('on');
+ safelyRelease(b,gesture.id);
+}
+function bindSpecialSwipe(){
+ const b=document.getElementById('btn-s');
+ b.addEventListener('pointerdown',e=>{
+  if(!swipeSpecialEnabled()||scene!=='battle'||specialGesture)return;
+  e.preventDefault();inputUnfocused=false;safelyCapture(b,e.pointerId);
+  const g={id:e.pointerId,x:e.clientX,y:e.clientY,fired:'',ack:false,timer:null};specialGesture=g;b.classList.add('on');
+  // Holding still must work for characters with a chargeable neutral special.
+  g.timer=setTimeout(()=>{if(specialGesture!==g||g.fired)return;g.fired='s';touch.s=true;},SPECIAL_HOLD_DELAY);
+ });
+ b.addEventListener('pointermove',e=>{
+  const g=specialGesture;if(!g||g.id!==e.pointerId||g.fired)return;
+  const key=specialGestureKey(e.clientX-g.x,e.clientY-g.y);
+  if(!key)return;clearTimeout(g.timer);g.fired=key;if(key==='h')swipeSideDirection=Math.sign(e.clientX-g.x)||1;specialGestureTrigger(key,true);
+ });
+ for(const name of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(name,e=>{
+  if(!specialGesture||specialGesture.id!==e.pointerId)return;
+  finishSpecialGesture(e,name!=='pointerup');
+ });
+ b.addEventListener('contextmenu',e=>e.preventDefault());
+}
 const buttonPointers=new Map(),controlButtons={j:'btn-j',a:'btn-a',s:'btn-s',c:'btn-c',v:'btn-v',g:'btn-g',h:'btn-h'};
 function editingText(el=document.activeElement){return !!el&&(el.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));}
 function safelyCapture(el,id){try{el.setPointerCapture(id);}catch(_){} }
@@ -5470,7 +5573,7 @@ function releaseButton(key){
  const id=buttonPointers.get(key),b=document.getElementById(controlButtons[key]);buttonPointers.delete(key);touch[key]=false;b.classList.remove('on');if(id!==undefined)safelyRelease(b,id);
 }
 function resetTouch(){
- endStick();for(const key of Object.keys(controlButtons))releaseButton(key);for(const k in press)press[k]=false;heldKeys.clear();neutralHuman(true);
+ finishSpecialGesture(null,true);endStick();swipeSideDirection=0;for(const key of Object.keys(controlButtons))releaseButton(key);for(const k in press)press[k]=false;heldKeys.clear();neutralHuman(true);
 }
 stickZone.addEventListener('pointerdown',e=>{
  if(stickId!==null||scene!=='battle')return;e.preventDefault();inputUnfocused=false;stickId=e.pointerId;safelyCapture(stickZone,e.pointerId);
@@ -5479,14 +5582,16 @@ stickZone.addEventListener('pointerdown',e=>{
 stickZone.addEventListener('pointermove',e=>{if(e.pointerId!==stickId)return;if(e.pointerType==='mouse'&&e.buttons===0){endStick(e);return;}moveStick(e);});
 for(const ev of ['pointerup','pointercancel','lostpointercapture'])stickZone.addEventListener(ev,e=>{endStick(e);});
 function bindButton(id,key){const b=document.getElementById(id);b.setAttribute('aria-label',b.textContent.trim());
- b.addEventListener('pointerdown',e=>{if(buttonPointers.has(key)||scene!=='battle')return;e.preventDefault();inputUnfocused=false;buttonPointers.set(key,e.pointerId);touch[key]=true;press[key]=true;b.classList.add('on');safelyCapture(b,e.pointerId);});
+ b.addEventListener('pointerdown',e=>{if(key==='s'&&swipeSpecialEnabled()||buttonPointers.has(key)||scene!=='battle')return;e.preventDefault();inputUnfocused=false;buttonPointers.set(key,e.pointerId);touch[key]=true;press[key]=true;b.classList.add('on');safelyCapture(b,e.pointerId);});
  const off=e=>{if(buttonPointers.get(key)===e.pointerId){if(e.type!=='pointerup')cancelControl(key);releaseButton(key);}};
  for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,off);
  b.addEventListener('contextmenu',e=>e.preventDefault());
 }
 for(const [key,id]of Object.entries(controlButtons))bindButton(id,key);
+bindSpecialSwipe();
 function endPointerGlobally(e){
  if(e.pointerId===stickId)endStick(e);
+ if(specialGesture?.id===e.pointerId)finishSpecialGesture(e,e.type!=='pointerup');
  for(const [key,id]of [...buttonPointers])if(id===e.pointerId){if(e.type==='pointercancel')cancelControl(key);releaseButton(key);}
 }
 for(const ev of ['pointerup','pointercancel'])window.addEventListener(ev,endPointerGlobally,true);
@@ -5571,7 +5676,7 @@ function readHuman() {
   const down = st.y > 0.55 || kd(83) || kd(DOWN_ARROW) || gpDown;
   hin.d = down;
   hin.gd = touch.g || press.g;
-  hin.neutralSpecial=!!(touch.s||press.s);hin.sideSpecial=(touch.h||press.h)?(byId(myId)?.f||1):0;
+  hin.neutralSpecial=!!(touch.s||press.s);hin.sideSpecial=(touch.h||press.h)?(swipeSideDirection||(byId(myId)?.f||1)):0;
 
   if (j && !raw.j) hin.jc++;
   if (a && !raw.a) hin.ac++;
@@ -5581,8 +5686,10 @@ function readHuman() {
   if (x && !raw.x) hin.xc++;
   if (down && !raw.d) hin.dc++;
 
+  if(specialGesture?.fired)specialGesture.ack=true;
   hin.a = a; hin.s = s;
   raw.j = j; raw.a = a; raw.s = s; raw.c = c; raw.x = x; raw.d = down;
+  if(!touch.h&&!press.h)swipeSideDirection=0;
   for (const key in press) press[key]=false;
 }
 
@@ -5864,7 +5971,7 @@ function buildMenus() {
   };
 }
 // Presentation and accessibility settings: no physics or combat parameters are modified.
-const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',lowFlash:false};
+const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'swipe',lowFlash:false};
 try { const saved=JSON.parse(localStorage.getItem('sbo.preferences')||'{}'); for(const k of Object.keys(prefs))if(typeof saved[k]===typeof prefs[k])prefs[k]=saved[k];prefs.volume=Math.max(0,Math.min(1,prefs.volume)); } catch(_) {}
 
 // ========================================================
@@ -6137,12 +6244,14 @@ function updateControlUI(){
  {const h=document.getElementById('combat-hint'),v=netIssue||text;if(h.textContent!==v)h.textContent=v;}
  animeControl(p);
 }
-function applyPrefs(){document.body.classList.toggle('left-handed',prefs.left);audioBus();try{localStorage.setItem('sbo.preferences',JSON.stringify(prefs));}catch(_){}}
+function applyPrefs(){document.body.classList.toggle('left-handed',prefs.left);document.body.classList.toggle('swipe-special-input',prefs.specialInput==='swipe');audioBus();try{localStorage.setItem('sbo.preferences',JSON.stringify(prefs));}catch(_){}}
 const settingsDialog=document.getElementById('settings-dialog');let settingsPaused=false;
 document.getElementById('b-settings').onclick=()=>{resetTouch();settingsPaused=scene==='battle'&&!online;if(settingsPaused)scene='pause';settingsDialog.showModal();};
 settingsDialog.addEventListener('close',()=>{resetTouch();if(settingsPaused){scene='battle';simAcc=0;}settingsPaused=false;});
 document.getElementById('settings-close').onclick=()=>settingsDialog.close();
 for(const key of ['volume','music','shake','left','lowFlash']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
+const specialInputSelect=document.getElementById('pref-special-input');
+if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'swipe';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'swipe';applyPrefs();});}
 applyPrefs();
 document.addEventListener('click',e=>{if(e.target.closest('button')&&actx)tone(600,880,.035,.035,'sine');});
 
@@ -6346,6 +6455,28 @@ function fitArena(){
 }
 const arenaObserver=new ResizeObserver(fitArena);arenaObserver.observe(document.getElementById('arena-shell'));arenaObserver.observe(document.getElementById('battle-roster'));
 window.addEventListener('resize',fitArena);
+// Safari's address/tab bars can change the visual viewport without a traditional resize.
+// Update the layout at most once per animation frame; no forced orientation or fullscreen.
+let safariLayoutScheduled=false;
+function refreshSafariLayout(){
+ if(safariLayoutScheduled)return;
+ safariLayoutScheduled=true;
+ requestAnimationFrame(()=>{
+  safariLayoutScheduled=false;
+  const vv=window.visualViewport;
+  const visibleHeight=vv&&Number.isFinite(vv.height)?vv.height:window.innerHeight;
+  if(Number.isFinite(visibleHeight)&&visibleHeight>0){
+   document.documentElement.style.setProperty('--sbo-visible-height',visibleHeight+'px');
+  }
+  fitArena();
+ });
+}
+window.addEventListener('orientationchange',refreshSafariLayout);
+if(window.visualViewport){
+ window.visualViewport.addEventListener('resize',refreshSafariLayout);
+ window.visualViewport.addEventListener('scroll',refreshSafariLayout);
+}
+refreshSafariLayout();
 function paintImpactWorld(){if(fzType==='timestopcin'){chronoWorld();return;}if(fzType==='dragon'){premiumDragonImpact();return;}
  if(!fz)return;const a=byId(fz.att),c=byId(fz.cnt),el=freezeMax-freezeT;
  const pal=fzType==='animeform'?animeFormPalette(fz.cid,fz.form):null;
