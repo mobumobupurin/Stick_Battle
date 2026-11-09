@@ -537,6 +537,81 @@ body.swipe-special-input:not(.desktop-controls) #acts #btn-c{display:block!impor
  body.swipe-special-input.left-handed:not(.desktop-controls) #acts{left:env(safe-area-inset-left);right:auto}
  body.swipe-special-input:not(.desktop-controls) #acts button{min-height:48px!important}
 }
+
+/*
+ * Immersive landscape touch battle:
+ * Keep the 16:9 arena at its maximum undistorted size.
+ * Overlay semi-transparent controls / HUD on the sides and over the sky,
+ * rather than shrinking the actual game area to make side rails.
+ */
+@media (orientation:landscape) and (max-height:560px){
+ body:not(.desktop-controls) #game{
+  position:relative;isolation:isolate;width:100%;max-width:none;height:100%;min-height:0;
+  padding:0!important;margin:0 auto;overflow:hidden;gap:0;
+ }
+ body:not(.desktop-controls) #arena-shell{
+  position:absolute;inset:0;box-sizing:border-box;
+  padding:0!important;margin:0;width:100%;height:100%;min-height:0;
+  display:flex;align-items:center;justify-content:center;gap:0;
+ }
+ body:not(.desktop-controls) #wrap{
+  width:100%;max-width:100%;max-height:100%;height:auto;
+  aspect-ratio:16/9;margin:auto;border-color:#ffffff22;
+  box-shadow:none;
+ }
+ body:not(.desktop-controls) #match-info{display:none!important}
+ body:not(.desktop-controls) #battle-roster{
+  position:absolute;top:32px;left:50%;transform:translateX(-50%);z-index:2;
+  width:min(68%,620px)!important;max-width:620px;gap:3px;
+  opacity:.88;pointer-events:none;
+ }
+ body:not(.desktop-controls) #battle-roster .hud-card{
+  background:#101a2abc;height:37px;padding:2px 5px 5px;gap:4px;
+ }
+ body:not(.desktop-controls) #battle-roster .hud-portrait{display:none}
+ body:not(.desktop-controls) #battle-roster .hud-damage{font-size:17px}
+ body:not(.desktop-controls) #battle-roster .hud-skill{font-size:7px}
+ body:not(.desktop-controls) #bar{
+  position:absolute;top:0;left:0;right:0;z-index:6;
+  width:100%;height:29px;padding:2px 6px;
+  background:linear-gradient(#0c1019ee,#0c1019aa);gap:4px;
+ }
+ body:not(.desktop-controls) #bar .barbtn{min-height:25px;padding:4px 7px;font-size:9px}
+ body:not(.desktop-controls) #title{font-size:9px}
+ body:not(.desktop-controls) #pad{display:contents}
+ body:not(.desktop-controls) #stick-zone{
+  position:absolute;left:3px;right:auto;bottom:2px;z-index:5;
+  width:clamp(105px,16vw,150px);height:min(75%,280px);
+  border-radius:24px;background:#0a152633;
+ }
+ body:not(.desktop-controls) #stick-zone:after{color:#c6d8e2aa}
+ body:not(.desktop-controls) #stick{background:radial-gradient(circle,#293e60aa,#1322367d 76%)}
+ body:not(.desktop-controls) #acts{
+  position:absolute;right:5px;left:auto;bottom:7px;z-index:5;
+  width:clamp(148px,21vw,196px);max-width:none;margin:0;
+ }
+ body:not(.desktop-controls) #acts button{
+  background-color:#263e5bc9;border-color:#ffffff60;
+  box-shadow:0 3px 8px #0009;
+  -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+ }
+ body.swipe-special-input:not(.desktop-controls) #acts{
+  grid-template-rows:repeat(2,minmax(54px,1fr))!important;
+  gap:8px!important;
+ }
+ body:not(.desktop-controls) #combat-hint{display:none!important}
+ body.left-handed:not(.desktop-controls) #stick-zone{left:auto;right:3px}
+ body.left-handed:not(.desktop-controls) #acts{left:5px;right:auto}
+ body.swipe-special-input.left-handed:not(.desktop-controls) #acts{left:5px;right:auto}
+}
+@media(orientation:landscape) and (max-height:350px){
+ body:not(.desktop-controls) #battle-roster{top:28px;width:min(72%,580px)!important}
+ body:not(.desktop-controls) #battle-roster .hud-card{height:29px}
+ body:not(.desktop-controls) #battle-roster .hud-damage{font-size:14px}
+ body:not(.desktop-controls) #acts{width:clamp(138px,21vw,170px);bottom:3px}
+ body.swipe-special-input:not(.desktop-controls) #acts{grid-template-rows:repeat(2,minmax(44px,1fr))!important;gap:5px!important}
+ body:not(.desktop-controls) #stick-zone{height:min(73%,210px)}
+}
 </style>
 </head>
 <body>
@@ -6465,8 +6540,13 @@ function fitArena(){
  const shell=document.getElementById('arena-shell'),wrap=document.getElementById('wrap');
  if(!shell.clientWidth||!shell.clientHeight)return;
  const cs=getComputedStyle(shell),roster=document.getElementById('battle-roster'),info=document.getElementById('match-info');
- const available=shell.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-roster.offsetHeight-info.offsetHeight-2*(parseFloat(cs.rowGap)||0);
- const cap=document.body.classList.contains('desktop-controls')?Infinity:900;
+ // On a landscape touch device the HUD and buttons are overlaid instead of
+ // reserving their height/width. Keep the actual world 16:9 (no stretched fighters).
+ const landscapeTouch=!document.body.classList.contains('desktop-controls')&&
+  window.innerWidth>window.innerHeight&&window.innerHeight<=560;
+ const available=landscapeTouch?Math.max(80,shell.clientHeight-8):
+  shell.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-roster.offsetHeight-info.offsetHeight-2*(parseFloat(cs.rowGap)||0);
+ const cap=landscapeTouch?Infinity:document.body.classList.contains('desktop-controls')?Infinity:900;
  const w=Math.max(96,Math.min(cap,shell.clientWidth,Math.max(54,available)*16/9));
  if(Math.abs(parseFloat(wrap.style.width||'0')-w)>.5)wrap.style.width=w+'px';
  if(document.body.classList.contains('desktop-controls')){roster.style.width=w+'px';info.style.width=w+'px';}else{roster.style.width='';info.style.width='';}
