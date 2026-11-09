@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="STICK BATTLE">
+<meta name="sbo-release" content="mobile-v2-20261109">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -520,6 +521,22 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
 @media(max-width:700px){.raid-entry{padding:20px;grid-template-columns:1fr}.raid-entry>b{font-size:24px}.raid-entry small{font-size:11px;line-height:1.8}.screen.raid-screen{gap:20px}.raid-dossier{grid-template-columns:1fr}.raid-boss-art{min-height:250px}.raid-boss-art svg{height:370px;top:-55px}.raid-dossier-copy{padding:22px}.raid-dossier h3{font-size:48px}.raid-facts{gap:18px}.raid-facts dd{font-size:14px}.raid-facts dt{font-size:8px}.raid-cpu-row{gap:10px}#raid-boss-hud{padding:6px 9px 9px}.raid-hud-top{font-size:8px;letter-spacing:0}.raid-hud-top b{font-size:12px;letter-spacing:3px}.raid-hp-track{height:5px;margin-top:4px}.raid-hud-move small{display:none}#game.raid-battle .hud-portrait{display:none}#game.raid-battle .hud-damage{font-size:18px}#game.raid-battle .hud-card{height:56px}#game.raid-battle .hud-skill{font-size:7px;max-width:85%}#game.raid-battle .hud-name{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.raid-hp-fill{transition:none}}
 @media(max-width:360px) and (orientation:portrait){#game.raid-battle #pad{grid-template-columns:94px minmax(0,1fr)}#game.raid-battle #acts{min-width:0;width:100%}#game.raid-battle #acts button{font-size:10px;padding-inline:2px}#game.raid-battle #acts button small{font-size:7px;letter-spacing:0}#game.raid-battle .hud-stocks{top:4px;right:4px;font-size:8px}#game.raid-battle .hud-damage{font-size:15px}#game.raid-battle .hud-card{padding-left:4px}#game.raid-battle .hud-name{max-width:45px}#game.raid-battle .hud-info{padding-top:7px}}
+
+/* Mobile V2 release: the raid is retired from mode selection, including old cached menu markup. */
+#go-raid{display:none!important}
+body.swipe-special-input:not(.desktop-controls) #acts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-areas:"c s" "j a"!important;grid-template-rows:repeat(2,minmax(52px,1fr))!important;gap:8px!important}
+body.swipe-special-input:not(.desktop-controls) #acts #btn-v,
+body.swipe-special-input:not(.desktop-controls) #acts #btn-h,
+body.swipe-special-input:not(.desktop-controls) #acts #btn-g{display:none!important}
+body.swipe-special-input:not(.desktop-controls) #acts #btn-s,
+body.swipe-special-input:not(.desktop-controls) #acts #btn-a,
+body.swipe-special-input:not(.desktop-controls) #acts #btn-j,
+body.swipe-special-input:not(.desktop-controls) #acts #btn-c{display:block!important;min-height:52px}
+@media (orientation:landscape) and (max-height:560px){
+ body.swipe-special-input:not(.desktop-controls) #acts{position:absolute;right:env(safe-area-inset-right);bottom:max(7px,env(safe-area-inset-bottom));width:clamp(140px,19vw,190px);max-width:none;margin:0}
+ body.swipe-special-input.left-handed:not(.desktop-controls) #acts{left:env(safe-area-inset-left);right:auto}
+ body.swipe-special-input:not(.desktop-controls) #acts button{min-height:48px!important}
+}
 </style>
 </head>
 <body>
@@ -540,7 +557,7 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
   <button class="big mode-card" id="go-more" data-ghost="03"><span class="mode-no">03 / CHALLENGES</span><span class="mode-symbol" aria-hidden="true">Ⅲ</span><span class="mode-card-content"><span class="mode-card-kicker">EXTRA MODES</span><b>ほかの遊び</b><span class="mode-card-desc">組み手・トーナメント・トレーニング。戦い方は無限大。</span><span class="mode-card-foot">モードを選ぶ <span aria-hidden="true">↗</span></span></span></button>
   <button class="big mode-card mode-card-guide" id="go-howto" data-ghost="04"><span class="mode-no">04 / BEGINNER GUIDE</span><span class="mode-symbol" aria-hidden="true">?</span><span class="mode-card-content"><span class="mode-card-kicker">HOW TO PLAY</span><b>ルール・操作方法</b><span class="mode-card-desc">初めてでも大丈夫。技の出し方から勝ち方まで、ここで確認。</span></span><span class="mode-guide-arrow" aria-hidden="true">↗</span></button>
  </div>
- <button class="raid-entry" id="go-raid"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。 <i aria-hidden="true">↗</i></small></button>
+ <button class="raid-entry" id="go-raid" hidden aria-hidden="true" tabindex="-1" style="display:none"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。 <i aria-hidden="true">↗</i></small></button>
  <p class="mode-rework-footer">自分だけのスタイルを、ここから。</p>
 </div>
 
@@ -769,7 +786,8 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
 
 <dialog id="settings-dialog"><h2>AUDIO & CONTROLS</h2>
 <label class="setting-row">操作画面<select id="pref-controls"><option value="auto">自動判定</option><option value="keyboard">PC：キーボード</option><option value="touch">スマホ：タッチ</option></select></label>
-<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="swipe">スライド操作（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>\n<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
+<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="swipe">スライド操作（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>
+<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
 <label class="setting-row">バトルBGM<input id="pref-music" type="checkbox"></label>
 <label class="setting-row">光刺激を抑える<input id="pref-lowFlash" type="checkbox"></label>
 <label class="setting-row">画面の揺れ<input id="pref-shake" type="checkbox"></label>
