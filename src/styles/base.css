@@ -222,3 +222,14 @@ input,textarea,select{touch-action:manipulation}.mu{width:100%;border-collapse:c
 #training-banner{width:min(850px,100%);font-size:11px;color:#8edce5}
 @media(max-width:720px){.mode-grid #go-cpu{grid-row:auto}.extra-choice{grid-template-columns:1fr}.extra-choice .big{min-height:135px}.tour-cols{min-width:390px;gap:6px}.tour-col{min-width:115px}.tour-board{padding:11px}}
 
+
+/* Compact four-button touch layout inspired by directional swipe fighters. */
+body.swipe-special-input #acts{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(62px,1fr));grid-template-areas:'c s' 'j a';max-width:270px;margin-left:auto;gap:12px}
+body.swipe-special-input #acts #btn-v,body.swipe-special-input #acts #btn-h,body.swipe-special-input #acts #btn-g{display:none!important}
+body.swipe-special-input #btn-s{font-size:17px!important;background:#7654b2!important;overflow:visible}
+body.swipe-special-input #btn-s:before{content:'↑    ↔    ↓';display:block;position:absolute;top:4px;left:0;right:0;color:#e8d9ff;font-size:11px;letter-spacing:2px;pointer-events:none}
+body.swipe-special-input #btn-s small{font-size:8px!important;line-height:1.15}
+body.swipe-special-input #btn-a{font-size:19px!important}
+body.swipe-special-input #acts button{min-height:62px;touch-action:none}
+@media(orientation:landscape) and (max-height:560px){body.swipe-special-input #acts{position:absolute;right:0;bottom:16px;width:156px;max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(61px,1fr));grid-template-areas:'c s' 'j a';gap:7px}body.left-handed.swipe-special-input #acts{left:0;right:auto}}
+@media(max-width:360px){body.swipe-special-input #acts{gap:6px;grid-template-rows:repeat(2,minmax(58px,1fr))}}
