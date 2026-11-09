@@ -276,7 +276,7 @@ function buildMenus() {
   };
 }
 // Presentation and accessibility settings: no physics or combat parameters are modified.
-const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',lowFlash:false};
+const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'swipe',lowFlash:false};
 try { const saved=JSON.parse(localStorage.getItem('sbo.preferences')||'{}'); for(const k of Object.keys(prefs))if(typeof saved[k]===typeof prefs[k])prefs[k]=saved[k];prefs.volume=Math.max(0,Math.min(1,prefs.volume)); } catch(_) {}
 
 // ========================================================
@@ -549,12 +549,14 @@ function updateControlUI(){
  {const h=document.getElementById('combat-hint'),v=netIssue||text;if(h.textContent!==v)h.textContent=v;}
  animeControl(p);
 }
-function applyPrefs(){document.body.classList.toggle('left-handed',prefs.left);audioBus();try{localStorage.setItem('sbo.preferences',JSON.stringify(prefs));}catch(_){}}
+function applyPrefs(){document.body.classList.toggle('left-handed',prefs.left);document.body.classList.toggle('swipe-special-input',prefs.specialInput==='swipe');audioBus();try{localStorage.setItem('sbo.preferences',JSON.stringify(prefs));}catch(_){}}
 const settingsDialog=document.getElementById('settings-dialog');let settingsPaused=false;
 document.getElementById('b-settings').onclick=()=>{resetTouch();settingsPaused=scene==='battle'&&!online;if(settingsPaused)scene='pause';settingsDialog.showModal();};
 settingsDialog.addEventListener('close',()=>{resetTouch();if(settingsPaused){scene='battle';simAcc=0;}settingsPaused=false;});
 document.getElementById('settings-close').onclick=()=>settingsDialog.close();
 for(const key of ['volume','music','shake','left','lowFlash']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
+const specialInputSelect=document.getElementById('pref-special-input');
+if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'swipe';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'swipe';applyPrefs();});}
 applyPrefs();
 document.addEventListener('click',e=>{if(e.target.closest('button')&&actx)tone(600,880,.035,.035,'sine');});
 
