@@ -195,7 +195,7 @@
           <div class="howto-control-item"><span class="howto-control-key">左スティック</span><div><b>移動</b><small>下に倒すと足場から降りる</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key">跳ぶ</span><div><b>ジャンプ</b><small>空中でもう1回ジャンプできる</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key key-attack">攻撃</span><div><b>通常攻撃 ／ 溜め攻撃</b><small>タップで攻撃、長押しして離すと強攻撃</small></div></div>
-          <div class="howto-control-item"><span class="howto-control-key key-special">特殊・上下技</span><div><b>キャラ固有の技</b><small>↑上技・↓下技のボタンで技が変わる</small></div></div>
+          <div class="howto-control-item"><span class="howto-control-key key-special">特殊技</span><div><b>タップ＝B / ↑上B / ↔横B / ↓下B</b><small>特殊ボタンをスワイプ。設定から従来の個別ボタンにも変更できます</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key key-defense">カウンター</span><div><b>防御 ／ 回避</b><small>そのまま押すとカウンター、移動しながら押すと回避</small></div></div>
         </div>
       </div>
@@ -252,7 +252,7 @@
       <button id="btn-v">↑ 上技<small>上必殺技</small></button>
       <button id="btn-c">カウンター<br>／回避</button>
       <button id="btn-a">攻撃<small>長押しで溜め → 離す</small></button>
-      <button id="btn-s">特殊<small>キャラ固有</small></button>
+      <button id="btn-s">特殊<small>タップ / スワイプ</small></button>
       <button id="btn-j">跳ぶ<small>JUMP</small></button>
       <button id="btn-g">↓ 下技<small>＝特殊</small></button>
     </div>
@@ -263,12 +263,12 @@
 
 <dialog id="settings-dialog"><h2>AUDIO & CONTROLS</h2>
 <label class="setting-row">操作画面<select id="pref-controls"><option value="auto">自動判定</option><option value="keyboard">PC：キーボード</option><option value="touch">スマホ：タッチ</option></select></label>
-<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
+<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="swipe">スライド操作（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>\n<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
 <label class="setting-row">バトルBGM<input id="pref-music" type="checkbox"></label>
 <label class="setting-row">光刺激を抑える<input id="pref-lowFlash" type="checkbox"></label>
 <label class="setting-row">画面の揺れ<input id="pref-shake" type="checkbox"></label>
 <label class="setting-row">左右の操作を入れ替え<input id="pref-left" type="checkbox"></label>
-<p>移動エリアは触れた場所が中心になります。上技ボタンで「上＋特殊」を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
+<p>スライド操作：特殊ボタンをタップ＝B、上へスライド＝上B、左右＝横B、下＝下B。特殊ボタンを押し続けると、溜め技にも対応します。従来の個別ボタン式には設定から戻せます。</p>\n<p>移動エリアは触れた場所が中心になります。上技ボタンで「上＋特殊」を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
 <button id="settings-close">閉じる</button></dialog>
 
 <dialog id="bracket-dialog" aria-label="トーナメント表">
