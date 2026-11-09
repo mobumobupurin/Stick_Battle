@@ -5477,6 +5477,7 @@ function finishSpecialGesture(e,cancelled=false){
  const gesture=specialGesture;
  if(!gesture||e&&e.pointerId!==gesture.id)return;
  clearTimeout(gesture.timer);
+ if(cancelled)cancelControl(gesture.fired||'s');
  if(!cancelled&&!gesture.fired){
   const dx=(e?.clientX??gesture.x)-gesture.x;
   const key=specialGestureKey(dx,(e?.clientY??gesture.y)-gesture.y)||'s';
