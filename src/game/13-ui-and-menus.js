@@ -752,8 +752,13 @@ function fitArena(){
  const shell=document.getElementById('arena-shell'),wrap=document.getElementById('wrap');
  if(!shell.clientWidth||!shell.clientHeight)return;
  const cs=getComputedStyle(shell),roster=document.getElementById('battle-roster'),info=document.getElementById('match-info');
- const available=shell.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-roster.offsetHeight-info.offsetHeight-2*(parseFloat(cs.rowGap)||0);
- const cap=document.body.classList.contains('desktop-controls')?Infinity:900;
+ // On a landscape touch device the HUD and buttons are overlaid instead of
+ // reserving their height/width. Keep the actual world 16:9 (no stretched fighters).
+ const landscapeTouch=!document.body.classList.contains('desktop-controls')&&
+  window.innerWidth>window.innerHeight&&window.innerHeight<=560;
+ const available=landscapeTouch?Math.max(80,shell.clientHeight-8):
+  shell.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-roster.offsetHeight-info.offsetHeight-2*(parseFloat(cs.rowGap)||0);
+ const cap=landscapeTouch?Infinity:document.body.classList.contains('desktop-controls')?Infinity:900;
  const w=Math.max(96,Math.min(cap,shell.clientWidth,Math.max(54,available)*16/9));
  if(Math.abs(parseFloat(wrap.style.width||'0')-w)>.5)wrap.style.width=w+'px';
  if(document.body.classList.contains('desktop-controls')){roster.style.width=w+'px';info.style.width=w+'px';}else{roster.style.width='';info.style.width='';}
