@@ -29,7 +29,7 @@ function finishSpecialGesture(e,cancelled=false){
   const key=specialGestureKey((e?.clientX??gesture.x)-gesture.x,(e?.clientY??gesture.y)-gesture.y)||'s';
   specialGestureTrigger(key);
  }
- if(gesture.fired)touch[gesture.fired]=false;
+ if(gesture.fired){touch[gesture.fired]=false;if(!cancelled&&!gesture.ack)press[gesture.fired]=true;}
  specialGesture=null;
  const b=document.getElementById('btn-s');b.classList.remove('on');
  safelyRelease(b,gesture.id);
@@ -39,7 +39,7 @@ function bindSpecialSwipe(){
  b.addEventListener('pointerdown',e=>{
   if(!swipeSpecialEnabled()||scene!=='battle'||specialGesture)return;
   e.preventDefault();inputUnfocused=false;safelyCapture(b,e.pointerId);
-  const g={id:e.pointerId,x:e.clientX,y:e.clientY,fired:'',timer:null};specialGesture=g;b.classList.add('on');
+  const g={id:e.pointerId,x:e.clientX,y:e.clientY,fired:'',ack:false,timer:null};specialGesture=g;b.classList.add('on');
   // Holding still must work for characters with a chargeable neutral special.
   g.timer=setTimeout(()=>{if(specialGesture!==g||g.fired)return;g.fired='s';touch.s=true;},SPECIAL_HOLD_DELAY);
  });
@@ -191,6 +191,7 @@ function readHuman() {
   if (x && !raw.x) hin.xc++;
   if (down && !raw.d) hin.dc++;
 
+  if(specialGesture?.fired)specialGesture.ack=true;
   hin.a = a; hin.s = s;
   raw.j = j; raw.a = a; raw.s = s; raw.c = c; raw.x = x; raw.d = down;
   for (const key in press) press[key]=false;
