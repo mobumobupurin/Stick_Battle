@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="STICK BATTLE">
+<meta name="sbo-release" content="mobile-v2-20261109">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -39,7 +40,7 @@
   <button class="big mode-card" id="go-more" data-ghost="03"><span class="mode-no">03 / CHALLENGES</span><span class="mode-symbol" aria-hidden="true">Ⅲ</span><span class="mode-card-content"><span class="mode-card-kicker">EXTRA MODES</span><b>ほかの遊び</b><span class="mode-card-desc">組み手・トーナメント・トレーニング。戦い方は無限大。</span><span class="mode-card-foot">モードを選ぶ <span aria-hidden="true">↗</span></span></span></button>
   <button class="big mode-card mode-card-guide" id="go-howto" data-ghost="04"><span class="mode-no">04 / BEGINNER GUIDE</span><span class="mode-symbol" aria-hidden="true">?</span><span class="mode-card-content"><span class="mode-card-kicker">HOW TO PLAY</span><b>ルール・操作方法</b><span class="mode-card-desc">初めてでも大丈夫。技の出し方から勝ち方まで、ここで確認。</span></span><span class="mode-guide-arrow" aria-hidden="true">↗</span></button>
  </div>
- <button class="raid-entry" id="go-raid"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。 <i aria-hidden="true">↗</i></small></button>
+ <button class="raid-entry" id="go-raid" hidden aria-hidden="true" tabindex="-1" style="display:none"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。 <i aria-hidden="true">↗</i></small></button>
  <p class="mode-rework-footer">自分だけのスタイルを、ここから。</p>
 </div>
 
@@ -268,7 +269,8 @@
 
 <dialog id="settings-dialog"><h2>AUDIO & CONTROLS</h2>
 <label class="setting-row">操作画面<select id="pref-controls"><option value="auto">自動判定</option><option value="keyboard">PC：キーボード</option><option value="touch">スマホ：タッチ</option></select></label>
-<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="swipe">スライド操作（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>\n<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
+<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="swipe">スライド操作（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>
+<label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
 <label class="setting-row">バトルBGM<input id="pref-music" type="checkbox"></label>
 <label class="setting-row">光刺激を抑える<input id="pref-lowFlash" type="checkbox"></label>
 <label class="setting-row">画面の揺れ<input id="pref-shake" type="checkbox"></label>
