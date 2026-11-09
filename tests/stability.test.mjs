@@ -87,7 +87,7 @@ test('keyboard, touch and gamepad edge inputs clear on blur/cancellation',()=>{
  g.dispatch('keydown',{keyCode:68});g.dispatch('keydown',{keyCode:74});g.run('readHuman();');
  assert.equal(g.run('hin.r&&hin.a&&hin.ac===1'),true);
  g.dispatch('blur');g.run('readHuman();');assert.equal(g.run('hin.r||hin.a||heldKeys.size>0'),false);
- g.dispatch('focus');g.get('btn-s').dispatch('pointerdown',{pointerId:7});g.run('readHuman();byId(myId).sph=10;');
+ g.dispatch('focus');g.run("prefs.specialInput='classic'");g.get('btn-s').dispatch('pointerdown',{pointerId:7});g.run('readHuman();byId(myId).sph=10;');
  assert.equal(g.run('hin.s'),true);
  g.dispatch('pointercancel',{pointerId:7});g.run('readHuman();');assert.equal(g.run('hin.s'),false);assert.equal(g.run('byId(myId).sph'),0);
  g.ctx.navigator.getGamepads=()=>[{connected:true,index:0,axes:[1,0],buttons:Array.from({length:16},(_,i)=>({pressed:i===1}))}];
