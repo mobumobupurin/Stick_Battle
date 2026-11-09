@@ -760,6 +760,28 @@ function fitArena(){
 }
 const arenaObserver=new ResizeObserver(fitArena);arenaObserver.observe(document.getElementById('arena-shell'));arenaObserver.observe(document.getElementById('battle-roster'));
 window.addEventListener('resize',fitArena);
+// Safari's address/tab bars can change the visual viewport without a traditional resize.
+// Update the layout at most once per animation frame; no forced orientation or fullscreen.
+let safariLayoutScheduled=false;
+function refreshSafariLayout(){
+ if(safariLayoutScheduled)return;
+ safariLayoutScheduled=true;
+ requestAnimationFrame(()=>{
+  safariLayoutScheduled=false;
+  const vv=window.visualViewport;
+  const visibleHeight=vv&&Number.isFinite(vv.height)?vv.height:window.innerHeight;
+  if(Number.isFinite(visibleHeight)&&visibleHeight>0){
+   document.documentElement.style.setProperty('--sbo-visible-height',visibleHeight+'px');
+  }
+  fitArena();
+ });
+}
+window.addEventListener('orientationchange',refreshSafariLayout);
+if(window.visualViewport){
+ window.visualViewport.addEventListener('resize',refreshSafariLayout);
+ window.visualViewport.addEventListener('scroll',refreshSafariLayout);
+}
+refreshSafariLayout();
 function paintImpactWorld(){if(fzType==='timestopcin'){chronoWorld();return;}if(fzType==='dragon'){premiumDragonImpact();return;}
  if(!fz)return;const a=byId(fz.att),c=byId(fz.cnt),el=freezeMax-freezeT;
  const pal=fzType==='animeform'?animeFormPalette(fz.cid,fz.form):null;
