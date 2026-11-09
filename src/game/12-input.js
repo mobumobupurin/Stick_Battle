@@ -9,6 +9,7 @@ let stickId=null,scx=0,scy=0,stickUp=false,inputUnfocused=false;
 const SPECIAL_SWIPE_THRESHOLD=19;
 const SPECIAL_HOLD_DELAY=145;
 let specialGesture=null;
+let swipeSideDirection=0;
 function swipeSpecialEnabled(){return typeof prefs!=='undefined'&&prefs.specialInput==='swipe';}
 function specialGestureKey(dx,dy){
  if(Math.hypot(dx,dy)<SPECIAL_SWIPE_THRESHOLD)return '';
@@ -26,7 +27,9 @@ function finishSpecialGesture(e,cancelled=false){
  if(!gesture||e&&e.pointerId!==gesture.id)return;
  clearTimeout(gesture.timer);
  if(!cancelled&&!gesture.fired){
-  const key=specialGestureKey((e?.clientX??gesture.x)-gesture.x,(e?.clientY??gesture.y)-gesture.y)||'s';
+  const dx=(e?.clientX??gesture.x)-gesture.x;
+  const key=specialGestureKey(dx,(e?.clientY??gesture.y)-gesture.y)||'s';
+  if(key==='h')swipeSideDirection=Math.sign(dx)||1;
   specialGestureTrigger(key);
  }
  if(gesture.fired){touch[gesture.fired]=false;if(!cancelled&&!gesture.ack)press[gesture.fired]=true;}
@@ -46,7 +49,7 @@ function bindSpecialSwipe(){
  b.addEventListener('pointermove',e=>{
   const g=specialGesture;if(!g||g.id!==e.pointerId||g.fired)return;
   const key=specialGestureKey(e.clientX-g.x,e.clientY-g.y);
-  if(!key)return;clearTimeout(g.timer);g.fired=key;specialGestureTrigger(key,true);
+  if(!key)return;clearTimeout(g.timer);g.fired=key;if(key==='h')swipeSideDirection=Math.sign(e.clientX-g.x)||1;specialGestureTrigger(key,true);
  });
  for(const name of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(name,e=>{
   if(!specialGesture||specialGesture.id!==e.pointerId)return;
@@ -78,7 +81,7 @@ function releaseButton(key){
  const id=buttonPointers.get(key),b=document.getElementById(controlButtons[key]);buttonPointers.delete(key);touch[key]=false;b.classList.remove('on');if(id!==undefined)safelyRelease(b,id);
 }
 function resetTouch(){
- finishSpecialGesture(null,true);endStick();for(const key of Object.keys(controlButtons))releaseButton(key);for(const k in press)press[k]=false;heldKeys.clear();neutralHuman(true);
+ finishSpecialGesture(null,true);endStick();swipeSideDirection=0;for(const key of Object.keys(controlButtons))releaseButton(key);for(const k in press)press[k]=false;heldKeys.clear();neutralHuman(true);
 }
 stickZone.addEventListener('pointerdown',e=>{
  if(stickId!==null||scene!=='battle')return;e.preventDefault();inputUnfocused=false;stickId=e.pointerId;safelyCapture(stickZone,e.pointerId);
@@ -181,7 +184,7 @@ function readHuman() {
   const down = st.y > 0.55 || kd(83) || kd(DOWN_ARROW) || gpDown;
   hin.d = down;
   hin.gd = touch.g || press.g;
-  hin.neutralSpecial=!!(touch.s||press.s);hin.sideSpecial=(touch.h||press.h)?(byId(myId)?.f||1):0;
+  hin.neutralSpecial=!!(touch.s||press.s);hin.sideSpecial=(touch.h||press.h)?(swipeSideDirection||(byId(myId)?.f||1)):0;
 
   if (j && !raw.j) hin.jc++;
   if (a && !raw.a) hin.ac++;
@@ -194,6 +197,7 @@ function readHuman() {
   if(specialGesture?.fired)specialGesture.ack=true;
   hin.a = a; hin.s = s;
   raw.j = j; raw.a = a; raw.s = s; raw.c = c; raw.x = x; raw.d = down;
+  if(!touch.h&&!press.h)swipeSideDirection=0;
   for (const key in press) press[key]=false;
 }
 
