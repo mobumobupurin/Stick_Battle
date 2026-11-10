@@ -60,7 +60,7 @@ function hubNewTableGame(kind,players){
       const card=deck[i];if(hubRank(card)!==7)state.hands[i%players.length].push(card);
     }
     for(const hand of state.hands)hand.sort((a,b)=>a-b);
-    state.passes=players.map(()=>0);state.finish=[];state.deck=[];
+    state.passes=players.map(()=>0);state.finish=[];state.eliminated=[];state.deck=[];
   }else if(kind==='blackjack'){
     state.dealer=[deck.pop()];state.hands=players.map(()=>[deck.pop()]);
     state.dealer.push(deck.pop());
@@ -97,24 +97,39 @@ function hubTableMove(state,actor,choice){
   const next={...state,players:state.players.slice(),deck:(state.deck||[]).slice()};
   const seat=state.turn;
   if(state.kind==='shichinarabe'){
-    next.hands=state.hands.map(hand=>Array.isArray(hand)?hand.slice():[]);next.placed=state.placed.slice();
-    next.passes=state.passes.slice();next.finish=Array.isArray(state.finish)?state.finish.slice():[];
-    const choices=hubSevenChoices(next,seat);
-    if(choice==='pass'&&choices.length===0){
-      next.passes[seat]++;
+    next.hands=state.hands.map(hand=>Array.isArray(hand)?hand.slice():[]);
+    next.placed=state.placed.slice();next.passes=state.passes.slice();
+    next.finish=Array.isArray(state.finish)?state.finish.slice():[];
+    next.eliminated=Array.isArray(state.eliminated)?state.eliminated.slice():[];
+    const choices=hubSevenChoices(next,seat),used=Number(next.passes[seat]||0);
+    if(choice==='pass'){
+      if(used<3){
+        // Any player may strategically pass, but only three times in total.
+        next.passes[seat]=used+1;
+      }else if(choices.length===0){
+        // No fourth pass: the player is out, remaining cards are revealed to
+        // keep both wings of the table reachable by the survivors.
+        next.eliminated.push(seat);
+        for(const card of next.hands[seat])next.placed[card]=true;
+        next.hands[seat]=[];
+      }else return null;
     }else if(Number.isInteger(choice)&&choices.includes(choice)){
       next.hands[seat]=next.hands[seat].filter(card=>card!==choice);
       next.placed[choice]=true;
       if(next.hands[seat].length===0)next.finish.push(seat);
     }else return null;
-    if(next.finish.length>=next.players.length-1){
-      for(let i=0;i<next.players.length;i++)if(!next.finish.includes(i))next.finish.push(i);
-      next.status='done';next.turn=-1;next.winner=next.finish[0];
+    const alive=next.hands.map((hand,i)=>hand.length&&!next.eliminated.includes(i)?i:-1)
+      .filter(i=>i>=0);
+    if(alive.length<=1){
+      if(alive.length===1&&!next.finish.includes(alive[0]))next.finish.push(alive[0]);
+      // Earlier eliminated players finish lower in the final ranking.
+      next.finish.push(...next.eliminated.slice().reverse());
+      next.status='done';next.turn=-1;next.winner=next.finish[0]??-1;
     }else{
       let candidate=seat;
       for(let i=0;i<next.players.length;i++){
         candidate=(candidate+1)%next.players.length;
-        if(next.hands[candidate].length>0){next.turn=candidate;break;}
+        if(alive.includes(candidate)){next.turn=candidate;break;}
       }
     }
   }else if(state.kind==='blackjack'){
