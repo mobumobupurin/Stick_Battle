@@ -239,16 +239,16 @@ input,textarea,select{touch-action:manipulation}.mu{width:100%;border-collapse:c
 @media(max-width:720px){.mode-grid #go-cpu{grid-row:auto}.extra-choice{grid-template-columns:1fr}.extra-choice .big{min-height:135px}.tour-cols{min-width:390px;gap:6px}.tour-col{min-width:115px}.tour-board{padding:11px}}
 
 
-/* Compact four-button touch layout inspired by directional swipe fighters. */
-body.swipe-special-input #acts{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(62px,1fr));grid-template-areas:'c s' 'j a';max-width:270px;margin-left:auto;gap:12px}
-body.swipe-special-input #acts #btn-v,body.swipe-special-input #acts #btn-h,body.swipe-special-input #acts #btn-g{display:none!important}
-body.swipe-special-input #btn-s{font-size:17px!important;background:#7654b2!important;overflow:visible}
-body.swipe-special-input #btn-s:before{content:'↑    ↔    ↓';display:block;position:absolute;top:4px;left:0;right:0;color:#e8d9ff;font-size:11px;letter-spacing:2px;pointer-events:none}
-body.swipe-special-input #btn-s small{font-size:8px!important;line-height:1.15}
-body.swipe-special-input #btn-a{font-size:19px!important}
-body.swipe-special-input #acts button{min-height:62px;touch-action:none}
-@media(orientation:landscape) and (max-height:560px){body.swipe-special-input #acts{position:absolute;right:0;bottom:16px;width:156px;max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(61px,1fr));grid-template-areas:'c s' 'j a';gap:7px}body.left-handed.swipe-special-input #acts{left:0;right:auto}}
-@media(max-width:360px){body.swipe-special-input #acts{gap:6px;grid-template-rows:repeat(2,minmax(58px,1fr))}}
+/* Four large touch buttons: use the left movement joystick together with B. */
+body.direction-special-input #acts{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(62px,1fr));grid-template-areas:'c s' 'j a';max-width:270px;margin-left:auto;gap:12px}
+body.direction-special-input #acts #btn-v,body.direction-special-input #acts #btn-h,body.direction-special-input #acts #btn-g{display:none!important}
+body.direction-special-input #btn-s{font-size:17px!important;background:#7654b2!important;overflow:visible}
+body.direction-special-input #btn-s:before{content:'方向 ＋ B';display:block;position:absolute;top:4px;left:0;right:0;color:#e8d9ff;font-size:11px;letter-spacing:2px;pointer-events:none}
+body.direction-special-input #btn-s small{font-size:8px!important;line-height:1.15}
+body.direction-special-input #btn-a{font-size:19px!important}
+body.direction-special-input #acts button{min-height:62px;touch-action:none}
+@media(orientation:landscape) and (max-height:560px){body.direction-special-input #acts{position:absolute;right:0;bottom:16px;width:156px;max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(61px,1fr));grid-template-areas:'c s' 'j a';gap:7px}body.left-handed.direction-special-input #acts{left:0;right:auto}}
+@media(max-width:360px){body.direction-special-input #acts{gap:6px;grid-template-rows:repeat(2,minmax(58px,1fr))}}
 
 /* Landscape iPhone Safari: use the visible viewport instead of guessing browser chrome height.
    The fight remains in the center; controls live in safe-area-aware side rails. */
@@ -271,8 +271,8 @@ body.swipe-special-input #acts button{min-height:62px;touch-action:none}
  body.left-handed:not(.desktop-controls) #stick-zone{left:auto;right:env(safe-area-inset-right);}
  body.left-handed:not(.desktop-controls) #acts{left:env(safe-area-inset-left);right:auto;}
  body.left-handed:not(.desktop-controls) #combat-hint{left:calc(var(--sbo-right-rail) + env(safe-area-inset-left));right:calc(var(--sbo-left-rail) + env(safe-area-inset-right));}
- body.swipe-special-input:not(.desktop-controls) #acts{width:var(--sbo-right-rail);grid-template-rows:repeat(2,minmax(48px,1fr));gap:8px;}
- body.swipe-special-input:not(.desktop-controls) #acts button{min-height:48px;}
+ body.direction-special-input:not(.desktop-controls) #acts{width:var(--sbo-right-rail);grid-template-rows:repeat(2,minmax(48px,1fr));gap:8px;}
+ body.direction-special-input:not(.desktop-controls) #acts button{min-height:48px;}
 }
 @media(orientation:landscape) and (max-height:350px){
  body:not(.desktop-controls) #game{--sbo-left-rail:100px;--sbo-right-rail:138px}
@@ -280,9 +280,14 @@ body.swipe-special-input #acts button{min-height:62px;touch-action:none}
  body:not(.desktop-controls) #bar{height:28px}
  body:not(.desktop-controls) #battle-roster .hud-card{height:34px}
  body:not(.desktop-controls) #battle-roster .hud-portrait{display:none}
- body.swipe-special-input:not(.desktop-controls) #acts{bottom:6px;gap:5px}
- body.swipe-special-input:not(.desktop-controls) #acts button{min-height:44px}
+ body.direction-special-input:not(.desktop-controls) #acts{bottom:6px;gap:5px}
+ body.direction-special-input:not(.desktop-controls) #acts button{min-height:44px}
 }
+
+/* Directional special control affordance. All move directions are selected on the left stick. */
+body.direction-special-input:not(.desktop-controls) #stick-zone::after{content:'移動 / 方向＋B';font-size:9px;letter-spacing:.1em;color:#a3c9d7}
+body.direction-special-input:not(.desktop-controls) #btn-s{border-color:#b0a1ef88!important;box-shadow:inset 0 2px #ffffff27,0 5px 0 #0006,0 0 22px #8c70ef26}
+body.direction-special-input:not(.desktop-controls) #btn-s:active{transform:scale(.95)}
 </style>
 
 <style>
@@ -1198,7 +1203,7 @@ input,select{font-family:inherit}
 }
 .hub-entry-join-icon{color:#f5c983;background:#f6c7771a;border-color:#d5a85c66}
 .hub-entry-action-text{display:flex;flex-direction:column;gap:10px;min-width:0}
-.hub-entry-action-text small,.hub-quick-zone small{font-size:10px;letter-spacing:.15em;font-weight:800;color:#8fe9cf}
+.hub-entry-action-text small{font-size:10px;letter-spacing:.15em;font-weight:800;color:#8fe9cf}
 .hub-entry-action-text strong{font-size:clamp(23px,2.5vw,32px);letter-spacing:-.04em}
 .hub-entry-action-text>span{font-size:13px;color:#b6c9da}
 .hub-entry-arrow{position:absolute;bottom:20px;right:24px;font-size:26px;color:#81eac7}
@@ -1216,26 +1221,6 @@ input,select{font-family:inherit}
   flex-shrink:0;border:0;border-radius:10px;background:#f0ca86;color:#192333;
   padding:0 20px;min-height:49px;font-size:14px;font-weight:900;cursor:pointer
 }
-.hub-quick-zone{
-  width:min(1000px,100%);border:1px solid #354d69;border-radius:16px;
-  background:#17273c;padding:18px 20px;display:flex;align-items:center;
-  justify-content:space-between;gap:18px
-}
-.hub-quick-zone>div{display:flex;flex-direction:column;gap:5px}
-.hub-quick-zone small{color:#9db8d8}
-.hub-quick-zone strong{font-size:17px}
-.hub-quick-zone div>span{font-size:12px;color:#afc0d4}
-#sc-online #online-quick{
-  width:auto;min-height:48px;min-width:235px;border-radius:10px;border:1px solid #678cb3;
-  color:#ecf8ff;font-size:13px;font-weight:850;background:#30557c;
-  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px
-}
-#sc-online #online-quick:disabled{opacity:.6}
-#sc-online #online-quick-status{min-height:0;width:min(1000px,100%);font-size:12px;color:#adceea;text-align:left}
-#sc-online[data-online-mode="hub"] .hub-quick-zone,
-#sc-online[data-online-mode="hub"] #online-quick-status,
-#sc-online[data-online-mode="tournament"] .hub-quick-zone,
-#sc-online[data-online-mode="tournament"] #online-quick-status{display:none!important}
 #sc-online.hub-entry-screen .nav{width:min(1000px,100%);margin-top:8px}
 
 /* HUB room: product-like dashboard with a real table beside the library. */
@@ -1400,8 +1385,6 @@ input,select{font-family:inherit}
   #sc-online .hub-entry-create,#sc-online .hub-entry-join{min-height:160px;padding:20px}
   .hub-entry-hero{padding-bottom:20px}
   .hub-entry-hero h2{font-size:clamp(48px,12vw,72px)}
-  .hub-quick-zone{align-items:flex-start;flex-direction:column}
-  #sc-online #online-quick{width:100%}
 }
 @media(max-width:390px){
   #sc-hub-room,#sc-online.hub-entry-screen{padding:13px 9px 25px}
@@ -1611,7 +1594,7 @@ input,select{font-family:inherit}
   <div class="hub-entry-hero">
     <span class="hub-entry-eyebrow" id="online-eyebrow">STICK BATTLE / ONLINE</span>
     <h2 id="online-page-title">オンライン対戦<span class="hub-entry-period">.</span></h2>
-    <p id="online-context">友達と専用ルームで対戦。知らない相手と遊びたいときはランダムマッチも選べます。</p>
+    <p id="online-context">部屋を作って友達を招待。6文字のルームコードでも参加できます。</p>
     <div class="hub-entry-highlights"><span><i aria-hidden="true">●</i> 招待URLで集合</span><span><i aria-hidden="true">●</i> 6文字のルームコード</span><span><i aria-hidden="true">●</i> スマホ・PC対応</span></div>
   </div>
   <div class="hub-entry-choices">
@@ -1630,12 +1613,7 @@ input,select{font-family:inherit}
       </div>
     </div>
   </div>
-  <div class="hub-quick-zone" id="online-quick-zone">
-    <div><small>QUICK PLAY / STICK BATTLE</small><strong>すぐに対戦相手を探す</strong><span>部屋を作らず、1対1のバトルにマッチング</span></div>
-    <button id="online-quick" type="button">ランダムマッチを開始 <span aria-hidden="true">↗</span></button>
-  </div>
-  <div id="online-quick-status" role="status" aria-live="polite"></div>
-  <div class="nav"><button class="back" id="online-back">← モード選択へ</button></div>
+    <div class="nav"><button class="back" id="online-back">← モード選択へ</button></div>
 </div>
 
 <div id="sc-chars" class="screen" style="z-index:8">
@@ -1660,7 +1638,7 @@ input,select{font-family:inherit}
    <button id="fighter-guide-close" type="button" class="fighter-guide-x" aria-label="技の説明を閉じる">×</button>
   </header>
   <div class="fighter-guide-scroll">
-   <p class="fighter-guide-intro">スマホは特殊ボタンを上下左右にスワイプ。従来操作は方向入力＋特殊ボタンで発動できます。</p>
+   <p class="fighter-guide-intro">スマホは左の移動スティック＋右のB（特殊）ボタン。上＋B＝上必殺技、左右＋B＝横必殺技、下＋B＝下必殺技。スティックを離してB＝通常の特殊技です。</p>
    <div id="fighter-guide-moves" class="fighter-guide-moves"></div>
    <section class="fighter-guide-traits" aria-label="キャラクターの特性"><h3>戦い方と特殊能力</h3><p id="fighter-guide-ability"></p></section>
   </div>
@@ -1792,7 +1770,7 @@ input,select{font-family:inherit}
           <div class="howto-control-item"><span class="howto-control-key">左スティック</span><div><b>移動</b><small>下に倒すと足場から降りる</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key">跳ぶ</span><div><b>ジャンプ</b><small>空中でもう1回ジャンプできる</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key key-attack">攻撃</span><div><b>通常攻撃 ／ 溜め攻撃</b><small>タップで攻撃、長押しして離すと強攻撃</small></div></div>
-          <div class="howto-control-item"><span class="howto-control-key key-special">特殊技</span><div><b>タップ＝B / ↑上B / ↔横B / ↓下B</b><small>特殊ボタンをスワイプ。設定から従来の個別ボタンにも変更できます</small></div></div>
+          <div class="howto-control-item"><span class="howto-control-key key-special">特殊技</span><div><b>スティック＋Bで方向別の必殺技</b><small>方向なし＝B、上＋B＝上技、左右＋B＝横技、下＋B＝下技。B長押しの溜め技にも対応</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key key-defense">カウンター</span><div><b>防御 ／ 回避</b><small>そのまま押すとカウンター、移動しながら押すと回避</small></div></div>
         </div>
       </div>
@@ -1849,7 +1827,7 @@ input,select{font-family:inherit}
       <button id="btn-v">↑ 上技<small>上必殺技</small></button>
       <button id="btn-c">カウンター<br>／回避</button>
       <button id="btn-a">攻撃<small>長押しで溜め → 離す</small></button>
-      <button id="btn-s">特殊<small>タップ / スワイプ</small></button>
+      <button id="btn-s">B 特殊<small>方向キー＋B</small></button>
       <button id="btn-j">跳ぶ<small>JUMP</small></button>
       <button id="btn-g">↓ 下技<small>＝特殊</small></button>
     </div>
@@ -1860,14 +1838,14 @@ input,select{font-family:inherit}
 
 <dialog id="settings-dialog"><h2>AUDIO & CONTROLS</h2>
 <label class="setting-row">操作画面<select id="pref-controls"><option value="auto">自動判定</option><option value="keyboard">PC：キーボード</option><option value="touch">スマホ：タッチ</option></select></label>
-<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="swipe">スライド操作（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>
+<label class="setting-row">スマホ特殊技<select id="pref-special-input"><option value="direction">方向キー＋B（おすすめ）</option><option value="classic">従来の個別ボタン</option></select></label>
 <label class="setting-row">全体音量<input id="pref-volume" type="range" min="0" max="1" step=".05"></label>
 <label class="setting-row">バトルBGM<input id="pref-music" type="checkbox"></label>
 <label class="setting-row">光刺激を抑える<input id="pref-lowFlash" type="checkbox"></label>
 <label class="setting-row">画面の揺れ<input id="pref-shake" type="checkbox"></label>
 <label class="setting-row">左右の操作を入れ替え<input id="pref-left" type="checkbox"></label>
 <p>iPhoneのSafariのアドレスバーが気になる場合は、共有メニュー → ホーム画面に追加 →「Webアプリとして開く」をオンにすると、ブラウザのツールバーがない表示で起動できます。ゲームプレイは横画面推奨です。</p>
-<p>スライド操作：特殊ボタンをタップ＝B、上へスライド＝上B、左右＝横B、下＝下B。特殊ボタンを押し続けると、溜め技にも対応します。従来の個別ボタン式には設定から戻せます。</p>\n<p>移動エリアは触れた場所が中心になります。上技ボタンで「上＋特殊」を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
+<p>スマホの基本操作：左スティックを倒しながら右のB（特殊）を押すと、上B・横B・下Bが使えます。スティックを倒さずBを押すと通常の特殊技。Bの長押しも可能です。設定から従来の個別ボタン式にも変更できます。</p>\n<p>移動エリアは触れた場所が中心になります。上＋Bで上必殺技を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
 <button id="settings-close">閉じる</button></dialog>
 
 <dialog id="bracket-dialog" aria-label="トーナメント表">
@@ -6594,57 +6572,21 @@ const press={j:false,a:false,s:false,c:false,x:false,v:false,g:false,h:false};
 const heldKeys=new Set(),st={x:0,y:0};
 const stickEl=document.getElementById('stick'),knob=document.getElementById('knob'),stickZone=document.getElementById('stick-zone');
 let stickId=null,scx=0,scy=0,stickUp=false,inputUnfocused=false;
-const SPECIAL_SWIPE_THRESHOLD=19;
-const SPECIAL_HOLD_DELAY=145;
-let specialGesture=null;
-let swipeSideDirection=0;
-function swipeSpecialEnabled(){return typeof prefs!=='undefined'&&prefs.specialInput==='swipe';}
-function specialGestureKey(dx,dy){
- if(Math.hypot(dx,dy)<SPECIAL_SWIPE_THRESHOLD)return '';
- if(Math.abs(dx)>Math.abs(dy)*1.12)return 'h';
- return dy<0?'v':'g';
+// Direction + B is the default touch scheme. Capture direction when B is pressed:
+// a very fast two-finger tap must keep the intended special until readHuman().
+let specialTouchDirection='',specialTapDirection='';
+function directionTouchEnabled(){return typeof prefs!=='undefined'&&prefs.specialInput==='direction';}
+function touchStickSpecialDirection(){
+  const x=st.x,y=st.y;
+  // The dominant stick axis wins; avoid accidental diagonals.
+  if(Math.abs(x)<.35&&Math.abs(y)<.55)return '';
+  if(Math.abs(y)>.55&&Math.abs(y)>=Math.abs(x))return y<0?'u':'d';
+  if(Math.abs(x)>.35)return x<0?'l':'r';
+  return '';
 }
-function specialGestureTrigger(key,held=false){
- if(!key)return;
- const b=document.getElementById('btn-s');
- if(held){touch[key]=true;b.classList.add('on');}
- else press[key]=true;
-}
-function finishSpecialGesture(e,cancelled=false){
- const gesture=specialGesture;
- if(!gesture||e&&e.pointerId!==gesture.id)return;
- clearTimeout(gesture.timer);
- if(cancelled)cancelControl(gesture.fired||'s');
- if(!cancelled&&!gesture.fired){
-  const dx=(e?.clientX??gesture.x)-gesture.x;
-  const key=specialGestureKey(dx,(e?.clientY??gesture.y)-gesture.y)||'s';
-  if(key==='h')swipeSideDirection=Math.sign(dx)||1;
-  specialGestureTrigger(key);
- }
- if(gesture.fired){touch[gesture.fired]=false;if(!cancelled&&!gesture.ack)press[gesture.fired]=true;}
- specialGesture=null;
- const b=document.getElementById('btn-s');b.classList.remove('on');
- safelyRelease(b,gesture.id);
-}
-function bindSpecialSwipe(){
- const b=document.getElementById('btn-s');
- b.addEventListener('pointerdown',e=>{
-  if(!swipeSpecialEnabled()||scene!=='battle'||specialGesture)return;
-  e.preventDefault();inputUnfocused=false;safelyCapture(b,e.pointerId);
-  const g={id:e.pointerId,x:e.clientX,y:e.clientY,fired:'',ack:false,timer:null};specialGesture=g;b.classList.add('on');
-  // Holding still must work for characters with a chargeable neutral special.
-  g.timer=setTimeout(()=>{if(specialGesture!==g||g.fired)return;g.fired='s';touch.s=true;},SPECIAL_HOLD_DELAY);
- });
- b.addEventListener('pointermove',e=>{
-  const g=specialGesture;if(!g||g.id!==e.pointerId||g.fired)return;
-  const key=specialGestureKey(e.clientX-g.x,e.clientY-g.y);
-  if(!key)return;clearTimeout(g.timer);g.fired=key;if(key==='h')swipeSideDirection=Math.sign(e.clientX-g.x)||1;specialGestureTrigger(key,true);
- });
- for(const name of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(name,e=>{
-  if(!specialGesture||specialGesture.id!==e.pointerId)return;
-  finishSpecialGesture(e,name!=='pointerup');
- });
- b.addEventListener('contextmenu',e=>e.preventDefault());
+function capturedTouchSpecialDirection(){
+  if(!directionTouchEnabled())return '';
+  return touch.s?specialTouchDirection:press.s?specialTapDirection:'';
 }
 const buttonPointers=new Map(),controlButtons={j:'btn-j',a:'btn-a',s:'btn-s',c:'btn-c',v:'btn-v',g:'btn-g',h:'btn-h'};
 function editingText(el=document.activeElement){return !!el&&(el.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));}
@@ -6667,10 +6609,14 @@ function endStick(e){
  knob.style.transform='';stickEl.style.transform='';safelyRelease(stickZone,old);
 }
 function releaseButton(key){
+ if(key==='s'){
+   if(press.s&&directionTouchEnabled())specialTapDirection=specialTouchDirection;
+   specialTouchDirection='';
+ }
  const id=buttonPointers.get(key),b=document.getElementById(controlButtons[key]);buttonPointers.delete(key);touch[key]=false;b.classList.remove('on');if(id!==undefined)safelyRelease(b,id);
 }
 function resetTouch(){
- finishSpecialGesture(null,true);endStick();swipeSideDirection=0;for(const key of Object.keys(controlButtons))releaseButton(key);for(const k in press)press[k]=false;heldKeys.clear();neutralHuman(true);
+ endStick();specialTouchDirection='';specialTapDirection='';for(const key of Object.keys(controlButtons))releaseButton(key);for(const k in press)press[k]=false;heldKeys.clear();neutralHuman(true);
 }
 stickZone.addEventListener('pointerdown',e=>{
  if(stickId!==null||scene!=='battle')return;e.preventDefault();inputUnfocused=false;stickId=e.pointerId;safelyCapture(stickZone,e.pointerId);
@@ -6679,16 +6625,16 @@ stickZone.addEventListener('pointerdown',e=>{
 stickZone.addEventListener('pointermove',e=>{if(e.pointerId!==stickId)return;if(e.pointerType==='mouse'&&e.buttons===0){endStick(e);return;}moveStick(e);});
 for(const ev of ['pointerup','pointercancel','lostpointercapture'])stickZone.addEventListener(ev,e=>{endStick(e);});
 function bindButton(id,key){const b=document.getElementById(id);b.setAttribute('aria-label',b.textContent.trim());
- b.addEventListener('pointerdown',e=>{if(key==='s'&&swipeSpecialEnabled()||buttonPointers.has(key)||scene!=='battle')return;e.preventDefault();inputUnfocused=false;buttonPointers.set(key,e.pointerId);touch[key]=true;press[key]=true;b.classList.add('on');safelyCapture(b,e.pointerId);});
+ b.addEventListener('pointerdown',e=>{if(buttonPointers.has(key)||scene!=='battle')return;e.preventDefault();inputUnfocused=false;buttonPointers.set(key,e.pointerId);touch[key]=true;press[key]=true;
+   if(key==='s'){specialTouchDirection=directionTouchEnabled()?touchStickSpecialDirection():'';specialTapDirection=specialTouchDirection;}
+   b.classList.add('on');safelyCapture(b,e.pointerId);});
  const off=e=>{if(buttonPointers.get(key)===e.pointerId){if(e.type!=='pointerup')cancelControl(key);releaseButton(key);}};
  for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,off);
  b.addEventListener('contextmenu',e=>e.preventDefault());
 }
 for(const [key,id]of Object.entries(controlButtons))bindButton(id,key);
-bindSpecialSwipe();
 function endPointerGlobally(e){
  if(e.pointerId===stickId)endStick(e);
- if(specialGesture?.id===e.pointerId)finishSpecialGesture(e,e.type!=='pointerup');
  for(const [key,id]of [...buttonPointers])if(id===e.pointerId){if(e.type==='pointercancel')cancelControl(key);releaseButton(key);}
 }
 for(const ev of ['pointerup','pointercancel'])window.addEventListener(ev,endPointerGlobally,true);
@@ -6758,22 +6704,37 @@ function readHuman() {
   const gpUp    = gy < -0.55 || gpButton(gp, 12);
   const gpDown  = gy >  0.55 || gpButton(gp, 13);
 
-  const j = touch.j || press.j || stickUp || kd(32) || kd(87) || kd(UP_ARROW) || gpJump;
+  const touchB=touch.s||press.s;
+  const directionMode=directionTouchEnabled();
+  const capturedDir=capturedTouchSpecialDirection();
+  // Only the special press edge overrides directions; holding B does not lock movement.
+  const specialEdge=directionMode&&touchB&&!raw.s;
+  const touchUp=specialEdge&&capturedDir==='u',touchDown=specialEdge&&capturedDir==='d';
+  const touchLeft=specialEdge&&capturedDir==='l',touchRight=specialEdge&&capturedDir==='r';
+  const upBHeld=directionMode&&touchB&&capturedDir==='u';
+  const downBHeld=directionMode&&touchB&&capturedDir==='d';
+  // Tilt up + B is an up-special, NOT an unintended jump.
+  const j = touch.j || press.j || (stickUp&&!upBHeld) || kd(32) || kd(87) || kd(UP_ARROW) || gpJump;
   const a = touch.a || press.a || kd(74) || kd(90) || gpAttack;
-  const s = touch.h || press.h || touch.g || press.g || touch.v || press.v || touch.s || press.s || kd(75) || kd(88) || gpSpecial;
+  const s = touch.h || press.h || touch.g || press.g || touch.v || press.v || touchB || kd(75) || kd(88) || gpSpecial;
   const c = touch.c || press.c || kd(76) || kd(67) || gpCounter;
-  // PCではEだけ。ProコンではL/ZL。
-  const x = false; // 捨てる操作は廃止（吹っ飛ばされた時だけ武器を落とす）
+  const x = false;
 
-  hin.l = st.x < -0.35 || kd(65) || kd(LEFT_ARROW) || gpLeft;
-  hin.r = st.x > 0.35 || kd(68) || kd(RIGHT_ARROW) || gpRight;
-  hin.u = touch.v || press.v || st.y < -0.55 || kd(87) || kd(UP_ARROW) || gpUp;
+  // Preserve keyboard/gamepad behavior. On the B edge the captured stick vector
+  // takes precedence even if the user lifted the other thumb before this frame.
+  const normalLeft=st.x < -0.35 || kd(65) || kd(LEFT_ARROW) || gpLeft;
+  const normalRight=st.x > 0.35 || kd(68) || kd(RIGHT_ARROW) || gpRight;
+  hin.l=touchLeft?true:touchRight?false:normalLeft;
+  hin.r=touchRight?true:touchLeft?false:normalRight;
+  hin.u=touchUp || touch.v || press.v || st.y < -0.55 || kd(87) || kd(UP_ARROW) || gpUp;
 
-  // 足場降り：スマホのスティック↓、PCのS/↓、Proコンのスティック↓/十字↓。
-  const down = st.y > 0.55 || kd(83) || kd(DOWN_ARROW) || gpDown;
-  hin.d = down;
-  hin.gd = touch.g || press.g;
-  hin.neutralSpecial=!!(touch.s||press.s);hin.sideSpecial=(touch.h||press.h)?(swipeSideDirection||(byId(myId)?.f||1)):0;
+  // A down-special must not simultaneously trigger a platform drop.
+  const down=st.y > 0.55 || kd(83) || kd(DOWN_ARROW) || gpDown;
+  const downForDrop=down&&!downBHeld;
+  hin.d=touchDown||down;
+  hin.gd=touchDown||touch.g||press.g;
+  hin.neutralSpecial=touchB?(!directionMode||capturedDir===''):false;
+  hin.sideSpecial=touchLeft?-1:touchRight?1:(touch.h||press.h)?(byId(myId)?.f||1):0;
 
   if (j && !raw.j) hin.jc++;
   if (a && !raw.a) hin.ac++;
@@ -6781,13 +6742,12 @@ function readHuman() {
   if (s && !raw.s) hin.sc++;
   if (c && !raw.c) hin.cc++;
   if (x && !raw.x) hin.xc++;
-  if (down && !raw.d) hin.dc++;
+  if (downForDrop && !raw.d) hin.dc++;
 
-  if(specialGesture?.fired)specialGesture.ack=true;
   hin.a = a; hin.s = s;
-  raw.j = j; raw.a = a; raw.s = s; raw.c = c; raw.x = x; raw.d = down;
-  if(!touch.h&&!press.h)swipeSideDirection=0;
+  raw.j = j; raw.a = a; raw.s = s; raw.c = c; raw.x = x; raw.d = downForDrop;
   for (const key in press) press[key]=false;
+  specialTapDirection='';
 }
 
 // ========================================================
@@ -7068,8 +7028,10 @@ function buildMenus() {
   };
 }
 // Presentation and accessibility settings: no physics or combat parameters are modified.
-const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'swipe',lowFlash:false};
+const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'direction',lowFlash:false};
 try { const saved=JSON.parse(localStorage.getItem('sbo.preferences')||'{}'); for(const k of Object.keys(prefs))if(typeof saved[k]===typeof prefs[k])prefs[k]=saved[k];prefs.volume=Math.max(0,Math.min(1,prefs.volume)); } catch(_) {}
+// Older installs saved 'swipe'; migrate them to directional B on upgrade.
+if(prefs.specialInput!=='classic')prefs.specialInput='direction';
 
 // ========================================================
 // 悟空専用 MP3
@@ -7341,14 +7303,14 @@ function updateControlUI(){
  {const h=document.getElementById('combat-hint'),v=netIssue||text;if(h.textContent!==v)h.textContent=v;}
  animeControl(p);
 }
-function applyPrefs(){document.body.classList.toggle('left-handed',prefs.left);document.body.classList.toggle('swipe-special-input',prefs.specialInput==='swipe');audioBus();try{localStorage.setItem('sbo.preferences',JSON.stringify(prefs));}catch(_){}}
+function applyPrefs(){document.body.classList.toggle('left-handed',prefs.left);document.body.classList.toggle('direction-special-input',prefs.specialInput==='direction');audioBus();try{localStorage.setItem('sbo.preferences',JSON.stringify(prefs));}catch(_){}}
 const settingsDialog=document.getElementById('settings-dialog');let settingsPaused=false;
 document.getElementById('b-settings').onclick=()=>{resetTouch();settingsPaused=scene==='battle'&&!online;if(settingsPaused)scene='pause';settingsDialog.showModal();};
 settingsDialog.addEventListener('close',()=>{resetTouch();if(settingsPaused){scene='battle';simAcc=0;}settingsPaused=false;});
 document.getElementById('settings-close').onclick=()=>settingsDialog.close();
 for(const key of ['volume','music','shake','left','lowFlash']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
 const specialInputSelect=document.getElementById('pref-special-input');
-if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'swipe';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'swipe';applyPrefs();});}
+if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'direction';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'direction';applyPrefs();});}
 applyPrefs();
 document.addEventListener('click',e=>{if(e.target.closest('button')&&actx)tone(600,880,.035,.035,'sine');});
 
@@ -10412,10 +10374,7 @@ function hubSetEntryMode(mode){
   if(description)description.textContent=isHub?
     '6文字のルームコードで友達を招待。集まったらリバーシやコネクトフォーを遊ぼう。':
     mode==='tournament'?'友達を招いて、オンラインの勝ち抜きトーナメントを開催しよう。':
-    '友達と専用ルームで対戦。知らない相手と遊びたいときはランダムマッチも選べます。';
-  const quick=hubEl('online-quick-zone'),quickStatus=hubEl('online-quick-status');
-  if(quick)quick.hidden=mode!=='normal';
-  if(quickStatus)quickStatus.hidden=mode!=='normal';
+    '友達を招待して、専用ルームで対戦しよう。';
 }
 function hubMake(tag,className,textValue){
   const el=document.createElement(tag);
@@ -10593,133 +10552,28 @@ onGm=function(g){
   }
 };
 const hubOriginalRenderLobby=renderLobby;
-let quickStartPending=false;
 renderLobby=function(){
   if(gmCache?.mode==='hub'){
     if(scene!=='sc-hub-room')show('sc-hub-room');
-    hubRender();return;
+    hubRender();
+    return;
   }
   hubOriginalRenderLobby();
   const switchButton=hubEl('lb-to-hub');
   if(switchButton)switchButton.style.display=(gmCache?.mode==='normal'&&isHost)?'block':'none';
-  if(gmCache?.mode!=='match'||scene!=='sc-lobby')return;
-  const humans=lobbyMembers().filter(x=>!x.cpu);
-  const set=hubEl('lb-set'),start=hubEl('lb-start'),wait=hubEl('lb-wait');
-  set.textContent='ランダムマッチ：2人揃うと自動で通常のSTICK BATTLEを開始します。';
-  start.style.display='none';
-  wait.style.display='block';
-  wait.textContent=humans.length<2?'対戦相手を探しています…':'相手と通信を準備しています…';
-  if(isHost&&humans.length===2&&humans.every(m=>m.ready)&&!quickStartPending&&gmCache.ph==='lobby'){
-    quickStartPending=true;
-    setTimeout(async()=>{
-      try{
-        const snap=await roomRef.child('mem').once('value');
-        const players=Object.values(snap.val()||{}).filter(m=>m&&!m.cpu);
-        const state=(await roomRef.child('gm').once('value')).val();
-        if(players.length===2&&players.every(m=>m.ready)&&state?.ph==='lobby'&&state?.mode==='match'){
-          await hostStart();
-          await quickReleaseQueue();
-        }
-      }catch(e){console.warn('ランダムマッチ開始失敗',e);}
-      finally{quickStartPending=false;}
-    },700);
-  }
 };
 const hubOriginalJoinCommon=joinCommon;
 joinCommon=async function(){
   const joined=await hubOriginalJoinCommon();
   if(!joined||!roomRef)return joined;
-  const ref=roomRef;
-  const meta=(await ref.child('gm').once('value')).val();
+  const meta=(await roomRef.child('gm').once('value')).val();
   if(meta?.mode==='hub'){
     hubBindRoom();
     if(scene!=='sc-hub-room')show('sc-hub-room');
     hubRender();
-  }else if(meta?.mode==='match'){
-    await ref.child('mem/'+myId).update({ready:1});
   }
   return joined;
 };
-let quickQueueRef=null,quickRequest=0,quickBusy=false;
-function quickFeedback(message){
-  const status=hubEl('online-quick-status');
-  if(status)status.textContent=message;
-}
-async function quickReleaseQueue(){
-  if(!quickQueueRef)return;
-  try{
-    const q=quickQueueRef;
-    await q.transaction(v=>v?.owner===myId?null:undefined,undefined,false);
-    await q.onDisconnect().cancel();
-    quickQueueRef=null;
-  }catch(e){console.warn('マッチング待機枠の解除に失敗',e);}
-}
-async function quickHostRoom(code){
-  online=true;isHost=true;roomId=code;
-  roomRef=db.ref('rooms/'+code);
-  roomRef.onDisconnect().remove();
-  await roomRef.child('gm').set({protocol:NET_PROTOCOL,mode:'match',hostId:myId,ph:'lobby',round:0,map:'std',mapChoice:'std',
-    wpn:0,stocks:settings.stocks,cpuN:0,cpuLv:1,cpuPool:'all',teamMode:0,w:'',wt:0});
-  const joined=await joinCommon();
-  if(!joined)throw new Error('ランダムマッチの部屋に入れませんでした。');
-  netTimers.push(setInterval(hostTick,200));
-  netTimers.push(setInterval(hostSpawn,1000));
-}
-async function quickJoinReadyRoom(code,request){
-  for(let tries=0;tries<18;tries++){
-    if(request!==quickRequest)return false;
-    const s=await db.ref('rooms/'+code+'/gm').once('value');
-    if(s.val()?.mode==='match')return joinRoom(code,false);
-    await new Promise(done=>setTimeout(done,250));
-  }
-  throw new Error('対戦相手の部屋が準備できませんでした。もう一度検索してください。');
-}
-async function startQuickMatch(){
-  if(online||quickBusy)return;
-  const request=++quickRequest;
-  quickBusy=true;
-  const button=hubEl('online-quick');button.disabled=true;
-  quickFeedback('対戦相手を検索しています…');
-  try{
-    if(!await initFirebase())throw new Error(firebaseLastError||'Firebaseに接続できませんでした。');
-    const q=db.ref('rooms/_matchmaking/standard'),code=newRoomCode();
-    let result=null;
-    for(let attempt=0;attempt<12;attempt++){
-      const now=Date.now();
-      result=await q.transaction(v=>{
-        if(!v||v.protocol!==NET_PROTOCOL||now-Number(v.created||0)>90000){
-          return {owner:myId,room:code,created:now,protocol:NET_PROTOCOL,status:'waiting'};
-        }
-        if(v.status==='waiting'&&v.owner!==myId){
-          return {...v,status:'matched',guest:myId,matchedAt:now};
-        }
-        return;
-      },undefined,false);
-      if(result.committed)break;
-      await new Promise(done=>setTimeout(done,300+attempt*100));
-    }
-    if(!result?.committed)throw new Error('現在マッチングが混み合っています。しばらくして再試行してください。');
-    const ticket=result.snapshot.val();
-    if(request!==quickRequest)return;
-    if(ticket.owner===myId){
-      quickQueueRef=q;
-      await q.onDisconnect().remove();
-      await quickHostRoom(ticket.room);
-      quickFeedback('相手の参加を待っています…');
-    }else if(ticket.guest===myId){
-      quickFeedback('対戦相手が見つかりました。接続中…');
-      const joined=await quickJoinReadyRoom(ticket.room,request);
-      if(!joined)throw new Error('対戦相手に接続できませんでした。');
-    }else throw new Error('待機情報が更新されました。もう一度試してください。');
-  }catch(e){
-    console.error('ランダムマッチ失敗',e);
-    quickFeedback(e?.message||'マッチングに失敗しました。');
-    if(quickQueueRef)await quickReleaseQueue();
-  }finally{
-    quickBusy=false;
-    button.disabled=false;
-  }
-}
 const hubShowBase=show;
 show=function(id){
   if(id==='sc-online')hubSetEntryMode(requestedOnlineMode);
@@ -10730,7 +10584,6 @@ buildMenus=function(){
   hubOriginalBuildMenus();
   const hubButton=hubEl('go-hub');
   hubButton.onclick=()=>{requestedOnlineMode='hub';show('sc-online');};
-  hubEl('online-quick').onclick=startQuickMatch;
   hubEl('lb-to-hub').onclick=async()=>{
     if(isHost&&roomRef&&gmCache?.mode==='normal'&&gmCache.ph==='lobby'){
       await roomRef.child('gm').update({mode:'hub',ph:'lobby',cpuN:0,teamMode:0});
