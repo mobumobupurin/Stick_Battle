@@ -701,7 +701,7 @@ function updateFighterShowcase(){
  document.getElementById('char-info').style.setProperty('--fighter-color',col);
  document.querySelectorAll('#char-grid .ci').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cid===id)));
 }
-function fighterInfo(C){return `<div class="ability-line"><b>特殊技</b>　${C.sp}</div>`+['スピード','パワー','おもさ'].map((l,i)=>`<div class="stat"><b>${l}</b><div class="gauge"><i style="width:${C.st[i]*20}%"></i></div></div>`).join('')+`<details class="ability-detail"><summary>上必殺技・キャラ特性を見る</summary><p><b>上技</b>　${C.up}</p><p><b>特性</b>　${C.ab}</p></details>`;}
+function fighterInfo(C){return `<div class="ability-line"><b>主力の特殊技</b><span>${esc(C.sp)}</span></div>`+['スピード','パワー','おもさ'].map((l,i)=>`<div class="stat"><b>${l}</b><div class="gauge"><i style="width:${C.st[i]*20}%"></i></div></div>`).join('')+`<p class="fighter-info-guide-hint">すべての技・変身・特性は上の「技・キャラクター解説」から確認できます。</p>`;}
 let hudKey='';
 function setTxt(el,v){if(el&&el.textContent!==v)el.textContent=v;}
 function setVar(el,k,v){if(el&&el['_'+k]!==v){el['_'+k]=v;el.style.setProperty(k,v);}}
