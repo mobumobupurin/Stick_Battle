@@ -84,7 +84,7 @@ function hubRenderTable(state){
   for(let i=0;i<state.players.length;i++){
     const entry=hubMake('span','hub-table-player'+(turn===i?' is-turn':'')+(me===i?' is-you':''));
     entry.textContent=hubDisplayName(state.players[i]);
-    if(kind==='shichinarabe')entry.textContent+=' · '+(state.hands[i]?.length||0)+'枚';
+    if(kind==='shichinarabe')entry.textContent+=' · '+(state.hands[i]?.length||0)+'枚 / パス '+Math.min(3,state.passes?.[i]||0)+'/3'+(state.eliminated?.includes(i)?'（失格）':'');
     if(kind==='blackjack')entry.textContent+=' · '+hubBJTotal(state.hands[i])+'点';
     if(kind==='baccarat'&&state.bets?.[state.players[i]])entry.textContent+=' · 予想済';
     vs.appendChild(entry);
@@ -154,9 +154,11 @@ function hubRenderTable(state){
         b.appendChild(hubMakeCard(card));b.onclick=()=>hubSubmitMove(card);hand.appendChild(b);
       }
       board.appendChild(hand);
-      if(!choices.size)hubAddAction(actions,'出せるカードがないのでパス','pass',isMyTurn,'is-primary');
+      const used=Math.min(3,Number(state.passes?.[me]||0));
+      if(used<3)hubAddAction(actions,'パス（残り '+(3-used)+' 回）','pass',isMyTurn,choices.size?'':'is-primary');
+      else if(!choices.size&&state.status==='play')hubAddAction(actions,'パス上限：失格して次へ','pass',isMyTurn,'is-primary');
     }else board.appendChild(hubMake('div','hub-seven-hand-title','観戦中：他の人の手札は表示されません。'));
-    footer.textContent='4つの「7」から、同じマークの数字を上下に隣接する順で並べます。手札を先に使い切れば勝ち。';
+    footer.textContent='4つの「7」から数字をつなげます。パスは1人3回まで。3回使い切ってカードを出せない場合は失格です。';
   }
   if(state.status==='done'){
     const text=isHost?'ゲーム一覧の同じタイトルを選べば再戦できます。':'ホストが再戦するまでお待ちください。';
