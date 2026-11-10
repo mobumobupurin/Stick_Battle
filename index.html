@@ -1137,51 +1137,291 @@ input,select{font-family:inherit}
  #sc-chars .fighter-guide-open{transition:none}
 }
 </style>
-<style>/* ONLINE GAME HUB — scoped, responsive, accessible controls */
-#sc-hub-room{gap:16px;width:min(1120px,100%);max-width:1120px;align-items:stretch;padding-bottom:46px}
-.hub-head{display:flex;gap:18px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:14px 18px;background:linear-gradient(130deg,#182842,#101a2e);border:1px solid #374967;border-radius:18px}
-.hub-head h2{font-size:clamp(23px,4.8vw,42px);line-height:1.13;letter-spacing:-.03em;margin:4px 0}
-.hub-head p{font-size:13px;color:#bfd0e8}
-.hub-kicker{font-size:10px;letter-spacing:2px;font-weight:900;color:#a6edfc}
-.hub-room-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.hub-room-code{background:#070f20;border:1px solid #51688c;border-radius:12px;padding:8px 13px;text-align:center}
-.hub-room-code small{display:block;font-size:10px;color:#b7c8df}
-.hub-room-code b{font-size:23px;letter-spacing:.16em;color:#fff}
-.hub-invite{border-radius:12px;background:#35577c;color:#fff;font-weight:900;padding:12px}
-.hub-roster{color:#b7c9de;font-size:12px;margin-top:6px;overflow-wrap:anywhere}
-.hub-category{border:1px solid #34465e;background:rgba(17,28,47,.9);padding:15px;border-radius:17px}
-.hub-category h3{margin:0 0 10px;font-size:15px;color:#e4efff}
-.hub-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
-.hub-card{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;min-height:80px;padding:13px;border-radius:12px;border:1px solid #56708b;background:linear-gradient(145deg,#243b57,#1b2b42);color:#f7fbff;text-align:left;transition:transform .12s,border-color .12s}
-.hub-card:not(:disabled):hover{transform:translateY(-2px);border-color:#8deaff}
-.hub-card strong{font-size:15px}
-.hub-card small{font-size:11px;color:#b2c8e0}
-.hub-card:disabled{opacity:.58;cursor:not-allowed}
-.hub-card.is-current{border-color:#ffd77d;box-shadow:inset 0 0 0 1px #ffd77d}
-.hub-playarea{padding:16px;border-radius:18px;border:1px solid #465c78;background:linear-gradient(140deg,#121f34,#111b2c)}
-.hub-game-info{text-align:center;line-height:1.5;color:#f5f7ff;font-weight:750;padding:6px 0 13px}
-.hub-board{width:min(100%,480px);margin:0 auto;display:grid;gap:2px;border:6px solid #344a61;border-radius:10px;overflow:hidden;background:#33435c;touch-action:manipulation}
-.hub-cell{border:0;border-radius:0;min-width:0;aspect-ratio:1;display:flex;justify-content:center;align-items:center;padding:5%;position:relative;cursor:pointer}
-.hub-reversi .hub-cell{background:#268b68}
-.hub-reversi .hub-cell:nth-child(2n){background:#21916c}
-.hub-connect4{background:#173f96;border-color:#2758af}
-.hub-connect4 .hub-cell{background:#1859b0}
-.hub-cell:disabled{cursor:default}
-.hub-disc{width:89%;height:89%;display:block;border-radius:50%;box-shadow:inset -4px -4px 8px #0003,0 2px 5px #0005}
-.hub-disc.dark{background:radial-gradient(circle at 32% 28%,#4b5265,#111521 72%)}
-.hub-disc.light{background:radial-gradient(circle at 30% 25%,#fff,#cbd9f1 72%)}
-.hub-connect4 .hub-cell:not(.occupied):after{content:'';width:89%;height:89%;position:absolute;border-radius:50%;background:#081d46;box-shadow:inset 0 2px 7px #0009}
-.hub-connect4 .hub-disc{position:relative;z-index:1}
-.hub-legal-dot{width:21%;aspect-ratio:1;border-radius:50%;background:#bbf7d0aa}
-.hub-cell.legal:hover{outline:3px solid #fff8;outline-offset:-3px}
-.hub-cell:focus-visible,.hub-card:focus-visible{outline:3px solid #facc15;outline-offset:-3px}
-.hub-room-note{font-size:12px;color:#b9cce3;margin:0;line-height:1.6}
-#online-quick{background:linear-gradient(125deg,#2765a4,#1b446f);border:1px solid #7cb7ff}
-#online-quick-status{min-height:24px;margin:6px 0;color:#a4dffb;text-align:center;font-size:12px}
-@media(max-width:640px){#sc-hub-room{gap:10px;padding:10px 8px 28px}.hub-head,.hub-playarea{padding:12px}.hub-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.hub-card{min-height:70px}.hub-board{border-width:4px;gap:1px}.hub-room-actions{width:100%}.hub-room-code{flex:1}.hub-invite{flex:1}}
+<style>/* GAME HUB / PREMIUM LOBBY REDESIGN 2026 — scoped to the online entry and hub only. */
+#sc-hub-room,#sc-online.hub-entry-screen{
+  --hub-bg:#0c1422;--hub-surface:#141e2d;--hub-surface-2:#1b293a;
+  --hub-stroke:#2a3b50;--hub-soft:#9dacbf;--hub-text:#f5f7fd;
+  --hub-mint:#72e2c2;--hub-gold:#f4c986;
+  color:var(--hub-text);color-scheme:dark;
+  background:radial-gradient(ellipse at 15% -5%,#1d4b526b,transparent 48%),
+             radial-gradient(ellipse at 95% 90%,#35315c51,transparent 52%),#0b111c;
+  padding:32px max(18px,calc((100vw - 1232px)/2)) 44px;
+  gap:18px;align-items:center;justify-content:flex-start;
+  isolation:isolate;
+}
+#sc-hub-room::before,#sc-hub-room::after,
+#sc-online.hub-entry-screen::before,#sc-online.hub-entry-screen::after{display:none!important}
+#sc-hub-room *,#sc-online.hub-entry-screen *{box-sizing:border-box}
+#sc-hub-room button,#sc-online.hub-entry-screen button{font-family:inherit;touch-action:manipulation}
+#sc-hub-room button:focus-visible,#sc-online.hub-entry-screen button:focus-visible,
+#sc-online.hub-entry-screen input:focus-visible{outline:3px solid #b1ffe7;outline-offset:3px}
+#sc-hub-room button:disabled{cursor:default}
+#sc-hub-room [hidden],#sc-online.hub-entry-screen [hidden]{display:none!important}
+#sc-hub-room .nav,#sc-online.hub-entry-screen .nav{width:min(1200px,100%);margin:0;padding:0;background:transparent;border:none;justify-content:flex-start}
+#sc-hub-room .nav .back,#sc-online.hub-entry-screen .nav .back{
+  border:1px solid #3a4b60;background:#1b2737;color:#e4edfa;
+  border-radius:12px;padding:13px 18px;font-size:13px;font-weight:700;
+  box-shadow:none;min-height:46px;transition:background .18s
+}
+#sc-hub-room .nav .back:hover,#sc-online.hub-entry-screen .nav .back:hover{background:#293b50}
 
+/* The invite/create flow shares its transport with normal online play,
+   but hub mode never displays matchmaking. */
+#sc-online.hub-entry-screen{gap:22px;padding-top:clamp(36px,6vh,76px)}
+.hub-entry-hero{width:min(1000px,100%);text-align:left;padding:0 0 26px;border-bottom:1px solid #304056}
+.hub-entry-eyebrow,.hub-section-kicker,.hub-kicker,.hub-entry-mini{
+  font-size:11px;letter-spacing:.19em;font-weight:850;color:var(--hub-mint)
+}
+.hub-entry-hero h2{margin:15px 0 16px;font-size:clamp(48px,8vw,94px);letter-spacing:-.075em;font-weight:950;line-height:1.05;color:#f6f9ff}
+.hub-entry-hero h2>span:not(.hub-entry-period){color:var(--hub-mint)}
+.hub-entry-period{color:var(--hub-mint);padding-left:2px}
+.hub-entry-hero p{max-width:720px;color:#bac9d8;font-size:clamp(13px,1.7vw,17px);line-height:1.9}
+.hub-entry-highlights{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.hub-entry-highlights span{display:flex;gap:8px;align-items:center;padding:8px 12px;font-size:12px;font-weight:650;border:1px solid #304a55;border-radius:100px;color:#d5e8e9;background:#19303a80}
+.hub-entry-highlights i{font-size:8px;font-style:normal;color:#6deac3}
+.hub-entry-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:min(1000px,100%)}
+#sc-online .hub-entry-create,#sc-online .hub-entry-join{
+  border:1px solid #3c5266;border-radius:20px;min-height:210px;
+  background:linear-gradient(140deg,#1a2a3e,#131c2a);color:#f3f7fc;
+  display:flex;align-items:flex-start;gap:16px;text-align:left;
+  padding:25px;position:relative;box-shadow:0 14px 40px #01081435;
+}
+#sc-online .hub-entry-create{
+  cursor:pointer;transition:transform .17s,border-color .17s,box-shadow .17s;
+  background:radial-gradient(circle at 100% 0,#285e6a,#17273b 63%,#121d2a)
+}
+#sc-online .hub-entry-create:hover{transform:translateY(-3px);border-color:#8debd2;box-shadow:0 20px 46px #01081460}
+.hub-entry-action-icon{
+  display:grid;place-items:center;flex:0 0 56px;width:56px;height:56px;
+  background:#77e7c126;color:#96f8d4;border:1px solid #76e6c277;
+  border-radius:16px;font-size:30px;font-weight:600
+}
+.hub-entry-join-icon{color:#f5c983;background:#f6c7771a;border-color:#d5a85c66}
+.hub-entry-action-text{display:flex;flex-direction:column;gap:10px;min-width:0}
+.hub-entry-action-text small,.hub-quick-zone small{font-size:10px;letter-spacing:.15em;font-weight:800;color:#8fe9cf}
+.hub-entry-action-text strong{font-size:clamp(23px,2.5vw,32px);letter-spacing:-.04em}
+.hub-entry-action-text>span{font-size:13px;color:#b6c9da}
+.hub-entry-arrow{position:absolute;bottom:20px;right:24px;font-size:26px;color:#81eac7}
+.hub-entry-join-body{width:100%;min-width:0}
+.hub-entry-join-label{display:block;font-size:clamp(21px,2.5vw,29px);font-weight:900;line-height:1.2;margin:12px 0 6px}
+.hub-entry-join p{font-size:12px;color:#b8c7d8;margin:0 0 16px}
+#sc-online .room-code-row{display:flex;gap:8px;width:100%;max-width:none}
+#sc-online .room-code-row input{
+  min-width:0;flex:1;background:#0a1422;border:1px solid #43596b;border-radius:10px;
+  color:#fff;font-size:18px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;
+  padding:12px 15px;text-align:center;min-height:49px
+}
+#sc-online .room-code-row input::placeholder{color:#5b7188}
+#sc-online .room-code-row .joinbtn{
+  flex-shrink:0;border:0;border-radius:10px;background:#f0ca86;color:#192333;
+  padding:0 20px;min-height:49px;font-size:14px;font-weight:900;cursor:pointer
+}
+.hub-quick-zone{
+  width:min(1000px,100%);border:1px solid #354d69;border-radius:16px;
+  background:#17273c;padding:18px 20px;display:flex;align-items:center;
+  justify-content:space-between;gap:18px
+}
+.hub-quick-zone>div{display:flex;flex-direction:column;gap:5px}
+.hub-quick-zone small{color:#9db8d8}
+.hub-quick-zone strong{font-size:17px}
+.hub-quick-zone div>span{font-size:12px;color:#afc0d4}
+#sc-online #online-quick{
+  width:auto;min-height:48px;min-width:235px;border-radius:10px;border:1px solid #678cb3;
+  color:#ecf8ff;font-size:13px;font-weight:850;background:#30557c;
+  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px
+}
+#sc-online #online-quick:disabled{opacity:.6}
+#sc-online #online-quick-status{min-height:0;width:min(1000px,100%);font-size:12px;color:#adceea;text-align:left}
+#sc-online[data-online-mode="hub"] .hub-quick-zone,
+#sc-online[data-online-mode="hub"] #online-quick-status,
+#sc-online[data-online-mode="tournament"] .hub-quick-zone,
+#sc-online[data-online-mode="tournament"] #online-quick-status{display:none!important}
+#sc-online.hub-entry-screen .nav{width:min(1000px,100%);margin-top:8px}
+
+/* HUB room: product-like dashboard with a real table beside the library. */
+#sc-hub-room{gap:14px}
+.hub-head,.hub-lobby-strip,.hub-shell{width:min(1200px,100%)}
+.hub-head{
+  padding:23px 27px;border:1px solid #3a5263;border-radius:22px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  background:radial-gradient(circle at 85% 0,#245f625e,transparent 58%),linear-gradient(135deg,#192b3a,#141d2d);
+  box-shadow:0 16px 50px #030a1433
+}
+.hub-heading{min-width:0}
+.hub-kicker{display:flex;align-items:center;gap:8px;color:#8eead1}
+.hub-kicker-divider{color:#6f7d91}
+.hub-signal{width:8px;height:8px;background:#62e0ab;box-shadow:0 0 0 4px #3dddac23;border-radius:50%}
+.hub-head h2{font-size:clamp(35px,4.8vw,58px);font-weight:950;letter-spacing:-.068em;line-height:1.1;margin:13px 0 6px;color:#f5fbff}
+.hub-head h2>span{color:#8cf3d4}
+.hub-head h2>small{margin-left:22px;font-size:clamp(12px,1.5vw,17px);letter-spacing:-.01em;color:#aebdce;font-weight:600;vertical-align:middle}
+.hub-head p{margin:4px 0;font-size:13px;color:#b9c9d9}
+.hub-room-actions{display:flex;align-items:stretch;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.hub-room-code{padding:11px 18px;min-width:160px;border-radius:13px;background:#091420;border:1px solid #4b6973;text-align:center;box-shadow:inset 0 1px 10px #0003}
+.hub-room-code small{display:block;color:#91abba;font-size:10px;font-weight:800;letter-spacing:.14em}
+.hub-room-code b{display:block;color:#f2fffd;font-size:25px;letter-spacing:.14em;line-height:1.3;margin-top:4px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+#sc-hub-room .hub-invite{border:none;background:#7ce8c7;color:#0b2b2f;border-radius:13px;padding:14px 20px;font-size:13px;font-weight:900;min-height:65px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .16s}
+#sc-hub-room .hub-invite:hover{background:#a6f7da}
+#sc-hub-room .hub-invite>span{font-size:18px}
+.hub-lobby-strip{border:1px solid #2d3e51;background:#152231;border-radius:16px;padding:12px 17px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hub-lobby-status{display:flex;align-items:center;gap:9px;flex:0 0 auto;font-size:12px;font-weight:750;color:#d9e8f0}
+.hub-online-dot,.hub-room-live i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#62e8b5;box-shadow:0 0 0 4px #2de89d20}
+.hub-roster{display:flex;flex:1;gap:8px;flex-wrap:wrap;min-width:0}
+.hub-member{display:flex;gap:7px;align-items:center;padding:5px 9px 5px 5px;border:1px solid #405268;border-radius:100px;background:#1f3145;min-width:0}
+.hub-member.is-you{border-color:#5ec6ab;background:#1d3b43}
+.hub-member-avatar{display:grid;place-items:center;flex-shrink:0;width:26px;height:26px;font-size:12px;font-weight:900;color:#0e2932;background:#91e4d4;border-radius:50%}
+.hub-member-label{font-size:11px;font-weight:700;color:#eef8fb;max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hub-member-host{font-size:9px;color:#ffdc98;letter-spacing:.06em;font-weight:850}
+.hub-shell{display:grid;grid-template-columns:minmax(290px,390px) minmax(0,1fr);gap:18px;align-items:start}
+.hub-sidebar,.hub-playarea{background:linear-gradient(153deg,#192639,#111c2b 85%);border:1px solid #304358;border-radius:20px;box-shadow:0 15px 42px #050c1929}
+.hub-sidebar{padding:21px;min-width:0}
+.hub-sidebar-header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hub-sidebar-header h3{font-size:23px;letter-spacing:-.045em;color:#f5f8ff;font-weight:900;margin:6px 0 0}
+.hub-title-dot{color:var(--hub-mint)}
+.hub-sidebar-count{font-size:11px;color:#b0c6d7;background:#223446;border:1px solid #3d5269;padding:7px 9px;border-radius:100px;white-space:nowrap;font-weight:900}
+.hub-sidebar-tip{margin:12px 0 19px;font-size:11px;color:#9fb0c3;line-height:1.7}
+#hub-catalog{display:flex;flex-direction:column;gap:20px}
+.hub-category-heading{display:flex;justify-content:space-between;align-items:center;padding:0 0 10px;border-bottom:1px solid #304154;margin:0 0 10px}
+.hub-category-heading h4{font-size:12px;letter-spacing:.08em;font-weight:900;color:#cbd7e7;margin:0}
+.hub-category-count{font-size:10px;color:#8fa8ba;font-weight:800}
+.hub-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#sc-hub-room .hub-card{
+  border:1px solid #344960;border-radius:13px;min-height:106px;min-width:0;
+  background:linear-gradient(153deg,#26384c,#1b2b3d);
+  color:#eaf5fb;display:flex;flex-wrap:wrap;align-content:flex-start;align-items:center;
+  justify-content:flex-start;gap:6px 10px;text-align:left;padding:13px 12px;
+  transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;
+}
+.hub-card-icon{
+  width:35px;height:35px;flex:0 0 35px;border-radius:10px;
+  display:grid;place-items:center;font-size:22px;font-weight:850;color:#b7eedf;
+  background:linear-gradient(155deg,#376070,#283f54);box-shadow:inset 0 0 0 1px #7896a044
+}
+.hub-card[data-game="connect4"] .hub-card-icon{color:#fce16b;background:linear-gradient(135deg,#2957a3,#283d78)}
+.hub-card[data-game="stickbattle"] .hub-card-icon{color:#ffd3a1;background:linear-gradient(155deg,#73443f,#3b354f)}
+.hub-card[data-game="reversi"] .hub-card-icon{color:#cffbeb;background:linear-gradient(155deg,#16876b,#1b5550)}
+.hub-card-content{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
+.hub-card-name{font-size:12.5px;font-weight:900;line-height:1.35;overflow-wrap:anywhere}
+.hub-card-meta{font-size:10px;color:#a9bfd0}
+.hub-card-status{
+  font-size:9px;letter-spacing:.06em;color:#7fe7c8;flex:0 0 100%;
+  margin-top:2px;font-weight:850
+}
+#sc-hub-room .hub-card:not(:disabled){cursor:pointer}
+#sc-hub-room .hub-card:not(:disabled):hover{
+  transform:translateY(-2px);border-color:#90e9d1;background:#264358;box-shadow:0 8px 20px #030d1955
+}
+#sc-hub-room .hub-card.is-current{border-color:#7ee6c7;background:#22433f;box-shadow:inset 0 0 0 1px #61cdab77}
+#sc-hub-room .hub-card.is-current .hub-card-status{color:#f3d08b}
+#sc-hub-room .hub-card:disabled:not(.is-coming){opacity:1}
+#sc-hub-room .hub-card:disabled:not(.is-coming) .hub-card-status{color:#b0becb}
+#sc-hub-room .hub-card.is-coming{opacity:.45;filter:saturate(.55)}
+#sc-hub-room .hub-card.is-coming .hub-card-status{color:#aebdca}
+.hub-main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.hub-playarea{padding:25px;min-width:0}
+.hub-play-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-bottom:14px;border-bottom:1px solid #324256}
+.hub-game-meta{font-size:10px;color:#9ddccf;font-weight:900;letter-spacing:.14em}
+.hub-room-live{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:900;letter-spacing:.06em;color:#adc6ca}
+.hub-room-live i{width:6px;height:6px}
+.hub-game-title{font-weight:950;font-size:clamp(27px,4vw,40px);color:#fff;letter-spacing:-.05em;margin:21px 0 7px}
+.hub-game-info{font-size:12px;font-weight:600;color:#c5d4e1;line-height:1.65;min-height:22px}
+.hub-versus{display:flex;gap:9px;align-items:center;justify-content:space-between;margin:16px 0 20px;min-height:0}
+.hub-player{display:flex;gap:10px;align-items:center;flex:1;min-width:0;padding:12px;border:1px solid #34475c;border-radius:13px;background:#152131}
+.hub-player.is-turn{border-color:#75e6bb;background:#1d3c3b;box-shadow:0 0 0 1px #7ceaca26}
+.hub-player.is-winner{border-color:#ffcc71;background:#3c3525}
+.hub-player-disc{width:24px;height:24px;flex:0 0 24px;border-radius:50%;box-shadow:inset -3px -3px 6px #0003,0 2px 5px #0005}
+.hub-player-disc.dark,.hub-disc.dark{background:radial-gradient(circle at 30% 25%,#586178,#151921 73%)}
+.hub-player-disc.light,.hub-disc.light{background:radial-gradient(circle at 30% 25%,#fff,#ccd8ec 73%)}
+.hub-player-disc.red,.hub-disc.red{background:radial-gradient(circle at 30% 23%,#ffaaa3 0,#f64b51 38%,#b80e25 89%)}
+.hub-player-disc.yellow,.hub-disc.yellow{background:radial-gradient(circle at 30% 23%,#fffaad 0,#ffdf3b 40%,#dc9d06 92%)}
+.hub-player-info{display:flex;flex-direction:column;min-width:0;gap:4px}
+.hub-player-label{font-size:9px;letter-spacing:.08em;font-weight:850;color:#92a6bd}
+.hub-player-name{font-size:13px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ecf2fa}
+.hub-player-score{color:#fff;font-size:23px;letter-spacing:-.05em;margin-left:auto;font-variant-numeric:tabular-nums}
+.hub-vs{font-size:10px;font-weight:900;letter-spacing:.03em;color:#7b91a5;flex-shrink:0}
+.hub-board-frame{display:grid;place-items:center;min-height:300px;border:1px solid #31445b;background:radial-gradient(ellipse at 50% 20%,#20364c,#111c2a 82%);padding:20px;border-radius:16px;overflow:hidden}
+#sc-hub-room .hub-board{
+  width:min(100%,488px);margin:0 auto;display:grid;grid-auto-rows:auto;gap:2px;
+  border:9px solid #254c44;border-radius:13px;overflow:hidden;background:#076d50;
+  box-shadow:0 13px 28px #0006,0 0 0 1px #ffffff1c;
+  touch-action:manipulation;
+}
+#sc-hub-room .hub-connect4{background:#1356ba;border-color:#235dbb;border-width:11px;gap:5px;box-shadow:0 15px 0 #103d8d,0 21px 35px #0007}
+#sc-hub-room .hub-cell{
+  aspect-ratio:1/1;min-width:0;width:100%;border:0;border-radius:0;padding:8%;
+  display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;
+}
+#sc-hub-room .hub-reversi .hub-cell{background:#0e946c;border:1px solid #087557}
+#sc-hub-room .hub-connect4 .hub-cell{background:linear-gradient(150deg,#2c79d6,#1a5ab7);border-radius:4px}
+#sc-hub-room .hub-cell:disabled{cursor:default}
+#sc-hub-room .hub-disc{display:block;width:89%;height:89%;border-radius:50%;box-shadow:inset -4px -4px 8px #0004,0 2px 4px #0005}
+#sc-hub-room .hub-connect4 .hub-cell:not(.occupied)::after{
+  content:'';display:block;position:absolute;inset:8%;
+  border-radius:50%;background:#09264d;box-shadow:inset 0 4px 9px #0009;
+}
+#sc-hub-room .hub-connect4 .hub-disc{z-index:1;position:relative}
+#sc-hub-room .hub-legal-dot{display:block;width:25%;aspect-ratio:1;border-radius:50%;background:#c8ffe188;box-shadow:0 0 0 4px #e5ffdf1f}
+#sc-hub-room .hub-cell.legal:hover{outline:3px solid #e9fff3;outline-offset:-4px}
+#sc-hub-room .hub-connect4 .hub-cell:not(:disabled):hover{background:#437fd4}
+.hub-empty-state{text-align:center;padding:34px 12px 38px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.hub-empty-art{display:grid;grid-template-columns:repeat(2,55px);gap:10px;transform:rotate(-11deg);margin:0 0 12px}
+.hub-empty-art>span{width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#70bbad,#2e635e);box-shadow:inset -5px -5px 9px #0004,0 5px 9px #0004}
+.hub-empty-art>span:nth-child(2){background:radial-gradient(circle at 28% 25%,#ffdca3,#916241)}
+.hub-empty-art>span:nth-child(3){background:radial-gradient(circle at 28% 25%,#d0e8ec,#8094af)}
+.hub-empty-art>span:nth-child(4){background:radial-gradient(circle at 28% 25%,#87c5ff,#304d9c)}
+.hub-empty-state strong{font-size:24px;letter-spacing:-.06em;color:#edfaff}
+.hub-empty-state p{color:#9eafc1;font-size:12px;line-height:1.7;max-width:290px}
+.hub-game-footer{text-align:center;padding-top:14px;font-size:11px;color:#a6b9c9;line-height:1.6}
+.hub-room-note{font-size:11px;color:#9baec3;line-height:1.8;margin:0 7px}
+#sc-hub-room .hub-bottom-nav{margin-top:1px}
 .hub-switch-to-games{display:block;width:100%;padding:13px 18px;border:1px solid #78c5fb;background:linear-gradient(125deg,#244c76,#182f55);color:#fff;border-radius:12px;font-weight:900;margin:8px 0}
 .hub-switch-to-games small{display:block;font-weight:500;font-size:11px;margin-top:4px;color:#b7dffc}
+@media (max-width:1000px){
+  .hub-shell{grid-template-columns:minmax(255px,.88fr) minmax(0,1.2fr);gap:12px}
+  .hub-sidebar{padding:15px}.hub-playarea{padding:18px}.hub-board-frame{padding:12px}
+  .hub-head{padding:19px}.hub-player{gap:6px;padding:9px}.hub-player-name{font-size:11px}
+  .hub-player-score{font-size:19px}
+}
+@media (max-width:740px){
+  #sc-hub-room,#sc-online.hub-entry-screen{padding:20px 14px 32px;gap:12px}
+  .hub-shell{display:flex;flex-direction:column;gap:12px}
+  .hub-main{order:0;width:100%}.hub-sidebar{order:1;width:100%;padding:18px}
+  .hub-head{padding:18px;align-items:flex-start;flex-direction:column;border-radius:16px}
+  .hub-head h2{font-size:42px}.hub-head h2>small{display:block;margin:9px 0 0;font-size:13px}
+  .hub-room-actions{width:100%;justify-content:flex-start}
+  .hub-room-code{flex:1;min-width:115px}
+  #sc-hub-room .hub-invite{flex:1;justify-content:center;padding:12px;min-height:65px}
+  .hub-lobby-strip{padding:11px;flex-direction:column;align-items:flex-start;gap:8px}
+  .hub-playarea{padding:16px;border-radius:16px}
+  .hub-game-title{margin:16px 0 5px}
+  .hub-board-frame{min-height:230px;padding:12px}
+  #sc-hub-room .hub-board{width:min(100%,440px);border-width:5px;gap:1px}
+  #sc-hub-room .hub-connect4{border-width:7px;gap:3px}
+  .hub-entry-choices{grid-template-columns:1fr}
+  #sc-online .hub-entry-create,#sc-online .hub-entry-join{min-height:160px;padding:20px}
+  .hub-entry-hero{padding-bottom:20px}
+  .hub-entry-hero h2{font-size:clamp(48px,12vw,72px)}
+  .hub-quick-zone{align-items:flex-start;flex-direction:column}
+  #sc-online #online-quick{width:100%}
+}
+@media(max-width:390px){
+  #sc-hub-room,#sc-online.hub-entry-screen{padding:13px 9px 25px}
+  .hub-head h2{font-size:36px}
+  .hub-room-actions{gap:7px}
+  .hub-room-code{padding:11px 9px;min-width:0}
+  .hub-room-code b{font-size:21px}
+  #sc-hub-room .hub-invite{font-size:11px}
+  .hub-versus{gap:4px}.hub-player{padding:7px;gap:5px}
+  .hub-player-disc{width:16px;height:16px;flex-basis:16px}
+  .hub-player-label{font-size:8px}.hub-player-name{font-size:10px}
+  .hub-player-score{font-size:17px}
+  .hub-card-name{font-size:11px}
+  .hub-sidebar{padding:13px}
+  .hub-entry-action-icon{width:43px;height:43px;flex-basis:43px;font-size:24px}
+  #sc-online .hub-entry-create,#sc-online .hub-entry-join{gap:10px;padding:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  #sc-hub-room button,#sc-online.hub-entry-screen button{transition:none!important}
+}
 </style>
 </head>
 <body>
@@ -1309,8 +1549,8 @@ input,select{font-family:inherit}
   <button class="big mode-card" id="go-cpu" data-ghost="01"><span class="mode-no">01 / SINGLE PLAYER</span><span class="mode-symbol" aria-hidden="true">Ⅰ</span><span class="mode-card-content"><span class="mode-card-kicker">LOCAL BATTLE</span><b>CPU対戦</b><span class="mode-card-desc">1〜7体のライバルに挑め。チーム戦も自由自在。</span><span class="mode-card-foot">ひとりで遊ぶ <span aria-hidden="true">↗</span></span></span></button>
   <button class="big mode-card" id="go-online" data-ghost="02"><span class="mode-no">02 / MULTIPLAYER</span><span class="mode-symbol" aria-hidden="true">◎</span><span class="mode-card-content"><span class="mode-card-kicker">ONLINE BATTLE</span><b>オンライン対戦</b><span class="mode-card-desc">友達とリアルタイム対戦。部屋コードで簡単に参加。</span><span class="mode-card-foot">友達と対戦 <span aria-hidden="true">↗</span></span></span></button>
   <button class="big mode-card" id="go-more" data-ghost="03"><span class="mode-no">03 / CHALLENGES</span><span class="mode-symbol" aria-hidden="true">Ⅲ</span><span class="mode-card-content"><span class="mode-card-kicker">EXTRA MODES</span><b>ほかの遊び</b><span class="mode-card-desc">組み手・トーナメント・トレーニング。戦い方は無限大。</span><span class="mode-card-foot">モードを選ぶ <span aria-hidden="true">↗</span></span></span></button>
-  <button class="big mode-card" id="go-hub" data-ghost="04"><span class="mode-no">04 / GAME HUB</span><span class="mode-symbol" aria-hidden="true">♟</span><span class="mode-card-content"><span class="mode-card-kicker">ONLINE MINI GAMES</span><b>ゲームハブ</b><span class="mode-card-desc">同じ部屋で友達と遊べる。まずはリバーシとコネクトフォーから。</span><span class="mode-card-foot">ゲームハブへ <span aria-hidden="true">↗</span></span></span></button>
-   <button class="big mode-card mode-card-guide" id="go-howto" data-ghost="04"><span class="mode-no">04 / BEGINNER GUIDE</span><span class="mode-symbol" aria-hidden="true">?</span><span class="mode-card-content"><span class="mode-card-kicker">HOW TO PLAY</span><b>ルール・操作方法</b><span class="mode-card-desc">初めてでも大丈夫。技の出し方から勝ち方まで、ここで確認。</span></span><span class="mode-guide-arrow" aria-hidden="true">↗</span></button>
+  <button class="big mode-card" id="go-hub" data-ghost="04"><span class="mode-no">04 / GAME HUB</span><span class="mode-symbol" aria-hidden="true">♟</span><span class="mode-card-content"><span class="mode-card-kicker">ONLINE MINI GAMES</span><b>ゲームHUB</b><span class="mode-card-desc">同じ部屋で友達と遊べる。まずはリバーシとコネクトフォーから。</span><span class="mode-card-foot">ゲームHUBへ <span aria-hidden="true">↗</span></span></span></button>
+   <button class="big mode-card mode-card-guide" id="go-howto" data-ghost="05"><span class="mode-no">05 / BEGINNER GUIDE</span><span class="mode-symbol" aria-hidden="true">?</span><span class="mode-card-content"><span class="mode-card-kicker">HOW TO PLAY</span><b>ルール・操作方法</b><span class="mode-card-desc">初めてでも大丈夫。技の出し方から勝ち方まで、ここで確認。</span></span><span class="mode-guide-arrow" aria-hidden="true">↗</span></button>
  </div>
  <button class="raid-entry" id="go-raid" hidden aria-hidden="true" tabindex="-1" style="display:none"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。 <i aria-hidden="true">↗</i></small></button>
  <p class="mode-rework-footer">自分だけのスタイルを、ここから。</p>
@@ -1367,21 +1607,35 @@ input,select{font-family:inherit}
  <button class="startbig" id="champion-next">メニューにもどる</button>
 </div>
 
-<div id="sc-online" class="screen">
-  <div class="hd">ONLINE</div>
-   <p class="mode-explain" id="online-context">友達との対戦は部屋コードで招待。ランダムマッチなら相手を自動で探せます。</p>
-   <button class="big" id="online-quick">ランダムマッチ<small>プレイヤーを自動で探して1対1バトル</small></button>
-   <div id="online-quick-status" role="status" aria-live="polite"></div>
-  <button class="big" id="online-create">部屋を作る<small>QR・URL・部屋コードで友達を招待</small></button>
-  <div class="roomjoin">
-    <div class="sh" style="margin:0;text-align:center">部屋コードで参加</div>
-    <div class="room-code-row">
-      <input id="room-code-input" type="text" inputmode="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-label="6文字の部屋コード">
-      <button class="joinbtn" id="online-join">参加</button>
-    </div>
-    <div class="hint">ホスト画面に表示されている6文字のコードを入力</div>
+<div id="sc-online" class="screen hub-entry-screen" data-online-mode="normal">
+  <div class="hub-entry-hero">
+    <span class="hub-entry-eyebrow" id="online-eyebrow">STICK BATTLE / ONLINE</span>
+    <h2 id="online-page-title">オンライン対戦<span class="hub-entry-period">.</span></h2>
+    <p id="online-context">友達と専用ルームで対戦。知らない相手と遊びたいときはランダムマッチも選べます。</p>
+    <div class="hub-entry-highlights"><span><i aria-hidden="true">●</i> 招待URLで集合</span><span><i aria-hidden="true">●</i> 6文字のルームコード</span><span><i aria-hidden="true">●</i> スマホ・PC対応</span></div>
   </div>
-  <div class="nav"><button class="back" id="online-back">もどる</button></div>
+  <div class="hub-entry-choices">
+    <button class="hub-entry-create" type="button" id="online-create">
+      <span class="hub-entry-action-icon" aria-hidden="true">＋</span>
+      <span class="hub-entry-action-text"><small>01 / CREATE A ROOM</small><strong>部屋を作る</strong><span>友達を招待して、すぐに遊ぼう</span></span>
+      <span class="hub-entry-arrow" aria-hidden="true">↗</span>
+    </button>
+    <div class="hub-entry-join">
+      <div class="hub-entry-action-icon hub-entry-join-icon" aria-hidden="true">⌘</div>
+      <div class="hub-entry-join-body"><span class="hub-entry-mini">02 / JOIN A ROOM</span><label class="hub-entry-join-label" for="room-code-input">部屋に参加する</label><p>友達から届いた6文字のコードを入力</p>
+        <div class="room-code-row">
+          <input id="room-code-input" type="text" inputmode="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-label="6文字の部屋コード">
+          <button class="joinbtn" id="online-join" type="button">参加 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hub-quick-zone" id="online-quick-zone">
+    <div><small>QUICK PLAY / STICK BATTLE</small><strong>すぐに対戦相手を探す</strong><span>部屋を作らず、1対1のバトルにマッチング</span></div>
+    <button id="online-quick" type="button">ランダムマッチを開始 <span aria-hidden="true">↗</span></button>
+  </div>
+  <div id="online-quick-status" role="status" aria-live="polite"></div>
+  <div class="nav"><button class="back" id="online-back">← モード選択へ</button></div>
 </div>
 
 <div id="sc-chars" class="screen" style="z-index:8">
@@ -1443,26 +1697,55 @@ input,select{font-family:inherit}
   </div>
   <div class="namebox"><label for="lb-name">あなたの名前</label><input id="lb-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
   <div class="card" id="lb-mem"></div>
-  <div class="card" id="lb-set"></div><button id="lb-to-hub" type="button" class="hub-switch-to-games" style="display:none">ゲームハブへ切り替える <small>この部屋のメンバーのまま遊べます</small></button><div id="lb-tourney-board" class="tour-board" style="display:none"></div>
+  <div class="card" id="lb-set"></div><button id="lb-to-hub" type="button" class="hub-switch-to-games" style="display:none">ゲームHUBへ切り替える <small>この部屋のメンバーのまま遊べます</small></button><div id="lb-tourney-board" class="tour-board" style="display:none"></div>
   <button class="startbig" id="lb-start">バトル開始！</button>
   <div id="lb-wait" class="wait" style="display:none"></div>
   <div class="nav"><button class="back" id="lb-leave">退出する</button></div>
 </div>
 
-<div id="sc-hub-room" class="screen" aria-label="オンラインゲームハブ">
-  <header class="hub-head">
-    <div><div class="hub-kicker">STICK BATTLE / ONLINE GAME HUB</div><h2>みんなのゲームハブ。</h2><p id="hub-members">部屋を準備しています…</p><p id="hub-roster" class="hub-roster"></p></div>
-    <div class="hub-room-actions"><div class="hub-room-code"><small>ROOM CODE</small><b id="hub-code">------</b></div><button id="hub-copy" class="hub-invite" type="button">招待URLをコピー</button></div>
-  </header>
-  <section class="hub-playarea" aria-label="対局">
-    <div class="hub-game-info" id="hub-game-info" role="status" aria-live="polite">ホストがゲームを選択してください。</div>
-    <div id="hub-board" class="hub-board" aria-label="ゲーム盤"></div>
-  </section>
-  <p class="hub-room-note">ホストがゲームを選ぶと全員の画面が切り替わります。2人対戦では先着2人がプレイし、ほかの参加者は観戦できます。準備中の種目はまだプレイできません。</p>
-  <div id="hub-catalog"></div>
-  <div class="nav"><button class="back" id="hub-leave" type="button">部屋から退出する</button></div>
- </div>
- <div id="sc-result" class="screen">
+<div id="sc-hub-room" class="screen" aria-label="ゲームHUBのオンラインルーム">
+  <div class="hub-head">
+    <div class="hub-heading">
+      <span class="hub-kicker"><span class="hub-signal" aria-hidden="true"></span> CONNECTED PLAYGROUND <span class="hub-kicker-divider">/</span> ONLINE ROOM</span>
+      <h2>ゲーム<span>HUB</span><small>みんなで遊ぼう。</small></h2>
+      <p>友達と集まって、好きなゲームを選ぶだけ。</p>
+    </div>
+    <div class="hub-room-actions">
+      <div class="hub-room-code"><small>ROOM CODE</small><b id="hub-code">------</b></div>
+      <button id="hub-copy" class="hub-invite" type="button"><span aria-hidden="true">↗</span> 招待URLをコピー</button>
+    </div>
+  </div>
+  <div class="hub-lobby-strip">
+    <div class="hub-lobby-status"><span class="hub-online-dot" aria-hidden="true"></span><span id="hub-members">参加者を確認しています…</span></div>
+    <div id="hub-roster" class="hub-roster" aria-label="参加者一覧"></div>
+  </div>
+  <div class="hub-shell">
+    <aside class="hub-sidebar" aria-label="ゲーム選択">
+      <div class="hub-sidebar-header"><div><span class="hub-section-kicker">GAME LIBRARY</span><h3>ゲームを選ぶ<span class="hub-title-dot">.</span></h3></div><span class="hub-sidebar-count">13 GAMES</span></div>
+      <p class="hub-sidebar-tip">ゲームを選択すると全員の画面に反映されます。選択できるのはホストです。</p>
+      <div id="hub-catalog"></div>
+    </aside>
+    <main class="hub-main">
+      <section class="hub-playarea" aria-label="対局画面">
+        <div class="hub-play-top"><span id="hub-game-meta" class="hub-game-meta">GAME TABLE / READY</span><span class="hub-room-live"><i aria-hidden="true"></i> LIVE ROOM</span></div>
+        <h3 id="hub-game-title" class="hub-game-title">ゲームを選ぼう</h3>
+        <div id="hub-game-info" class="hub-game-info" role="status" aria-live="polite">左のゲーム一覧から、遊びたいタイトルを選んでください。</div>
+        <div id="hub-versus" class="hub-versus" aria-label="対局プレイヤー"></div>
+        <div class="hub-board-frame">
+          <div id="hub-empty-state" class="hub-empty-state" aria-label="ゲーム選択待ち">
+            <div class="hub-empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <strong>次は、何で遊ぶ？</strong><p>リバーシとコネクトフォーは今すぐ対戦できます。</p>
+          </div>
+          <div id="hub-board" class="hub-board" aria-label="ゲーム盤" hidden></div>
+        </div>
+        <div class="hub-game-footer" id="hub-game-footer">ゲームを選ぶと、ここに対局盤が表示されます。</div>
+      </section>
+      <p class="hub-room-note">2人対戦では先着2人がプレイし、そのほかの参加者は観戦できます。ホストはゲームの変更や再戦ができます。</p>
+    </main>
+  </div>
+  <div class="nav hub-bottom-nav"><button class="back" id="hub-leave" type="button">← ゲームHUBから退出</button></div>
+</div>
+<div id="sc-result" class="screen">
   <div class="hd">BATTLE RESULT<small>THE FIGHT IS OVER.</small></div><div id="winner-art"></div>
   <div id="res-win"></div>
   <div id="res-list"></div><div id="tour-result" class="tour-board"></div><div id="kumite-submit-state"></div><button id="kumite-submit-retry" type="button" style="display:none;background:#2a6956;color:#fff;padding:11px 18px;border-radius:5px;font-weight:900">記録の保存を再試行</button><button id="res-rank">Ⅰ 組み手ランキングを見る</button>
@@ -10112,24 +10395,83 @@ function hubDisplayName(id){
   const v=memCache[id];
   return v?String(v.label||'PLAYER').slice(0,24):'退出したプレイヤー';
 }
+function hubDiscTone(kind,value){
+  if(!value)return '';
+  return kind==='connect4'?(value===1?'red':'yellow'):(value===1?'dark':'light');
+}
+function hubSetEntryMode(mode){
+  const entry=hubEl('sc-online');
+  if(!entry)return;
+  const isHub=mode==='hub';
+  entry.dataset.onlineMode=isHub?'hub':mode==='tournament'?'tournament':'normal';
+  const title=hubEl('online-page-title');
+  if(title)title.innerHTML=(isHub?'ゲーム<span>HUB</span>':mode==='tournament'?'オンライン大会':'オンライン対戦')+'<span class="hub-entry-period">.</span>';
+  const eyebrow=hubEl('online-eyebrow');
+  if(eyebrow)eyebrow.textContent=isHub?'GAME HUB / INVITE ONLY':mode==='tournament'?'STICK BATTLE / TOURNAMENT':'STICK BATTLE / ONLINE';
+  const description=hubEl('online-context');
+  if(description)description.textContent=isHub?
+    '6文字のルームコードで友達を招待。集まったらリバーシやコネクトフォーを遊ぼう。':
+    mode==='tournament'?'友達を招いて、オンラインの勝ち抜きトーナメントを開催しよう。':
+    '友達と専用ルームで対戦。知らない相手と遊びたいときはランダムマッチも選べます。';
+  const quick=hubEl('online-quick-zone'),quickStatus=hubEl('online-quick-status');
+  if(quick)quick.hidden=mode!=='normal';
+  if(quickStatus)quickStatus.hidden=mode!=='normal';
+}
+function hubMake(tag,className,textValue){
+  const el=document.createElement(tag);
+  if(className)el.className=className;
+  if(textValue!==undefined)el.textContent=String(textValue);
+  return el;
+}
+const HUB_ICONS={
+  stickbattle:'⚔',reversi:'◑',connect4:'◉',airhockey:'◈',
+  chess:'♞',shogi:'将', 'mini-shogi':'五',shichinarabe:'7',
+  oldmaid:'♠',mahjong:'🀄',blackjack:'21',poker:'♣',baccarat:'◆'
+};
 function hubRender(){
   if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
   const members=lobbyMembers().filter(x=>!x.cpu);
   const code=hubEl('hub-code');if(code)code.textContent=roomId||'';
-  hubEl('hub-members').textContent=members.length+'人が参加中 / '+(isHost?'あなたがホスト':'ホストがゲームを選択します');
-  hubEl('hub-roster').textContent=members.map(m=>m.label+(m.host?' ★':'')+(m.id===myId?'（あなた）':'')).join('　/　');
+  const count=hubEl('hub-members');
+  if(count)count.textContent=members.length+' / '+MAX_PLAYERS+' 人が参加中　'+(isHost?'・あなたはホスト':'・ホストがゲームを選択します');
+  const roster=hubEl('hub-roster');
+  if(roster){
+    roster.replaceChildren();
+    for(const m of members){
+      const item=hubMake('span','hub-member'+(m.id===myId?' is-you':''));
+      const name=String(m.label||'PLAYER');
+      const avatar=hubMake('span','hub-member-avatar',name.trim().slice(0,1).toUpperCase()||'P');
+      const label=hubMake('span','hub-member-label',name+(m.id===myId?'（あなた）':''));
+      item.append(avatar,label);
+      if(m.host)item.appendChild(hubMake('span','hub-member-host','HOST'));
+      roster.appendChild(item);
+    }
+  }
   const cards=hubEl('hub-catalog');
   if(cards){
-    cards.innerHTML='';
+    cards.replaceChildren();
     for(const category of ['2人対戦','みんなで遊ぶ','カジノ']){
-      const section=document.createElement('section');section.className='hub-category';
-      const heading=document.createElement('h3');heading.textContent=category;section.appendChild(heading);
-      const grid=document.createElement('div');grid.className='hub-cards';
-      for(const game of HUB_CATALOG.filter(x=>x.category===category)){
-        const b=document.createElement('button');b.type='button';b.className='hub-card'+(hubGameSnapshot?.kind===game.id?' is-current':'');
+      const games=HUB_CATALOG.filter(x=>x.category===category);
+      const section=hubMake('section','hub-category');
+      const heading=hubMake('div','hub-category-heading');
+      const title=hubMake('h4','',category);
+      heading.append(title,hubMake('span','hub-category-count',String(games.length).padStart(2,'0')));
+      section.appendChild(heading);
+      const grid=hubMake('div','hub-cards');
+      for(const game of games){
+        const isCurrent=hubGameSnapshot?.kind===game.id;
+        const b=hubMake('button','hub-card'+(isCurrent?' is-current':'')+(!game.ready?' is-coming':''));
+        b.type='button';
+        b.dataset.game=game.id;
         b.disabled=!game.ready||!isHost||members.length<2||hubBusy;
-        const title=document.createElement('strong');title.textContent=game.name;b.appendChild(title);
-        const info=document.createElement('small');info.textContent=game.players+' · '+(game.ready?'対戦可能':'今後追加');b.appendChild(info);
+        b.setAttribute('aria-label',game.name+(game.ready?'':'（準備中）'));
+        b.appendChild(hubMake('span','hub-card-icon',HUB_ICONS[game.id]||'◇'));
+        const main=hubMake('span','hub-card-content');
+        main.appendChild(hubMake('strong','hub-card-name',game.name));
+        main.appendChild(hubMake('small','hub-card-meta',game.players));
+        b.appendChild(main);
+        let statusText=!game.ready?'COMING SOON':isCurrent?'PLAYING':!isHost?'HOST ONLY':members.length<2?'WAITING':'PLAY ↗';
+        b.appendChild(hubMake('span','hub-card-status',statusText));
         if(game.ready){
           b.title=game.description||'';
           b.onclick=()=>hubSelectGame(game.id);
@@ -10140,30 +10482,66 @@ function hubRender(){
     }
   }
   const info=hubEl('hub-game-info'),boardEl=hubEl('hub-board');
+  const titleEl=hubEl('hub-game-title'),meta=hubEl('hub-game-meta'),versus=hubEl('hub-versus');
+  const empty=hubEl('hub-empty-state'),footer=hubEl('hub-game-footer');
   boardEl.replaceChildren();
   const g=hubGameSnapshot;
-  if(!g){info.textContent='ゲームを選んでください。リバーシとコネクトフォーはオンライン対戦に対応しています。';return;}
+  if(!g){
+    titleEl.textContent='ゲームを選ぼう';
+    meta.textContent='GAME TABLE / READY';
+    info.textContent=isHost?'左の一覧から好きなゲームを選んで、みんなで遊ぼう。':'ホストがゲームを選択するのを待っています。';
+    versus.replaceChildren();footer.textContent='リバーシとコネクトフォーは、2人揃えばすぐに遊べます。';
+    boardEl.hidden=true;empty.hidden=false;return;
+  }
   const game=HUB_CATALOG.find(x=>x.id===g.kind);
-  if(!game||!Array.isArray(g.players)||g.players.length!==2){info.textContent='ゲームのデータを読み込めません。';return;}
-  const board=Array.isArray(g.board)?g.board:[],isPlayer=g.players.includes(myId);
-  const names=g.players.map(hubDisplayName);
-  const current=g.turn>=0?g.players[g.turn]:'';
-  if(g.status==='done')info.textContent=game.name+' ／ '+(g.winner>=0?hubDisplayName(g.players[g.winner])+' の勝ち！':'引き分け')+' ／ ホストは同じゲームを押すと再戦できます。';
-  else info.textContent=game.name+' ／ '+names[0]+'（先手） vs '+names[1]+'（後手） ／ '+hubDisplayName(current)+' の番'+(g.passes?'（パスが発生しました）':'')+(isPlayer?'':' ／ 観戦中');
-  boardEl.className='hub-board '+(g.kind==='reversi'?'hub-reversi':'hub-connect4');
-  boardEl.style.gridTemplateColumns='repeat('+(g.kind==='reversi'?8:7)+', minmax(0,1fr))';
+  if(!game||!Array.isArray(g.players)||g.players.length!==2){
+    titleEl.textContent='ゲームを読み込めません';meta.textContent='GAME TABLE / ERROR';
+    info.textContent='対局データを確認してください。';
+    versus.replaceChildren();footer.textContent='ホストが別のゲームを選ぶと再開できます。';
+    boardEl.hidden=true;empty.hidden=false;return;
+  }
+  const board=Array.isArray(g.board)?g.board:[],isPlayer=g.players.includes(myId),isConnect=g.kind==='connect4';
+  const names=g.players.map(hubDisplayName),current=g.turn>=0?g.players[g.turn]:'';
+  titleEl.textContent=game.name;
+  meta.textContent=(isConnect?'CONNECT FOUR':'REVERSI')+' / '+(g.status==='done'?'RESULT':'MATCH '+String(g.moves||0).padStart(2,'0'));
+  if(g.status==='done'){
+    info.textContent=g.winner>=0?hubDisplayName(g.players[g.winner])+' の勝利！':'引き分け！';
+    footer.textContent=isHost?'左の同じゲームを選ぶと再戦できます。':'ホストが再戦・ゲーム変更を選ぶまでお待ちください。';
+  }else{
+    info.textContent=current===myId?'あなたの番です。盤面をタップして着手しよう！':hubDisplayName(current)+' の番です。'+(!isPlayer?'（観戦中）':'');
+    if(g.passes)info.textContent+='　※置ける場所がなくパスしました。';
+    footer.textContent=isConnect?'列をタップすると、コマが一番下の空きマスに落ちます。':'光っているマスが置ける場所です。';
+  }
+  versus.replaceChildren();
+  for(let n=0;n<2;n++){
+    const person=hubMake('div','hub-player'+(g.status==='play'&&g.turn===n?' is-turn':'')+(g.winner===n&&g.status==='done'?' is-winner':''));
+    const disc=hubMake('span','hub-player-disc '+hubDiscTone(g.kind,n+1));
+    const text=hubMake('span','hub-player-info');
+    text.appendChild(hubMake('span','hub-player-label',n===0?'PLAYER 1 / 先手':'PLAYER 2 / 後手'));
+    text.appendChild(hubMake('strong','hub-player-name',names[n]+(g.players[n]===myId?'（あなた）':'')));
+    const points=isConnect?board.filter(v=>Number(v)===n+1).length:board.filter(v=>Number(v)===n+1).length;
+    const counter=hubMake('b','hub-player-score',String(points).padStart(2,'0'));
+    person.append(disc,text,counter);
+    versus.appendChild(person);
+    if(n===0)versus.appendChild(hubMake('span','hub-vs','VS'));
+  }
+  boardEl.className='hub-board '+(isConnect?'hub-connect4':'hub-reversi');
+  boardEl.style.gridTemplateColumns='repeat('+(isConnect?7:8)+',minmax(0,1fr))';
+  boardEl.hidden=false;empty.hidden=true;
   const canAct=g.status==='play'&&current===myId;
-  const legal=canAct&&g.kind==='reversi'?new Set(hubReversiMoves(board,g.turn+1)):new Set();
+  const legal=canAct&&!isConnect?new Set(hubReversiMoves(board,g.turn+1)):new Set();
   for(let i=0;i<board.length;i++){
-    const c=document.createElement('button');c.type='button';
-    const value=Number(board[i])||0;
-    c.className='hub-cell'+(value?' occupied':'')+(legal.has(i)?' legal':'');
-    c.disabled=!canAct||(g.kind==='reversi'&&!legal.has(i));
-    c.setAttribute('aria-label',g.kind==='connect4'?'列'+(i%7+1):'行'+(Math.floor(i/8)+1)+'列'+(i%8+1));
+    const c=hubMake('button','hub-cell'+(Number(board[i])?' occupied':'')+(legal.has(i)?' legal':''));
+    c.type='button';
+    const value=Number(board[i])||0,choice=isConnect?i%7:i;
+    c.disabled=!canAct||(!isConnect&&!legal.has(i))||(isConnect&&Number(board[choice])!==0);
+    const tone=hubDiscTone(g.kind,value),discLabel=value?(isConnect?(value===1?'赤':'黄色'):(value===1?'黒':'白')):'空き';
+    c.setAttribute('aria-label',(isConnect?'列'+(choice+1):'行'+(Math.floor(i/8)+1)+'列'+(i%8+1))+' / '+discLabel);
     if(value){
-      const disc=document.createElement('span');disc.className='hub-disc '+(value===1?'dark':'light');c.appendChild(disc);
-    }else if(legal.has(i)){const dot=document.createElement('span');dot.className='hub-legal-dot';c.appendChild(dot);}
-    const choice=g.kind==='connect4'?i%7:i;
+      c.appendChild(hubMake('span','hub-disc '+tone));
+    }else if(legal.has(i)){
+      c.appendChild(hubMake('span','hub-legal-dot'));
+    }
     c.onclick=()=>hubSubmitMove(choice);
     boardEl.appendChild(c);
   }
@@ -10342,6 +10720,11 @@ async function startQuickMatch(){
     button.disabled=false;
   }
 }
+const hubShowBase=show;
+show=function(id){
+  if(id==='sc-online')hubSetEntryMode(requestedOnlineMode);
+  return hubShowBase(id);
+};
 const hubOriginalBuildMenus=buildMenus;
 buildMenus=function(){
   hubOriginalBuildMenus();
@@ -10353,15 +10736,12 @@ buildMenus=function(){
       await roomRef.child('gm').update({mode:'hub',ph:'lobby',cpuN:0,teamMode:0});
     }
   };
-  hubEl('go-online').addEventListener('click',()=>{hubEl('online-context').textContent='友達との対戦は部屋コードで招待。ランダムマッチなら相手を自動で探せます。';});
-  hubButton.addEventListener('click',()=>{hubEl('online-context').textContent='ゲームハブの部屋を作って友達に招待URL・6文字のコードを送ろう！';});
   hubEl('hub-copy').onclick=()=>{
     const url=location.href.split('?')[0]+'?room='+roomId;
     if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>alert('招待URLをコピーしました')).catch(()=>prompt('このURLを送ってください',url));
     else prompt('このURLを送ってください',url);
   };
-  hubEl('hub-leave').onclick=()=>{if(confirm('ゲームハブの部屋から退出しますか？'))leaveRoom();};
-};
-</script>
+  hubEl('hub-leave').onclick=()=>{if(confirm('ゲームHUBの部屋から退出しますか？'))leaveRoom();};
+};</script>
 </body>
 </html>
