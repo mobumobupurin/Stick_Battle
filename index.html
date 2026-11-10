@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="STICK BATTLE">
-<meta name="sbo-release" content="mobile-v2-20261109">
+<meta name="sbo-release" content="ui-renewal-v2-20261110">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -613,6 +613,234 @@ body.swipe-special-input:not(.desktop-controls) #acts #btn-c{display:block!impor
  body:not(.desktop-controls) #stick-zone{height:min(73%,210px)}
 }
 </style>
+<style>/* STICK BATTLE ONLINE / RE:FORGED
+   Final design layer: a coherent editorial fighting-game UI.
+   All game mechanics, DOM IDs, network state and button handlers are unchanged. */
+:root{
+ --ui-bg:#080d16;--ui-deep:#101725;--ui-panel:#171f30;--ui-panel2:#1e2940;
+ --ui-line:rgba(231,240,255,.14);--ui-line-hot:rgba(255,224,161,.48);
+ --ui-text:#f3f6fd;--ui-muted:#a5b4c9;--ui-accent:#f36c59;--ui-accent-dark:#b93e37;
+ --ui-gold:#f5d58e;--ui-sea:#8bdad9;
+ --ui-shadow:0 18px 46px rgba(0,0,0,.29);
+ --ui-radius:18px;
+}
+html,body{background:var(--ui-bg);color:var(--ui-text)}
+button{font-family:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ui-gold)!important;outline-offset:3px}
+.screen{
+ background:
+  radial-gradient(ellipse at 86% 6%,rgba(77,103,146,.16),transparent 38%),
+  radial-gradient(ellipse at 2% 3%,rgba(195,83,77,.09),transparent 38%),
+  linear-gradient(150deg,#0d1421,#080d16 77%);
+ color:var(--ui-text);
+ gap:clamp(13px,2vw,22px);
+}
+.screen:before{color:#8e9cb2;letter-spacing:3.1px}
+.hd{
+ width:min(1120px,100%);font-style:normal;letter-spacing:-.035em;
+ font-weight:1000;line-height:1.12;font-size:clamp(27px,4.4vw,52px);
+ border-left:5px solid var(--ui-accent);padding-left:18px;
+ text-shadow:0 10px 24px rgba(0,0,0,.25)
+}
+.hd small{font-size:clamp(10px,1vw,12px);letter-spacing:.18em;color:var(--ui-muted);font-weight:700;margin-top:8px}
+/* The title screen has one dominant headline and one clear call to action. */
+#sc-title{
+ background:
+  radial-gradient(ellipse at 68% 45%,rgba(158,144,115,.11),transparent 36%),
+  radial-gradient(ellipse at 18% 15%,rgba(170,71,66,.13),transparent 45%),
+  linear-gradient(135deg,#141d2b,#080d16 72%);
+}
+.title-content{max-width:1040px}
+.title-kicker{color:var(--ui-gold);font-size:11px;font-weight:900;letter-spacing:.36em}
+.title-content .logo{
+ font-family:Impact,'Arial Black','Hiragino Kaku Gothic ProN',system-ui,sans-serif;
+ font-weight:1000;letter-spacing:-.045em;line-height:.91;filter:drop-shadow(0 10px 24px #0007)
+}
+.title-content .logo em{color:var(--ui-accent);text-shadow:0 4px 0 #54211e66}
+.title-content .logo small{color:#f4f6fb;letter-spacing:.55em;line-height:1.2}
+.title-content .title-desc{color:#bec9d9;line-height:1.75;max-width:660px;letter-spacing:.08em}
+.title-content .tap{
+ min-height:53px;border-radius:7px;clip-path:none;
+ background:linear-gradient(135deg,#fff4dd,#edd49f);
+ color:#18202f;border:1px solid #fff4d8;
+ box-shadow:0 12px 28px #0005;letter-spacing:.055em;font-size:14px
+}
+.title-content .tap:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.version-label{color:#9eaabd;background:#0b111f9e;border:1px solid #ffffff1c;border-radius:999px;padding:6px 11px;backdrop-filter:blur(6px)}
+/* Navigation has a consistent, restrained palette. */
+.mode-rework-grid{gap:14px}
+.mode-rework-grid .big.mode-card,
+.mode-rework-extra .big.mode-card,
+.mode-rework-tour .big.mode-card,
+.extra-choice .big,.tour-config .big{
+ position:relative;overflow:hidden;
+ border:1px solid var(--ui-line)!important;border-radius:var(--ui-radius)!important;
+ box-shadow:var(--ui-shadow);transition:transform .16s ease,border-color .16s ease,filter .16s ease;
+}
+.mode-rework-grid .big.mode-card:hover,
+.mode-rework-extra .big.mode-card:hover,.extra-choice .big:hover,
+.tour-config .big:hover{transform:translateY(-3px);border-color:var(--ui-line-hot)!important}
+.mode-rework-grid .big.mode-card:active,.extra-choice .big:active{transform:scale(.985)}
+.mode-rework-grid .big.mode-card{background:linear-gradient(135deg,#273950,#162235)!important;color:#f2f6fd!important}
+.mode-rework-grid #go-cpu{background:linear-gradient(125deg,#853d39,#311c2a 82%)!important;border-color:#f38e7850!important}
+.mode-rework-grid #go-online{background:linear-gradient(125deg,#4f4839,#222434 82%)!important;border-color:#e9cc8150!important}
+.mode-rework-grid #go-more{background:linear-gradient(125deg,#344f60,#172835 82%)!important}
+.mode-rework-grid #go-howto{background:linear-gradient(125deg,#303d52,#192537 82%)!important}
+.mode-rework-grid .mode-card .mode-no,
+.mode-rework-extra .mode-card .mode-no{color:#d1dbe8bb!important;font-size:10px;letter-spacing:.17em}
+.mode-rework-grid .mode-card .mode-card-kicker{color:var(--ui-gold)!important;font-size:10px;letter-spacing:.23em}
+.mode-rework-grid .mode-card b{color:#f8f9fc!important;font-size:clamp(24px,3.1vw,37px)!important;letter-spacing:-.03em}
+.mode-rework-grid .mode-card .mode-card-desc{font-size:12px;color:#c8d4e4!important;line-height:1.55}
+.mode-rework-grid .mode-card .mode-card-foot{font-weight:900;color:#f6dfac!important}
+.mode-symbol,.mode-card .mode-symbol{color:#e8efff22!important}
+.mode-grid .big,.extra-choice .big,.tour-config .big{border-radius:var(--ui-radius)}
+.extra-choice .big,.tour-config .big{background:linear-gradient(140deg,#26384e,#131d2c);color:var(--ui-text)}
+.extra-choice .big:nth-child(1){background:linear-gradient(140deg,#285c60,#132a37)}
+.extra-choice .big:nth-child(2){background:linear-gradient(140deg,#80523a,#35202b)}
+.extra-choice .big:nth-child(3){background:linear-gradient(140deg,#5c4b7a,#29223f)}
+.extra-choice .big b,.tour-config .big b{color:white;font-size:clamp(22px,2.8vw,32px)}
+.extra-choice .big small,.tour-config .big small{color:#c6d2e3}
+.mode-explain,.stage-help-tip,.char-select-tip{
+ color:#b9c7d9;line-height:1.7;font-size:12px
+}
+.mode-stripe span{background:#ffffff12;color:#e3e9f1;border:1px solid #ffffff17;border-radius:999px}
+#go-raid{display:none!important}
+/* Shared cards and form controls: less visual noise, more predictable spacing. */
+.card,.roomjoin,.namebox,#char-info,.tour-board,.howto-hero,.howto-section,.howto-extra,
+#rank-table,.arena-preview,.arena-confirm-panel{
+ background:linear-gradient(165deg,#1d293a,#121b2a)!important;
+ color:var(--ui-text);border:1px solid var(--ui-line)!important;
+ border-radius:var(--ui-radius)!important;box-shadow:0 12px 28px #0003
+}
+.card h3,.howto-section h3{color:var(--ui-gold)}
+.optrow{gap:12px}
+.optrow>span{font-weight:900;color:#d7e0ed}
+.seg{gap:5px}
+.seg button{background:#263348!important;color:#e1e9f5!important;border:1px solid #ffffff15!important;border-radius:10px!important;font-size:11px}
+.seg button.sel{background:var(--ui-gold)!important;color:#18202d!important;border-color:var(--ui-gold)!important;box-shadow:0 4px 15px #edc57833}
+.nav{gap:9px}
+.nav button,.startbig{border-radius:11px!important;box-shadow:0 8px 18px #0003}
+.nav .back{background:#273246!important;color:#d8e3f2!important}
+.nav .next,.startbig{background:linear-gradient(130deg,#f16b56,#bb453d)!important;color:white!important}
+.nav button:hover,.startbig:hover,.seg button:hover{filter:brightness(1.1)}
+input,select{font-family:inherit}
+.namebox input,.room-code-row input,.fighter-search input,
+#settings-dialog select{
+ background:#101827!important;color:#f5f7fc!important;
+ border:1px solid #ffffff25!important;border-radius:10px!important;
+ padding:10px 12px
+}
+.namebox{padding:12px 16px;gap:10px;min-height:57px}
+.fighter-tools{border-radius:14px;overflow:visible}
+.fighter-search{border-radius:11px!important;background:#111a29!important;border:1px solid #ffffff1e!important}
+.fighter-filters{gap:6px}
+.fighter-filters button{border-radius:999px!important;background:#202d40;color:#c7d5e6}
+.fighter-filters button[aria-pressed="true"]{background:var(--ui-gold)!important;color:#1a2330!important}
+/* Character choices: art, name and selection are the only strong signals. */
+.fighter-layout{gap:18px}
+.fighter-preview{border-radius:20px!important;box-shadow:0 20px 45px #0005;border:1px solid #ffffff1c}
+.fighter-name b{font-size:clamp(25px,2.8vw,35px);line-height:1.05}
+.fighter-code{color:#e0e5ed}
+.cgrid{gap:8px}
+.ci{border-radius:12px!important;background:#1e2a3b!important;border:1px solid #ffffff14!important;box-shadow:none!important;transition:transform .15s,border-color .15s,background .15s}
+.ci:hover{transform:translateY(-2px);background:#2a3a50!important}
+.ci.sel{border-color:var(--ui-gold)!important;background:#3c3440!important;box-shadow:0 0 0 1px #efd59060!important}
+.ci small{background:#101927ee;color:#e9eff8;font-size:11px;padding:6px 9px}
+.ci.sel:after{background:var(--ui-gold);color:#151c28}
+#char-info{padding:17px}
+#char-info .ability-line{color:#c6d4e5}
+#char-info .ability-line b{color:var(--ui-gold)}
+#char-info .ability-detail{border-top:1px solid #ffffff16;padding-top:9px}
+#cpu-opts{gap:10px!important}
+#cpu-opts .optrow{background:#1721319c;border:1px solid #ffffff13;border-radius:12px;padding:10px}
+/* Stage picker / confirmation: consistent hierarchy. */
+.stage-grid{gap:12px}
+.stc{border-radius:14px!important;background:#172436!important;border:1px solid #ffffff19!important;overflow:hidden}
+.stc.sel{border-color:var(--ui-gold)!important;box-shadow:0 0 0 1px #f6dc9b60}
+.stc b{color:#f0f4fb}
+.stc small{color:#adc0d5}
+.stc .stage-meta{padding:12px 14px}
+.arena-preview{overflow:hidden}
+.arena-random-options{gap:7px}
+.arena-random-options button{border-radius:12px;border:1px solid var(--ui-line)}
+/* Online waiting room: make the important room code easy to locate. */
+.roomjoin{padding:20px}
+.room-code-row{gap:9px}
+.room-code-row input{letter-spacing:.15em;font-weight:900}
+#lb-code,#lb-code2{color:var(--ui-gold)!important;font-weight:900;letter-spacing:.17em}
+#lb-hostinv,#lb-guestinv{color:#d6e0ee}
+#lb-qr{background:white;padding:12px;border-radius:10px;width:max-content;margin-inline:auto}
+#lb-mem .mrow{border-bottom:1px solid #ffffff12}
+.wait,#lb-wait,#res-wait{color:#cbd5e4}
+#lb-start{background:linear-gradient(120deg,#eb745e,#b8483d)!important}
+/* Results / tourney / guide. */
+#res-win{color:var(--ui-gold)!important;text-shadow:0 10px 28px #0006}
+#res-list{color:#d9e3f1}
+.rank-row{border-radius:12px!important;background:#1b283b!important;border:1px solid #ffffff13}
+.rank-row.top3{background:#302f31!important;border-color:#f4cc7e70}
+.rank-row .rank-wins{color:var(--ui-gold)}
+.tour-pair{border-radius:9px;background:#1b2838}
+.tour-pair.is-current{border-color:var(--ui-gold)!important}
+.howto-hero{border-color:#f6d98b35!important}
+.howto-hero h2{color:#f5f7fb}
+.howto-hero h2 span{color:var(--ui-gold)}
+.howto-flow-card,.howto-control-item,.howto-matchup{
+ border-radius:11px!important;background:#182638!important;border:1px solid #ffffff17!important
+}
+.howto-control-key{border-radius:8px}
+.howto-tab{background:#263145;color:#cdd8e6;border-radius:11px!important}
+.howto-tab.is-active{background:var(--ui-gold)!important;color:#151c28!important}
+/* Arena HUD: clear numbers, subtle glass. Never compromise input hit targets. */
+#bar{background:linear-gradient(180deg,#111b2de8,#0a1221bc)!important;border-bottom:1px solid #ffffff1c;backdrop-filter:blur(9px)}
+#bar .barbtn{background:#223047!important;border:1px solid #ffffff1f;border-radius:9px;font-weight:900}
+#battle-roster .hud-card{
+ background:linear-gradient(100deg,#172439e8,#101a2ce2)!important;
+ border:1px solid #ffffff1e;border-bottom:2px solid var(--team);border-radius:10px;box-shadow:0 5px 18px #0003
+}
+#battle-roster .hud-name{color:#d2def0;letter-spacing:.03em}
+#battle-roster .hud-damage{color:#f4f6fb;text-shadow:0 2px 8px #0008}
+#battle-roster .hud-skill{color:#b8c9e0}
+#acts button{border-radius:15px!important;border:1px solid #ffffff34!important;font-weight:900}
+#acts #btn-a{background:linear-gradient(145deg,#ee705b,#bc433d)!important;color:#fff!important}
+#acts #btn-s{background:linear-gradient(145deg,#8267ce,#503f8b)!important;color:#fff!important}
+#acts #btn-j{background:linear-gradient(145deg,#f9f4dc,#c9c0a1)!important;color:#172033!important}
+#acts #btn-c{background:linear-gradient(145deg,#4e9ab5,#27627e)!important;color:#fff!important}
+#acts button.on{filter:brightness(1.24)}
+#stick{border-color:#ffffff40;background:radial-gradient(circle,#253c54cc,#0c192acc)}
+#combat-hint{color:#a9bad0}
+#settings-dialog,#bracket-dialog{
+ background:#141f30!important;border:1px solid #ffffff35;border-radius:16px!important;box-shadow:0 18px 52px #0008
+}
+#settings-dialog h2{font-size:20px;font-weight:1000;letter-spacing:.06em;color:#f2d58f}
+#settings-dialog .setting-row{border-bottom:1px solid #ffffff16}
+#settings-dialog .setting-row:last-of-type{border-bottom:0}
+#settings-dialog p{color:#b8c8dd}
+/* Responsive usability. Keep core controls large and respect the existing full-bleed landscape overlay. */
+@media(max-width:760px){
+ .screen{gap:14px;padding-left:14px;padding-right:14px}
+ .hd{font-size:clamp(26px,8vw,38px);padding-left:12px;border-left-width:4px}
+ .hd small{letter-spacing:.12em}
+ .mode-rework-grid .mode-card b{font-size:clamp(23px,6vw,30px)!important}
+ .fighter-layout{gap:13px}
+ .ci small{font-size:10px}
+ .nav button,.startbig{min-height:48px}
+ .roomjoin{padding:14px}
+ #cpu-opts .optrow{gap:7px}
+ #settings-dialog{padding:16px}
+ #settings-dialog .setting-row{gap:8px}
+}
+@media(orientation:landscape) and (max-height:560px){
+ body:not(.desktop-controls) #bar{border-radius:0!important;height:29px}
+ body:not(.desktop-controls) #battle-roster{border-radius:9px}
+ body:not(.desktop-controls) #battle-roster .hud-card{background:#101a2dd6!important;border-radius:7px}
+ body:not(.desktop-controls) #wrap{border-radius:0!important;box-shadow:none!important}
+ body:not(.desktop-controls) #acts button{border-radius:12px!important;box-shadow:0 4px 10px #0007}
+ body:not(.desktop-controls) #stick-zone{background:#0c1a2a2a}
+}
+@media(prefers-reduced-motion:reduce){
+ .mode-card,.ci,.stc,.nav button{transition:none!important}
+ .mode-rework-grid .big.mode-card:hover,.ci:hover{transform:none}
+}</style>
 </head>
 <body>
 
