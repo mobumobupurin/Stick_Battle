@@ -235,7 +235,7 @@ function hubExtraPokerUI(state){
 const hubMoreOriginalRender=hubRender;
 hubRender=function(){
   hubMoreOriginalRender();
-  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
+  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room'&&scene!=='sc-hub-play')return;
   const state=hubGameSnapshot;
   if(!state||!['chess','mini-shogi','oldmaid','poker'].includes(state.kind))return;
   hubExtraSync(state);
