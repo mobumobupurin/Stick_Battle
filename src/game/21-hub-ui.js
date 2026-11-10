@@ -86,7 +86,7 @@ function hubRenderTable(state){
     entry.textContent=hubDisplayName(state.players[i]);
     if(kind==='shichinarabe')entry.textContent+=' · '+(state.hands[i]?.length||0)+'枚';
     if(kind==='blackjack')entry.textContent+=' · '+hubBJTotal(state.hands[i])+'点';
-    if(kind==='baccarat'&&state.bets[state.players[i]])entry.textContent+=' · 予想済';
+    if(kind==='baccarat'&&state.bets?.[state.players[i]])entry.textContent+=' · 予想済';
     vs.appendChild(entry);
   }
   if(kind==='blackjack'){
@@ -146,9 +146,9 @@ function hubRenderTable(state){
     }
     board.appendChild(rows);
     if(me>=0){
-      board.appendChild(hubMake('div','hub-seven-hand-title','あなたの手札 · '+state.hands[me].length+'枚'));
+      board.appendChild(hubMake('div','hub-seven-hand-title','あなたの手札 · '+(state.hands[me]?.length||0)+'枚'));
       const hand=hubMake('div','hub-seven-hand'),choices=new Set(hubSevenChoices(state,me));
-      for(const card of state.hands[me]){
+      for(const card of state.hands[me]||[]){
         const b=hubMake('button','hub-seven-card'+(choices.has(card)&&isMyTurn?' is-legal':''));
         b.type='button';b.disabled=!isMyTurn||!choices.has(card)||hubBusy;
         b.appendChild(hubMakeCard(card));b.onclick=()=>hubSubmitMove(card);hand.appendChild(b);
