@@ -226,3 +226,114 @@ input,select{font-family:inherit}
  .mode-card,.ci,.stc,.nav button{transition:none!important}
  .mode-rework-grid .big.mode-card:hover,.ci:hover{transform:none}
 }
+
+/* TITLE KEY ART / V3 — in-game no-eye martial artist vs. swordsman clash.
+   The responsive composition intentionally keeps the game logo within the image
+   in landscape. Portrait displays an accessible, real-text logo over the art. */
+#sc-title{
+ position:fixed!important;inset:0!important;display:flex;isolation:isolate;
+ width:100%;min-height:100dvh;height:100dvh;
+ padding:0!important;margin:0!important;overflow:hidden!important;
+ align-items:flex-end!important;justify-content:flex-start!important;
+ background:#080d16!important;
+}
+#sc-title::before{display:none!important}
+#sc-title .title-art{
+ position:absolute!important;inset:0!important;left:0!important;right:0!important;
+ z-index:0;opacity:1!important;transform:none!important;filter:none!important;
+ background:#070b12 url('assets/title/title-clash.svg') center top/cover no-repeat!important;
+ pointer-events:none;
+}
+#sc-title .title-art::after{
+ content:'';display:block!important;position:absolute;inset:0;
+ background:linear-gradient(180deg,rgba(5,9,18,.08) 0%,transparent 55%,rgba(5,9,18,.36) 100%);
+ pointer-events:none;
+}
+#sc-title .title-content{
+ position:relative!important;z-index:2;
+ width:100%!important;max-width:1200px!important;min-height:0!important;
+ margin:0 auto!important;padding:0 clamp(24px,4.4vw,78px) clamp(24px,5.5vh,50px)!important;
+ display:flex!important;flex-direction:column;align-items:flex-start!important;
+ justify-content:flex-end!important;gap:0!important;
+ text-align:left!important;pointer-events:none;
+}
+#sc-title .title-content .logo,
+#sc-title .title-content .title-kicker,
+#sc-title .title-content .title-desc{
+ position:absolute!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;
+ width:1px!important;height:1px!important;padding:0!important;margin:0!important;
+ overflow:hidden!important;white-space:nowrap!important;
+}
+#sc-title .title-content #title-tap{
+ position:relative!important;pointer-events:auto;display:flex!important;
+ align-items:center;justify-content:space-between;gap:20px;
+ min-width:200px!important;min-height:54px!important;
+ margin:0!important;padding:13px 24px!important;
+ border:1px solid #fbe2ae!important;border-radius:9px!important;
+ color:#141c29!important;font-weight:1000;font-size:14px!important;
+ letter-spacing:.11em;
+ background:linear-gradient(120deg,#fff1d3,#f0c579)!important;
+ box-shadow:0 12px 32px #000a,0 0 22px #f8cc7c24!important;
+ transition:transform .14s ease,filter .14s ease;
+}
+#sc-title .title-content #title-tap:hover{
+ transform:translateY(-2px)!important;filter:brightness(1.08);
+}
+#sc-title .title-content #title-tap:active{transform:scale(.98)!important}
+#sc-title .title-content #title-tap span{font-size:21px}
+#sc-title .version-label{
+ position:absolute!important;z-index:2;right:clamp(12px,3vw,30px);
+ bottom:clamp(18px,4vh,40px);color:#f4f6f9c2!important;
+ background:#0a1224ad!important;border:1px solid #ffffff33!important;
+ border-radius:999px!important;padding:7px 12px!important;
+ font-size:9px;letter-spacing:.12em;backdrop-filter:blur(10px);
+}
+@media(orientation:landscape) and (max-height:560px){
+ #sc-title .title-art{background-position:center top!important}
+ #sc-title .title-content{
+  padding:0 max(20px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-bottom))!important
+ }
+ #sc-title .title-content #title-tap{min-height:40px!important;min-width:160px!important;padding:8px 18px!important;font-size:12px!important}
+ #sc-title .version-label{display:none}
+}
+@media(orientation:portrait){
+ #sc-title{
+  align-items:stretch!important;justify-content:center!important;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)!important
+ }
+ #sc-title .title-art{
+  background-size:auto 100%!important;
+  background-position:center center!important;
+  opacity:.92!important
+ }
+ #sc-title .title-art::after{
+  background:linear-gradient(180deg,#070c17d9 0%,#070c1770 21%,transparent 43%,transparent 66%,#070c17d9 100%)
+ }
+ #sc-title .title-content{
+  width:100%!important;height:100%!important;max-width:none!important;
+  padding:clamp(44px,9vh,100px) 16px clamp(40px,9vh,84px)!important;
+  justify-content:space-between!important;align-items:center!important;text-align:center!important
+ }
+ #sc-title .title-content .logo{
+  position:relative!important;display:block!important;clip:auto!important;clip-path:none!important;
+  width:auto!important;height:auto!important;overflow:visible!important;
+  max-width:92vw!important;font-family:Impact,'Arial Black',system-ui!important;
+  font-size:clamp(42px,12.4vw,92px)!important;
+  color:#f4f5fa!important;letter-spacing:-.06em!important;line-height:.84!important;
+  text-shadow:0 5px 0 #0009,0 15px 25px #000e!important;
+  transform:none!important;white-space:normal!important;
+ }
+ #sc-title .title-content .logo em{color:#ff574d!important;text-shadow:0 3px 0 #000b!important}
+ #sc-title .title-content .logo small{
+  color:#fff!important;font-size:clamp(10px,2.8vw,16px)!important;
+  margin-top:11px!important;letter-spacing:.62em!important
+ }
+ #sc-title .title-content #title-tap{
+  min-width:min(280px,78vw)!important;
+  min-height:54px!important;justify-content:space-between!important;
+ }
+ #sc-title .version-label{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #sc-title #title-tap{transition:none!important;animation:none!important}
+}
