@@ -324,3 +324,68 @@
  .hub-actions{gap:8px}
  #sc-hub-room .hub-action{flex:1;min-width:120px;padding:10px 13px}
 }
+
+
+/* HUB strategy & card games — keyboard and touch-accessible surfaces */
+#sc-hub-room .hub-board.hub-strategy-board{
+  width:min(100%,590px);display:grid;gap:0;padding:7px;border:8px solid #655044;
+  border-radius:13px;overflow:hidden;background:#392e27;
+  box-shadow:0 18px 36px #05090d77;
+}
+#sc-hub-room .hub-board.hub-mini-board{width:min(100%,430px);border-color:#947045;background:#8a6538}
+#sc-hub-room .hub-strategy-cell{
+  position:relative;display:grid;place-items:center;min-width:0;min-height:0;width:100%;aspect-ratio:1;
+  padding:0;border:1px solid #ffffff14;border-radius:0;font-weight:800;
+  transition:filter .1s;touch-action:manipulation;
+}
+#sc-hub-room .hub-chess-board .hub-strategy-cell.is-light{background:#d1dbd0}
+#sc-hub-room .hub-chess-board .hub-strategy-cell.is-dark{background:#678c87}
+#sc-hub-room .hub-mini-board .hub-strategy-cell.is-light{background:#d6b47b}
+#sc-hub-room .hub-mini-board .hub-strategy-cell.is-dark{background:#c49b60}
+#sc-hub-room .hub-strategy-cell.is-selected{outline:4px solid #ffdf70;outline-offset:-4px;z-index:1}
+#sc-hub-room .hub-strategy-cell.is-target{box-shadow:inset 0 0 0 3px #baff6e;z-index:1}
+#sc-hub-room .hub-strategy-cell:not(:disabled):hover{filter:brightness(1.12)}
+#sc-hub-room .hub-strategy-cell:disabled{opacity:1}
+.hub-strategy-piece{font-family:"Apple Symbols","DejaVu Sans","Segoe UI Symbol",serif;font-size:clamp(23px,5.3vw,49px);line-height:1;pointer-events:none;user-select:none}
+.hub-chess-board .hub-strategy-piece.is-first{color:#fffefd;text-shadow:0 2px 0 #364442,1px 0 1px #121a1b,-1px 0 1px #121a1b}
+.hub-chess-board .hub-strategy-piece.is-second{color:#1a2725;text-shadow:0 2px 1px #ffffff61}
+.hub-mini-board .hub-strategy-piece{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(18px,4.5vw,34px);font-weight:950;
+  width:79%;height:88%;display:grid;place-items:center;background:#f4d4a2;border:1px solid #825c32;border-radius:30% 30% 5px 5px;clip-path:polygon(50% 0,100% 24%,100% 100%,0 100%,0 24%);
+  color:#382416;text-shadow:0 1px #fff6}
+.hub-mini-board .hub-strategy-piece.is-second{transform:rotate(180deg);background:#e6c495;color:#563b2b}
+.hub-strategy-target-dot{width:25%;aspect-ratio:1;border-radius:50%;background:#214c39bb;pointer-events:none}
+.hub-option-label{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#e0ebec;font-weight:800}
+#sc-hub-room .hub-strategy-select{border-radius:8px;background:#1e333a;color:#effcf8;border:1px solid #647e77;font-size:12px;padding:8px}
+.hub-mini-hand{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;width:100%}
+#sc-hub-room .hub-mini-hand .hub-action{min-height:40px;padding:6px 11px}
+#sc-hub-room .hub-mini-hand .hub-action.is-selected{border-color:#ffdd85;background:#584f35;color:#fff4c3}
+#sc-hub-room .hub-promote-toggle{background:#4b3b67}
+.hub-oldmaid-table,.hub-poker-table{min-width:0}
+.hub-oldmaid-heading{font-size:13px;color:#dff9eb;letter-spacing:.08em}
+.hub-oldmaid-hand{min-height:62px;padding:5px}
+.hub-playing-card.is-joker{font-size:10px;color:#ab2861;background:linear-gradient(165deg,#faf6f4,#f1d3df);font-weight:950}
+.hub-card-empty{font-size:12px;color:#b6d5c5;padding:15px}
+.hub-oldmaid-face-down{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;padding:12px 7px;max-width:100%}
+#sc-hub-room .hub-oldmaid-card{display:grid;place-items:center;flex:0 0 42px;height:60px;padding:0;
+  color:#d4e9fc;font-size:20px;border:3px double #9db9d9;border-radius:7px;
+  background:repeating-linear-gradient(42deg,#264581 0,#264581 7px,#4269a1 7px,#4269a1 14px);
+  box-shadow:0 3px 8px #03122376;transition:transform .12s}
+#sc-hub-room .hub-oldmaid-card:not(:disabled):hover{transform:translateY(-7px)}
+#sc-hub-room .hub-oldmaid-card:disabled{opacity:.65}
+.hub-poker-top{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;
+  background:#132e2b;border:1px solid #79a6936b;padding:12px;border-radius:10px}
+.hub-poker-pot{font-size:17px;font-weight:950;color:#f6d88a;letter-spacing:.04em}
+.hub-poker-phase{font-size:12px;font-weight:800;color:#bee0d1}
+.hub-poker-player.is-folded{opacity:.55}
+#sc-hub-room .hub-poker-pick{background:transparent;padding:0;border:0;border-radius:8px;cursor:pointer}
+#sc-hub-room .hub-poker-pick.is-selected{transform:translateY(-7px);box-shadow:0 0 0 3px #fce58e}
+#sc-hub-room .hub-poker-pick .hub-playing-card{pointer-events:none}
+@media(max-width:740px){
+ #sc-hub-room .hub-board.hub-strategy-board{border-width:5px;padding:3px;width:min(100%,420px)}
+ #sc-hub-room .hub-board.hub-mini-board{width:min(100%,360px)}
+ .hub-strategy-piece{font-size:clamp(20px,7vw,41px)}
+ .hub-mini-board .hub-strategy-piece{font-size:clamp(17px,7vw,34px)}
+ .hub-oldmaid-face-down{gap:5px}
+ #sc-hub-room .hub-oldmaid-card{flex-basis:35px;height:49px}
+ .hub-poker-pot{font-size:14px}
+}

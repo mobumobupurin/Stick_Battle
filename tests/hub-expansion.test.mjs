@@ -109,7 +109,7 @@ test('table card UI and bot selection remain accessible without affecting the ba
   const html=read('src/index.template.html'),js=read('src/game/21-hub-ui.js'),css=read('src/styles/game-hub.css');
   assert.match(html,/id="hub-cpu-count"/);
   assert.match(html,/id="hub-actions"/);
-  assert.match(html,/6 PLAYABLE \/ 13 GAMES/);
+  assert.match(html,/10 PLAYABLE \/ 13 GAMES/);
   assert.match(js,/hubCpuTimer\(\)/);
   assert.match(css,/\.hub-seven-layout/);
   assert.match(css,/\.hub-playing-card/);

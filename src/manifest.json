@@ -33,6 +33,10 @@
     "src/game/18-cairo-and-world.js",
     "src/game/19-game-hub.js",
     "src/game/20-hub-rules.js",
-    "src/game/21-hub-ui.js"
+    "src/game/21-hub-ui.js",
+    "src/game/22-hub-chess.js",
+    "src/game/23-hub-mini-shogi.js",
+    "src/game/24-hub-party-poker.js",
+    "src/game/25-hub-more-ui.js"
   ]
 }
