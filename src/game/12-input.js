@@ -145,8 +145,10 @@ function readHuman() {
   const specialEdge=directionMode&&touchB&&!raw.s;
   const touchUp=specialEdge&&capturedDir==='u',touchDown=specialEdge&&capturedDir==='d';
   const touchLeft=specialEdge&&capturedDir==='l',touchRight=specialEdge&&capturedDir==='r';
+  const upBHeld=directionMode&&touchB&&capturedDir==='u';
+  const downBHeld=directionMode&&touchB&&capturedDir==='d';
   // Tilt up + B is an up-special, NOT an unintended jump.
-  const j = touch.j || press.j || (stickUp&&!touchUp) || kd(32) || kd(87) || kd(UP_ARROW) || gpJump;
+  const j = touch.j || press.j || (stickUp&&!upBHeld) || kd(32) || kd(87) || kd(UP_ARROW) || gpJump;
   const a = touch.a || press.a || kd(74) || kd(90) || gpAttack;
   const s = touch.h || press.h || touch.g || press.g || touch.v || press.v || touchB || kd(75) || kd(88) || gpSpecial;
   const c = touch.c || press.c || kd(76) || kd(67) || gpCounter;
@@ -162,7 +164,7 @@ function readHuman() {
 
   // A down-special must not simultaneously trigger a platform drop.
   const down=st.y > 0.55 || kd(83) || kd(DOWN_ARROW) || gpDown;
-  const downForDrop=down&&!touchDown;
+  const downForDrop=down&&!downBHeld;
   hin.d=touchDown||down;
   hin.gd=touchDown||touch.g||press.g;
   hin.neutralSpecial=touchB?(!directionMode||capturedDir===''):false;
