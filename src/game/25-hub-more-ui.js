@@ -5,11 +5,17 @@ const HUB_CHESS_GLYPH={wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',
 const HUB_MINI_GLYPH={K:'玉',G:'金',S:'銀',B:'角',R:'飛',P:'歩',
  '+S':'全','+B':'馬','+R':'龍','+P':'と'};
 let hubExtraBoardKey='',hubExtraSelected=null,hubExtraDrop='',hubExtraPromote=true,hubChessPromotionPref='Q';
+let hubExtraMoveKey='';
 let hubPokerPickKey='',hubPokerPicked=new Set();
 function hubExtraSync(state){
  const key=state.kind+':'+(state.created||0);
  if(key!==hubExtraBoardKey){
   hubExtraBoardKey=key;hubExtraSelected=null;hubExtraDrop='';hubExtraPromote=true;hubChessPromotionPref='Q';
+ }
+ // Old square/drop choices must not survive an opponent move, an AI move or a new round.
+ const moveKey=key+':'+state.revision+':'+state.turn;
+ if(hubExtraMoveKey!==moveKey){
+   hubExtraMoveKey=moveKey;hubExtraSelected=null;hubExtraDrop='';
  }
  const pk=key+':'+state.phase+':'+state.turn;
  if(pk!==hubPokerPickKey){hubPokerPickKey=pk;hubPokerPicked=new Set();}
@@ -43,6 +49,8 @@ function hubExtraFinish(state,actions){
 }
 function hubExtraBoardUI(state){
  const chess=state.kind==='chess',N=chess?8:5,seat=state.players.indexOf(myId),myTurn=state.status==='play'&&state.turn===seat;
+ // Shogi mid-/late-game boards can arrive as numeric-key objects from Firebase.
+ if(!chess&&state.board&&!Array.isArray(state.board))state={...state,board:hubMiniBoard(state)};
  const checked=state.status==='play'&&(chess?hubChessCheck(state.board,state.turn):hubMiniCheck(state.board,state.turn));
  let message=state.status==='done'?
    (state.winner>=0?hubDisplayName(state.players[state.winner])+'の勝ち！':'引き分けです。'):
