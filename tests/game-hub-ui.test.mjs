@@ -13,8 +13,7 @@ test('GAME HUB has one entry with consistent branding and no random match inside
   assert.match(hub,/id="hub-game-title"/);
   assert.match(hub,/id="hub-roster"/);
   assert.doesNotMatch(hub,/ランダムマッチ|id="online-quick"/);
-  assert.match(entry,/id="online-quick-zone"/);
-  assert.match(entry,/id="online-quick"/);
+  assert.doesNotMatch(entry,/id="online-quick-zone"|id="online-quick"|ランダムマッチ/);
 });
 
 test('Connect Four token palette is red and yellow, while Reversi remains neutral',()=>{
@@ -27,11 +26,13 @@ test('Connect Four token palette is red and yellow, while Reversi remains neutra
   assert.match(css,/\.hub-player-disc\.light,\.hub-disc\.light\s*\{/);
 });
 
-test('HUB hides quick-match via attribute and CSS even if entry is refreshed',()=>{
+test('room UI keeps responsive game library but no random-match CSS remains',()=>{
   const css=read('src/styles/game-hub.css');
-  assert.match(css,/#sc-online\[data-online-mode="hub"\] \.hub-quick-zone/);
-  assert.match(css,/#sc-online\[data-online-mode="hub"\] #online-quick-status/);
-  assert.match(css,/#sc-online\[data-online-mode="tournament"\] \.hub-quick-zone/);
+  const js=read('src/game/19-game-hub.js');
+  const html=read('src/index.template.html');
+  assert.doesNotMatch(css,/online-quick|hub-quick-zone/);
+  assert.doesNotMatch(js,/startQuickMatch|quickReleaseQueue|_matchmaking|online-quick/);
+  assert.doesNotMatch(html,/ランダムマッチ|online-quick/);
   assert.match(css,/\.hub-shell\{display:grid;/);
   assert.match(css,/@media\s*\(max-width:740px\)/);
 });
