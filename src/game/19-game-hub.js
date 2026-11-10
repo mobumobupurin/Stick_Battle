@@ -99,24 +99,83 @@ function hubDisplayName(id){
   const v=memCache[id];
   return v?String(v.label||'PLAYER').slice(0,24):'退出したプレイヤー';
 }
+function hubDiscTone(kind,value){
+  if(!value)return '';
+  return kind==='connect4'?(value===1?'red':'yellow'):(value===1?'dark':'light');
+}
+function hubSetEntryMode(mode){
+  const entry=hubEl('sc-online');
+  if(!entry)return;
+  const isHub=mode==='hub';
+  entry.dataset.onlineMode=isHub?'hub':mode==='tournament'?'tournament':'normal';
+  const title=hubEl('online-page-title');
+  if(title)title.innerHTML=(isHub?'ゲーム<span>HUB</span>':mode==='tournament'?'オンライン大会':'オンライン対戦')+'<span class="hub-entry-period">.</span>';
+  const eyebrow=hubEl('online-eyebrow');
+  if(eyebrow)eyebrow.textContent=isHub?'GAME HUB / INVITE ONLY':mode==='tournament'?'STICK BATTLE / TOURNAMENT':'STICK BATTLE / ONLINE';
+  const description=hubEl('online-context');
+  if(description)description.textContent=isHub?
+    '6文字のルームコードで友達を招待。集まったらリバーシやコネクトフォーを遊ぼう。':
+    mode==='tournament'?'友達を招いて、オンラインの勝ち抜きトーナメントを開催しよう。':
+    '友達と専用ルームで対戦。知らない相手と遊びたいときはランダムマッチも選べます。';
+  const quick=hubEl('online-quick-zone'),quickStatus=hubEl('online-quick-status');
+  if(quick)quick.hidden=mode!=='normal';
+  if(quickStatus)quickStatus.hidden=mode!=='normal';
+}
+function hubMake(tag,className,textValue){
+  const el=document.createElement(tag);
+  if(className)el.className=className;
+  if(textValue!==undefined)el.textContent=String(textValue);
+  return el;
+}
+const HUB_ICONS={
+  stickbattle:'⚔',reversi:'◑',connect4:'◉',airhockey:'◈',
+  chess:'♞',shogi:'将', 'mini-shogi':'五',shichinarabe:'7',
+  oldmaid:'♠',mahjong:'🀄',blackjack:'21',poker:'♣',baccarat:'◆'
+};
 function hubRender(){
   if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
   const members=lobbyMembers().filter(x=>!x.cpu);
   const code=hubEl('hub-code');if(code)code.textContent=roomId||'';
-  hubEl('hub-members').textContent=members.length+'人が参加中 / '+(isHost?'あなたがホスト':'ホストがゲームを選択します');
-  hubEl('hub-roster').textContent=members.map(m=>m.label+(m.host?' ★':'')+(m.id===myId?'（あなた）':'')).join('　/　');
+  const count=hubEl('hub-members');
+  if(count)count.textContent=members.length+' / '+MAX_PLAYERS+' 人が参加中　'+(isHost?'・あなたはホスト':'・ホストがゲームを選択します');
+  const roster=hubEl('hub-roster');
+  if(roster){
+    roster.replaceChildren();
+    for(const m of members){
+      const item=hubMake('span','hub-member'+(m.id===myId?' is-you':''));
+      const name=String(m.label||'PLAYER');
+      const avatar=hubMake('span','hub-member-avatar',name.trim().slice(0,1).toUpperCase()||'P');
+      const label=hubMake('span','hub-member-label',name+(m.id===myId?'（あなた）':''));
+      item.append(avatar,label);
+      if(m.host)item.appendChild(hubMake('span','hub-member-host','HOST'));
+      roster.appendChild(item);
+    }
+  }
   const cards=hubEl('hub-catalog');
   if(cards){
-    cards.innerHTML='';
+    cards.replaceChildren();
     for(const category of ['2人対戦','みんなで遊ぶ','カジノ']){
-      const section=document.createElement('section');section.className='hub-category';
-      const heading=document.createElement('h3');heading.textContent=category;section.appendChild(heading);
-      const grid=document.createElement('div');grid.className='hub-cards';
-      for(const game of HUB_CATALOG.filter(x=>x.category===category)){
-        const b=document.createElement('button');b.type='button';b.className='hub-card'+(hubGameSnapshot?.kind===game.id?' is-current':'');
+      const games=HUB_CATALOG.filter(x=>x.category===category);
+      const section=hubMake('section','hub-category');
+      const heading=hubMake('div','hub-category-heading');
+      const title=hubMake('h4','',category);
+      heading.append(title,hubMake('span','hub-category-count',String(games.length).padStart(2,'0')));
+      section.appendChild(heading);
+      const grid=hubMake('div','hub-cards');
+      for(const game of games){
+        const isCurrent=hubGameSnapshot?.kind===game.id;
+        const b=hubMake('button','hub-card'+(isCurrent?' is-current':'')+(!game.ready?' is-coming':''));
+        b.type='button';
+        b.dataset.game=game.id;
         b.disabled=!game.ready||!isHost||members.length<2||hubBusy;
-        const title=document.createElement('strong');title.textContent=game.name;b.appendChild(title);
-        const info=document.createElement('small');info.textContent=game.players+' · '+(game.ready?'対戦可能':'今後追加');b.appendChild(info);
+        b.setAttribute('aria-label',game.name+(game.ready?'':'（準備中）'));
+        b.appendChild(hubMake('span','hub-card-icon',HUB_ICONS[game.id]||'◇'));
+        const main=hubMake('span','hub-card-content');
+        main.appendChild(hubMake('strong','hub-card-name',game.name));
+        main.appendChild(hubMake('small','hub-card-meta',game.players));
+        b.appendChild(main);
+        let statusText=!game.ready?'COMING SOON':isCurrent?'PLAYING':!isHost?'HOST ONLY':members.length<2?'WAITING':'PLAY ↗';
+        b.appendChild(hubMake('span','hub-card-status',statusText));
         if(game.ready){
           b.title=game.description||'';
           b.onclick=()=>hubSelectGame(game.id);
@@ -127,30 +186,66 @@ function hubRender(){
     }
   }
   const info=hubEl('hub-game-info'),boardEl=hubEl('hub-board');
+  const titleEl=hubEl('hub-game-title'),meta=hubEl('hub-game-meta'),versus=hubEl('hub-versus');
+  const empty=hubEl('hub-empty-state'),footer=hubEl('hub-game-footer');
   boardEl.replaceChildren();
   const g=hubGameSnapshot;
-  if(!g){info.textContent='ゲームを選んでください。リバーシとコネクトフォーはオンライン対戦に対応しています。';return;}
+  if(!g){
+    titleEl.textContent='ゲームを選ぼう';
+    meta.textContent='GAME TABLE / READY';
+    info.textContent=isHost?'左の一覧から好きなゲームを選んで、みんなで遊ぼう。':'ホストがゲームを選択するのを待っています。';
+    versus.replaceChildren();footer.textContent='リバーシとコネクトフォーは、2人揃えばすぐに遊べます。';
+    boardEl.hidden=true;empty.hidden=false;return;
+  }
   const game=HUB_CATALOG.find(x=>x.id===g.kind);
-  if(!game||!Array.isArray(g.players)||g.players.length!==2){info.textContent='ゲームのデータを読み込めません。';return;}
-  const board=Array.isArray(g.board)?g.board:[],isPlayer=g.players.includes(myId);
-  const names=g.players.map(hubDisplayName);
-  const current=g.turn>=0?g.players[g.turn]:'';
-  if(g.status==='done')info.textContent=game.name+' ／ '+(g.winner>=0?hubDisplayName(g.players[g.winner])+' の勝ち！':'引き分け')+' ／ ホストは同じゲームを押すと再戦できます。';
-  else info.textContent=game.name+' ／ '+names[0]+'（先手） vs '+names[1]+'（後手） ／ '+hubDisplayName(current)+' の番'+(g.passes?'（パスが発生しました）':'')+(isPlayer?'':' ／ 観戦中');
-  boardEl.className='hub-board '+(g.kind==='reversi'?'hub-reversi':'hub-connect4');
-  boardEl.style.gridTemplateColumns='repeat('+(g.kind==='reversi'?8:7)+', minmax(0,1fr))';
+  if(!game||!Array.isArray(g.players)||g.players.length!==2){
+    titleEl.textContent='ゲームを読み込めません';meta.textContent='GAME TABLE / ERROR';
+    info.textContent='対局データを確認してください。';
+    versus.replaceChildren();footer.textContent='ホストが別のゲームを選ぶと再開できます。';
+    boardEl.hidden=true;empty.hidden=false;return;
+  }
+  const board=Array.isArray(g.board)?g.board:[],isPlayer=g.players.includes(myId),isConnect=g.kind==='connect4';
+  const names=g.players.map(hubDisplayName),current=g.turn>=0?g.players[g.turn]:'';
+  titleEl.textContent=game.name;
+  meta.textContent=(isConnect?'CONNECT FOUR':'REVERSI')+' / '+(g.status==='done'?'RESULT':'MATCH '+String(g.moves||0).padStart(2,'0'));
+  if(g.status==='done'){
+    info.textContent=g.winner>=0?hubDisplayName(g.players[g.winner])+' の勝利！':'引き分け！';
+    footer.textContent=isHost?'左の同じゲームを選ぶと再戦できます。':'ホストが再戦・ゲーム変更を選ぶまでお待ちください。';
+  }else{
+    info.textContent=current===myId?'あなたの番です。盤面をタップして着手しよう！':hubDisplayName(current)+' の番です。'+(!isPlayer?'（観戦中）':'');
+    if(g.passes)info.textContent+='　※置ける場所がなくパスしました。';
+    footer.textContent=isConnect?'列をタップすると、コマが一番下の空きマスに落ちます。':'光っているマスが置ける場所です。';
+  }
+  versus.replaceChildren();
+  for(let n=0;n<2;n++){
+    const person=hubMake('div','hub-player'+(g.status==='play'&&g.turn===n?' is-turn':'')+(g.winner===n&&g.status==='done'?' is-winner':''));
+    const disc=hubMake('span','hub-player-disc '+hubDiscTone(g.kind,n+1));
+    const text=hubMake('span','hub-player-info');
+    text.appendChild(hubMake('span','hub-player-label',n===0?'PLAYER 1 / 先手':'PLAYER 2 / 後手'));
+    text.appendChild(hubMake('strong','hub-player-name',names[n]+(g.players[n]===myId?'（あなた）':'')));
+    const points=isConnect?board.filter(v=>Number(v)===n+1).length:board.filter(v=>Number(v)===n+1).length;
+    const counter=hubMake('b','hub-player-score',String(points).padStart(2,'0'));
+    person.append(disc,text,counter);
+    versus.appendChild(person);
+    if(n===0)versus.appendChild(hubMake('span','hub-vs','VS'));
+  }
+  boardEl.className='hub-board '+(isConnect?'hub-connect4':'hub-reversi');
+  boardEl.style.gridTemplateColumns='repeat('+(isConnect?7:8)+',minmax(0,1fr))';
+  boardEl.hidden=false;empty.hidden=true;
   const canAct=g.status==='play'&&current===myId;
-  const legal=canAct&&g.kind==='reversi'?new Set(hubReversiMoves(board,g.turn+1)):new Set();
+  const legal=canAct&&!isConnect?new Set(hubReversiMoves(board,g.turn+1)):new Set();
   for(let i=0;i<board.length;i++){
-    const c=document.createElement('button');c.type='button';
-    const value=Number(board[i])||0;
-    c.className='hub-cell'+(value?' occupied':'')+(legal.has(i)?' legal':'');
-    c.disabled=!canAct||(g.kind==='reversi'&&!legal.has(i));
-    c.setAttribute('aria-label',g.kind==='connect4'?'列'+(i%7+1):'行'+(Math.floor(i/8)+1)+'列'+(i%8+1));
+    const c=hubMake('button','hub-cell'+(Number(board[i])?' occupied':'')+(legal.has(i)?' legal':''));
+    c.type='button';
+    const value=Number(board[i])||0,choice=isConnect?i%7:i;
+    c.disabled=!canAct||(!isConnect&&!legal.has(i))||(isConnect&&Number(board[choice])!==0);
+    const tone=hubDiscTone(g.kind,value),discLabel=value?(isConnect?(value===1?'赤':'黄色'):(value===1?'黒':'白')):'空き';
+    c.setAttribute('aria-label',(isConnect?'列'+(choice+1):'行'+(Math.floor(i/8)+1)+'列'+(i%8+1))+' / '+discLabel);
     if(value){
-      const disc=document.createElement('span');disc.className='hub-disc '+(value===1?'dark':'light');c.appendChild(disc);
-    }else if(legal.has(i)){const dot=document.createElement('span');dot.className='hub-legal-dot';c.appendChild(dot);}
-    const choice=g.kind==='connect4'?i%7:i;
+      c.appendChild(hubMake('span','hub-disc '+tone));
+    }else if(legal.has(i)){
+      c.appendChild(hubMake('span','hub-legal-dot'));
+    }
     c.onclick=()=>hubSubmitMove(choice);
     boardEl.appendChild(c);
   }
@@ -329,6 +424,11 @@ async function startQuickMatch(){
     button.disabled=false;
   }
 }
+const hubShowBase=show;
+show=function(id){
+  if(id==='sc-online')hubSetEntryMode(requestedOnlineMode);
+  return hubShowBase(id);
+};
 const hubOriginalBuildMenus=buildMenus;
 buildMenus=function(){
   hubOriginalBuildMenus();
@@ -340,12 +440,10 @@ buildMenus=function(){
       await roomRef.child('gm').update({mode:'hub',ph:'lobby',cpuN:0,teamMode:0});
     }
   };
-  hubEl('go-online').addEventListener('click',()=>{hubEl('online-context').textContent='友達との対戦は部屋コードで招待。ランダムマッチなら相手を自動で探せます。';});
-  hubButton.addEventListener('click',()=>{hubEl('online-context').textContent='ゲームハブの部屋を作って友達に招待URL・6文字のコードを送ろう！';});
   hubEl('hub-copy').onclick=()=>{
     const url=location.href.split('?')[0]+'?room='+roomId;
     if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>alert('招待URLをコピーしました')).catch(()=>prompt('このURLを送ってください',url));
     else prompt('このURLを送ってください',url);
   };
-  hubEl('hub-leave').onclick=()=>{if(confirm('ゲームハブの部屋から退出しますか？'))leaveRoom();};
+  hubEl('hub-leave').onclick=()=>{if(confirm('ゲームHUBの部屋から退出しますか？'))leaveRoom();};
 };
