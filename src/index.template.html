@@ -328,6 +328,13 @@
           <option value="4">CPUを4人追加</option>
         </select>
         <p id="hub-cpu-info">不足人数を自動補充</p>
+        <label for="hub-cpu-level" class="hub-cpu-difficulty-label"><span aria-hidden="true">★</span> CPUの強さ</label>
+        <select id="hub-cpu-level" aria-label="ゲームHUBのCPUの強さ">
+          <option value="0">弱い　／　初心者向け</option>
+          <option value="1" selected>ふつう　／　標準</option>
+          <option value="2">強い　／　挑戦者向け</option>
+        </select>
+        <p id="hub-cpu-level-info">ふつう：基本戦術・守り・次の手を考えるCPUです。</p>
       </div>
       <div id="hub-catalog"></div>
     </aside>
@@ -343,7 +350,7 @@
         <p id="hub-selection-status" class="hub-selection-status" role="status" aria-live="polite">ホストがゲームを選ぶと、ここからスタートできます。</p>
         <button id="hub-resume-play" type="button" class="hub-resume-btn" hidden>進行中のゲーム画面に戻る →</button>
       </section>
-      <p class="hub-room-note">① ゲームを選ぶ → ② CPUの人数を設定 → ③「ゲームスタート」で専用画面へ。参加者全員が同じゲームに移動します。</p>
+      <p class="hub-room-note">① ゲームを選ぶ → ② CPU人数と強さを設定 → ③「ゲームスタート」で専用画面へ。CPUの強さは対局開始時に確定します。</p>
     </main>
   </div>
   <div class="nav hub-bottom-nav"><button class="back" id="hub-leave" type="button">← ゲームHUBから退出</button></div>

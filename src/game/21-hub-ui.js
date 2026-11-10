@@ -231,6 +231,9 @@ hubSelectGame=async function(kind){
     const game=hubNewGame(kind,seats);
     if(!game)throw new Error('ゲームを初期化できません。');
     if(!game.created)game.created=Date.now();
+    // Freeze the chosen CPU difficulty in the shared match snapshot for all clients.
+    const rawLevel=Number(hubEl('hub-cpu-level')?.value??1);
+    game.cpuLevel=Number.isInteger(rawLevel)?Math.max(0,Math.min(2,rawLevel)):1;
     await roomRef.child('hubGame').set(game);
   }catch(e){alert('ゲームを開始できませんでした。'+(e?.message||e));}
   finally{hubBusy=false;hubRender();}

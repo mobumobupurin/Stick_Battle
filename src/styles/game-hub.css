@@ -267,7 +267,7 @@
 .hub-cpu-settings{border:1px solid #4c665f;border-radius:13px;background:linear-gradient(145deg,#1f3e3c,#172e37);padding:13px;margin:0 0 17px}
 .hub-cpu-settings label{font-size:12px;font-weight:850;color:#e8fff4;display:flex;align-items:center;gap:6px;margin-bottom:9px}
 .hub-cpu-symbol{font-size:16px}
-:is(#sc-hub-room,#sc-hub-play) #hub-cpu-count{display:block;width:100%;font:700 12px system-ui,sans-serif;padding:10px 32px 10px 10px;color:#effcf7;background:#142b31;border:1px solid #668577;border-radius:9px;cursor:pointer}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-count,:is(#sc-hub-room,#sc-hub-play) #hub-cpu-level{display:block;width:100%;font:700 12px system-ui,sans-serif;padding:10px 32px 10px 10px;color:#effcf7;background:#142b31;border:1px solid #668577;border-radius:9px;cursor:pointer}
 :is(#sc-hub-room,#sc-hub-play) #hub-cpu-count:disabled{opacity:.55}
 .hub-cpu-settings p{margin:8px 0 0;color:#b4d4c9;font-size:11px}
 .hub-member-cpu{border-color:#789e87;background:#29453c}
@@ -458,3 +458,9 @@
  #sc-hub-play .hub-board.hub-strategy-board{width:min(100%,430px)}
  #sc-hub-play .hub-board.hub-mini-board{width:min(100%,370px)}
 }
+
+/* HUB difficulty: legible on narrow mobile screens, disabled during an active round. */
+.hub-cpu-difficulty-label{margin-top:15px!important;padding-top:13px;border-top:1px solid #6c968050}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-level{width:100%;appearance:auto;color-scheme:dark}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-level:disabled{opacity:.55;cursor:default}
+#hub-cpu-level-info{color:#cbe4df;font-size:11px;line-height:1.6;margin:8px 0 0}

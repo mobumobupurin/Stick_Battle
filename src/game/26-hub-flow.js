@@ -39,6 +39,17 @@ function hubFlowSetup(){
   const humans=lobbyMembers().filter(m=>!m.cpu);
   const auto=hubEl('hub-cpu-count')?.value||'auto';
   const seats=chosen?hubChooseSeats(chosen.id,humans,auto):null;
+  const level=hubEl('hub-cpu-level'),levelInfo=hubEl('hub-cpu-level-info');
+  const names=['弱い','ふつう','強い'];
+  if(level)level.disabled=!isHost||hubBusy||!!hubGameSnapshot;
+  if(levelInfo){
+    const raw=Number(level?.value??1),n=Math.max(0,Math.min(2,Number.isInteger(raw)?raw:1));
+    levelInfo.textContent=[
+      '弱い：基本的な合法手を選びます。初心者でも勝ちやすい。',
+      'ふつう：攻守のバランスと相手の次の手を考えます。',
+      '強い：先読みを増やし、攻めと守りをより厳密に判断します。'
+    ][n];
+  }
   slots.replaceChildren();
   if(seats){
     for(const id of seats){
@@ -120,7 +131,8 @@ async function hubStartSelectedGame(){
       const latest=(await roomRef.child('gm').once('value')).val();
       if(latest?.mode!=='normal')return;
       const cpuCount=seats.filter(hubIsCpu).length;
-      await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:1,teamMode:0});
+      const selectedLevel=Number(hubEl('hub-cpu-level')?.value??1);
+      await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:Number.isInteger(selectedLevel)?Math.max(0,Math.min(2,selectedLevel)):1,teamMode:0});
       gmCache=(await roomRef.child('gm').once('value')).val();
       await hostStart();
     }catch(e){
@@ -154,4 +166,6 @@ buildMenus=function(){
   };
   const cpu=hubEl('hub-cpu-count');
   if(cpu)cpu.onchange=()=>hubRender();
+  const level=hubEl('hub-cpu-level');
+  if(level)level.onchange=()=>hubRender();
 };

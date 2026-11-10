@@ -6,6 +6,24 @@ const HUB_MINI_VAL={K:1000,G:6,S:5,B:8,R:9,P:2,'+S':6,'+B':11,'+R':12,'+P':6};
 const hubMiniColor=seat=>seat===0?'s':'g';
 const hubMiniType=p=>typeof p==='string'?p.slice(1):'';
 const hubMiniOwner=p=>typeof p==='string'?p[0]:'';
+// Firebase can return sparse numeric-key arrays as objects after pieces are captured.
+// Always construct a full 25-square board and two reliable hand objects.
+function hubMiniBoard(state){
+ const raw=state?.board??state;
+ return Array.from({length:25},(_,i)=>typeof raw?.[i]==='string'?raw[i]:0);
+}
+function hubMiniHands(state){
+ const raw=state?.hand;
+ return [0,1].map(i=>{
+   const source=raw?.[i]||{};
+   const clean={};
+   for(const type of ['P','S','G','B','R']){
+     const count=Number(source[type]);
+     if(Number.isInteger(count)&&count>0&&count<=25)clean[type]=count;
+   }
+   return clean;
+ });
+}
 function hubMiniNew(players){
  const board=Array(25).fill(0),upper=['R','B','S','G','K'],lower=['K','G','S','B','R'];
  for(let i=0;i<5;i++){board[i]='g'+upper[i];board[20+i]='s'+lower[i];}
@@ -14,7 +32,7 @@ function hubMiniNew(players){
   status:'play',winner:-1,moves:0,revision:0,created:Date.now(),history:[]};
 }
 function hubMiniPseudo(state,seat){
- const board=state.board,own=hubMiniColor(seat),enemy=hubMiniColor(1-seat),forward=seat===0?-1:1;
+ const board=hubMiniBoard(state),own=hubMiniColor(seat),enemy=hubMiniColor(1-seat),forward=seat===0?-1:1;
  const out=[],push=(from,to,promote=false,drop=null)=>{out.push(drop?{drop,to}:{from,to,promote});};
  const dirsGold=[[forward,0],[forward,1],[forward,-1],[0,1],[0,-1],[-forward,0]];
  const dirsSilver=[[forward,0],[forward,1],[forward,-1],[-forward,1],[-forward,-1]];
@@ -62,11 +80,11 @@ function hubMiniPseudo(state,seat){
  return out;
 }
 function hubMiniRaw(state,move){
- const next={...state,board:state.board.slice(),players:state.players.slice(),
-  hand:(state.hand||[{},{}]).map(x=>({...x}))};
+ const next={...state,board:hubMiniBoard(state),players:state.players.slice(),
+  hand:hubMiniHands(state)};
  const seat=state.turn,own=hubMiniColor(seat),board=next.board;
  if(move.drop){
-  if(Number(next.hand[seat][move.drop])<=0||board[move.to])return null;
+  if(!(Number(next.hand[seat][move.drop])>0)||board[move.to])return null;
   next.hand[seat][move.drop]--;
   board[move.to]=own+move.drop;
  }else{
@@ -86,15 +104,15 @@ function hubMiniAttacked(board,target,bySeat){
  const other=hubMiniColor(bySeat),own=hubMiniColor(1-bySeat);
  const test={board,hand:[{},{}],turn:bySeat};
  // Only board-piece moves count as attacks; fake the king on the attacked square.
- const copy=board.slice();copy[target]=own+'G';
+ const copy=hubMiniBoard(board);copy[target]=own+'G';
  return hubMiniPseudo({...test,board:copy},bySeat).some(m=>m.drop===undefined&&m.to===target&&copy[m.from]?.[0]===other);
 }
 function hubMiniCheck(board,seat){
- const king=board.indexOf(hubMiniColor(seat)+'K');
+ const king=hubMiniBoard(board).indexOf(hubMiniColor(seat)+'K');
  return king<0||hubMiniAttacked(board,king,1-seat);
 }
 function hubMiniLegalMoves(state,seat=state.turn,pawnMate=true){
- if(!state||!Array.isArray(state.board)||state.board.length!==25)return [];
+ if(!state||!state.board||!Number.isInteger(seat)||seat<0||seat>1)return [];
  const temp={...state,turn:seat};
  const legal=[];
  for(const move of hubMiniPseudo(temp,seat)){
@@ -109,7 +127,7 @@ function hubMiniLegalMoves(state,seat=state.turn,pawnMate=true){
  return legal;
 }
 function hubMiniSignature(state){
- return state.board.join(',')+'|'+JSON.stringify(state.hand)+'|'+state.turn;
+ return hubMiniBoard(state).join(',')+'|'+JSON.stringify(hubMiniHands(state))+'|'+state.turn;
 }
 function hubMiniPlay(state,actor,choice){
  if(!state||state.status!=='play'||state.players[state.turn]!==actor||!choice||!Number.isInteger(choice.to))return null;
