@@ -40,3 +40,6 @@
 #online-quick{background:linear-gradient(125deg,#2765a4,#1b446f);border:1px solid #7cb7ff}
 #online-quick-status{min-height:24px;margin:6px 0;color:#a4dffb;text-align:center;font-size:12px}
 @media(max-width:640px){#sc-hub-room{gap:10px;padding:10px 8px 28px}.hub-head,.hub-playarea{padding:12px}.hub-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.hub-card{min-height:70px}.hub-board{border-width:4px;gap:1px}.hub-room-actions{width:100%}.hub-room-code{flex:1}.hub-invite{flex:1}}
+
+.hub-switch-to-games{display:block;width:100%;padding:13px 18px;border:1px solid #78c5fb;background:linear-gradient(125deg,#244c76,#182f55);color:#fff;border-radius:12px;font-weight:900;margin:8px 0}
+.hub-switch-to-games small{display:block;font-weight:500;font-size:11px;margin-top:4px;color:#b7dffc}
