@@ -842,122 +842,279 @@ input,select{font-family:inherit}
  .mode-rework-grid .big.mode-card:hover,.ci:hover{transform:none}
 }
 
-/* TITLE KEY ART / V3 — in-game no-eye martial artist vs. swordsman clash.
-   The responsive composition intentionally keeps the game logo within the image
-   in landscape. Portrait displays an accessible, real-text logo over the art. */
+/* TITLE CLASH / V4 — game-native vector figures, no image asset.
+   All character contours, impact strokes and title typography are authored in HTML/CSS.
+   No data: image, background JPG or giant single-character silhouette. */
 #sc-title{
- position:fixed!important;inset:0!important;display:flex;isolation:isolate;
- width:100%;min-height:100dvh;height:100dvh;
- padding:0!important;margin:0!important;overflow:hidden!important;
- align-items:flex-end!important;justify-content:flex-start!important;
- background:#080d16!important;
+ position:fixed!important;inset:0!important;isolation:isolate;
+ display:flex!important;align-items:stretch!important;justify-content:flex-start!important;
+ width:100%!important;height:100dvh!important;min-height:0!important;
+ padding:0!important;margin:0!important;gap:0!important;overflow:hidden!important;
+ background:#080e19!important;
 }
-#sc-title::before{display:none!important}
-#sc-title .title-art{
- position:absolute!important;inset:0!important;left:0!important;right:0!important;
- z-index:0;opacity:1!important;transform:none!important;filter:none!important;
- background:#070b12 url('assets/title/title-clash.svg') center top/cover no-repeat!important;
- pointer-events:none;
+#sc-title::before,#sc-title::after{display:none!important}
+#sc-title .title-art.title-code-art{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ z-index:0!important;display:block!important;transform:none!important;
+ opacity:1!important;filter:none!important;
+ background:radial-gradient(ellipse at center,#23334c,#070b14 77%)!important;
+ pointer-events:none!important;animation:none!important;
 }
-#sc-title .title-art::after{
- content:'';display:block!important;position:absolute;inset:0;
- background:linear-gradient(180deg,rgba(5,9,18,.08) 0%,transparent 55%,rgba(5,9,18,.36) 100%);
+#sc-title .title-art.title-code-art .title-vector{
+ width:100%;height:100%;max-width:none;
+ display:block!important;opacity:1;filter:none;
+}
+#sc-title .title-art.title-code-art::after{
+ content:'';position:absolute;inset:0;display:block;
+ background:linear-gradient(90deg,#090e19ed 0%,#090e19b0 17%,#090e1940 39%,transparent 64%),
+            linear-gradient(0deg,#090e19b8 0%,transparent 32%),
+            linear-gradient(180deg,#080d17ac 0%,transparent 27%);
  pointer-events:none;
 }
 #sc-title .title-content{
- position:relative!important;z-index:2;
- width:100%!important;max-width:1200px!important;min-height:0!important;
- margin:0 auto!important;padding:0 clamp(24px,4.4vw,78px) clamp(24px,5.5vh,50px)!important;
- display:flex!important;flex-direction:column;align-items:flex-start!important;
- justify-content:flex-end!important;gap:0!important;
- text-align:left!important;pointer-events:none;
+ position:absolute!important;inset:0;z-index:2!important;
+ display:flex!important;flex-direction:column!important;
+ justify-content:flex-start!important;align-items:flex-start!important;
+ gap:0!important;width:100%!important;max-width:100%!important;
+ margin:0!important;
+ padding:clamp(25px,5.2vh,64px) clamp(22px,5vw,80px) clamp(24px,5vh,60px)!important;
+ pointer-events:none;text-align:left!important;
 }
-#sc-title .title-content .logo,
-#sc-title .title-content .title-kicker,
+#sc-title .title-content .title-kicker{
+ position:relative!important;display:block!important;
+ clip:auto!important;clip-path:none!important;overflow:visible!important;
+ width:auto!important;height:auto!important;min-height:0!important;
+ margin:0 0 clamp(12px,2.5vh,25px)!important;padding:0!important;
+ color:#facb81!important;font-size:clamp(9px,1vw,12px)!important;
+ letter-spacing:.27em!important;font-weight:900!important;
+ text-shadow:0 2px 12px #000c;
+}
+#sc-title .title-content .logo{
+ position:relative!important;display:block!important;
+ clip:auto!important;clip-path:none!important;overflow:visible!important;
+ width:max-content!important;max-width:92vw!important;height:auto!important;min-height:0!important;
+ margin:0!important;padding:0!important;white-space:normal!important;
+ font-family:Impact,'Arial Black',system-ui,sans-serif!important;
+ font-weight:1000!important;font-style:italic!important;
+ font-size:clamp(62px,8vw,144px)!important;letter-spacing:-.055em!important;line-height:.81!important;
+ color:#f4f6fc!important;text-shadow:0 7px 0 #02060ccc,0 19px 32px #000e!important;
+ transform:skew(-4deg)!important;filter:none!important;
+}
+#sc-title .title-content .logo em{
+ display:block!important;font-style:italic!important;
+ color:#f25f58!important;
+ background:linear-gradient(#ffad88 0%,#f85a4f 50%,#b63540 100%)!important;
+ background-clip:text!important;-webkit-background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ text-shadow:none!important;
+ filter:drop-shadow(0 7px 0 #0c101acc);
+}
+#sc-title .title-content .logo small{
+ position:relative!important;display:block!important;
+ width:auto!important;height:auto!important;margin:clamp(10px,1.5vh,16px) 0 0!important;padding:0!important;
+ color:#f7e8c8!important;font:900 clamp(12px,2vw,27px)/1.1 system-ui,sans-serif!important;
+ letter-spacing:.5em!important;text-shadow:0 3px 12px #000e!important;
+ -webkit-text-fill-color:currentColor!important;
+}
 #sc-title .title-content .title-desc{
- position:absolute!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;
- width:1px!important;height:1px!important;padding:0!important;margin:0!important;
- overflow:hidden!important;white-space:nowrap!important;
+ position:relative!important;display:block!important;
+ clip:auto!important;clip-path:none!important;overflow:visible!important;
+ width:auto!important;max-width:min(430px,60vw)!important;height:auto!important;
+ margin:clamp(14px,2.4vh,27px) 0 0!important;padding:0!important;
+ font-size:clamp(11px,1.1vw,14px)!important;line-height:1.8!important;
+ font-weight:700!important;letter-spacing:.075em!important;
+ color:#d4ddeaf2!important;text-shadow:0 2px 12px #000b!important;
 }
 #sc-title .title-content #title-tap{
- position:relative!important;pointer-events:auto;display:flex!important;
- align-items:center;justify-content:space-between;gap:20px;
- min-width:200px!important;min-height:54px!important;
- margin:0!important;padding:13px 24px!important;
- border:1px solid #fbe2ae!important;border-radius:9px!important;
- color:#141c29!important;font-weight:1000;font-size:14px!important;
- letter-spacing:.11em;
- background:linear-gradient(120deg,#fff1d3,#f0c579)!important;
- box-shadow:0 12px 32px #000a,0 0 22px #f8cc7c24!important;
- transition:transform .14s ease,filter .14s ease;
+ position:absolute!important;left:clamp(22px,5vw,80px);bottom:clamp(30px,6vh,65px);
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ min-width:clamp(202px,21vw,292px)!important;min-height:58px!important;
+ margin:0!important;padding:14px 22px!important;gap:20px!important;
+ color:#151c26!important;background:linear-gradient(125deg,#fff2d6,#edca87)!important;
+ border:1px solid #ffebc2!important;border-radius:7px!important;clip-path:none!important;
+ font-size:clamp(13px,1.1vw,15px)!important;font-weight:1000!important;letter-spacing:.08em!important;
+ box-shadow:0 10px 0 #09101abf,0 15px 35px #0009!important;
+ pointer-events:auto!important;animation:none!important;
+ transition:transform .14s ease,filter .14s ease!important;
 }
-#sc-title .title-content #title-tap:hover{
- transform:translateY(-2px)!important;filter:brightness(1.08);
-}
-#sc-title .title-content #title-tap:active{transform:scale(.98)!important}
-#sc-title .title-content #title-tap span{font-size:21px}
+#sc-title .title-content #title-tap:hover{transform:translateY(-3px)!important;filter:brightness(1.07)}
+#sc-title .title-content #title-tap:active{transform:translateY(2px)!important}
+#sc-title .title-content #title-tap span{font-size:22px}
 #sc-title .version-label{
- position:absolute!important;z-index:2;right:clamp(12px,3vw,30px);
- bottom:clamp(18px,4vh,40px);color:#f4f6f9c2!important;
- background:#0a1224ad!important;border:1px solid #ffffff33!important;
- border-radius:999px!important;padding:7px 12px!important;
- font-size:9px;letter-spacing:.12em;backdrop-filter:blur(10px);
+ position:absolute!important;z-index:3!important;left:auto!important;
+ right:clamp(15px,3vw,42px)!important;bottom:clamp(17px,3.5vh,36px)!important;
+ color:#c3d4e9!important;font:800 10px system-ui,sans-serif!important;letter-spacing:.14em!important;
+ background:#101a2bbb!important;border:1px solid #c9d7e44a!important;
+ border-radius:999px!important;padding:9px 15px!important;backdrop-filter:blur(9px);
 }
+#sc-title .title-speed-lines{animation:title-dash 6s linear infinite}
+#sc-title .title-sword-arc{animation:title-sword-flare 2.8s ease-in-out infinite}
+#sc-title .title-impact{transform-origin:727px 530px;animation:title-impact-pulse 2.2s ease-in-out infinite}
+@keyframes title-dash{0%{stroke-dasharray:240 35;stroke-dashoffset:200}100%{stroke-dasharray:240 35;stroke-dashoffset:-600}}
+@keyframes title-sword-flare{0%,100%{opacity:.80}45%{opacity:1}}
+@keyframes title-impact-pulse{0%,100%{opacity:.80}52%{opacity:1}}
 @media(orientation:landscape) and (max-height:560px){
- #sc-title .title-art{background-position:center top!important}
- #sc-title .title-content{
-  padding:0 max(20px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-bottom))!important
+ #sc-title .title-content{padding:13px max(19px,env(safe-area-inset-left)) 9px!important}
+ #sc-title .title-content .title-kicker{font-size:8px!important;margin-bottom:8px!important}
+ #sc-title .title-content .logo{font-size:clamp(39px,6.9vw,75px)!important;line-height:.82!important}
+ #sc-title .title-content .logo small{font-size:11px!important;margin-top:7px!important;letter-spacing:.36em!important}
+ #sc-title .title-content .title-desc{display:none!important}
+ #sc-title .title-content #title-tap{
+  left:max(19px,env(safe-area-inset-left));bottom:max(10px,env(safe-area-inset-bottom));
+  min-height:40px!important;min-width:168px!important;padding:9px 15px!important;font-size:12px!important;
  }
- #sc-title .title-content #title-tap{min-height:40px!important;min-width:160px!important;padding:8px 18px!important;font-size:12px!important}
- #sc-title .version-label{display:none}
+ #sc-title .title-content #title-tap span{font-size:16px}
+ #sc-title .version-label{display:none!important}
+ #sc-title .title-art.title-code-art::after{
+  background:linear-gradient(90deg,#080e19ec 0%,#080e19a6 19%,transparent 58%),linear-gradient(0deg,#080e19aa 0%,transparent 35%)
+ }
 }
 @media(orientation:portrait){
- #sc-title{
-  align-items:stretch!important;justify-content:center!important;
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)!important
- }
- #sc-title .title-art{
-  background-size:auto 100%!important;
-  background-position:center center!important;
-  opacity:.92!important
- }
- #sc-title .title-art::after{
-  background:linear-gradient(180deg,#070c17d9 0%,#070c1770 21%,transparent 43%,transparent 66%,#070c17d9 100%)
+ #sc-title .title-art.title-code-art .title-vector{width:100%;height:100%}
+ #sc-title .title-art.title-code-art::after{
+  background:linear-gradient(180deg,#080e19eb 0%,#080e1960 27%,transparent 46%,#080e1910 65%,#080e19ed 100%);
  }
  #sc-title .title-content{
-  width:100%!important;height:100%!important;max-width:none!important;
-  padding:clamp(44px,9vh,100px) 16px clamp(40px,9vh,84px)!important;
-  justify-content:space-between!important;align-items:center!important;text-align:center!important
+  align-items:center!important;text-align:center!important;justify-content:flex-start!important;
+  padding:clamp(42px,8vh,90px) 15px calc(35px + env(safe-area-inset-bottom))!important
  }
+ #sc-title .title-content .title-kicker{font-size:9px!important;letter-spacing:.15em!important;margin-bottom:15px!important}
  #sc-title .title-content .logo{
-  position:relative!important;display:block!important;clip:auto!important;clip-path:none!important;
-  width:auto!important;height:auto!important;overflow:visible!important;
-  max-width:92vw!important;font-family:Impact,'Arial Black',system-ui!important;
-  font-size:clamp(42px,12.4vw,92px)!important;
-  color:#f4f5fa!important;letter-spacing:-.06em!important;line-height:.84!important;
-  text-shadow:0 5px 0 #0009,0 15px 25px #000e!important;
-  transform:none!important;white-space:normal!important;
+  font-size:clamp(48px,12.4vw,87px)!important;line-height:.83!important;
+  text-align:center!important;max-width:95vw!important;
  }
- #sc-title .title-content .logo em{color:#ff574d!important;text-shadow:0 3px 0 #000b!important}
  #sc-title .title-content .logo small{
-  color:#fff!important;font-size:clamp(10px,2.8vw,16px)!important;
-  margin-top:11px!important;letter-spacing:.62em!important
+  font-size:clamp(10px,3vw,17px)!important;letter-spacing:.41em!important;margin-top:12px!important
  }
+ #sc-title .title-content .title-desc{display:none!important}
  #sc-title .title-content #title-tap{
-  min-width:min(280px,78vw)!important;
-  min-height:54px!important;justify-content:space-between!important;
+  left:50%!important;transform:translateX(-50%)!important;
+  bottom:calc(42px + env(safe-area-inset-bottom))!important;
+  width:min(292px,82vw)!important;min-height:55px!important;
  }
+ #sc-title .title-content #title-tap:hover{transform:translateX(-50%) translateY(-2px)!important}
+ #sc-title .title-content #title-tap:active{transform:translateX(-50%) translateY(2px)!important}
  #sc-title .version-label{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){
- #sc-title #title-tap{transition:none!important;animation:none!important}
+ #sc-title .title-speed-lines,#sc-title .title-sword-arc,#sc-title .title-impact{animation:none!important}
+ #sc-title .title-content #title-tap{transition:none!important}
 }
 </style>
 </head>
 <body>
 
 <div id="sc-title" class="screen" style="display:flex">
- <div class="title-art"></div><div class="title-content"><div class="title-kicker">STICK BATTLE / THE ARENA AWAITS</div>
+ <div class="title-art title-code-art" aria-hidden="true">
+ <svg class="title-vector" viewBox="0 0 1440 820" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+   <linearGradient id="title-sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101c30"/><stop offset=".52" stop-color="#0b111e"/><stop offset="1" stop-color="#17111d"/></linearGradient>
+   <linearGradient id="title-red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffba86"/><stop offset=".36" stop-color="#fb5749"/><stop offset="1" stop-color="#8a2038"/></linearGradient>
+   <linearGradient id="title-blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eefaff"/><stop offset=".34" stop-color="#8adafb"/><stop offset="1" stop-color="#315aab"/></linearGradient>
+   <linearGradient id="title-gi" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0d7"/><stop offset=".65" stop-color="#b9ccdb"/><stop offset="1" stop-color="#667c97"/></linearGradient>
+   <linearGradient id="title-steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eff6ff"/><stop offset=".5" stop-color="#a2b9d0"/><stop offset="1" stop-color="#3f617d"/></linearGradient>
+   <radialGradient id="title-blast"><stop stop-color="#fffef4" stop-opacity=".98"/><stop offset=".14" stop-color="#ffda98" stop-opacity=".8"/><stop offset=".36" stop-color="#ed8190" stop-opacity=".35"/><stop offset="1" stop-color="#ef5379" stop-opacity="0"/></radialGradient>
+   <radialGradient id="title-orange-halo"><stop stop-color="#e9524a" stop-opacity=".40"/><stop offset="1" stop-color="#da3b43" stop-opacity="0"/></radialGradient>
+   <radialGradient id="title-blue-halo"><stop stop-color="#6bbbe9" stop-opacity=".36"/><stop offset="1" stop-color="#468ddf" stop-opacity="0"/></radialGradient>
+   <filter id="title-soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="17"/></filter>
+   <filter id="title-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+   <pattern id="title-dot" width="21" height="21" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#adc4df" opacity=".15"/></pattern>
+  </defs>
+  <rect width="1440" height="820" fill="url(#title-sky)"/>
+  <rect width="1440" height="820" fill="url(#title-dot)" opacity=".45"/>
+  <ellipse cx="315" cy="535" rx="420" ry="350" fill="url(#title-orange-halo)"/>
+  <ellipse cx="1100" cy="520" rx="470" ry="370" fill="url(#title-blue-halo)"/>
+  <g opacity=".27" stroke="#5c6f85" fill="none" stroke-width="3">
+   <path d="M-50 708L287 467L596 698M1448 701L1144 459L824 709"/>
+   <path d="M0 764L480 573M1440 764L961 574"/>
+   <path d="M0 790H1440M0 754H1440M0 725H1440"/>
+  </g>
+  <g opacity=".32" fill="#08101a" stroke="#556c82" stroke-width="2">
+   <path d="M1180 500V245H1398V505Z"/><path d="M1205 238L1288 182L1375 240Z"/><path d="M1237 462V315H1349V461Z" fill="#122137"/>
+   <path d="M1314 229V164M1242 229V168M1180 286H1398"/>
+   <path d="M-12 492V314H140V500Z"/><path d="M-14 303L71 239L161 307Z"/>
+  </g>
+  <g class="title-speed-lines" fill="none" stroke-linecap="round">
+   <path d="M-45 460L502 508M-25 555L526 551M-14 624L594 583" stroke="#f65c62" stroke-width="4" opacity=".37"/>
+   <path d="M1470 401L928 477M1491 532L889 523M1470 669L884 589" stroke="#8cdbff" stroke-width="4" opacity=".36"/>
+   <path d="M0 352L428 472M1440 291L1006 469" stroke="#fff5ec" stroke-width="1.5" opacity=".32"/>
+  </g>
+  <path d="M-40 738C330 608 447 666 754 636S1181 687 1490 715L1490 830H-40Z" fill="#0a111e" opacity=".91"/>
+  <path d="M-20 736C300 624 477 684 738 643S1190 680 1460 727" fill="none" stroke="#8799aa" opacity=".3" stroke-width="5"/>
+  <!-- These SVG stick-fighters deliberately use the playable karate/swordsman costumes:
+       blank round faces, white gi + red headband, navy sword coat + red sash. -->
+  <g class="title-martial" data-fighter="karate" transform="translate(170 274) rotate(-8 135 227)">
+   <g class="title-karate-motion" stroke="#ef514b" fill="none" stroke-linecap="round" opacity=".65">
+    <path d="M16 236Q-74 170-178 160M7 276Q-94 251-176 260M49 342Q-80 372-147 424" stroke-width="14"/>
+    <path d="M-6 182L-144 124M-12 309L-196 340" stroke-width="4"/>
+   </g>
+   <path d="M113 234Q56 275 46 359L-14 412" fill="none" stroke="#050c17" stroke-width="42" stroke-linecap="round"/>
+   <path d="M147 240Q192 293 204 384L255 398" fill="none" stroke="#08111e" stroke-width="43" stroke-linecap="round"/>
+   <path d="M113 239Q60 281 43 350" fill="none" stroke="#8ca8bd" stroke-width="16" stroke-linecap="round"/>
+   <path d="M149 250Q186 295 196 370" fill="none" stroke="#506a80" stroke-width="15" stroke-linecap="round"/>
+   <path d="M86 172L170 171L186 276L115 292L59 242Z" fill="url(#title-gi)" stroke="#0b1626" stroke-width="10" stroke-linejoin="round"/>
+   <path d="M96 176L124 234L144 174M78 202L140 270M172 196L122 278" fill="none" stroke="#485f76" stroke-width="5" opacity=".7"/>
+   <path d="M65 246Q118 266 174 255" stroke="#d53b45" stroke-width="20" fill="none"/>
+   <path d="M134 253Q178 291 189 317L121 278Z" fill="#c33e44"/>
+   <path d="M112 172Q54 159 6 199L-25 244" fill="none" stroke="#0a1120" stroke-width="37" stroke-linecap="round"/>
+   <path d="M112 171Q54 168 16 207" fill="none" stroke="#8d9fb0" stroke-width="16" stroke-linecap="round"/>
+   <path d="M147 177Q191 154 225 185L321 189" stroke="#08111d" stroke-width="49" stroke-linecap="round" fill="none"/>
+   <path d="M146 177Q196 161 226 186L318 188" stroke="#7898af" stroke-width="18" stroke-linecap="round" fill="none"/>
+   <path d="M260 166L307 165Q354 170 371 189Q354 218 300 224L260 212Z" fill="#141c29" stroke="#0b111a" stroke-width="6"/>
+   <path d="M265 170L311 167L324 222L273 219Z" fill="#e6dfd1" opacity=".92"/>
+   <path d="M275 181L319 179M275 193L321 192M280 208L324 207" stroke="#818b96" stroke-width="5"/>
+   <path d="M368 183L388 193L370 209" fill="none" stroke="#ffe6b4" stroke-width="6"/>
+   <circle cx="123" cy="115" r="56" fill="#0d1726" stroke="#9bb8ce" stroke-width="5"/>
+   <path d="M70 100Q116 84 176 99L170 119Q107 112 71 124Z" fill="url(#title-red)" stroke="#9b2c3b" stroke-width="3"/>
+   <path d="M72 109Q22 86-34 62L-124 9Q-44 38-5 66Q-54 24-104-17L-14 18Q45 44 83 103Z" fill="#e74951" stroke="#7b1c2e" stroke-width="3"/>
+   <path d="M97 84Q136 79 171 96" stroke="#ffc49b" stroke-width="3" fill="none" opacity=".64"/>
+  </g>
+  <g class="title-sworder" data-fighter="swordsman" transform="translate(1308 260) scale(-1.47 1.47)">
+   <g class="title-sword-motion" fill="none" stroke-linecap="round">
+    <path d="M-42 145L-182 73M-26 204L-176 192M-18 290L-200 337" stroke="#7ac4f9" stroke-width="7" opacity=".45"/>
+   </g>
+   <path d="M101 231Q48 294 33 367L-17 405" fill="none" stroke="#07111e" stroke-width="41" stroke-linecap="round"/>
+   <path d="M151 243Q205 276 211 377L273 401" fill="none" stroke="#081422" stroke-width="42" stroke-linecap="round"/>
+   <path d="M101 233Q49 293 36 364" fill="none" stroke="#556a83" stroke-width="14" stroke-linecap="round"/>
+   <path d="M148 243Q198 291 205 378" fill="none" stroke="#405877" stroke-width="14" stroke-linecap="round"/>
+   <path d="M93 177L158 170L177 284L119 299L76 254Z" fill="#142339" stroke="#7d8fa4" stroke-width="5"/>
+   <path d="M92 181L105 179L113 278L84 270Z" fill="#9c384a"/>
+   <path d="M116 174L155 178L161 270L130 286Z" fill="#344b64"/>
+   <path d="M75 247Q122 272 176 250" fill="none" stroke="#dfc79d" stroke-width="13"/>
+   <path d="M111 282Q55 326-2 344L48 274Z" fill="#1b2d49"/>
+   <path d="M143 288Q189 333 220 362L178 269Z" fill="#253d5c"/>
+   <path d="M95 179Q40 176 14 226" fill="none" stroke="#0a1423" stroke-width="33" stroke-linecap="round"/>
+   <path d="M94 179Q42 181 20 222" fill="none" stroke="#738ba4" stroke-width="13" stroke-linecap="round"/>
+   <path d="M155 176Q208 159 249 193L301 194" fill="none" stroke="#091421" stroke-width="35" stroke-linecap="round"/>
+   <path d="M156 176Q203 165 252 191L300 193" fill="none" stroke="#697f97" stroke-width="13" stroke-linecap="round"/>
+   <path d="M292 191L322 190" stroke="#a58d5e" stroke-width="15" stroke-linecap="round"/>
+   <path d="M299 176L299 209" stroke="#e9d7a4" stroke-width="9" stroke-linecap="round"/>
+   <path d="M311 186L410 151L453 134L420 169L315 197Z" fill="url(#title-steel)" stroke="#0d1c2f" stroke-width="5"/>
+   <path d="M315 187L424 149" stroke="#f9fdff" stroke-width="4" stroke-linecap="round"/>
+   <path d="M63 109Q10 115-24 63L-98 33Q-15 56 24 68L-43 4Q40 40 78 93Z" fill="#8b3144" stroke="#341626" stroke-width="3"/>
+   <circle cx="120" cy="112" r="55" fill="#141e2e" stroke="#a5b8d0" stroke-width="5"/>
+   <path d="M68 130L171 128L179 141L67 144Z" fill="#b6bfc6" opacity=".78"/>
+   <path d="M66 139Q24 157-31 152L-84 167Q-26 174 68 154Z" fill="#c53e4f"/>
+  </g>
+  <g class="title-sword-arc" filter="url(#title-glow)" fill="none" stroke-linecap="round">
+   <path d="M1210 227Q1066 240 953 326Q783 447 696 526Q830 672 1194 681" stroke="#337bda" stroke-width="40" opacity=".21"/>
+   <path d="M1210 227Q1032 240 926 354Q777 468 698 526Q840 654 1202 665" stroke="url(#title-blue)" stroke-width="13" opacity=".95"/>
+   <path d="M1185 239Q997 260 912 370Q776 481 701 530Q889 661 1190 648" stroke="#effcff" stroke-width="3" opacity=".88"/>
+  </g>
+  <g class="title-impact" transform="translate(727 530)">
+   <circle r="165" fill="url(#title-blast)" class="title-blast"/>
+   <g stroke-linecap="round">
+    <path d="M-6-122L-3-21M45-157L14-24M99-109L29-18M151-48L36-7M151 35L35 13M104 103L18 31M22 148L5 39M-76 137L-18 26M-154 85L-26 20M-166-17L-35-4M-125-104L-20-16" stroke="#ffe6bd" stroke-width="4" opacity=".8"/>
+    <path d="M-190-85L-47-13M160-123L40-18M-185 49L-42 13M160 113L43 26" stroke="#fff" stroke-width="2" opacity=".6"/>
+   </g>
+   <path d="M-30-20L-8-46L11-16L43-30L18-1L50 21L12 21L2 56L-14 27L-55 40L-32 4L-53-23Z" fill="#fff1d7" stroke="#ffcbab" stroke-width="2"/>
+   <g fill="#fae6d4"><path d="M-112-42L-85-69L-91-27Z"/><path d="M100-70L125-53L91-42Z"/><path d="M-84 67L-99 97L-61 88Z"/><path d="M62 83L95 111L69 62Z"/></g>
+  </g>
+  <g opacity=".75" fill="#e8ebf4"><circle cx="547" cy="440" r="2"/><circle cx="981" cy="480" r="3"/><circle cx="683" cy="638" r="3"/><circle cx="883" cy="388" r="2"/></g>
+  <g opacity=".7" fill="#f48b77"><path d="M355 646l21-34 9 45z"/><path d="M485 747l8-36 25 24z"/><path d="M672 707l-11-42 29 19z"/></g>
+  <g opacity=".7" fill="#bfefff"><path d="M1066 725l-25-34 35 6z"/><path d="M1000 620l15-30 10 32z"/><path d="M1215 632l25-39-4 37z"/></g>
+ </svg>
+</div><div class="title-content"><div class="title-kicker">STICK BATTLE / THE ARENA AWAITS</div>
  <h1 class="logo">STICK<em>BATTLE</em><small>ONLINE</small></h1><p class="title-desc">個性で選べ。技で魅せろ。<br>次の一戦を、忘れられない一戦に。</p>
  <button class="tap" id="title-tap">はじめる <span aria-hidden="true">↗</span></button></div><div class="version-label"><span id="menu-facts">FIGHTERS / ARENAS / ONLINE</span></div>
 </div>
@@ -8647,7 +8804,7 @@ function kanekiPaintBody(c,awake,attack){
  lines(legs,'#9e8396',8);lines(legs,'#101421',6);lines(torso,'#b1a7b5',12);lines(torso,'#151522',10);lines(arms,'#726575',6);lines(arms,'#171421',4);
  oval(attack?23:12,attack?-33:-26,2.5,2.5,'#ded3d3');oval(-12,-25,2.5,2.5,'#ded3d3');lines([[3,-43,4,-27],[-6,-4,-14,-2],[10,-4,16,-2]],'#d9a5b5',1);
  if(awake){poly([[-8,-47],[11,-53],[17,-30],[-4,-23]],'#37152b');lines(Array.from({length:5},(_,n)=>[-4,-29-n*4,12,-33-n*4]),'#e44c73',2);}
- oval(1,-61,9.5,11.5,'#d4c5c4');
+ oval(1,-61,9.5,11.5,'#151d2c');
  poly([[-10,-55],[-14,-64],[-11,-71],[-7,-69],[-4,-77],[0,-72],[5,-76],[6,-70],[12,-72],[10,-58],[7,-64],[4,-59],[1,-66],[-3,-61],[-5,-65]],'#eaf0f5');
  poly([[-9,-58],[11,-59],[10,-49],[-8,-49]],'#080d18');lines([[-5,-54,9,-54],...[-4,-1,2,5,8].map(x=>[x,-56,x,-52])],'#b7bcc9',1);
  // No individually drawn eyes: the masked face follows the game's stick-fighter style.
@@ -8709,9 +8866,9 @@ function kanekiPortraitSVG(){return `<svg viewBox="0 0 100 82" aria-hidden="true
  <path d="M0 20L75 0H100V62L23 82H0Z" fill="#57152f"/><path d="M0 70L100 12M0 79L100 21" stroke="#d74465" opacity=".4"/>
  <g fill="none" stroke="url(#kaneki-rinkaku)" stroke-linecap="round"><path d="M46 73C4 73-5 27 20 18M44 65C-6 51 8 0 36 9M56 64C77 1 106 12 89 35M57 71C84 39 110 42 93 67" stroke-width="7"/><path d="M46 73C4 73-5 27 20 18M56 64C77 1 106 12 89 35" stroke="#ff8da5" stroke-width="1"/></g>
  <path d="M20 82L31 49 43 42H60L75 53 84 82Z" fill="url(#kaneki-coat)" stroke="#aa829b" stroke-width="1"/><path d="M38 48L47 62 56 47M48 62V82" fill="none" stroke="#c6a7b9" stroke-width="1"/>
- <path d="M34 22Q50 4 66 23L63 46 50 52 36 42Z" fill="#d5cbd0"/><path d="M31 36L28 19 35 8 39 12 44 1 49 7 56 0 60 8 69 7 69 27 64 41 61 25 57 31 52 17 48 31 43 20 38 37 35 27Z" fill="#f2f4fa" stroke="#b7becd" stroke-width=".7"/>
+ <path d="M34 22Q50 4 66 23L63 46 50 52 36 42Z" fill="#141c2a"/><path d="M31 36L28 19 35 8 39 12 44 1 49 7 56 0 60 8 69 7 69 27 64 41 61 25 57 31 52 17 48 31 43 20 38 37 35 27Z" fill="#f2f4fa" stroke="#b7becd" stroke-width=".7"/>
  <path d="M36 34L64 31 65 46 54 53 39 47Z" fill="#090f1b" stroke="#b2a1b6" stroke-width="1"/><path d="M42 41L60 39M44 38V44M48 37V43M52 37V43M56 36V42" stroke="#e7e5ec" stroke-width="1.2"/><path d="M38 34L33 31M63 32L68 28" stroke="#4a3b50" stroke-width="2"/>
- <path d="M34 25L65 20" stroke="#b9b3c3" stroke-width="1" opacity=".6"/><path d="M35 30L65 26" stroke="#f2f4fa" stroke-width="1" opacity=".45"/>
+ <!-- Featureless shadowed face, no pupil, slit or red eye. -->
  </svg>`;}
 const kanekiPortraitBase=portrait;
 portrait=function(id,gear=1,form=0,mode=false){return id==='kaneki'?kanekiPortraitSVG():kanekiPortraitBase(id,gear,form,mode);};
@@ -8799,10 +8956,9 @@ buildMenus=function(){
  setTxt(document.getElementById('menu-facts'),Object.keys(CHARS).length+' FIGHTERS  /  '+Object.keys(MAPS).length+' ARENAS  /  UP TO 8 PLAYERS');
  menuApplyFilter();menuUpdateArena();
 };
-// The title key art is an accessible CSS background (assets/title/title-clash.svg).
-// Do not construct the former oversized single-fighter SVG on the title screen.
-const titleArtwork=document.querySelector('.title-art');
-if(titleArtwork){titleArtwork.setAttribute('aria-hidden','true');titleArtwork.innerHTML='';}
+// The title artwork is authored as inline SVG in index.template.html.
+// Keep its real playable-fighter silhouettes in the DOM; never replace them with a bitmap.
+document.querySelector('.title-art')?.setAttribute('aria-hidden','true');
 // Boss HP only. Allies use the ordinary percentage, knockback and stock rules.
 const RAID_BOSS_ID='raid_dio';
 const RAID_BOSSES={dio:{name:'DIO',hp:6400,lives:2}};
