@@ -1411,7 +1411,7 @@ input,select{font-family:inherit}
 .hub-cpu-settings{border:1px solid #4c665f;border-radius:13px;background:linear-gradient(145deg,#1f3e3c,#172e37);padding:13px;margin:0 0 17px}
 .hub-cpu-settings label{font-size:12px;font-weight:850;color:#e8fff4;display:flex;align-items:center;gap:6px;margin-bottom:9px}
 .hub-cpu-symbol{font-size:16px}
-:is(#sc-hub-room,#sc-hub-play) #hub-cpu-count{display:block;width:100%;font:700 12px system-ui,sans-serif;padding:10px 32px 10px 10px;color:#effcf7;background:#142b31;border:1px solid #668577;border-radius:9px;cursor:pointer}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-count,:is(#sc-hub-room,#sc-hub-play) #hub-cpu-level{display:block;width:100%;font:700 12px system-ui,sans-serif;padding:10px 32px 10px 10px;color:#effcf7;background:#142b31;border:1px solid #668577;border-radius:9px;cursor:pointer}
 :is(#sc-hub-room,#sc-hub-play) #hub-cpu-count:disabled{opacity:.55}
 .hub-cpu-settings p{margin:8px 0 0;color:#b4d4c9;font-size:11px}
 .hub-member-cpu{border-color:#789e87;background:#29453c}
@@ -1602,6 +1602,12 @@ input,select{font-family:inherit}
  #sc-hub-play .hub-board.hub-strategy-board{width:min(100%,430px)}
  #sc-hub-play .hub-board.hub-mini-board{width:min(100%,370px)}
 }
+
+/* HUB difficulty: legible on narrow mobile screens, disabled during an active round. */
+.hub-cpu-difficulty-label{margin-top:15px!important;padding-top:13px;border-top:1px solid #6c968050}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-level{width:100%;appearance:auto;color-scheme:dark}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-level:disabled{opacity:.55;cursor:default}
+#hub-cpu-level-info{color:#cbe4df;font-size:11px;line-height:1.6;margin:8px 0 0}
 </style>
 </head>
 <body>
@@ -1908,6 +1914,13 @@ input,select{font-family:inherit}
           <option value="4">CPUを4人追加</option>
         </select>
         <p id="hub-cpu-info">不足人数を自動補充</p>
+        <label for="hub-cpu-level" class="hub-cpu-difficulty-label"><span aria-hidden="true">★</span> CPUの強さ</label>
+        <select id="hub-cpu-level" aria-label="ゲームHUBのCPUの強さ">
+          <option value="0">弱い　／　初心者向け</option>
+          <option value="1" selected>ふつう　／　標準</option>
+          <option value="2">強い　／　挑戦者向け</option>
+        </select>
+        <p id="hub-cpu-level-info">ふつう：基本戦術・守り・次の手を考えるCPUです。</p>
       </div>
       <div id="hub-catalog"></div>
     </aside>
@@ -1923,7 +1936,7 @@ input,select{font-family:inherit}
         <p id="hub-selection-status" class="hub-selection-status" role="status" aria-live="polite">ホストがゲームを選ぶと、ここからスタートできます。</p>
         <button id="hub-resume-play" type="button" class="hub-resume-btn" hidden>進行中のゲーム画面に戻る →</button>
       </section>
-      <p class="hub-room-note">① ゲームを選ぶ → ② CPUの人数を設定 → ③「ゲームスタート」で専用画面へ。参加者全員が同じゲームに移動します。</p>
+      <p class="hub-room-note">① ゲームを選ぶ → ② CPU人数と強さを設定 → ③「ゲームスタート」で専用画面へ。CPUの強さは対局開始時に確定します。</p>
     </main>
   </div>
   <div class="nav hub-bottom-nav"><button class="back" id="hub-leave" type="button">← ゲームHUBから退出</button></div>
@@ -11261,6 +11274,9 @@ hubSelectGame=async function(kind){
     const game=hubNewGame(kind,seats);
     if(!game)throw new Error('ゲームを初期化できません。');
     if(!game.created)game.created=Date.now();
+    // Freeze the chosen CPU difficulty in the shared match snapshot for all clients.
+    const rawLevel=Number(hubEl('hub-cpu-level')?.value??1);
+    game.cpuLevel=Number.isInteger(rawLevel)?Math.max(0,Math.min(2,rawLevel)):1;
     await roomRef.child('hubGame').set(game);
   }catch(e){alert('ゲームを開始できませんでした。'+(e?.message||e));}
   finally{hubBusy=false;hubRender();}
@@ -11447,6 +11463,24 @@ const HUB_MINI_VAL={K:1000,G:6,S:5,B:8,R:9,P:2,'+S':6,'+B':11,'+R':12,'+P':6};
 const hubMiniColor=seat=>seat===0?'s':'g';
 const hubMiniType=p=>typeof p==='string'?p.slice(1):'';
 const hubMiniOwner=p=>typeof p==='string'?p[0]:'';
+// Firebase can return sparse numeric-key arrays as objects after pieces are captured.
+// Always construct a full 25-square board and two reliable hand objects.
+function hubMiniBoard(state){
+ const raw=state?.board??state;
+ return Array.from({length:25},(_,i)=>typeof raw?.[i]==='string'?raw[i]:0);
+}
+function hubMiniHands(state){
+ const raw=state?.hand;
+ return [0,1].map(i=>{
+   const source=raw?.[i]||{};
+   const clean={};
+   for(const type of ['P','S','G','B','R']){
+     const count=Number(source[type]);
+     if(Number.isInteger(count)&&count>0&&count<=25)clean[type]=count;
+   }
+   return clean;
+ });
+}
 function hubMiniNew(players){
  const board=Array(25).fill(0),upper=['R','B','S','G','K'],lower=['K','G','S','B','R'];
  for(let i=0;i<5;i++){board[i]='g'+upper[i];board[20+i]='s'+lower[i];}
@@ -11455,7 +11489,7 @@ function hubMiniNew(players){
   status:'play',winner:-1,moves:0,revision:0,created:Date.now(),history:[]};
 }
 function hubMiniPseudo(state,seat){
- const board=state.board,own=hubMiniColor(seat),enemy=hubMiniColor(1-seat),forward=seat===0?-1:1;
+ const board=hubMiniBoard(state),own=hubMiniColor(seat),enemy=hubMiniColor(1-seat),forward=seat===0?-1:1;
  const out=[],push=(from,to,promote=false,drop=null)=>{out.push(drop?{drop,to}:{from,to,promote});};
  const dirsGold=[[forward,0],[forward,1],[forward,-1],[0,1],[0,-1],[-forward,0]];
  const dirsSilver=[[forward,0],[forward,1],[forward,-1],[-forward,1],[-forward,-1]];
@@ -11503,11 +11537,11 @@ function hubMiniPseudo(state,seat){
  return out;
 }
 function hubMiniRaw(state,move){
- const next={...state,board:state.board.slice(),players:state.players.slice(),
-  hand:(state.hand||[{},{}]).map(x=>({...x}))};
+ const next={...state,board:hubMiniBoard(state),players:state.players.slice(),
+  hand:hubMiniHands(state)};
  const seat=state.turn,own=hubMiniColor(seat),board=next.board;
  if(move.drop){
-  if(Number(next.hand[seat][move.drop])<=0||board[move.to])return null;
+  if(!(Number(next.hand[seat][move.drop])>0)||board[move.to])return null;
   next.hand[seat][move.drop]--;
   board[move.to]=own+move.drop;
  }else{
@@ -11527,15 +11561,15 @@ function hubMiniAttacked(board,target,bySeat){
  const other=hubMiniColor(bySeat),own=hubMiniColor(1-bySeat);
  const test={board,hand:[{},{}],turn:bySeat};
  // Only board-piece moves count as attacks; fake the king on the attacked square.
- const copy=board.slice();copy[target]=own+'G';
+ const copy=hubMiniBoard(board);copy[target]=own+'G';
  return hubMiniPseudo({...test,board:copy},bySeat).some(m=>m.drop===undefined&&m.to===target&&copy[m.from]?.[0]===other);
 }
 function hubMiniCheck(board,seat){
- const king=board.indexOf(hubMiniColor(seat)+'K');
+ const king=hubMiniBoard(board).indexOf(hubMiniColor(seat)+'K');
  return king<0||hubMiniAttacked(board,king,1-seat);
 }
 function hubMiniLegalMoves(state,seat=state.turn,pawnMate=true){
- if(!state||!Array.isArray(state.board)||state.board.length!==25)return [];
+ if(!state||!state.board||!Number.isInteger(seat)||seat<0||seat>1)return [];
  const temp={...state,turn:seat};
  const legal=[];
  for(const move of hubMiniPseudo(temp,seat)){
@@ -11550,7 +11584,7 @@ function hubMiniLegalMoves(state,seat=state.turn,pawnMate=true){
  return legal;
 }
 function hubMiniSignature(state){
- return state.board.join(',')+'|'+JSON.stringify(state.hand)+'|'+state.turn;
+ return hubMiniBoard(state).join(',')+'|'+JSON.stringify(hubMiniHands(state))+'|'+state.turn;
 }
 function hubMiniPlay(state,actor,choice){
  if(!state||state.status!=='play'||state.players[state.turn]!==actor||!choice||!Number.isInteger(choice.to))return null;
@@ -11829,11 +11863,17 @@ const HUB_CHESS_GLYPH={wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',
 const HUB_MINI_GLYPH={K:'玉',G:'金',S:'銀',B:'角',R:'飛',P:'歩',
  '+S':'全','+B':'馬','+R':'龍','+P':'と'};
 let hubExtraBoardKey='',hubExtraSelected=null,hubExtraDrop='',hubExtraPromote=true,hubChessPromotionPref='Q';
+let hubExtraMoveKey='';
 let hubPokerPickKey='',hubPokerPicked=new Set();
 function hubExtraSync(state){
  const key=state.kind+':'+(state.created||0);
  if(key!==hubExtraBoardKey){
   hubExtraBoardKey=key;hubExtraSelected=null;hubExtraDrop='';hubExtraPromote=true;hubChessPromotionPref='Q';
+ }
+ // Old square/drop choices must not survive an opponent move, an AI move or a new round.
+ const moveKey=key+':'+state.revision+':'+state.turn;
+ if(hubExtraMoveKey!==moveKey){
+   hubExtraMoveKey=moveKey;hubExtraSelected=null;hubExtraDrop='';
  }
  const pk=key+':'+state.phase+':'+state.turn;
  if(pk!==hubPokerPickKey){hubPokerPickKey=pk;hubPokerPicked=new Set();}
@@ -11867,6 +11907,8 @@ function hubExtraFinish(state,actions){
 }
 function hubExtraBoardUI(state){
  const chess=state.kind==='chess',N=chess?8:5,seat=state.players.indexOf(myId),myTurn=state.status==='play'&&state.turn===seat;
+ // Shogi mid-/late-game boards can arrive as numeric-key objects from Firebase.
+ if(!chess&&state.board&&!Array.isArray(state.board))state={...state,board:hubMiniBoard(state)};
  const checked=state.status==='play'&&(chess?hubChessCheck(state.board,state.turn):hubMiniCheck(state.board,state.turn));
  let message=state.status==='done'?
    (state.winner>=0?hubDisplayName(state.players[state.winner])+'の勝ち！':'引き分けです。'):
@@ -12108,6 +12150,17 @@ function hubFlowSetup(){
   const humans=lobbyMembers().filter(m=>!m.cpu);
   const auto=hubEl('hub-cpu-count')?.value||'auto';
   const seats=chosen?hubChooseSeats(chosen.id,humans,auto):null;
+  const level=hubEl('hub-cpu-level'),levelInfo=hubEl('hub-cpu-level-info');
+  const names=['弱い','ふつう','強い'];
+  if(level)level.disabled=!isHost||hubBusy||!!hubGameSnapshot;
+  if(levelInfo){
+    const raw=Number(level?.value??1),n=Math.max(0,Math.min(2,Number.isInteger(raw)?raw:1));
+    levelInfo.textContent=[
+      '弱い：基本的な合法手を選びます。初心者でも勝ちやすい。',
+      'ふつう：攻守のバランスと相手の次の手を考えます。',
+      '強い：先読みを増やし、攻めと守りをより厳密に判断します。'
+    ][n];
+  }
   slots.replaceChildren();
   if(seats){
     for(const id of seats){
@@ -12189,7 +12242,8 @@ async function hubStartSelectedGame(){
       const latest=(await roomRef.child('gm').once('value')).val();
       if(latest?.mode!=='normal')return;
       const cpuCount=seats.filter(hubIsCpu).length;
-      await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:1,teamMode:0});
+      const selectedLevel=Number(hubEl('hub-cpu-level')?.value??1);
+      await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:Number.isInteger(selectedLevel)?Math.max(0,Math.min(2,selectedLevel)):1,teamMode:0});
       gmCache=(await roomRef.child('gm').once('value')).val();
       await hostStart();
     }catch(e){
@@ -12223,6 +12277,8 @@ buildMenus=function(){
   };
   const cpu=hubEl('hub-cpu-count');
   if(cpu)cpu.onchange=()=>hubRender();
+  const level=hubEl('hub-cpu-level');
+  if(level)level.onchange=()=>hubRender();
 };
 // GAME HUB / MID-LEVEL CPU: positional play, tactical threats and informed card decisions.
 // CPU picks from legal actions only; card opponents' hidden values are not used.
@@ -12412,6 +12468,218 @@ hubCpuChoice=function(state){
   if(state.kind==='mini-shogi')return hubMiniSmart(state);
   if(state.kind==='baccarat')return Math.random()<.55?'banker':'player';
   return hubMidCpuEarlier(state);
+};
+// GAME HUB / CPU DIFFICULTY: 0 easy, 1 normal, 2 hard.
+// All CPU choices pass through the existing legal-move rules and share the
+// per-round setting saved in Firebase; no knowledge of human hidden hands.
+const HUB_CPU_LEVEL_NAMES=['弱い','ふつう','強い'];
+function hubCpuLevel(state){
+ const level=Number(state?.cpuLevel);
+ return Number.isInteger(level)&&level>=0&&level<=2?level:1;
+}
+function hubCpuEasy(state){
+ if(!state||state.status!=='play'||!hubIsCpu(state.players?.[state.turn]))return null;
+ const pick=xs=>xs.length?xs[Math.floor(Math.random()*xs.length)]:null;
+ if(state.kind==='reversi')return pick(hubReversiMoves(state.board,state.turn+1));
+ if(state.kind==='connect4')return pick(Array.from({length:7},(_,c)=>c).filter(c=>!state.board[c]));
+ if(state.kind==='chess'){
+   const m=pick(hubChessLegalMoves(state));return m?{from:m.from,to:m.to,promotion:'Q'}:null;
+ }
+ if(state.kind==='mini-shogi')return pick(hubMiniLegalMoves(state));
+ if(state.kind==='shichinarabe')return pick(hubSevenChoices(state,state.turn))??'pass';
+ if(state.kind==='blackjack')return hubBJTotal(state.hands[state.turn])<15?'hit':'stand';
+ if(state.kind==='baccarat')return pick(['player','banker','tie']);
+ if(state.kind==='poker'){
+   const seat=state.turn;
+   if(state.phase==='draw')return {discard:hubPokerCpuDiscard(state.hands[seat]).slice(0,3)};
+   const owe=state.currentBet-state.bets[seat];
+   if(owe>0)return owe>10&&Math.random()<.5?'fold':'call';
+   return 'check';
+ }
+ // Old Maid is an imperfect-information game; every card back is equivalent.
+ return hubDifficultyOriginal(state);
+}
+function hubConnectEvaluate(board,color){
+ const opponent=3-color;
+ const win=hubConnectThreats(board,color),lose=hubConnectThreats(board,opponent);
+ let score=win.length*47-lose.length*52;
+ for(let r=0;r<6;r++)for(let c=0;c<7;c++){
+   const v=Number(board[r*7+c]);
+   if(v)score+=(v===color?1:-1)*(4-Math.abs(c-3))*1.8;
+ }
+ // Windows of length four help the CPU build threats before a 3-in-a-row.
+ const dirs=[[1,0],[0,1],[1,1],[1,-1]];
+ for(let r=0;r<6;r++)for(let c=0;c<7;c++)for(const [dr,dc] of dirs){
+   const er=r+dr*3,ec=c+dc*3;
+   if(er<0||er>=6||ec<0||ec>=7)continue;
+   let a=0,b=0;
+   for(let n=0;n<4;n++){
+     const v=Number(board[(r+dr*n)*7+c+dc*n]);
+     if(v===color)a++;else if(v===opponent)b++;
+   }
+   if(a&&!b)score+=[0,1,4,18,500][a];
+   if(b&&!a)score-=[0,1,4,18,500][b];
+ }
+ return score;
+}
+function hubConnectHard(state){
+ const side=state.turn;
+ function explore(position,depth,alpha,beta){
+   if(position.status==='done'){
+     if(position.winner<0)return 0;
+     return position.winner===side?120000+depth:-120000-depth;
+   }
+   if(depth===0)return hubConnectEvaluate(position.board,side+1);
+   const maximizing=position.turn===side;
+   let best=maximizing?-Infinity:Infinity;
+   const columns=[3,2,4,1,5,0,6].filter(c=>!position.board[c]);
+   for(const c of columns){
+     const after=hubApplyMove(position,position.players[position.turn],c);
+     if(!after)continue;
+     const score=explore(after,depth-1,alpha,beta);
+     best=maximizing?Math.max(best,score):Math.min(best,score);
+     if(maximizing)alpha=Math.max(alpha,best);else beta=Math.min(beta,best);
+     if(alpha>=beta)break;
+   }
+   return Number.isFinite(best)?best:hubConnectEvaluate(position.board,side+1);
+ }
+ const moves=[3,2,4,1,5,0,6].filter(c=>!state.board[c]);
+ if(!moves.length)return null;
+ const winning=hubConnectThreats(state.board,side+1);
+ if(winning.length)return winning[0];
+ let best=moves[0],value=-Infinity;
+ for(const c of moves){
+   const next=hubApplyMove(state,state.players[state.turn],c);
+   if(!next)continue;
+   const score=explore(next,4,-Infinity,Infinity)+Math.random()*.01;
+   if(score>value){value=score;best=c;}
+ }
+ return best;
+}
+function hubChessEval(state,seat){
+ let value=0;
+ for(let i=0;i<64;i++){
+   const piece=state.board[i];if(!piece)continue;
+   const sign=piece[0]===(seat===0?'w':'b')?1:-1;
+   const type=piece[1],weight=HUB_CHESS_VAL[type]||0;
+   value+=sign*weight*100;
+   if(type!=='K')value+=sign*(3.5-Math.abs(i%8-3.5)+3.5-Math.abs(Math.floor(i/8)-3.5));
+ }
+ if(hubChessCheck(state.board,seat))value-=45;
+ if(hubChessCheck(state.board,1-seat))value+=32;
+ return value;
+}
+function hubChessHard(state){
+ const seat=state.turn,legal=hubChessLegalMoves(state);
+ if(!legal.length)return null;
+ let best=legal[0],value=-Infinity;
+ for(const move of legal){
+   const after=hubChessMoveRaw(state,move);
+   const next={...after,turn:1-seat},replies=hubChessLegalMoves(next);
+   let score;
+   if(!replies.length){
+     score=hubChessCheck(next.board,1-seat)?100000:0;
+   }else{
+     let worst=Infinity;
+     for(const reply of replies){
+       const response=hubChessMoveRaw(next,reply);
+       worst=Math.min(worst,hubChessEval(response,seat));
+     }
+     score=worst;
+   }
+   score+=Math.random()*2;
+   if(score>value){value=score;best=move;}
+ }
+ return {from:best.from,to:best.to,promotion:'Q'};
+}
+function hubMiniEval(state,seat){
+ const pieces=hubMiniBoard(state),hands=hubMiniHands(state),own=hubMiniColor(seat);
+ let score=0;
+ for(const piece of pieces){
+   if(!piece)continue;
+   const val=HUB_MINI_VAL[hubMiniType(piece)]||0;
+   score+=(piece[0]===own?1:-1)*val*10;
+ }
+ for(let i=0;i<2;i++)for(const [type,num] of Object.entries(hands[i]))
+   score+=(i===seat?1:-1)*(HUB_MINI_VAL[type]||1)*Number(num)*9;
+ if(hubMiniCheck(pieces,seat))score-=17;
+ if(hubMiniCheck(pieces,1-seat))score+=13;
+ return score;
+}
+function hubMiniHard(state){
+ const seat=state.turn,legal=hubMiniLegalMoves(state);if(!legal.length)return null;
+ let best=legal[0],value=-Infinity;
+ for(const move of legal){
+   const after=hubMiniRaw(state,move);
+   if(!after)continue;
+   const next={...after,turn:1-seat};
+   const replies=hubMiniLegalMoves(next);
+   let score;
+   if(!replies.length)score=hubMiniCheck(next.board,1-seat)?100000:0;
+   else{
+     // Capping replies avoids long pauses on mobile with many drop choices.
+     const ranked=replies.map(reply=>({
+       reply,priority:next.board[reply.to]?(HUB_MINI_VAL[hubMiniType(next.board[reply.to])]||1):0
+     })).sort((a,b)=>b.priority-a.priority).slice(0,24);
+     let worst=Infinity;
+     for(const {reply} of ranked){
+       const response=hubMiniRaw(next,reply);
+       if(response)worst=Math.min(worst,hubMiniEval(response,seat));
+     }
+     score=worst;
+   }
+   score+=Math.random()*1.5;
+   if(score>value){value=score;best=move;}
+ }
+ return best;
+}
+function hubReversiHard(state){
+ const seat=state.turn,color=seat+1,choices=hubReversiMoves(state.board,color);
+ if(!choices.length)return null;
+ let best=choices[0],value=-Infinity;
+ for(const choice of choices){
+   const next=hubApplyMove(state,state.players[seat],choice);
+   if(!next)continue;
+   let score=hubRevPosition(next.board,color);
+   if(next.status==='done'){
+     score=next.winner===seat?100000:next.winner<0?0:-100000;
+   }else if(next.turn!==seat){
+     const enemyMoves=hubReversiMoves(next.board,3-color);
+     let worst=Infinity;
+     for(const enemyMove of enemyMoves){
+       const answer=hubApplyMove(next,next.players[next.turn],enemyMove);
+       if(!answer)continue;
+       let bestContinuation=hubRevPosition(answer.board,color);
+       if(answer.status==='play'&&answer.turn===seat){
+         const follow=hubReversiMoves(answer.board,color);
+         for(const followMove of follow){
+           const continuation=hubApplyMove(answer,answer.players[answer.turn],followMove);
+           if(continuation)bestContinuation=Math.max(bestContinuation,hubRevPosition(continuation.board,color));
+         }
+       }
+       worst=Math.min(worst,bestContinuation);
+     }
+     if(worst!==Infinity)score=score*.25+worst*.75;
+   }
+   score+=Math.random()*1.3;
+   if(score>value){value=score;best=choice;}
+ }
+ return best;
+}
+const hubDifficultyOriginal=hubCpuChoice;
+hubCpuChoice=function(state){
+ if(!state||state.status!=='play'||!hubIsCpu(state.players?.[state.turn]))return null;
+ const level=hubCpuLevel(state);
+ if(level===0)return hubCpuEasy(state);
+ if(level===1)return hubDifficultyOriginal(state);
+ if(state.kind==='connect4')return hubConnectHard(state);
+ if(state.kind==='chess')return hubChessHard(state);
+ if(state.kind==='mini-shogi')return hubMiniHard(state);
+ if(state.kind==='reversi')return hubReversiHard(state);
+ if(state.kind==='shichinarabe')return hubSevenSmart(state);
+ if(state.kind==='blackjack')return hubBJSmart(state);
+ if(state.kind==='baccarat')return 'banker';
+ return hubDifficultyOriginal(state);
 };
 </script>
 </body>
