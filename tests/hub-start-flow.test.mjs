@@ -19,6 +19,7 @@ test('all playable HUB games have a shared GAME START gateway and distinct play 
  assert.doesNotMatch(lobby,/id="hub-board"/);
  assert.doesNotMatch(play,/id="hub-catalog"/);
  assert.match(flow,/hubPlayGameBeforeFlow\(kind\)/);
+ assert.match(flow,/await hostStart\(\)/);
  assert.match(flow,/hubSelection/);
  assert.match(css,/hub-start-btn/);
  assert.doesNotMatch(css,/#sc-hub-play\s*\{[^}]*display:\s*flex\s*!important/);
@@ -39,6 +40,14 @@ test('game scene switches to play automatically on start, but browsing lobby doe
  assert.equal(g.run('scene'),'sc-hub-play');
  g.run('hubGameSnapshot=null;hubFlowSyncScreen()');
  assert.equal(g.run('scene'),'sc-hub-room');
+});
+
+test('Stick Battle GAME START supplies CPU for solo host and enters existing combat engine',()=>{
+ const g=game();
+ assert.deepEqual(Array.from(g.run("hubChooseSeats('stickbattle',['host'])")),['host','hub-cpu-1']);
+ assert.deepEqual(Array.from(g.run("hubChooseSeats('stickbattle',['host','friend'])")),['host','friend']);
+ assert.equal(g.run("hubChooseSeats('stickbattle',['host'],'0')"),null);
+ assert.match(read('src/game/26-hub-flow.js'),/await hostStart\(\)/);
 });
 
 test('七並べ may pass strategically three times even when a playable card exists',()=>{
