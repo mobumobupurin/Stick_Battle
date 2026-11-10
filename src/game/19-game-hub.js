@@ -130,7 +130,7 @@ const HUB_ICONS={
   oldmaid:'♠',mahjong:'🀄',blackjack:'21',poker:'♣',baccarat:'◆'
 };
 function hubRender(){
-  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
+  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room'&&scene!=='sc-hub-play')return;
   const members=lobbyMembers().filter(x=>!x.cpu);
   const code=hubEl('hub-code');if(code)code.textContent=roomId||'';
   const count=hubEl('hub-members');
@@ -283,10 +283,10 @@ onGm=function(g){
     gmCache=g;
     if(g.protocol!==NET_PROTOCOL){alert('部屋のバージョンが違います。再読み込みしてください。');return;}
     hubBindRoom();
-    if(scene!=='sc-hub-room')show('sc-hub-room');
+    if(scene!=='sc-hub-room'&&scene!=='sc-hub-play')show('sc-hub-room');
     hubRender();return;
   }
-  const wasHub=scene==='sc-hub-room';
+  const wasHub=scene==='sc-hub-room'||scene==='sc-hub-play';
   hubOriginalOnGm(g);
   if(wasHub&&g?.ph==='lobby'&&g.mode!=='hub'){
     show('sc-lobby');
@@ -296,7 +296,7 @@ onGm=function(g){
 const hubOriginalRenderLobby=renderLobby;
 renderLobby=function(){
   if(gmCache?.mode==='hub'){
-    if(scene!=='sc-hub-room')show('sc-hub-room');
+    if(scene!=='sc-hub-room'&&scene!=='sc-hub-play')show('sc-hub-room');
     hubRender();
     return;
   }
@@ -311,7 +311,7 @@ joinCommon=async function(){
   const meta=(await roomRef.child('gm').once('value')).val();
   if(meta?.mode==='hub'){
     hubBindRoom();
-    if(scene!=='sc-hub-room')show('sc-hub-room');
+    if(scene!=='sc-hub-room'&&scene!=='sc-hub-play')show('sc-hub-room');
     hubRender();
   }
   return joined;
