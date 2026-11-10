@@ -22,6 +22,7 @@
 {{STYLE_4}}
 {{STYLE_5}}
 {{STYLE_6}}
+{{STYLE_7}}
 </head>
 <body>
 
@@ -148,7 +149,8 @@
   <button class="big mode-card" id="go-cpu" data-ghost="01"><span class="mode-no">01 / SINGLE PLAYER</span><span class="mode-symbol" aria-hidden="true">Ⅰ</span><span class="mode-card-content"><span class="mode-card-kicker">LOCAL BATTLE</span><b>CPU対戦</b><span class="mode-card-desc">1〜7体のライバルに挑め。チーム戦も自由自在。</span><span class="mode-card-foot">ひとりで遊ぶ <span aria-hidden="true">↗</span></span></span></button>
   <button class="big mode-card" id="go-online" data-ghost="02"><span class="mode-no">02 / MULTIPLAYER</span><span class="mode-symbol" aria-hidden="true">◎</span><span class="mode-card-content"><span class="mode-card-kicker">ONLINE BATTLE</span><b>オンライン対戦</b><span class="mode-card-desc">友達とリアルタイム対戦。部屋コードで簡単に参加。</span><span class="mode-card-foot">友達と対戦 <span aria-hidden="true">↗</span></span></span></button>
   <button class="big mode-card" id="go-more" data-ghost="03"><span class="mode-no">03 / CHALLENGES</span><span class="mode-symbol" aria-hidden="true">Ⅲ</span><span class="mode-card-content"><span class="mode-card-kicker">EXTRA MODES</span><b>ほかの遊び</b><span class="mode-card-desc">組み手・トーナメント・トレーニング。戦い方は無限大。</span><span class="mode-card-foot">モードを選ぶ <span aria-hidden="true">↗</span></span></span></button>
-  <button class="big mode-card mode-card-guide" id="go-howto" data-ghost="04"><span class="mode-no">04 / BEGINNER GUIDE</span><span class="mode-symbol" aria-hidden="true">?</span><span class="mode-card-content"><span class="mode-card-kicker">HOW TO PLAY</span><b>ルール・操作方法</b><span class="mode-card-desc">初めてでも大丈夫。技の出し方から勝ち方まで、ここで確認。</span></span><span class="mode-guide-arrow" aria-hidden="true">↗</span></button>
+  <button class="big mode-card" id="go-hub" data-ghost="04"><span class="mode-no">04 / GAME HUB</span><span class="mode-symbol" aria-hidden="true">♟</span><span class="mode-card-content"><span class="mode-card-kicker">ONLINE MINI GAMES</span><b>ゲームハブ</b><span class="mode-card-desc">同じ部屋で友達と遊べる。まずはリバーシとコネクトフォーから。</span><span class="mode-card-foot">ゲームハブへ <span aria-hidden="true">↗</span></span></span></button>
+   <button class="big mode-card mode-card-guide" id="go-howto" data-ghost="04"><span class="mode-no">04 / BEGINNER GUIDE</span><span class="mode-symbol" aria-hidden="true">?</span><span class="mode-card-content"><span class="mode-card-kicker">HOW TO PLAY</span><b>ルール・操作方法</b><span class="mode-card-desc">初めてでも大丈夫。技の出し方から勝ち方まで、ここで確認。</span></span><span class="mode-guide-arrow" aria-hidden="true">↗</span></button>
  </div>
  <button class="raid-entry" id="go-raid" hidden aria-hidden="true" tabindex="-1" style="display:none"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。 <i aria-hidden="true">↗</i></small></button>
  <p class="mode-rework-footer">自分だけのスタイルを、ここから。</p>
@@ -207,6 +209,9 @@
 
 <div id="sc-online" class="screen">
   <div class="hd">ONLINE</div>
+   <p class="mode-explain" id="online-context">友達との対戦は部屋コードで招待。ランダムマッチなら相手を自動で探せます。</p>
+   <button class="big" id="online-quick">ランダムマッチ<small>プレイヤーを自動で探して1対1バトル</small></button>
+   <div id="online-quick-status" role="status" aria-live="polite"></div>
   <button class="big" id="online-create">部屋を作る<small>QR・URL・部屋コードで友達を招待</small></button>
   <div class="roomjoin">
     <div class="sh" style="margin:0;text-align:center">部屋コードで参加</div>
@@ -278,13 +283,26 @@
   </div>
   <div class="namebox"><label for="lb-name">あなたの名前</label><input id="lb-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
   <div class="card" id="lb-mem"></div>
-  <div class="card" id="lb-set"></div><div id="lb-tourney-board" class="tour-board" style="display:none"></div>
+  <div class="card" id="lb-set"></div><button id="lb-to-hub" type="button" class="hub-switch-to-games" style="display:none">ゲームハブへ切り替える <small>この部屋のメンバーのまま遊べます</small></button><div id="lb-tourney-board" class="tour-board" style="display:none"></div>
   <button class="startbig" id="lb-start">バトル開始！</button>
   <div id="lb-wait" class="wait" style="display:none"></div>
   <div class="nav"><button class="back" id="lb-leave">退出する</button></div>
 </div>
 
-<div id="sc-result" class="screen">
+<div id="sc-hub-room" class="screen" aria-label="オンラインゲームハブ">
+  <header class="hub-head">
+    <div><div class="hub-kicker">STICK BATTLE / ONLINE GAME HUB</div><h2>みんなのゲームハブ。</h2><p id="hub-members">部屋を準備しています…</p><p id="hub-roster" class="hub-roster"></p></div>
+    <div class="hub-room-actions"><div class="hub-room-code"><small>ROOM CODE</small><b id="hub-code">------</b></div><button id="hub-copy" class="hub-invite" type="button">招待URLをコピー</button></div>
+  </header>
+  <section class="hub-playarea" aria-label="対局">
+    <div class="hub-game-info" id="hub-game-info" role="status" aria-live="polite">ホストがゲームを選択してください。</div>
+    <div id="hub-board" class="hub-board" aria-label="ゲーム盤"></div>
+  </section>
+  <p class="hub-room-note">ホストがゲームを選ぶと全員の画面が切り替わります。2人対戦では先着2人がプレイし、ほかの参加者は観戦できます。準備中の種目はまだプレイできません。</p>
+  <div id="hub-catalog"></div>
+  <div class="nav"><button class="back" id="hub-leave" type="button">部屋から退出する</button></div>
+ </div>
+ <div id="sc-result" class="screen">
   <div class="hd">BATTLE RESULT<small>THE FIGHT IS OVER.</small></div><div id="winner-art"></div>
   <div id="res-win"></div>
   <div id="res-list"></div><div id="tour-result" class="tour-board"></div><div id="kumite-submit-state"></div><button id="kumite-submit-retry" type="button" style="display:none;background:#2a6956;color:#fff;padding:11px 18px;border-radius:5px;font-weight:900">記録の保存を再試行</button><button id="res-rank">Ⅰ 組み手ランキングを見る</button>

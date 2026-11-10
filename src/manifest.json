@@ -6,7 +6,8 @@
     "src/styles/mode-bracket.css",
     "src/styles/menu-v2.css",
     "src/styles/raid.css",
-    "src/styles/ui-renewal.css"
+    "src/styles/ui-renewal.css",
+    "src/styles/game-hub.css"
   ],
   "scripts": [
     "src/game/00-firebase.js",
@@ -29,6 +30,7 @@
     "src/game/15-kaneki.js",
     "src/game/16-menu-ui.js",
     "src/game/17-boss-raid.js",
-    "src/game/18-cairo-and-world.js"
+    "src/game/18-cairo-and-world.js",
+    "src/game/19-game-hub.js"
   ]
 }

@@ -1,0 +1,45 @@
+/* ONLINE GAME HUB — scoped, responsive, accessible controls */
+#sc-hub-room{gap:16px;width:min(1120px,100%);max-width:1120px;align-items:stretch;padding-bottom:46px}
+.hub-head{display:flex;gap:18px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:14px 18px;background:linear-gradient(130deg,#182842,#101a2e);border:1px solid #374967;border-radius:18px}
+.hub-head h2{font-size:clamp(23px,4.8vw,42px);line-height:1.13;letter-spacing:-.03em;margin:4px 0}
+.hub-head p{font-size:13px;color:#bfd0e8}
+.hub-kicker{font-size:10px;letter-spacing:2px;font-weight:900;color:#a6edfc}
+.hub-room-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hub-room-code{background:#070f20;border:1px solid #51688c;border-radius:12px;padding:8px 13px;text-align:center}
+.hub-room-code small{display:block;font-size:10px;color:#b7c8df}
+.hub-room-code b{font-size:23px;letter-spacing:.16em;color:#fff}
+.hub-invite{border-radius:12px;background:#35577c;color:#fff;font-weight:900;padding:12px}
+.hub-roster{color:#b7c9de;font-size:12px;margin-top:6px;overflow-wrap:anywhere}
+.hub-category{border:1px solid #34465e;background:rgba(17,28,47,.9);padding:15px;border-radius:17px}
+.hub-category h3{margin:0 0 10px;font-size:15px;color:#e4efff}
+.hub-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
+.hub-card{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;min-height:80px;padding:13px;border-radius:12px;border:1px solid #56708b;background:linear-gradient(145deg,#243b57,#1b2b42);color:#f7fbff;text-align:left;transition:transform .12s,border-color .12s}
+.hub-card:not(:disabled):hover{transform:translateY(-2px);border-color:#8deaff}
+.hub-card strong{font-size:15px}
+.hub-card small{font-size:11px;color:#b2c8e0}
+.hub-card:disabled{opacity:.58;cursor:not-allowed}
+.hub-card.is-current{border-color:#ffd77d;box-shadow:inset 0 0 0 1px #ffd77d}
+.hub-playarea{padding:16px;border-radius:18px;border:1px solid #465c78;background:linear-gradient(140deg,#121f34,#111b2c)}
+.hub-game-info{text-align:center;line-height:1.5;color:#f5f7ff;font-weight:750;padding:6px 0 13px}
+.hub-board{width:min(100%,480px);margin:0 auto;display:grid;gap:2px;border:6px solid #344a61;border-radius:10px;overflow:hidden;background:#33435c;touch-action:manipulation}
+.hub-cell{border:0;border-radius:0;min-width:0;aspect-ratio:1;display:flex;justify-content:center;align-items:center;padding:5%;position:relative;cursor:pointer}
+.hub-reversi .hub-cell{background:#268b68}
+.hub-reversi .hub-cell:nth-child(2n){background:#21916c}
+.hub-connect4{background:#173f96;border-color:#2758af}
+.hub-connect4 .hub-cell{background:#1859b0}
+.hub-cell:disabled{cursor:default}
+.hub-disc{width:89%;height:89%;display:block;border-radius:50%;box-shadow:inset -4px -4px 8px #0003,0 2px 5px #0005}
+.hub-disc.dark{background:radial-gradient(circle at 32% 28%,#4b5265,#111521 72%)}
+.hub-disc.light{background:radial-gradient(circle at 30% 25%,#fff,#cbd9f1 72%)}
+.hub-connect4 .hub-cell:not(.occupied):after{content:'';width:89%;height:89%;position:absolute;border-radius:50%;background:#081d46;box-shadow:inset 0 2px 7px #0009}
+.hub-connect4 .hub-disc{position:relative;z-index:1}
+.hub-legal-dot{width:21%;aspect-ratio:1;border-radius:50%;background:#bbf7d0aa}
+.hub-cell.legal:hover{outline:3px solid #fff8;outline-offset:-3px}
+.hub-cell:focus-visible,.hub-card:focus-visible{outline:3px solid #facc15;outline-offset:-3px}
+.hub-room-note{font-size:12px;color:#b9cce3;margin:0;line-height:1.6}
+#online-quick{background:linear-gradient(125deg,#2765a4,#1b446f);border:1px solid #7cb7ff}
+#online-quick-status{min-height:24px;margin:6px 0;color:#a4dffb;text-align:center;font-size:12px}
+@media(max-width:640px){#sc-hub-room{gap:10px;padding:10px 8px 28px}.hub-head,.hub-playarea{padding:12px}.hub-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.hub-card{min-height:70px}.hub-board{border-width:4px;gap:1px}.hub-room-actions{width:100%}.hub-room-code{flex:1}.hub-invite{flex:1}}
+
+.hub-switch-to-games{display:block;width:100%;padding:13px 18px;border:1px solid #78c5fb;background:linear-gradient(125deg,#244c76,#182f55);color:#fff;border-radius:12px;font-weight:900;margin:8px 0}
+.hub-switch-to-games small{display:block;font-weight:500;font-size:11px;margin-top:4px;color:#b7dffc}
