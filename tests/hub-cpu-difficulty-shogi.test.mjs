@@ -81,7 +81,7 @@ test('shogi moves and drops continue when Firebase returns hands as numeric-key 
  assert.ok(Number.isInteger(drop));
  g.run('const next=hubApplyMove(sh2,"a",{drop:"P",to:'+drop+'})');
  assert.equal(g.run('next.board['+drop+']'),'sP');
- assert.equal(g.run('next.hand[0].P'),undefined);
+ assert.equal(g.run('next.hand[0].P'),0);
  assert.equal(g.run('next.hand[1].S'),2);
  assert.equal(g.run('next.revision'),1);
  assert.equal(g.run('sh2.hand[0].P'),1);
