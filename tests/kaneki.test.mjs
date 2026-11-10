@@ -60,3 +60,46 @@ test('special buffered before capture becomes dance immediately after confirmed 
 test('buffered whiff cannot erase bind recovery',()=>{const g=env();g.run(`t.x=750;kanekiMove(p,'kanekiBind');p.spc=80;p.a=5;const i=blankInput();i.sc=1;i.s=i.neutralSpecial=true;for(let n=0;n<24;n++){stepFighter(p,i);if(p.mv)meleeCheck(p);}`);assert.equal(g.run('p.mv.kind'),'kanekiBind');assert.ok(g.run('p.spc>0'));assert.equal(g.run('p.kanekiSwing'),1);});
 test('pulling victim cannot attack, dodge or counter; timeout gives only a bounded handoff',()=>{const g=env();hit(g,'kanekiBind');g.run(`const i=blankInput();i.ac=i.cc=i.sc=1;i.a=i.s=i.r=true;for(let n=0;n<29;n++){stepFighter(t,i);meleeCheck(t);} `);assert.equal(g.run('p.d'),0);assert.ok(g.run('!!t.kanekiPull'));g.run('stepFighter(t,i);');assert.equal(g.run('t.kanekiPull'),null);assert.ok(g.run('t.stn>0&&t.stn<=8'));g.run('for(let n=0;n<10;n++)stepFighter(t,blankInput());');assert.equal(g.run('t.stn'),0);});
 test('forged capture acknowledgement cannot unlock a whiff or a different attack',()=>{const g=env();g.run(`kanekiMove(p,'kanekiBind');handleGameplayEvent({k:'kaneki-capture',by:'forged',a:p.id,t:t.id,token:p.mv.kanekiToken});`);assert.equal(g.run('!!p.kanekiAttacks.get(p.mv.kanekiToken).captured'),false);});
+
+test('extended bind catches a fighter at long range, not just the kagune tip',()=>{
+ const g=env();
+ g.run("t.x=614;t.y=390;p.f=1;kanekiMove(p,'kanekiBind');p.a=9;meleeCheck(p);");
+ assert.equal(g.run('t.d'),8);
+ assert.equal(g.run('!!t.kanekiPull'),true);
+ assert.equal(g.run('KANEKI_MOVES.kanekiBind.reach'),235);
+ assert.ok(g.run('p.kanekiAttacks.get(p.mv.kanekiToken).captured'));
+});
+test('a fighter anywhere along the bind line can be grabbed and interrupted',()=>{
+ const g=env();
+ g.run("t.x=520;t.y=428;fireAttack(t,1);t.a=t.mv.act0;kanekiMove(p,'kanekiBind');p.f=1;p.a=13;meleeCheck(p)");
+ assert.equal(g.run('!!t.kanekiPull'),true);
+ assert.equal(g.run('t.mv'),null);
+ assert.equal(g.run('t.d'),8);
+ g.run('meleeCheck(t)');
+ assert.equal(g.run('p.d'),0);
+});
+test('bind catches the nearest fighter along the path even when roster order is reversed',()=>{
+ const g=env();
+ g.run(`t.x=615;
+ const front=makeFighter({id:'midway',cid:'karate',owner:myId,label:'Midway',cpu:0},2);
+ front.x=498;front.y=390;front.inv=0;fighters.push(front);
+ p.f=1;kanekiMove(p,'kanekiBind');p.a=10;meleeCheck(p);`);
+ assert.equal(g.run("byId('midway').d"),8);
+ assert.equal(g.run("!!byId('midway').kanekiPull"),true);
+ assert.equal(g.run('t.d'),0);
+ assert.equal(g.run('Object.keys(p.hit).length'),1);
+});
+test('expanded line stays fair to counter, invulnerability, teams and temporary grab immunity',()=>{
+ for(const condition of ['t.inv=25','t.ct=CT_ON;t.f=-1','battleTeamMode=true;p.team=t.team=1','t.kanekiPullImmune=100']){
+  const g=env();
+  g.run("t.x=611;t.y=390;p.f=1;");
+  g.run(condition+";kanekiMove(p,'kanekiBind');p.a=12;meleeCheck(p);");
+  assert.equal(g.run('!!t.kanekiPull'),false,condition);
+ }
+});
+test('Kaneki in-battle mask and portrait do not draw an isolated red eye',()=>{
+ const g=env();
+ assert.doesNotMatch(g.run('kanekiPaintBody.toString()'),/oval\(6,-62|oval\(10,-64/);
+ assert.doesNotMatch(g.run('portrait("kaneki")'),/ellipse cx="59" cy="29"/);
+ assert.match(g.run('portrait("kaneki")'),/#[0-9a-f]{6}/i);
+});
