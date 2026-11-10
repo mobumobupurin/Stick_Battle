@@ -17,7 +17,12 @@ function meleeCheck(a) {
   const asz = fighterSize(a);
   const giantHit=erenTitan(a)?erenAttackShape(a):null;
   const hx = giantHit?.x??a.x+a.f*mv.reach*asz, hy=giantHit?.y??a.y-mv.yo*asz, R=giantHit?.r??mv.R*asz;
-  for (const t of fighters) {
+  // A long Rinkaku grab catches the FIRST fighter along its path, not the
+  // earliest entry in the roster. Keep victim-authoritative resolution intact.
+  const targets=mv.kind==='kanekiBind'
+    ? [...fighters].sort((l,r)=>((l.x-a.x)*a.f)-((r.x-a.x)*a.f))
+    : fighters;
+  for (const t of targets) {
     if(['titanGrab','kanekiBind'].includes(mv.kind)&&Object.keys(a.hit).length)break;
     if (t === a || t.out || a.hit[t.id] || sameTeam(a, t)) continue;
     const tsz = fighterSize(t);

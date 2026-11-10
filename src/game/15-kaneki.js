@@ -1,12 +1,12 @@
 // Kaneki's mechanics are isolated; victims confirm hits/pulls, owners confirm regeneration.
 const KANEKI={duration:900,cutin:84,fatigue:24,regenCooldown:360,regenCap:20,regenHits:3,pullTime:30,pullImmunity:120};
-CHARS.kaneki={name:'金木 研',en:'KEN KANEKI',mark:'赫',spd:1.12,jump:1.08,jumps:2,wt:1.18,pow:1.08,size:1,ctx:0,back:false,ctc:1,dgc:1,dgs:1,st:[4,2,3],sp:'特殊：赫子乱舞 → 最後にスマッシュ（連打でも出し切り）／横：赫子捕縛',up:'赫子跳躍：方向を選んで大きく上昇する復帰技（空中1回）',ab:'白髪・四尾鱗赫。確認済み攻撃3回で2%再生（6秒間隔・残機20%まで）。MAXで下特殊：半赫者「百足」15秒。覚醒中下特殊：狂乱衝撃'};
+CHARS.kaneki={name:'金木 研',en:'KEN KANEKI',mark:'赫',spd:1.12,jump:1.08,jumps:2,wt:1.18,pow:1.08,size:1,ctx:0,back:false,ctc:1,dgc:1,dgs:1,st:[4,2,3],sp:'特殊：赫子乱舞 → 最後にスマッシュ（連打でも出し切り）／横：長射程の赫子捕縛（途中の敵も捕らえ、攻撃を中断）',up:'赫子跳躍：方向を選んで大きく上昇する復帰技（空中1回）',ab:'白髪・四尾鱗赫。確認済み攻撃3回で2%再生（6秒間隔・残機20%まで）。MAXで下特殊：半赫者「百足」15秒。覚醒中下特殊：狂乱衝撃'};
 SPECIAL_IDS.push('kaneki');ANIME_COLORS.kaneki='#e94b69';fighterRoles.kaneki='鱗赫 / 捕縛・再生';
 const KANEKI_MOVES={
  kanekiJab:{type:'normal',act0:3,act1:7,end:16,reach:42,R:24,yo:32,dm:8,k0:3,ks:.035,up:.3,cd:5},
  kanekiPierce:{type:'heavy',act0:15,act1:21,end:48,reach:95,R:27,yo:34,line:true,dm:25,k0:16,ks:.12,up:.5,cd:15},
  kanekiDance:{type:'normal',act0:4,act1:30,end:44,reach:68,R:30,yo:34,multi:7,dm:6,k0:1,ks:.012,up:.12,cd:12},
- kanekiBind:{type:'heavy',act0:10,act1:13,end:48,reach:170,R:17,yo:32,line:true,dm:8,k0:2,ks:.02,up:.2,cd:20},
+ kanekiBind:{type:'heavy',act0:9,act1:16,end:48,reach:235,R:26,yo:32,line:true,dm:8,k0:2,ks:.02,up:.2,cd:20},
  kanekiRise:{type:'normal',act0:3,act1:14,end:28,reach:15,R:33,yo:55,dm:13,k0:7,ks:.06,up:1.1,cd:12},
  kakujaJab:{type:'normal',act0:2,act1:8,end:14,reach:52,R:28,yo:33,multi:6,dm:5,k0:2,ks:.025,up:.2,cd:4},
  kakujaPierce:{type:'heavy',act0:17,act1:24,end:52,reach:120,R:32,yo:34,line:true,dm:30,k0:18,ks:.13,up:.6,cd:20},
@@ -82,7 +82,7 @@ function kanekiCaptureConfirmed(actor,token,target){
 }
 function kanekiPullTick(p){
  const g=p.kanekiPull;if(!g)return false;const a=byId(g.by);
- if(!a||a.out||a.cid!=='kaneki'||!g.token.startsWith(a.id+':'+curRound+':'+a.kanekiLife+':')||kanekiAwake(a)||a.kb||a.stn||a.timeStopT||a.domainT||p.out||erenTitan(p)||p.kanekiTime>0||isInvuln(p)||Math.hypot(p.x-a.x,p.y-a.y)>260 ){p.kanekiPull=null;return false;}
+ if(!a||a.out||a.cid!=='kaneki'||!g.token.startsWith(a.id+':'+curRound+':'+a.kanekiLife+':')||kanekiAwake(a)||a.kb||a.stn||a.timeStopT||a.domainT||p.out||erenTitan(p)||p.kanekiTime>0||isInvuln(p)||Math.hypot(p.x-a.x,p.y-a.y)>315 ){p.kanekiPull=null;return false;}
  if(--g.t<=0){p.kanekiPull=null;clearActs(p);p.stn=Math.max(p.stn,8);return false;}
  // Victim owner moves its own body; bounded displacement, no teleport across the arena.
  p.x+=constrain(a.x+g.dir*52-p.x,-9,9);p.y+=constrain(a.y-p.y,-6,6);p.vx=p.vy=0;clearActs(p);return true;
@@ -150,7 +150,7 @@ receiveNetEvent=function(e){if(e?.k==='cinx'&&e.kind==='kakuja'&&byId(e.data?.id
 AI_CHARACTER_PLAN.kaneki={ideal:105,near:48,far:220,shoot:180,skill:.65,charge:.25,guard:.3};
 AI_SKILLS.kaneki={range:105,startup:4,damage:24,hold:2,dir:'neutral'};
 const kanekiSkillsBase=aiSkillOptions;
-aiSkillOptions=function(p,t){if(p.cid!=='kaneki')return kanekiSkillsBase(p,t);return [{name:'special',dir:'neutral',range:kanekiAwake(p)?140:110,startup:4,damage:24,recovery:13,hold:2},{name:'side',dir:'side',range:185,startup:10,damage:8,recovery:35,hold:2,ready:()=>!erenTitan(t)&&!t.kanekiPullImmune}];};
+aiSkillOptions=function(p,t){if(p.cid!=='kaneki')return kanekiSkillsBase(p,t);return [{name:'special',dir:'neutral',range:kanekiAwake(p)?140:110,startup:4,damage:24,recovery:13,hold:2},{name:'side',dir:'side',range:250,startup:9,damage:8,recovery:32,hold:2,ready:()=>!erenTitan(t)&&!t.kanekiPullImmune}];};
 const kanekiTacticsBase=aiTacticalAction;
 aiTacticalAction=function(p,t,A,I,D,plan){
  if(p.cid==='kaneki'&&p.mv&&!p.kb&&!p.stn&&!p.ct&&!p.dg){
@@ -183,7 +183,7 @@ function kanekiTailPose(p,index,time){
    let tx=reach+index*3,ty=-base.yo+(index-1.5)*7;
    if(m.kind.includes('Dance')){ty+=[-6,12,-21,0][phase%4];cx=-20;cy=phase%4===2?-115:-65;}
    if(m.kind.includes('Rise')){tx=18+(index-1)*14;ty=-91-index*8;cx=-45;cy=-22;}
-   if(m.kind.includes('Bind')){tx=base.reach;ty=-32+(index?8:-8);cx=40;cy=-75;}
+   if(m.kind.includes('Bind')){tx=base.reach;ty=-32+(index?8:-8);cx=base.reach*.37;cy=-83;}
    if(m.kind.includes('Burst')){tx=[-111,-74,72,114][index];ty=[-32,-110,-112,-32][index];cx=tx*.3;cy=-62;}
    x+=(tx-x)*stroke;y+=(ty-y)*stroke;
   }
@@ -219,8 +219,8 @@ function kanekiPaintBody(c,awake,attack){
  oval(1,-61,9.5,11.5,'#d4c5c4');
  poly([[-10,-55],[-14,-64],[-11,-71],[-7,-69],[-4,-77],[0,-72],[5,-76],[6,-70],[12,-72],[10,-58],[7,-64],[4,-59],[1,-66],[-3,-61],[-5,-65]],'#eaf0f5');
  poly([[-9,-58],[11,-59],[10,-49],[-8,-49]],'#080d18');lines([[-5,-54,9,-54],...[-4,-1,2,5,8].map(x=>[x,-56,x,-52])],'#b7bcc9',1);
- oval(6,-62,3.5,2.5,'#261326');oval(6,-62,2,1.5,'#ff3159');oval(7,-63,.75,.75,'#ffe2e9');
- if(awake){poly([[-9,-69],[7,-81],[17,-53]],'#4e1632');lines([[7,-77,14,-58]],'#f56788',1);oval(10,-64,2,3,'#ff355d');poly([[8,-53],[18,-48],[10,-49]],'#ddd5d6');}
+ // No individually drawn eyes: the masked face follows the game's stick-fighter style.
+ if(awake){poly([[-9,-69],[7,-81],[17,-53]],'#4e1632');lines([[7,-77,14,-58]],'#f56788',1);poly([[8,-53],[18,-48],[10,-49]],'#ddd5d6');}
  c.restore();
 }
 // Two static path sets. No idle simulation, tessellation, bitmap upload or network fields.
@@ -249,7 +249,15 @@ function kanekiAttackAccent(p,awake){
  const phase=base.multi?Math.floor((p.a-base.act0)/base.multi):0;
  const q=kanekiTailPose(p,m.kind.includes('Dance')?phase%4:0,0);
  push();noFill();stroke(232,45,91,145);strokeWeight(m.kind.includes('Dance')&&phase===Math.floor((base.act1-base.act0)/base.multi)?9:awake?7:4);
- if(m.kind.includes('Pierce')||m.kind.includes('Bind')){line(5,-33,q.x,q.y);stroke('#ffe4eb');strokeWeight(1.4);line(24,-33,q.x,q.y);}
+ if(m.kind.includes('Pierce')||m.kind.includes('Bind')){
+  line(5,-33,q.x,q.y);stroke('#ffe4eb');strokeWeight(1.4);line(24,-33,q.x,q.y);
+  if(m.kind==='kanekiBind'){
+   // Two light hooks make the long-range grab readable without expensive particles.
+   stroke('#fba3bb');strokeWeight(2.1);
+   line(q.x-13,q.y-10,q.x+3,q.y);line(q.x-13,q.y+10,q.x+3,q.y);
+   stroke('#ffffff');strokeWeight(1);line(q.x-9,q.y,q.x+13,q.y);
+  }
+ }
  else{const r=m.kind.includes('Burst')?base.R*2:base.R*2.2;arc(base.reach,-base.yo,r,r*.72,-1.8,1.4);stroke('#ffd5df');strokeWeight(1.4);arc(base.reach+2,-base.yo,r*.9,r*.64,-1.7,1.25);}
  noStroke();fill('#ffe3ed');triangle(q.x+6,q.y,q.x-8,q.y-4,q.x-5,q.y+5);pop();
 }
@@ -272,14 +280,14 @@ function kanekiPortraitSVG(){return `<svg viewBox="0 0 100 82" aria-hidden="true
  <path d="M20 82L31 49 43 42H60L75 53 84 82Z" fill="url(#kaneki-coat)" stroke="#aa829b" stroke-width="1"/><path d="M38 48L47 62 56 47M48 62V82" fill="none" stroke="#c6a7b9" stroke-width="1"/>
  <path d="M34 22Q50 4 66 23L63 46 50 52 36 42Z" fill="#d5cbd0"/><path d="M31 36L28 19 35 8 39 12 44 1 49 7 56 0 60 8 69 7 69 27 64 41 61 25 57 31 52 17 48 31 43 20 38 37 35 27Z" fill="#f2f4fa" stroke="#b7becd" stroke-width=".7"/>
  <path d="M36 34L64 31 65 46 54 53 39 47Z" fill="#090f1b" stroke="#b2a1b6" stroke-width="1"/><path d="M42 41L60 39M44 38V44M48 37V43M52 37V43M56 36V42" stroke="#e7e5ec" stroke-width="1.2"/><path d="M38 34L33 31M63 32L68 28" stroke="#4a3b50" stroke-width="2"/>
- <ellipse cx="59" cy="29" rx="5" ry="4" fill="#251124"/><ellipse cx="59" cy="29" rx="3.6" ry="2.5" fill="#ff315e"/><circle cx="60" cy="28" r="1" fill="#fff0f5"/><path d="M53 25L64 23" stroke="#6b3b51"/>
+ <path d="M34 25L65 20" stroke="#b9b3c3" stroke-width="1" opacity=".6"/><path d="M35 30L65 26" stroke="#f2f4fa" stroke-width="1" opacity=".45"/>
  </svg>`;}
 const kanekiPortraitBase=portrait;
 portrait=function(id,gear=1,form=0,mode=false){return id==='kaneki'?kanekiPortraitSVG():kanekiPortraitBase(id,gear,form,mode);};
 const kanekiHudBase=animeHud;
 animeHud=function(p){if(p.cid!=='kaneki')return kanekiHudBase(p);return {m:kanekiAwake(p)?p.kanekiTime/9:p.kanekiGauge,label:p.kanekiFatigue?'解除疲労':kanekiAwake(p)?'HALF-KAKUJA '+Math.ceil(p.kanekiTime/60)+'秒':(p.kanekiGauge>=100?'KAKUJA READY':'KAKUJA GAUGE '+Math.floor(p.kanekiGauge)+'/100')+' / 再生 '+p.kanekiHealed.toFixed(1)+'/20'};};
 const kanekiControlBase=updateControlUI;
-updateControlUI=function(){kanekiControlBase();const p=byId(myId);if(p?.cid!=='kaneki')return;setTxt(document.querySelector('#btn-s small'),kanekiAwake(p)?'百足乱舞':'赫子乱舞');setTxt(document.querySelector('#btn-g small'),kanekiAwake(p)?'狂乱衝撃':'半赫者覚醒');document.getElementById('btn-g').classList.toggle('ready',!kanekiAwake(p)&&p.kanekiGauge>=100);setTxt(document.getElementById('combat-hint'),'横：捕縛 → 特殊：乱舞＋締めスマッシュ ／ 上：復帰（空中1回） ／ MAXで下：半赫者');};
+updateControlUI=function(){kanekiControlBase();const p=byId(myId);if(p?.cid!=='kaneki')return;setTxt(document.querySelector('#btn-s small'),kanekiAwake(p)?'百足乱舞':'赫子乱舞');setTxt(document.querySelector('#btn-g small'),kanekiAwake(p)?'狂乱衝撃':'半赫者覚醒');document.getElementById('btn-g').classList.toggle('ready',!kanekiAwake(p)&&p.kanekiGauge>=100);setTxt(document.getElementById('combat-hint'),'横：長射程で捕縛・敵の技を中断 → 特殊：乱舞／上：復帰／MAXで下：半赫者');};
 const kanekiFreezeWorldBase=drawFreezeWorld,kanekiFreezeTextBase=drawFreezeText,kanekiEndFreezeBase=endFreeze;
 drawFreezeWorld=function(){if(fzType==='kakuja')return;return kanekiFreezeWorldBase();};
 endFreeze=function(){if(fzType==='kakuja')return;return kanekiEndFreezeBase();};
