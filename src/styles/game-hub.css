@@ -59,7 +59,7 @@
 }
 .hub-entry-join-icon{color:#f5c983;background:#f6c7771a;border-color:#d5a85c66}
 .hub-entry-action-text{display:flex;flex-direction:column;gap:10px;min-width:0}
-.hub-entry-action-text small,.hub-quick-zone small{font-size:10px;letter-spacing:.15em;font-weight:800;color:#8fe9cf}
+.hub-entry-action-text small{font-size:10px;letter-spacing:.15em;font-weight:800;color:#8fe9cf}
 .hub-entry-action-text strong{font-size:clamp(23px,2.5vw,32px);letter-spacing:-.04em}
 .hub-entry-action-text>span{font-size:13px;color:#b6c9da}
 .hub-entry-arrow{position:absolute;bottom:20px;right:24px;font-size:26px;color:#81eac7}
@@ -77,26 +77,6 @@
   flex-shrink:0;border:0;border-radius:10px;background:#f0ca86;color:#192333;
   padding:0 20px;min-height:49px;font-size:14px;font-weight:900;cursor:pointer
 }
-.hub-quick-zone{
-  width:min(1000px,100%);border:1px solid #354d69;border-radius:16px;
-  background:#17273c;padding:18px 20px;display:flex;align-items:center;
-  justify-content:space-between;gap:18px
-}
-.hub-quick-zone>div{display:flex;flex-direction:column;gap:5px}
-.hub-quick-zone small{color:#9db8d8}
-.hub-quick-zone strong{font-size:17px}
-.hub-quick-zone div>span{font-size:12px;color:#afc0d4}
-#sc-online #online-quick{
-  width:auto;min-height:48px;min-width:235px;border-radius:10px;border:1px solid #678cb3;
-  color:#ecf8ff;font-size:13px;font-weight:850;background:#30557c;
-  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px
-}
-#sc-online #online-quick:disabled{opacity:.6}
-#sc-online #online-quick-status{min-height:0;width:min(1000px,100%);font-size:12px;color:#adceea;text-align:left}
-#sc-online[data-online-mode="hub"] .hub-quick-zone,
-#sc-online[data-online-mode="hub"] #online-quick-status,
-#sc-online[data-online-mode="tournament"] .hub-quick-zone,
-#sc-online[data-online-mode="tournament"] #online-quick-status{display:none!important}
 #sc-online.hub-entry-screen .nav{width:min(1000px,100%);margin-top:8px}
 
 /* HUB room: product-like dashboard with a real table beside the library. */
@@ -261,8 +241,6 @@
   #sc-online .hub-entry-create,#sc-online .hub-entry-join{min-height:160px;padding:20px}
   .hub-entry-hero{padding-bottom:20px}
   .hub-entry-hero h2{font-size:clamp(48px,12vw,72px)}
-  .hub-quick-zone{align-items:flex-start;flex-direction:column}
-  #sc-online #online-quick{width:100%}
 }
 @media(max-width:390px){
   #sc-hub-room,#sc-online.hub-entry-screen{padding:13px 9px 25px}
