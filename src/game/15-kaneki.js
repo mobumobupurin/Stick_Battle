@@ -216,7 +216,7 @@ function kanekiPaintBody(c,awake,attack){
  lines(legs,'#9e8396',8);lines(legs,'#101421',6);lines(torso,'#b1a7b5',12);lines(torso,'#151522',10);lines(arms,'#726575',6);lines(arms,'#171421',4);
  oval(attack?23:12,attack?-33:-26,2.5,2.5,'#ded3d3');oval(-12,-25,2.5,2.5,'#ded3d3');lines([[3,-43,4,-27],[-6,-4,-14,-2],[10,-4,16,-2]],'#d9a5b5',1);
  if(awake){poly([[-8,-47],[11,-53],[17,-30],[-4,-23]],'#37152b');lines(Array.from({length:5},(_,n)=>[-4,-29-n*4,12,-33-n*4]),'#e44c73',2);}
- oval(1,-61,9.5,11.5,'#d4c5c4');
+ oval(1,-61,9.5,11.5,'#151d2c');
  poly([[-10,-55],[-14,-64],[-11,-71],[-7,-69],[-4,-77],[0,-72],[5,-76],[6,-70],[12,-72],[10,-58],[7,-64],[4,-59],[1,-66],[-3,-61],[-5,-65]],'#eaf0f5');
  poly([[-9,-58],[11,-59],[10,-49],[-8,-49]],'#080d18');lines([[-5,-54,9,-54],...[-4,-1,2,5,8].map(x=>[x,-56,x,-52])],'#b7bcc9',1);
  // No individually drawn eyes: the masked face follows the game's stick-fighter style.
@@ -278,9 +278,9 @@ function kanekiPortraitSVG(){return `<svg viewBox="0 0 100 82" aria-hidden="true
  <path d="M0 20L75 0H100V62L23 82H0Z" fill="#57152f"/><path d="M0 70L100 12M0 79L100 21" stroke="#d74465" opacity=".4"/>
  <g fill="none" stroke="url(#kaneki-rinkaku)" stroke-linecap="round"><path d="M46 73C4 73-5 27 20 18M44 65C-6 51 8 0 36 9M56 64C77 1 106 12 89 35M57 71C84 39 110 42 93 67" stroke-width="7"/><path d="M46 73C4 73-5 27 20 18M56 64C77 1 106 12 89 35" stroke="#ff8da5" stroke-width="1"/></g>
  <path d="M20 82L31 49 43 42H60L75 53 84 82Z" fill="url(#kaneki-coat)" stroke="#aa829b" stroke-width="1"/><path d="M38 48L47 62 56 47M48 62V82" fill="none" stroke="#c6a7b9" stroke-width="1"/>
- <path d="M34 22Q50 4 66 23L63 46 50 52 36 42Z" fill="#d5cbd0"/><path d="M31 36L28 19 35 8 39 12 44 1 49 7 56 0 60 8 69 7 69 27 64 41 61 25 57 31 52 17 48 31 43 20 38 37 35 27Z" fill="#f2f4fa" stroke="#b7becd" stroke-width=".7"/>
+ <path d="M34 22Q50 4 66 23L63 46 50 52 36 42Z" fill="#141c2a"/><path d="M31 36L28 19 35 8 39 12 44 1 49 7 56 0 60 8 69 7 69 27 64 41 61 25 57 31 52 17 48 31 43 20 38 37 35 27Z" fill="#f2f4fa" stroke="#b7becd" stroke-width=".7"/>
  <path d="M36 34L64 31 65 46 54 53 39 47Z" fill="#090f1b" stroke="#b2a1b6" stroke-width="1"/><path d="M42 41L60 39M44 38V44M48 37V43M52 37V43M56 36V42" stroke="#e7e5ec" stroke-width="1.2"/><path d="M38 34L33 31M63 32L68 28" stroke="#4a3b50" stroke-width="2"/>
- <path d="M34 25L65 20" stroke="#b9b3c3" stroke-width="1" opacity=".6"/><path d="M35 30L65 26" stroke="#f2f4fa" stroke-width="1" opacity=".45"/>
+ <!-- Featureless shadowed face, no pupil, slit or red eye. -->
  </svg>`;}
 const kanekiPortraitBase=portrait;
 portrait=function(id,gear=1,form=0,mode=false){return id==='kaneki'?kanekiPortraitSVG():kanekiPortraitBase(id,gear,form,mode);};
