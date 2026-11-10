@@ -54,7 +54,6 @@ buildMenus=function(){
  setTxt(document.getElementById('menu-facts'),Object.keys(CHARS).length+' FIGHTERS  /  '+Object.keys(MAPS).length+' ARENAS  /  UP TO 8 PLAYERS');
  menuApplyFilter();menuUpdateArena();
 };
-// The title key art is an accessible CSS background (assets/title/title-clash.svg).
-// Do not construct the former oversized single-fighter SVG on the title screen.
-const titleArtwork=document.querySelector('.title-art');
-if(titleArtwork){titleArtwork.setAttribute('aria-hidden','true');titleArtwork.innerHTML='';}
+// The title artwork is authored as inline SVG in index.template.html.
+// Keep its real playable-fighter silhouettes in the DOM; never replace them with a bitmap.
+document.querySelector('.title-art')?.setAttribute('aria-hidden','true');
