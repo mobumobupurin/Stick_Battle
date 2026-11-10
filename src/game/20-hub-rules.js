@@ -68,7 +68,7 @@ function hubNewTableGame(kind,players){
     state.stood=state.hands.map(hand=>hubBJNatural(hand));
     state.results=[];
     state.turn=state.stood.findIndex(x=>!x);
-    if(state.turn<0)hubBJSettle(state);
+    if(state.turn<0||hubBJNatural(state.dealer))hubBJSettle(state);
   }else if(kind==='baccarat'){
     state.bets={};state.score=players.map(()=>0);state.result=null;
   }
@@ -97,8 +97,8 @@ function hubTableMove(state,actor,choice){
   const next={...state,players:state.players.slice(),deck:(state.deck||[]).slice()};
   const seat=state.turn;
   if(state.kind==='shichinarabe'){
-    next.hands=state.hands.map(hand=>hand.slice());next.placed=state.placed.slice();
-    next.passes=state.passes.slice();next.finish=state.finish.slice();
+    next.hands=state.hands.map(hand=>Array.isArray(hand)?hand.slice():[]);next.placed=state.placed.slice();
+    next.passes=state.passes.slice();next.finish=Array.isArray(state.finish)?state.finish.slice():[];
     const choices=hubSevenChoices(next,seat);
     if(choice==='pass'&&choices.length===0){
       next.passes[seat]++;
@@ -118,8 +118,8 @@ function hubTableMove(state,actor,choice){
       }
     }
   }else if(state.kind==='blackjack'){
-    next.hands=state.hands.map(hand=>hand.slice());next.stood=state.stood.slice();
-    next.dealer=state.dealer.slice();next.results=state.results.slice();
+    next.hands=state.hands.map(hand=>Array.isArray(hand)?hand.slice():[]);next.stood=state.stood.slice();
+    next.dealer=state.dealer.slice();next.results=Array.isArray(state.results)?state.results.slice():[];
     if(!['hit','stand'].includes(choice)||next.stood[seat])return null;
     if(choice==='hit'){
       if(!next.deck.length)return null;
