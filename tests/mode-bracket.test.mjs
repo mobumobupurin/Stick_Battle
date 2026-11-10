@@ -5,10 +5,11 @@ import vm from 'node:vm';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const html=read('src/index.template.html'),modes=read('src/game/06-game-modes.js');
 test('mode cards and all linked buttons exist exactly once',()=>{
- for(const id of ['go-cpu','go-online','go-more','go-howto','extra-training','extra-kumite','extra-tournament','extra-ranking','tour-offline','tour-network']){
+ for(const id of ['go-cpu','go-online','go-more','go-hub','go-howto','extra-training','extra-kumite','extra-tournament','extra-ranking','tour-offline','tour-network']){
   assert.equal(html.split('id="'+id+'"').length-1,1,id);
  }
- assert.ok(html.indexOf('03 / CHALLENGES')<html.indexOf('04 / BEGINNER GUIDE'));
+ assert.ok(html.indexOf('03 / CHALLENGES')<html.indexOf('04 / GAME HUB'));
+ assert.ok(html.indexOf('04 / GAME HUB')<html.indexOf('05 / BEGINNER GUIDE'));
  assert.ok(html.includes('全キャラのCPUが次々に登場'));
  assert.ok(!html.includes('最強固定'));
 });
