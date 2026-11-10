@@ -221,13 +221,33 @@
 
 <div id="sc-chars" class="screen" style="z-index:8">
  <div class="hd"><span class="menu-eyebrow">01 / FIGHTER SELECT</span>主役を、選ぼう。<small>ファイターを選択し、技と特性を確認。あなたのスタイルを、戦場へ。</small></div>
- <div class="fighter-layout"><div class="fighter-left"><div class="fighter-preview" id="fighter-showcase"></div><div id="char-info" class="card"></div><p class="char-select-tip">技が分からなくてもOK！「上必殺技・キャラ特性を見る」で詳しく確認できます。</p></div>
+ <div class="fighter-layout"><div class="fighter-left"><div class="fighter-preview" id="fighter-showcase"></div>
+ <button type="button" id="fighter-guide-open" class="fighter-guide-open" aria-haspopup="dialog" aria-controls="fighter-guide-dialog">
+  <span class="fighter-guide-open-top">MOVE GUIDE <span class="fighter-guide-open-ico" aria-hidden="true">↗</span></span>
+  <strong>技・キャラクター解説</strong>
+  <small>攻撃・必殺技・覚醒・戦い方を確認</small>
+ </button>
+ <div id="char-info" class="card"></div></div>
  <div class="fighter-right"><div class="fighter-tools"><label class="fighter-search" for="fighter-search"><span aria-hidden="true">⌕</span><input id="fighter-search" type="search" placeholder="名前で検索 / Search" autocomplete="off"></label><div class="fighter-filters" role="group" aria-label="キャラクターの種類"><button type="button" data-roster-filter="all" aria-pressed="true">すべて</button><button type="button" data-roster-filter="normal" aria-pressed="false">通常</button><button type="button" data-roster-filter="special" aria-pressed="false">スペシャル</button></div><p id="fighter-search-status" role="status" aria-live="polite"></p></div><div id="char-grid" class="cgrid"></div>
  <div class="namebox"><label for="player-name">PLAYER NAME</label><input id="player-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
  <div id="cpu-opts" style="display:flex;flex-direction:column"><div class="optrow"><span>CPUの数</span><div class="seg" id="seg-cpun"></div></div><div class="optrow"><span>ランダムの対象</span><div class="seg" id="seg-cpupool"></div></div><div class="optrow"><span>CPUの強さ</span><div class="seg" id="seg-cpulv"></div></div></div><fieldset id="cpu-fighters" class="cpu-fighters" hidden><legend>対戦するCPU</legend><p>キャラを指定するか、ランダムを選べます。</p><div id="cpu-fighter-slots"></div></fieldset></div></div>
  <div class="nav"><button class="back" id="chars-back">もどる</button><button class="next" id="chars-next">ステージへ →</button></div>
 </div>
 
+<dialog id="fighter-guide-dialog" class="fighter-guide-dialog" aria-labelledby="fighter-guide-name">
+ <div class="fighter-guide-shell">
+  <header class="fighter-guide-header">
+   <div class="fighter-guide-heading"><span class="fighter-guide-eyebrow">FIGHTER DATABASE / MOVE GUIDE</span><h2 id="fighter-guide-name">技・キャラクター解説</h2><p id="fighter-guide-role"></p></div>
+   <button id="fighter-guide-close" type="button" class="fighter-guide-x" aria-label="技の説明を閉じる">×</button>
+  </header>
+  <div class="fighter-guide-scroll">
+   <p class="fighter-guide-intro">スマホは特殊ボタンを上下左右にスワイプ。従来操作は方向入力＋特殊ボタンで発動できます。</p>
+   <div id="fighter-guide-moves" class="fighter-guide-moves"></div>
+   <section class="fighter-guide-traits" aria-label="キャラクターの特性"><h3>戦い方と特殊能力</h3><p id="fighter-guide-ability"></p></section>
+  </div>
+  <footer class="fighter-guide-footer"><span>※ ゲージ・変身状態により使える技が変わります</span><button id="fighter-guide-done" type="button">キャラ選択に戻る</button></footer>
+ </div>
+</dialog>
 <div id="sc-stage" class="screen">
   <div class="hd"><span class="menu-eyebrow">02 / ARENA & RULES</span>舞台を、決めよう。<small>地形を選んでルールを調整。準備ができたらバトルへ。</small></div><div class="arena-layout"><section class="arena-picker" aria-label="ステージ選択"><div id="menu-arena-preview" class="arena-preview"></div>
   <div class="stage-grid" id="stage-grid" style="width:min(560px,100%)"></div>

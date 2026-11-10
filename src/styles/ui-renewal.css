@@ -385,3 +385,139 @@ input,select{font-family:inherit}
  #sc-title .title-speed-lines,#sc-title .title-sword-arc,#sc-title .title-impact{animation:none!important}
  #sc-title .title-content #title-tap{transition:none!important}
 }
+
+/* FIGHTER MOVE GUIDE — prominent preview action and responsive combat move database. */
+#sc-chars .fighter-guide-open{
+ width:100%;display:flex;flex-direction:column;align-items:stretch;gap:7px;
+ min-height:105px;margin:12px 0 10px;padding:16px 18px;
+ background:linear-gradient(117deg,#793a37,#462a37 56%,#23293d);
+ color:#fff;border:1px solid #f3bf9959;border-radius:14px;
+ text-align:left;box-shadow:0 10px 26px #0005;cursor:pointer;
+ transition:transform .16s ease,border-color .16s ease,filter .16s ease;
+}
+#sc-chars .fighter-guide-open:hover{border-color:#f4d3a0;transform:translateY(-2px);filter:brightness(1.08)}
+#sc-chars .fighter-guide-open:active{transform:translateY(1px)}
+#sc-chars .fighter-guide-open:focus-visible{outline:3px solid #ffde94;outline-offset:3px}
+#sc-chars .fighter-guide-open-top{
+ display:flex;justify-content:space-between;align-items:center;
+ color:#fedfac;font-size:10px;font-weight:900;letter-spacing:.18em;
+}
+#sc-chars .fighter-guide-open-ico{font-size:23px;line-height:1}
+#sc-chars .fighter-guide-open strong{font-size:clamp(16px,1.6vw,21px);line-height:1.3;letter-spacing:.015em}
+#sc-chars .fighter-guide-open small{font-size:11px;color:#efddd7;font-weight:700;letter-spacing:.02em}
+#sc-chars #char-info{margin-top:0;padding:15px}
+#sc-chars #char-info .ability-line{
+ display:flex;flex-direction:column;gap:8px;line-height:1.6;font-size:11px;
+ padding-bottom:12px;border-bottom:1px solid #ffffff16;margin-bottom:10px
+}
+#sc-chars #char-info .ability-line b{font-size:12px;letter-spacing:.04em;color:#f4d69a}
+#sc-chars #char-info .ability-line span{color:#d5dfeb}
+#sc-chars .fighter-info-guide-hint{margin:10px 0 0;color:#9fb0c4;font-size:11px;line-height:1.6}
+.fighter-guide-dialog{
+ position:fixed;inset:0;margin:auto;padding:0;
+ width:min(820px,calc(100vw - 26px));max-width:none;max-height:min(90dvh,910px);
+ border:1px solid #53657e;border-radius:20px;color:#f4f6fc;
+ background:linear-gradient(155deg,#18263b,#0e1726);
+ box-shadow:0 22px 90px #000c;overflow:hidden;
+ color-scheme:dark;
+}
+.fighter-guide-dialog::backdrop{
+ background:rgba(4,8,16,.82);backdrop-filter:blur(6px);
+}
+.fighter-guide-dialog:not([open]){display:none}
+.fighter-guide-dialog[open]{display:block}
+.fighter-guide-dialog .fighter-guide-shell{
+ display:flex;flex-direction:column;min-height:0;max-height:min(90dvh,910px);
+}
+.fighter-guide-header{
+ display:flex;justify-content:space-between;align-items:flex-start;gap:15px;
+ padding:clamp(17px,3vw,28px);padding-bottom:18px;
+ background:linear-gradient(105deg,#432f39,#192538 76%);
+ border-bottom:1px solid #ffffff20;flex:0 0 auto;
+}
+.fighter-guide-heading{min-width:0}
+.fighter-guide-eyebrow{color:#f3c48c;display:block;font-size:10px;font-weight:900;letter-spacing:.16em}
+.fighter-guide-header h2{margin:7px 0;font-size:clamp(20px,2.9vw,30px);line-height:1.2;color:#fff;letter-spacing:-.02em}
+.fighter-guide-header p{margin:0;font-size:12px;color:#ccd6e5;letter-spacing:.07em}
+.fighter-guide-x{
+ flex:0 0 44px;width:44px;height:44px;line-height:1;
+ border:1px solid #ffffff38;border-radius:12px;
+ font-size:26px;background:#111c2cbb;color:#f6f8fd;
+}
+.fighter-guide-x:hover{background:#3c4c61}
+.fighter-guide-scroll{
+ overflow:auto;overscroll-behavior:contain;min-height:0;
+ padding:18px clamp(14px,3vw,28px) 25px;
+ -webkit-overflow-scrolling:touch;
+}
+.fighter-guide-intro{
+ margin:0 0 18px;font-size:12px;line-height:1.7;color:#c9d5e3;
+ background:#26364a;border-left:3px solid #f1cc8c;
+ border-radius:4px 12px 12px 4px;padding:11px 14px;
+}
+.fighter-guide-moves{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;
+}
+.fighter-guide-lead{
+ grid-column:1/-1;margin:0 0 7px;color:#f0e6d7;
+ background:linear-gradient(90deg,#6f3e3a55,#27354c77);
+ padding:13px 15px;border-radius:12px;font-size:14px;font-weight:750;line-height:1.7;
+}
+.fighter-guide-move{
+ min-width:0;min-height:144px;padding:16px 17px;border-radius:14px;
+ border:1px solid #ffffff20;background:linear-gradient(160deg,#233146,#1b283b);
+}
+.fighter-guide-key{
+ display:inline-block;padding:5px 10px;background:#f3d39b;color:#1b2633;
+ font-size:11px;letter-spacing:.02em;font-weight:1000;border-radius:7px;line-height:1.1;
+}
+.fighter-guide-move-name{margin:12px 0 7px;font-size:15px;font-weight:900;color:#fff}
+.fighter-guide-move-desc{font-size:12px;color:#cfd9e8;line-height:1.75;margin:0;overflow-wrap:anywhere}
+.fighter-guide-move.fighter-guide-hold{border-color:#cba56b73}
+.fighter-guide-traits{
+ margin-top:18px;background:#112031a6;border:1px solid #ffffff20;
+ padding:17px 18px;border-radius:15px;
+}
+.fighter-guide-traits h3{margin:0 0 8px;color:#f3d39b;font-size:15px}
+.fighter-guide-traits p{margin:0;color:#d4deeb;font-size:13px;line-height:1.75}
+.fighter-guide-footer{
+ flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;
+ border-top:1px solid #ffffff20;background:#111d2d;
+ padding:12px clamp(14px,3vw,28px);
+}
+.fighter-guide-footer span{font-size:10px;color:#a7b8cd;line-height:1.5}
+.fighter-guide-footer button{
+ flex-shrink:0;background:linear-gradient(130deg,#f1d49c,#e3b56c);
+ color:#17202a;border:1px solid #f4dfb6;border-radius:10px;
+ padding:12px 17px;min-height:44px;font-size:12px;font-weight:1000;
+}
+.fighter-guide-footer button:hover{filter:brightness(1.08)}
+@media(max-width:680px){
+ #sc-chars .fighter-guide-open{min-height:90px;padding:13px 15px;margin:10px 0 10px}
+ #sc-chars .fighter-guide-open strong{font-size:17px}
+ .fighter-guide-dialog{
+  width:calc(100vw - 16px);max-height:calc(100dvh - 18px);border-radius:14px
+ }
+ .fighter-guide-dialog .fighter-guide-shell{max-height:calc(100dvh - 18px)}
+ .fighter-guide-header{padding:15px 16px}
+ .fighter-guide-header h2{font-size:21px}
+ .fighter-guide-scroll{padding:12px 13px 20px}
+ .fighter-guide-moves{grid-template-columns:1fr;gap:9px}
+ .fighter-guide-move{min-height:0;padding:13px 15px}
+ .fighter-guide-move-name{margin:9px 0 5px}
+ .fighter-guide-footer{padding:10px 12px}
+ .fighter-guide-footer span{display:none}
+ .fighter-guide-footer button{width:100%}
+}
+@media(orientation:landscape) and (max-height:460px){
+ .fighter-guide-dialog{max-height:calc(100dvh - 12px)}
+ .fighter-guide-dialog .fighter-guide-shell{max-height:calc(100dvh - 12px)}
+ .fighter-guide-header{padding:10px 14px}
+ .fighter-guide-header h2{font-size:18px;margin:4px 0}
+ .fighter-guide-scroll{padding:9px 14px}
+ .fighter-guide-move{min-height:0;padding:11px}
+ .fighter-guide-footer{padding:7px 12px}
+}
+@media(prefers-reduced-motion:reduce){
+ #sc-chars .fighter-guide-open{transition:none}
+}
