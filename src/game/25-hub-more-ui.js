@@ -4,12 +4,12 @@ const HUB_CHESS_GLYPH={wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',
  bK:'♚',bQ:'♛',bR:'♜',bB:'♝',bN:'♞',bP:'♟'};
 const HUB_MINI_GLYPH={K:'玉',G:'金',S:'銀',B:'角',R:'飛',P:'歩',
  '+S':'全','+B':'馬','+R':'龍','+P':'と'};
-let hubExtraBoardKey='',hubExtraSelected=null,hubExtraDrop='',hubExtraPromote=true;
+let hubExtraBoardKey='',hubExtraSelected=null,hubExtraDrop='',hubExtraPromote=true,hubChessPromotionPref='Q';
 let hubPokerPickKey='',hubPokerPicked=new Set();
 function hubExtraSync(state){
  const key=state.kind+':'+(state.created||0);
  if(key!==hubExtraBoardKey){
-  hubExtraBoardKey=key;hubExtraSelected=null;hubExtraDrop='';hubExtraPromote=true;
+  hubExtraBoardKey=key;hubExtraSelected=null;hubExtraDrop='';hubExtraPromote=true;hubChessPromotionPref='Q';
  }
  const pk=key+':'+state.phase+':'+state.turn;
  if(pk!==hubPokerPickKey){hubPokerPickKey=pk;hubPokerPicked=new Set();}
@@ -77,7 +77,7 @@ function hubExtraBoardUI(state){
    const hit=targets.filter(m=>m.to===pos);
    if(hit.length){
     let move;
-    if(chess)move={from:hubExtraSelected,to:pos,promotion:hubEl('hub-chess-promotion')?.value||'Q'};
+    if(chess)move={from:hubExtraSelected,to:pos,promotion:hubChessPromotionPref};
     else if(hubExtraDrop)move={drop:hubExtraDrop,to:pos};
     else move=hit.find(m=>!!m.promote===hubExtraPromote)||hit[0];
     hubExtraSelected=null;hubExtraDrop='';
@@ -95,9 +95,9 @@ function hubExtraBoardUI(state){
    const label=hubMake('label','hub-option-label','昇格時の駒：');
    const sel=hubMake('select','hub-strategy-select');sel.id='hub-chess-promotion';
    const options=[['Q','クイーン'],['R','ルーク'],['B','ビショップ'],['N','ナイト']];
-   const prev=hubEl('hub-chess-promotion')?.value||'Q';
+   const prev=hubChessPromotionPref;
    options.forEach(([v,text])=>{const op=document.createElement('option');op.value=v;op.textContent=text;sel.appendChild(op);});
-   sel.value=prev;label.appendChild(sel);ui.actions.appendChild(label);
+   sel.value=prev;sel.onchange=()=>{hubChessPromotionPref=sel.value;};label.appendChild(sel);ui.actions.appendChild(label);
   }
  }else{
   const pieces=['R','B','G','S','P'],hand=(state.hand?.[seat]||{});
