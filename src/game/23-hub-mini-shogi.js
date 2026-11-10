@@ -86,7 +86,7 @@ function hubMiniAttacked(board,target,bySeat){
  const other=hubMiniColor(bySeat),own=hubMiniColor(1-bySeat);
  const test={board,hand:[{},{}],turn:bySeat};
  // Only board-piece moves count as attacks; fake the king on the attacked square.
- const copy=board.slice();if(!copy[target])copy[target]=own+'G';
+ const copy=board.slice();copy[target]=own+'G';
  return hubMiniPseudo({...test,board:copy},bySeat).some(m=>m.drop===undefined&&m.to===target&&copy[m.from]?.[0]===other);
 }
 function hubMiniCheck(board,seat){
