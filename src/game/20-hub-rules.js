@@ -3,7 +3,7 @@
 const HUB_CPU_PREFIX='hub-cpu-';
 const hubIsCpu=id=>typeof id==='string'&&/^hub-cpu-[1-8]$/.test(id);
 const HUB_NEW_GAMES=['shichinarabe','blackjack','baccarat'];
-const HUB_PLAYERS_MIN={stickbattle:1,reversi:2,connect4:2,shichinarabe:3,blackjack:2,baccarat:2};
+const HUB_PLAYERS_MIN={stickbattle:2,reversi:2,connect4:2,shichinarabe:3,blackjack:2,baccarat:2};
 const HUB_PLAYERS_MAX={stickbattle:8,reversi:2,connect4:2,shichinarabe:8,blackjack:8,baccarat:8};
 for(const game of HUB_CATALOG)if(HUB_NEW_GAMES.includes(game.id)){
   game.ready=true;
