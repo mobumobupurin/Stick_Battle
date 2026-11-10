@@ -116,10 +116,7 @@ function hubSetEntryMode(mode){
   if(description)description.textContent=isHub?
     '6文字のルームコードで友達を招待。集まったらリバーシやコネクトフォーを遊ぼう。':
     mode==='tournament'?'友達を招いて、オンラインの勝ち抜きトーナメントを開催しよう。':
-    '友達と専用ルームで対戦。知らない相手と遊びたいときはランダムマッチも選べます。';
-  const quick=hubEl('online-quick-zone'),quickStatus=hubEl('online-quick-status');
-  if(quick)quick.hidden=mode!=='normal';
-  if(quickStatus)quickStatus.hidden=mode!=='normal';
+    '友達を招待して、専用ルームで対戦しよう。';
 }
 function hubMake(tag,className,textValue){
   const el=document.createElement(tag);
@@ -297,133 +294,28 @@ onGm=function(g){
   }
 };
 const hubOriginalRenderLobby=renderLobby;
-let quickStartPending=false;
 renderLobby=function(){
   if(gmCache?.mode==='hub'){
     if(scene!=='sc-hub-room')show('sc-hub-room');
-    hubRender();return;
+    hubRender();
+    return;
   }
   hubOriginalRenderLobby();
   const switchButton=hubEl('lb-to-hub');
   if(switchButton)switchButton.style.display=(gmCache?.mode==='normal'&&isHost)?'block':'none';
-  if(gmCache?.mode!=='match'||scene!=='sc-lobby')return;
-  const humans=lobbyMembers().filter(x=>!x.cpu);
-  const set=hubEl('lb-set'),start=hubEl('lb-start'),wait=hubEl('lb-wait');
-  set.textContent='ランダムマッチ：2人揃うと自動で通常のSTICK BATTLEを開始します。';
-  start.style.display='none';
-  wait.style.display='block';
-  wait.textContent=humans.length<2?'対戦相手を探しています…':'相手と通信を準備しています…';
-  if(isHost&&humans.length===2&&humans.every(m=>m.ready)&&!quickStartPending&&gmCache.ph==='lobby'){
-    quickStartPending=true;
-    setTimeout(async()=>{
-      try{
-        const snap=await roomRef.child('mem').once('value');
-        const players=Object.values(snap.val()||{}).filter(m=>m&&!m.cpu);
-        const state=(await roomRef.child('gm').once('value')).val();
-        if(players.length===2&&players.every(m=>m.ready)&&state?.ph==='lobby'&&state?.mode==='match'){
-          await hostStart();
-          await quickReleaseQueue();
-        }
-      }catch(e){console.warn('ランダムマッチ開始失敗',e);}
-      finally{quickStartPending=false;}
-    },700);
-  }
 };
 const hubOriginalJoinCommon=joinCommon;
 joinCommon=async function(){
   const joined=await hubOriginalJoinCommon();
   if(!joined||!roomRef)return joined;
-  const ref=roomRef;
-  const meta=(await ref.child('gm').once('value')).val();
+  const meta=(await roomRef.child('gm').once('value')).val();
   if(meta?.mode==='hub'){
     hubBindRoom();
     if(scene!=='sc-hub-room')show('sc-hub-room');
     hubRender();
-  }else if(meta?.mode==='match'){
-    await ref.child('mem/'+myId).update({ready:1});
   }
   return joined;
 };
-let quickQueueRef=null,quickRequest=0,quickBusy=false;
-function quickFeedback(message){
-  const status=hubEl('online-quick-status');
-  if(status)status.textContent=message;
-}
-async function quickReleaseQueue(){
-  if(!quickQueueRef)return;
-  try{
-    const q=quickQueueRef;
-    await q.transaction(v=>v?.owner===myId?null:undefined,undefined,false);
-    await q.onDisconnect().cancel();
-    quickQueueRef=null;
-  }catch(e){console.warn('マッチング待機枠の解除に失敗',e);}
-}
-async function quickHostRoom(code){
-  online=true;isHost=true;roomId=code;
-  roomRef=db.ref('rooms/'+code);
-  roomRef.onDisconnect().remove();
-  await roomRef.child('gm').set({protocol:NET_PROTOCOL,mode:'match',hostId:myId,ph:'lobby',round:0,map:'std',mapChoice:'std',
-    wpn:0,stocks:settings.stocks,cpuN:0,cpuLv:1,cpuPool:'all',teamMode:0,w:'',wt:0});
-  const joined=await joinCommon();
-  if(!joined)throw new Error('ランダムマッチの部屋に入れませんでした。');
-  netTimers.push(setInterval(hostTick,200));
-  netTimers.push(setInterval(hostSpawn,1000));
-}
-async function quickJoinReadyRoom(code,request){
-  for(let tries=0;tries<18;tries++){
-    if(request!==quickRequest)return false;
-    const s=await db.ref('rooms/'+code+'/gm').once('value');
-    if(s.val()?.mode==='match')return joinRoom(code,false);
-    await new Promise(done=>setTimeout(done,250));
-  }
-  throw new Error('対戦相手の部屋が準備できませんでした。もう一度検索してください。');
-}
-async function startQuickMatch(){
-  if(online||quickBusy)return;
-  const request=++quickRequest;
-  quickBusy=true;
-  const button=hubEl('online-quick');button.disabled=true;
-  quickFeedback('対戦相手を検索しています…');
-  try{
-    if(!await initFirebase())throw new Error(firebaseLastError||'Firebaseに接続できませんでした。');
-    const q=db.ref('rooms/_matchmaking/standard'),code=newRoomCode();
-    let result=null;
-    for(let attempt=0;attempt<12;attempt++){
-      const now=Date.now();
-      result=await q.transaction(v=>{
-        if(!v||v.protocol!==NET_PROTOCOL||now-Number(v.created||0)>90000){
-          return {owner:myId,room:code,created:now,protocol:NET_PROTOCOL,status:'waiting'};
-        }
-        if(v.status==='waiting'&&v.owner!==myId){
-          return {...v,status:'matched',guest:myId,matchedAt:now};
-        }
-        return;
-      },undefined,false);
-      if(result.committed)break;
-      await new Promise(done=>setTimeout(done,300+attempt*100));
-    }
-    if(!result?.committed)throw new Error('現在マッチングが混み合っています。しばらくして再試行してください。');
-    const ticket=result.snapshot.val();
-    if(request!==quickRequest)return;
-    if(ticket.owner===myId){
-      quickQueueRef=q;
-      await q.onDisconnect().remove();
-      await quickHostRoom(ticket.room);
-      quickFeedback('相手の参加を待っています…');
-    }else if(ticket.guest===myId){
-      quickFeedback('対戦相手が見つかりました。接続中…');
-      const joined=await quickJoinReadyRoom(ticket.room,request);
-      if(!joined)throw new Error('対戦相手に接続できませんでした。');
-    }else throw new Error('待機情報が更新されました。もう一度試してください。');
-  }catch(e){
-    console.error('ランダムマッチ失敗',e);
-    quickFeedback(e?.message||'マッチングに失敗しました。');
-    if(quickQueueRef)await quickReleaseQueue();
-  }finally{
-    quickBusy=false;
-    button.disabled=false;
-  }
-}
 const hubShowBase=show;
 show=function(id){
   if(id==='sc-online')hubSetEntryMode(requestedOnlineMode);
@@ -434,7 +326,6 @@ buildMenus=function(){
   hubOriginalBuildMenus();
   const hubButton=hubEl('go-hub');
   hubButton.onclick=()=>{requestedOnlineMode='hub';show('sc-online');};
-  hubEl('online-quick').onclick=startQuickMatch;
   hubEl('lb-to-hub').onclick=async()=>{
     if(isHost&&roomRef&&gmCache?.mode==='normal'&&gmCache.ph==='lobby'){
       await roomRef.child('gm').update({mode:'hub',ph:'lobby',cpuN:0,teamMode:0});
