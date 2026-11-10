@@ -61,19 +61,15 @@ test('connect four detects horizontal and both diagonal fours',()=>{
 });
 
 
-test('game HUB entry hides random match but preserves it for regular online battles',()=>{
+test('game HUB, tournament and normal online modes all use invitation rooms',()=>{
   const g=game();
-  g.run('hubSetEntryMode("hub")');
-  assert.equal(g.get('sc-online').dataset.onlineMode,'hub');
-  assert.equal(g.get('online-quick-zone').hidden,true);
-  assert.equal(g.get('online-quick-status').hidden,true);
-  assert.match(g.get('online-page-title').innerHTML,/ゲーム<span>HUB<\/span>/);
-  g.run('hubSetEntryMode("normal")');
-  assert.equal(g.get('sc-online').dataset.onlineMode,'normal');
-  assert.equal(g.get('online-quick-zone').hidden,false);
-  assert.equal(g.get('online-quick-status').hidden,false);
-  g.run('hubSetEntryMode("tournament")');
-  assert.equal(g.get('online-quick-zone').hidden,true);
+  for(const mode of ['hub','normal','tournament']){
+    g.run('hubSetEntryMode('+JSON.stringify(mode)+')');
+    assert.equal(g.get('sc-online').dataset.onlineMode,mode);
+    assert.equal(g.get('online-page-title').innerHTML.includes(mode==='hub'?'HUB':mode==='normal'?'オンライン対戦':'オンライン大会'),true);
+  }
+  assert.equal(g.run('typeof startQuickMatch'),'undefined');
+  assert.equal(g.run('typeof quickReleaseQueue'),'undefined');
 });
 
 test('connect four uses red for first player and yellow for second; reversi stays black and white',()=>{
