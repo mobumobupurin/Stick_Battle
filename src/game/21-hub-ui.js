@@ -20,7 +20,7 @@ function hubChooseSeats(kind,humans,cpuSelection='auto'){
 }
 function hubCpuTimer(){
   const state=hubGameSnapshot,ref=roomRef;
-  if(!isHost||!online||!ref||scene!=='sc-hub-room'||gmCache?.mode!=='hub'||
+  if(!isHost||!online||!ref||scene!=='sc-hub-play'||gmCache?.mode!=='hub'||
      !state||state.status!=='play'||!hubIsCpu(state.players?.[state.turn]))return;
   const key=state.kind+':'+state.created+':'+state.revision+':'+state.turn+':'+roomId;
   if(hubCpuScheduled?.key===key&&hubCpuScheduled.ref===ref)return;
@@ -165,7 +165,7 @@ function hubRenderTable(state){
 }
 const hubRenderBeforeExpansion=hubRender;
 hubRender=function(){
-  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
+  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room'&&scene!=='sc-hub-play')return;
   hubRenderBeforeExpansion();
   const members=lobbyMembers().filter(x=>!x.cpu),state=hubGameSnapshot;
   const cpuSelect=hubEl('hub-cpu-count');
