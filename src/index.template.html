@@ -316,8 +316,19 @@
   </div>
   <div class="hub-shell">
     <aside class="hub-sidebar" aria-label="ゲーム選択">
-      <div class="hub-sidebar-header"><div><span class="hub-section-kicker">GAME LIBRARY</span><h3>ゲームを選ぶ<span class="hub-title-dot">.</span></h3></div><span class="hub-sidebar-count">13 GAMES</span></div>
-      <p class="hub-sidebar-tip">ゲームを選択すると全員の画面に反映されます。選択できるのはホストです。</p>
+      <div class="hub-sidebar-header"><div><span class="hub-section-kicker">GAME LIBRARY</span><h3>ゲームを選ぶ<span class="hub-title-dot">.</span></h3></div><span class="hub-sidebar-count">6 PLAYABLE / 13 GAMES</span></div>
+      <p class="hub-sidebar-tip">ゲームを選択すると全員の画面に反映。1人でもCPUと対戦できます。ホストがゲームを開始します。</p>
+      <div class="hub-cpu-settings"><label for="hub-cpu-count"><span class="hub-cpu-symbol" aria-hidden="true">🤖</span> CPUを追加する</label>
+        <select id="hub-cpu-count" aria-label="追加するCPUの人数">
+          <option value="auto">人数不足なら自動補充</option>
+          <option value="0">CPUなし</option>
+          <option value="1">CPUを1人追加</option>
+          <option value="2">CPUを2人追加</option>
+          <option value="3">CPUを3人追加</option>
+          <option value="4">CPUを4人追加</option>
+        </select>
+        <p id="hub-cpu-info">不足人数を自動補充</p>
+      </div>
       <div id="hub-catalog"></div>
     </aside>
     <main class="hub-main">
@@ -329,13 +340,14 @@
         <div class="hub-board-frame">
           <div id="hub-empty-state" class="hub-empty-state" aria-label="ゲーム選択待ち">
             <div class="hub-empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-            <strong>次は、何で遊ぶ？</strong><p>リバーシとコネクトフォーは今すぐ対戦できます。</p>
+            <strong>次は、何で遊ぶ？</strong><p>リバーシ・コネクトフォー・七並べ・ブラックジャック・バカラはCPUを追加して遊べます。</p>
           </div>
           <div id="hub-board" class="hub-board" aria-label="ゲーム盤" hidden></div>
         </div>
+        <div id="hub-actions" class="hub-actions" aria-label="ゲーム操作"></div>
         <div class="hub-game-footer" id="hub-game-footer">ゲームを選ぶと、ここに対局盤が表示されます。</div>
       </section>
-      <p class="hub-room-note">2人対戦では先着2人がプレイし、そのほかの参加者は観戦できます。ホストはゲームの変更や再戦ができます。</p>
+      <p class="hub-room-note">人数が足りないときはCPUを補充できます。対局中に友達が参加した場合は、次のゲームから一緒に遊べます。ホストはゲームの変更や再戦ができます。</p>
     </main>
   </div>
   <div class="nav hub-bottom-nav"><button class="back" id="hub-leave" type="button">← ゲームHUBから退出</button></div>
