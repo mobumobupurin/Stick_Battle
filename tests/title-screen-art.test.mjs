@@ -18,7 +18,7 @@ test('cinematic title artwork is a self-contained asset with two eyeless combata
 test('title screen replaces old giant fighter without breaking the start button',()=>{
  const menu=src('src/game/16-menu-ui.js'),template=src('src/index.template.html');
  assert.doesNotMatch(menu,/premium-light|MASTER YOUR OWN STYLE/);
- assert.match(menu,/titleArtwork\.replaceChildren\(\)/);
+ assert.match(menu,/titleArtwork\\.innerHTML=''/);
  assert.match(template,/id="title-tap"/);
  assert.match(template,/class="title-art"/);
  const output=src('index.html');
