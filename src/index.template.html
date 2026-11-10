@@ -331,27 +331,50 @@
       </div>
       <div id="hub-catalog"></div>
     </aside>
-    <main class="hub-main">
-      <section class="hub-playarea" aria-label="対局画面">
-        <div class="hub-play-top"><span id="hub-game-meta" class="hub-game-meta">GAME TABLE / READY</span><span class="hub-room-live"><i aria-hidden="true"></i> LIVE ROOM</span></div>
-        <h3 id="hub-game-title" class="hub-game-title">ゲームを選ぼう</h3>
-        <div id="hub-game-info" class="hub-game-info" role="status" aria-live="polite">左のゲーム一覧から、遊びたいタイトルを選んでください。</div>
-        <div id="hub-versus" class="hub-versus" aria-label="対局プレイヤー"></div>
-        <div class="hub-board-frame">
-          <div id="hub-empty-state" class="hub-empty-state" aria-label="ゲーム選択待ち">
-            <div class="hub-empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-            <strong>次は、何で遊ぶ？</strong><p>チェス・5五将棋・ババ抜き・ポーカーなど、10種類のゲームをCPUと遊べます。</p>
-          </div>
-          <div id="hub-board" class="hub-board" aria-label="ゲーム盤" hidden></div>
-        </div>
-        <div id="hub-actions" class="hub-actions" aria-label="ゲーム操作"></div>
-        <div class="hub-game-footer" id="hub-game-footer">ゲームを選ぶと、ここに対局盤が表示されます。</div>
+    <main class="hub-main hub-setup-main" aria-label="ゲーム準備画面">
+      <section class="hub-setup-card">
+        <div class="hub-play-top"><span class="hub-game-meta">GAME SELECT / SETUP</span><span class="hub-room-live"><i aria-hidden="true"></i> ONLINE LOBBY</span></div>
+        <span id="hub-setup-icon" class="hub-setup-icon" aria-hidden="true">✦</span>
+        <p class="hub-setup-eyebrow">SELECT A GAME</p>
+        <h3 id="hub-selection-title" class="hub-game-title">遊ぶゲームを選ぼう</h3>
+        <p id="hub-selection-description" class="hub-game-info">左のゲーム一覧から遊びたいタイトルを選択してください。</p>
+        <div id="hub-selection-members" class="hub-selection-members" aria-label="対戦人数"></div>
+        <button id="hub-game-start" type="button" class="hub-start-btn" disabled>ゲームを選択してください</button>
+        <p id="hub-selection-status" class="hub-selection-status" role="status" aria-live="polite">ホストがゲームを選ぶと、ここからスタートできます。</p>
+        <button id="hub-resume-play" type="button" class="hub-resume-btn" hidden>進行中のゲーム画面に戻る →</button>
       </section>
-      <p class="hub-room-note">人数が足りないときはCPUを補充できます。対局中に友達が参加した場合は、次のゲームから一緒に遊べます。ホストはゲームの変更や再戦ができます。</p>
+      <p class="hub-room-note">① ゲームを選ぶ → ② CPUの人数を設定 → ③「ゲームスタート」で専用画面へ。参加者全員が同じゲームに移動します。</p>
     </main>
   </div>
   <div class="nav hub-bottom-nav"><button class="back" id="hub-leave" type="button">← ゲームHUBから退出</button></div>
 </div>
+<div id="sc-hub-play" class="screen hub-play-screen" aria-label="ゲームHUBのプレイ画面">
+  <div class="hub-play-header">
+    <div class="hub-play-brand"><span class="hub-section-kicker">GAME HUB / NOW PLAYING</span><b id="hub-play-name">ゲームを開始しよう</b></div>
+    <div class="hub-play-room"><span>ROOM</span><strong id="hub-play-code">------</strong></div>
+    <button id="hub-play-back" class="hub-play-back" type="button">← ゲームHUBへ戻る</button>
+  </div>
+  <main class="hub-play-layout" aria-label="ゲーム進行">
+    <section class="hub-playarea" aria-label="対局画面">
+      <div class="hub-play-top"><span id="hub-game-meta" class="hub-game-meta">GAME TABLE / READY</span><span class="hub-room-live"><i aria-hidden="true"></i> LIVE ROOM</span></div>
+      <h3 id="hub-game-title" class="hub-game-title">ゲームを選ぼう</h3>
+      <div id="hub-game-info" class="hub-game-info" role="status" aria-live="polite">ゲームスタートで専用画面に移動します。</div>
+      <div id="hub-versus" class="hub-versus" aria-label="対局プレイヤー"></div>
+      <div class="hub-board-frame">
+        <div id="hub-empty-state" class="hub-empty-state" aria-label="ゲーム選択待ち">
+          <div class="hub-empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <strong>READY TO PLAY</strong>
+          <p>ゲームHUBから「ゲームスタート」を押してください。</p>
+        </div>
+        <div id="hub-board" class="hub-board" aria-label="ゲーム盤" hidden></div>
+      </div>
+      <div id="hub-actions" class="hub-actions" aria-label="ゲーム操作"></div>
+      <div class="hub-game-footer" id="hub-game-footer">ゲームが始まるとここに操作方法が表示されます。</div>
+    </section>
+    <p class="hub-room-note">ゲーム終了後はホストが再戦できます。ゲームHUBに戻ると別のタイトルを選べます。</p>
+  </main>
+</div>
+
 <div id="sc-result" class="screen">
   <div class="hd">BATTLE RESULT<small>THE FIGHT IS OVER.</small></div><div id="winner-art"></div>
   <div id="res-win"></div>
