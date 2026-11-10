@@ -115,11 +115,18 @@ async function hubStartSelectedGame(){
     // Stick Battle owns a separate real-time combat engine. Start that engine
     // directly instead of stopping in the normal online room's lobby.
     await hubPlayGameBeforeFlow(kind);
-    if(gmCache?.mode!=='normal'||!roomRef)return;
-    const cpuCount=seats.filter(hubIsCpu).length;
-    await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:1,teamMode:0});
-    gmCache=(await roomRef.child('gm').once('value')).val();
-    await hostStart();
+    if(!roomRef)return;
+    try{
+      const latest=(await roomRef.child('gm').once('value')).val();
+      if(latest?.mode!=='normal')return;
+      const cpuCount=seats.filter(hubIsCpu).length;
+      await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:1,teamMode:0});
+      gmCache=(await roomRef.child('gm').once('value')).val();
+      await hostStart();
+    }catch(e){
+      console.warn('ゲームHUBからのバトル開始に失敗',e);
+      alert('バトルを開始できませんでした。ロビーから再度開始してください。');
+    }
     return;
   }
   await hubPlayGameBeforeFlow(kind);
