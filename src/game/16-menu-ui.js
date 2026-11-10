@@ -57,4 +57,4 @@ buildMenus=function(){
 // The title key art is an accessible CSS background (assets/title/title-clash.svg).
 // Do not construct the former oversized single-fighter SVG on the title screen.
 const titleArtwork=document.querySelector('.title-art');
-if(titleArtwork){titleArtwork.setAttribute('aria-hidden','true');titleArtwork.replaceChildren();}
+if(titleArtwork){titleArtwork.setAttribute('aria-hidden','true');titleArtwork.innerHTML='';}
