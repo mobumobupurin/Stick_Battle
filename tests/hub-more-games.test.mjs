@@ -123,8 +123,8 @@ test('five-card poker ranks straight flush > four-kind > full house > flush, and
  assert.equal(g.run('hubPokerValue([0,9,10,11,12])[0]'),8);
  assert.equal(g.run('hubPokerValue([0,13,26,39,1])[0]'),7);
  assert.equal(g.run('hubPokerValue([0,13,26,1,14])[0]'),6);
- assert.equal(g.run('hubPokerValue([0,1,2,3,4])[0]'),4);
- assert.equal(g.run('hubPokerValue([0,1,2,3,4])[1]'),5);
+ assert.equal(g.run('hubPokerValue([0,14,28,42,4])[0]'),4);
+ assert.equal(g.run('hubPokerValue([0,14,28,42,4])[1]'),5);
  assert.equal(g.run('hubPokerCompare(hubPokerValue([0,9,10,11,12]),hubPokerValue([0,13,26,39,1]))'),1);
 });
 
