@@ -10832,7 +10832,7 @@ buildMenus=function(){
 const HUB_CPU_PREFIX='hub-cpu-';
 const hubIsCpu=id=>typeof id==='string'&&/^hub-cpu-[1-8]$/.test(id);
 const HUB_NEW_GAMES=['shichinarabe','blackjack','baccarat'];
-const HUB_PLAYERS_MIN={stickbattle:1,reversi:2,connect4:2,shichinarabe:3,blackjack:2,baccarat:2};
+const HUB_PLAYERS_MIN={stickbattle:2,reversi:2,connect4:2,shichinarabe:3,blackjack:2,baccarat:2};
 const HUB_PLAYERS_MAX={stickbattle:8,reversi:2,connect4:2,shichinarabe:8,blackjack:8,baccarat:8};
 for(const game of HUB_CATALOG)if(HUB_NEW_GAMES.includes(game.id)){
   game.ready=true;
@@ -12126,7 +12126,7 @@ function hubFlowSetup(){
     !chosen?'ゲームを選ぶと、ホストがスタートできるようになります。':
     !isHost?'ホストが「ゲームスタート」を押すと、全員がゲーム画面へ移動します。':
     !seats?'CPUなしでは人数不足です。CPUを追加するか友達を招待してください。':
-    chosen.id==='stickbattle'?'ゲームスタートでスティックバトルの対戦ロビーへ進みます。':
+    chosen.id==='stickbattle'?'ゲームスタートでそのままスティックバトルを開始します。':
     '準備OK！「ゲームスタート」で全員が専用ゲーム画面に移動します。';
   if(resume)resume.hidden=!playing;
   const catalog=hubEl('hub-catalog');
@@ -12175,10 +12175,29 @@ async function hubStartSelectedGame(){
   const kind=hubSelectionSnapshot?.kind;
   if(!kind||!isHost||!roomRef||hubBusy||hubGameSnapshot)return;
   const humans=lobbyMembers().filter(x=>!x.cpu);
-  if(!hubChooseSeats(kind,humans,hubEl('hub-cpu-count')?.value||'auto')){
+  const seats=hubChooseSeats(kind,humans,hubEl('hub-cpu-count')?.value||'auto');
+  if(!seats){
     alert('CPUの人数を増やすか、友達を招待してください。');return;
   }
   hubRoomBrowsing=false;
+  if(kind==='stickbattle'){
+    // Stick Battle owns a separate real-time combat engine. Start that engine
+    // directly instead of stopping in the normal online room's lobby.
+    await hubPlayGameBeforeFlow(kind);
+    if(!roomRef)return;
+    try{
+      const latest=(await roomRef.child('gm').once('value')).val();
+      if(latest?.mode!=='normal')return;
+      const cpuCount=seats.filter(hubIsCpu).length;
+      await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:1,teamMode:0});
+      gmCache=(await roomRef.child('gm').once('value')).val();
+      await hostStart();
+    }catch(e){
+      console.warn('ゲームHUBからのバトル開始に失敗',e);
+      alert('バトルを開始できませんでした。ロビーから再度開始してください。');
+    }
+    return;
+  }
   await hubPlayGameBeforeFlow(kind);
 }
 async function hubReturnToLobby(){
