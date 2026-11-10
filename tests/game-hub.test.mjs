@@ -5,7 +5,7 @@ import {game} from './helpers/game.mjs';
 test('game hub lists requested modes but clearly disables unimplemented games',()=>{
   const g=game();
   assert.equal(g.run('HUB_CATALOG.length'),13);
-  assert.deepEqual(Array.from(g.run('HUB_CATALOG.filter(x=>x.ready).map(x=>x.id)')),['stickbattle','reversi','connect4']);
+  assert.deepEqual(Array.from(g.run('HUB_CATALOG.filter(x=>x.ready).map(x=>x.id)')),['stickbattle','reversi','connect4','shichinarabe','blackjack','baccarat']);
   assert.equal(g.run('HUB_CATALOG.find(x=>x.id==="mini-shogi").name'),'5五将棋');
 });
 

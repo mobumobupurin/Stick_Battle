@@ -261,3 +261,66 @@
 @media(prefers-reduced-motion:reduce){
   #sc-hub-room button,#sc-online.hub-entry-screen button{transition:none!important}
 }
+
+
+/* CPU seating, casino tables and 七並べ — game HUB expansion */
+.hub-cpu-settings{border:1px solid #4c665f;border-radius:13px;background:linear-gradient(145deg,#1f3e3c,#172e37);padding:13px;margin:0 0 17px}
+.hub-cpu-settings label{font-size:12px;font-weight:850;color:#e8fff4;display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.hub-cpu-symbol{font-size:16px}
+#sc-hub-room #hub-cpu-count{display:block;width:100%;font:700 12px system-ui,sans-serif;padding:10px 32px 10px 10px;color:#effcf7;background:#142b31;border:1px solid #668577;border-radius:9px;cursor:pointer}
+#sc-hub-room #hub-cpu-count:disabled{opacity:.55}
+.hub-cpu-settings p{margin:8px 0 0;color:#b4d4c9;font-size:11px}
+.hub-member-cpu{border-color:#789e87;background:#29453c}
+.hub-member-cpu .hub-member-avatar{font-size:8px;background:#baf1ba;color:#173929}
+.hub-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+#sc-hub-room .hub-action{border:1px solid #587487;background:#29435d;color:#f2f8fd;font-weight:850;font-size:13px;min-height:46px;padding:10px 19px;border-radius:11px;cursor:pointer;transition:transform .16s,background .16s}
+#sc-hub-room .hub-action.is-primary{border-color:#83f5d6;background:#70e4bc;color:#102e2a}
+#sc-hub-room .hub-action:not(:disabled):hover{transform:translateY(-2px)}
+#sc-hub-room .hub-action:disabled{cursor:default;opacity:.4}
+.hub-finished-note{align-self:center;color:#a8c5b7;font-size:12px}
+.hub-table-player{padding:8px 11px;border:1px solid #435770;border-radius:10px;font-size:11px;color:#bed5e8;line-height:1.45}
+.hub-table-player.is-you{border-color:#81f5d7}
+.hub-table-player.is-turn{background:#244b42;color:#f5fff7}
+#sc-hub-room .hub-versus:has(.hub-table-player){flex-wrap:wrap;justify-content:flex-start;gap:6px;margin:15px 0}
+#sc-hub-room .hub-board.hub-card-table{display:flex;flex-direction:column;align-items:stretch;gap:13px;width:100%;max-width:620px;overflow-x:auto;overflow-y:hidden;border:1px solid #47655c;border-radius:14px;background:radial-gradient(ellipse at 50% 30%,#1b6956,#103f37 75%);box-shadow:0 11px 25px #030c166b;padding:17px 12px;min-height:200px}
+.hub-casino-row{width:100%;display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid #73a18a48;border-radius:13px;background:#132e2b86}
+.hub-casino-row-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hub-casino-row-head strong{font-size:12px;letter-spacing:.07em;color:#eefcf8}
+.hub-casino-row-head small{font-size:12px;font-weight:850;color:#e9d7ad}
+.hub-casino-hand{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hub-playing-card{width:44px;height:62px;display:inline-flex;flex:0 0 44px;justify-content:center;align-items:center;border-radius:6px;background:linear-gradient(150deg,#fff,#dbe8e8);border:1px solid #f9ffff;color:#202b3c;font-size:17px;font-weight:950;box-shadow:0 3px 8px #020c1b55;white-space:nowrap}
+.hub-playing-card.is-red{color:#d13b45}
+.hub-playing-card.is-black{color:#182639}
+.hub-playing-card.is-back{background:repeating-linear-gradient(45deg,#2a4780 0px,#2a4780 5px,#406aa2 5px,#406aa2 10px);border:3px double #bacde2;color:#dcecff}
+.hub-game-results{display:flex;flex-wrap:wrap;gap:8px}
+.hub-result-pill{font-size:12px;font-weight:800;background:#253f39;color:#d4e2db;border:1px solid #658377;border-radius:7px;padding:8px 11px}
+.hub-result-pill.is-win{background:#587048;color:#fff7c9;border-color:#b9d79a}
+.hub-baccarat-wait{min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.hub-baccarat-emblem{font-size:54px;color:#f8d394;text-shadow:0 0 32px #f1dc9780}
+.hub-baccarat-wait strong{font-size:16px;color:#eaf6f3;letter-spacing:.08em}
+.hub-baccarat-wait small{font-size:12px;color:#b9d5cc;line-height:1.6}
+.hub-seven-layout{display:flex;flex-direction:column;gap:8px;min-width:365px;padding:9px 4px}
+.hub-seven-row{display:flex;align-items:center;gap:7px}
+.hub-seven-suit{font-size:20px;flex:0 0 25px;color:#e3f7ef}
+.hub-seven-suit.is-red{color:#ffb6be}
+.hub-seven-slots{display:grid;grid-template-columns:repeat(13,minmax(21px,1fr));gap:2px;flex:1}
+.hub-seven-slot{height:32px;display:grid;place-items:center;color:#67897d;border:1px dashed #547d6d;border-radius:3px;font-size:11px;min-width:0}
+.hub-seven-slot.is-placed{color:#17282c;background:#e7ead9;border:1px solid #fff;border-radius:4px;font-weight:950}
+.hub-seven-hand-title{font-size:12px;font-weight:850;color:#f1e9c5;letter-spacing:.04em}
+.hub-seven-hand{display:flex;gap:6px;overflow-x:auto;padding:7px 0 14px;max-width:100%}
+#sc-hub-room .hub-seven-card{flex:0 0 auto;min-width:44px;padding:0;border:none;border-radius:8px;background:transparent;cursor:pointer}
+#sc-hub-room .hub-seven-card.is-legal{box-shadow:0 0 0 3px #8df9b8,0 0 18px #9cf7ba66}
+#sc-hub-room .hub-seven-card:disabled:not(.is-legal){opacity:.6;cursor:default}
+@media(max-width:740px){
+ .hub-cpu-settings{padding:11px}
+ #sc-hub-room .hub-board.hub-card-table{padding:10px 7px;border-width:1px;box-shadow:none}
+ .hub-playing-card{width:38px;flex-basis:38px;height:54px;font-size:14px}
+ .hub-casino-row{padding:9px}
+ .hub-seven-layout{min-width:350px}
+ .hub-seven-slots{grid-template-columns:repeat(13,22px)}
+ .hub-seven-slot{height:27px;font-size:10px}
+ .hub-seven-hand{padding:7px 3px}
+ #sc-hub-room .hub-seven-card{min-width:38px}
+ .hub-actions{gap:8px}
+ #sc-hub-room .hub-action{flex:1;min-width:120px;padding:10px 13px}
+}
