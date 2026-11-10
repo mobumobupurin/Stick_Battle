@@ -57,7 +57,7 @@ function hubFlowSetup(){
     !chosen?'ゲームを選ぶと、ホストがスタートできるようになります。':
     !isHost?'ホストが「ゲームスタート」を押すと、全員がゲーム画面へ移動します。':
     !seats?'CPUなしでは人数不足です。CPUを追加するか友達を招待してください。':
-    chosen.id==='stickbattle'?'ゲームスタートでスティックバトルの対戦ロビーへ進みます。':
+    chosen.id==='stickbattle'?'ゲームスタートでそのままスティックバトルを開始します。':
     '準備OK！「ゲームスタート」で全員が専用ゲーム画面に移動します。';
   if(resume)resume.hidden=!playing;
   const catalog=hubEl('hub-catalog');
@@ -106,10 +106,22 @@ async function hubStartSelectedGame(){
   const kind=hubSelectionSnapshot?.kind;
   if(!kind||!isHost||!roomRef||hubBusy||hubGameSnapshot)return;
   const humans=lobbyMembers().filter(x=>!x.cpu);
-  if(!hubChooseSeats(kind,humans,hubEl('hub-cpu-count')?.value||'auto')){
+  const seats=hubChooseSeats(kind,humans,hubEl('hub-cpu-count')?.value||'auto');
+  if(!seats){
     alert('CPUの人数を増やすか、友達を招待してください。');return;
   }
   hubRoomBrowsing=false;
+  if(kind==='stickbattle'){
+    // Stick Battle owns a separate real-time combat engine. Start that engine
+    // directly instead of stopping in the normal online room's lobby.
+    await hubPlayGameBeforeFlow(kind);
+    if(gmCache?.mode!=='normal'||!roomRef)return;
+    const cpuCount=seats.filter(hubIsCpu).length;
+    await roomRef.child('gm').update({cpuN:cpuCount,cpuLv:1,teamMode:0});
+    gmCache=(await roomRef.child('gm').once('value')).val();
+    await hostStart();
+    return;
+  }
   await hubPlayGameBeforeFlow(kind);
 }
 async function hubReturnToLobby(){
