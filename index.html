@@ -1000,6 +1000,142 @@ input,select{font-family:inherit}
  #sc-title .title-speed-lines,#sc-title .title-sword-arc,#sc-title .title-impact{animation:none!important}
  #sc-title .title-content #title-tap{transition:none!important}
 }
+
+/* FIGHTER MOVE GUIDE — prominent preview action and responsive combat move database. */
+#sc-chars .fighter-guide-open{
+ width:100%;display:flex;flex-direction:column;align-items:stretch;gap:7px;
+ min-height:105px;margin:12px 0 10px;padding:16px 18px;
+ background:linear-gradient(117deg,#793a37,#462a37 56%,#23293d);
+ color:#fff;border:1px solid #f3bf9959;border-radius:14px;
+ text-align:left;box-shadow:0 10px 26px #0005;cursor:pointer;
+ transition:transform .16s ease,border-color .16s ease,filter .16s ease;
+}
+#sc-chars .fighter-guide-open:hover{border-color:#f4d3a0;transform:translateY(-2px);filter:brightness(1.08)}
+#sc-chars .fighter-guide-open:active{transform:translateY(1px)}
+#sc-chars .fighter-guide-open:focus-visible{outline:3px solid #ffde94;outline-offset:3px}
+#sc-chars .fighter-guide-open-top{
+ display:flex;justify-content:space-between;align-items:center;
+ color:#fedfac;font-size:10px;font-weight:900;letter-spacing:.18em;
+}
+#sc-chars .fighter-guide-open-ico{font-size:23px;line-height:1}
+#sc-chars .fighter-guide-open strong{font-size:clamp(16px,1.6vw,21px);line-height:1.3;letter-spacing:.015em}
+#sc-chars .fighter-guide-open small{font-size:11px;color:#efddd7;font-weight:700;letter-spacing:.02em}
+#sc-chars #char-info{margin-top:0;padding:15px}
+#sc-chars #char-info .ability-line{
+ display:flex;flex-direction:column;gap:8px;line-height:1.6;font-size:11px;
+ padding-bottom:12px;border-bottom:1px solid #ffffff16;margin-bottom:10px
+}
+#sc-chars #char-info .ability-line b{font-size:12px;letter-spacing:.04em;color:#f4d69a}
+#sc-chars #char-info .ability-line span{color:#d5dfeb}
+#sc-chars .fighter-info-guide-hint{margin:10px 0 0;color:#9fb0c4;font-size:11px;line-height:1.6}
+.fighter-guide-dialog{
+ position:fixed;inset:0;margin:auto;padding:0;
+ width:min(820px,calc(100vw - 26px));max-width:none;max-height:min(90dvh,910px);
+ border:1px solid #53657e;border-radius:20px;color:#f4f6fc;
+ background:linear-gradient(155deg,#18263b,#0e1726);
+ box-shadow:0 22px 90px #000c;overflow:hidden;
+ color-scheme:dark;
+}
+.fighter-guide-dialog::backdrop{
+ background:rgba(4,8,16,.82);backdrop-filter:blur(6px);
+}
+.fighter-guide-dialog:not([open]){display:none}
+.fighter-guide-dialog[open]{display:block}
+.fighter-guide-dialog .fighter-guide-shell{
+ display:flex;flex-direction:column;min-height:0;max-height:min(90dvh,910px);
+}
+.fighter-guide-header{
+ display:flex;justify-content:space-between;align-items:flex-start;gap:15px;
+ padding:clamp(17px,3vw,28px);padding-bottom:18px;
+ background:linear-gradient(105deg,#432f39,#192538 76%);
+ border-bottom:1px solid #ffffff20;flex:0 0 auto;
+}
+.fighter-guide-heading{min-width:0}
+.fighter-guide-eyebrow{color:#f3c48c;display:block;font-size:10px;font-weight:900;letter-spacing:.16em}
+.fighter-guide-header h2{margin:7px 0;font-size:clamp(20px,2.9vw,30px);line-height:1.2;color:#fff;letter-spacing:-.02em}
+.fighter-guide-header p{margin:0;font-size:12px;color:#ccd6e5;letter-spacing:.07em}
+.fighter-guide-x{
+ flex:0 0 44px;width:44px;height:44px;line-height:1;
+ border:1px solid #ffffff38;border-radius:12px;
+ font-size:26px;background:#111c2cbb;color:#f6f8fd;
+}
+.fighter-guide-x:hover{background:#3c4c61}
+.fighter-guide-scroll{
+ overflow:auto;overscroll-behavior:contain;min-height:0;
+ padding:18px clamp(14px,3vw,28px) 25px;
+ -webkit-overflow-scrolling:touch;
+}
+.fighter-guide-intro{
+ margin:0 0 18px;font-size:12px;line-height:1.7;color:#c9d5e3;
+ background:#26364a;border-left:3px solid #f1cc8c;
+ border-radius:4px 12px 12px 4px;padding:11px 14px;
+}
+.fighter-guide-moves{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;
+}
+.fighter-guide-lead{
+ grid-column:1/-1;margin:0 0 7px;color:#f0e6d7;
+ background:linear-gradient(90deg,#6f3e3a55,#27354c77);
+ padding:13px 15px;border-radius:12px;font-size:14px;font-weight:750;line-height:1.7;
+}
+.fighter-guide-move{
+ min-width:0;min-height:144px;padding:16px 17px;border-radius:14px;
+ border:1px solid #ffffff20;background:linear-gradient(160deg,#233146,#1b283b);
+}
+.fighter-guide-key{
+ display:inline-block;padding:5px 10px;background:#f3d39b;color:#1b2633;
+ font-size:11px;letter-spacing:.02em;font-weight:1000;border-radius:7px;line-height:1.1;
+}
+.fighter-guide-move-name{margin:12px 0 7px;font-size:15px;font-weight:900;color:#fff}
+.fighter-guide-move-desc{font-size:12px;color:#cfd9e8;line-height:1.75;margin:0;overflow-wrap:anywhere}
+.fighter-guide-move.fighter-guide-hold{border-color:#cba56b73}
+.fighter-guide-traits{
+ margin-top:18px;background:#112031a6;border:1px solid #ffffff20;
+ padding:17px 18px;border-radius:15px;
+}
+.fighter-guide-traits h3{margin:0 0 8px;color:#f3d39b;font-size:15px}
+.fighter-guide-traits p{margin:0;color:#d4deeb;font-size:13px;line-height:1.75}
+.fighter-guide-footer{
+ flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;
+ border-top:1px solid #ffffff20;background:#111d2d;
+ padding:12px clamp(14px,3vw,28px);
+}
+.fighter-guide-footer span{font-size:10px;color:#a7b8cd;line-height:1.5}
+.fighter-guide-footer button{
+ flex-shrink:0;background:linear-gradient(130deg,#f1d49c,#e3b56c);
+ color:#17202a;border:1px solid #f4dfb6;border-radius:10px;
+ padding:12px 17px;min-height:44px;font-size:12px;font-weight:1000;
+}
+.fighter-guide-footer button:hover{filter:brightness(1.08)}
+@media(max-width:680px){
+ #sc-chars .fighter-guide-open{min-height:90px;padding:13px 15px;margin:10px 0 10px}
+ #sc-chars .fighter-guide-open strong{font-size:17px}
+ .fighter-guide-dialog{
+  width:calc(100vw - 16px);max-height:calc(100dvh - 18px);border-radius:14px
+ }
+ .fighter-guide-dialog .fighter-guide-shell{max-height:calc(100dvh - 18px)}
+ .fighter-guide-header{padding:15px 16px}
+ .fighter-guide-header h2{font-size:21px}
+ .fighter-guide-scroll{padding:12px 13px 20px}
+ .fighter-guide-moves{grid-template-columns:1fr;gap:9px}
+ .fighter-guide-move{min-height:0;padding:13px 15px}
+ .fighter-guide-move-name{margin:9px 0 5px}
+ .fighter-guide-footer{padding:10px 12px}
+ .fighter-guide-footer span{display:none}
+ .fighter-guide-footer button{width:100%}
+}
+@media(orientation:landscape) and (max-height:460px){
+ .fighter-guide-dialog{max-height:calc(100dvh - 12px)}
+ .fighter-guide-dialog .fighter-guide-shell{max-height:calc(100dvh - 12px)}
+ .fighter-guide-header{padding:10px 14px}
+ .fighter-guide-header h2{font-size:18px;margin:4px 0}
+ .fighter-guide-scroll{padding:9px 14px}
+ .fighter-guide-move{min-height:0;padding:11px}
+ .fighter-guide-footer{padding:7px 12px}
+}
+@media(prefers-reduced-motion:reduce){
+ #sc-chars .fighter-guide-open{transition:none}
+}
 </style>
 </head>
 <body>
@@ -1200,13 +1336,33 @@ input,select{font-family:inherit}
 
 <div id="sc-chars" class="screen" style="z-index:8">
  <div class="hd"><span class="menu-eyebrow">01 / FIGHTER SELECT</span>主役を、選ぼう。<small>ファイターを選択し、技と特性を確認。あなたのスタイルを、戦場へ。</small></div>
- <div class="fighter-layout"><div class="fighter-left"><div class="fighter-preview" id="fighter-showcase"></div><div id="char-info" class="card"></div><p class="char-select-tip">技が分からなくてもOK！「上必殺技・キャラ特性を見る」で詳しく確認できます。</p></div>
+ <div class="fighter-layout"><div class="fighter-left"><div class="fighter-preview" id="fighter-showcase"></div>
+ <button type="button" id="fighter-guide-open" class="fighter-guide-open" aria-haspopup="dialog" aria-controls="fighter-guide-dialog">
+  <span class="fighter-guide-open-top">MOVE GUIDE <span class="fighter-guide-open-ico" aria-hidden="true">↗</span></span>
+  <strong>技・キャラクター解説</strong>
+  <small>攻撃・必殺技・覚醒・戦い方を確認</small>
+ </button>
+ <div id="char-info" class="card"></div></div>
  <div class="fighter-right"><div class="fighter-tools"><label class="fighter-search" for="fighter-search"><span aria-hidden="true">⌕</span><input id="fighter-search" type="search" placeholder="名前で検索 / Search" autocomplete="off"></label><div class="fighter-filters" role="group" aria-label="キャラクターの種類"><button type="button" data-roster-filter="all" aria-pressed="true">すべて</button><button type="button" data-roster-filter="normal" aria-pressed="false">通常</button><button type="button" data-roster-filter="special" aria-pressed="false">スペシャル</button></div><p id="fighter-search-status" role="status" aria-live="polite"></p></div><div id="char-grid" class="cgrid"></div>
  <div class="namebox"><label for="player-name">PLAYER NAME</label><input id="player-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
  <div id="cpu-opts" style="display:flex;flex-direction:column"><div class="optrow"><span>CPUの数</span><div class="seg" id="seg-cpun"></div></div><div class="optrow"><span>ランダムの対象</span><div class="seg" id="seg-cpupool"></div></div><div class="optrow"><span>CPUの強さ</span><div class="seg" id="seg-cpulv"></div></div></div><fieldset id="cpu-fighters" class="cpu-fighters" hidden><legend>対戦するCPU</legend><p>キャラを指定するか、ランダムを選べます。</p><div id="cpu-fighter-slots"></div></fieldset></div></div>
  <div class="nav"><button class="back" id="chars-back">もどる</button><button class="next" id="chars-next">ステージへ →</button></div>
 </div>
 
+<dialog id="fighter-guide-dialog" class="fighter-guide-dialog" aria-labelledby="fighter-guide-name">
+ <div class="fighter-guide-shell">
+  <header class="fighter-guide-header">
+   <div class="fighter-guide-heading"><span class="fighter-guide-eyebrow">FIGHTER DATABASE / MOVE GUIDE</span><h2 id="fighter-guide-name">技・キャラクター解説</h2><p id="fighter-guide-role"></p></div>
+   <button id="fighter-guide-close" type="button" class="fighter-guide-x" aria-label="技の説明を閉じる">×</button>
+  </header>
+  <div class="fighter-guide-scroll">
+   <p class="fighter-guide-intro">スマホは特殊ボタンを上下左右にスワイプ。従来操作は方向入力＋特殊ボタンで発動できます。</p>
+   <div id="fighter-guide-moves" class="fighter-guide-moves"></div>
+   <section class="fighter-guide-traits" aria-label="キャラクターの特性"><h3>戦い方と特殊能力</h3><p id="fighter-guide-ability"></p></section>
+  </div>
+  <footer class="fighter-guide-footer"><span>※ ゲージ・変身状態により使える技が変わります</span><button id="fighter-guide-done" type="button">キャラ選択に戻る</button></footer>
+ </div>
+</dialog>
 <div id="sc-stage" class="screen">
   <div class="hd"><span class="menu-eyebrow">02 / ARENA & RULES</span>舞台を、決めよう。<small>地形を選んでルールを調整。準備ができたらバトルへ。</small></div><div class="arena-layout"><section class="arena-picker" aria-label="ステージ選択"><div id="menu-arena-preview" class="arena-preview"></div>
   <div class="stage-grid" id="stage-grid" style="width:min(560px,100%)"></div>
@@ -1634,7 +1790,7 @@ const ANIME_COMMON={ctx:0,back:false,ctc:1,dgc:1,dgs:1,jumps:2,size:1};
 Object.assign(CHARS,{
  goku:{...ANIME_COMMON,name:'孫悟空',en:'SON GOKU',mark:'悟',spd:1.08,jump:1.05,wt:.94,pow:1.14,st:[4,4,3],sp:'特殊：気弾。長押しして離すとかめはめ波（移動しながらチャージ可能）。下特殊：気を溜め、MAXでもう一度押すと超サイヤ人→2→3',up:'通常～超2は攻撃判定なしの大ジャンプ。超3のみ龍拳',ab:'SS1は総合強化。SS2は火力特化＋溜め攻撃貫通。SS3は15秒限定の完全無敵・超火力ボス性能。横特殊は足場から落ちない瞬間移動。気弾には吹っ飛ばしなし'},
  gojo:{...ANIME_COMMON,name:'五条悟',en:'SATORU GOJO',mark:'無',spd:1.04,jump:1.05,wt:.98,pow:1.05,st:[3,5,3],sp:'特殊：即離し＝蒼／少し溜め＝赫／長押し＝茈。横特殊は踏み込み強打で約1/6の確率で黒閃',up:'上特殊：攻撃判定のない大ジャンプ。下特殊：術式ゲージMAXで領域展開「無量空処」',ab:'無下限により飛び道具を常時無効。横特殊は踏み込み打撃、稀に黒閃。無量空処は範囲内の敵を行動不能にするが、被弾・吹っ飛び・撃墜は通常どおり発生'},
- tanjiro:{...ANIME_COMMON,name:'竈門炭治郎',en:'TANJIRO',mark:'水',spd:1.08,jump:1.02,wt:.98,pow:1.12,st:[4,4,3],sp:'通常攻撃は日輪刀。特殊＝壱ノ型 水面斬り／横特殊＝参ノ型 流流舞い／上特殊＝弐ノ型 水車',up:'下特殊で呼吸ゲージMAX時にヒノカミ神楽へ。神楽中：特殊＝碧羅の天、横＝烈日紅鏡、上＝飛輪陽炎、下＝幻日虹',ab:'水の呼吸は高火力の剣技。ヒノカミ神楽は18秒、火力と吹っ飛ばしが大幅強化。幻日虹は残像を残して攻撃を回避'},
+ tanjiro:{...ANIME_COMMON,name:'竈門炭治郎',en:'TANJIRO',mark:'水',spd:1.08,jump:1.02,wt:1.25,pow:1.12,st:[4,4,1],sp:'通常攻撃は日輪刀。特殊＝壱ノ型 水面斬り／横特殊＝参ノ型 流流舞い／上特殊＝弐ノ型 水車',up:'下特殊で呼吸ゲージMAX時にヒノカミ神楽へ。神楽中：特殊＝碧羅の天、横＝烈日紅鏡、上＝飛輪陽炎、下＝幻日虹',ab:'水の呼吸は高火力の剣技。ヒノカミ神楽は18秒、火力と吹っ飛ばしが大幅強化。幻日虹は残像を残して攻撃を回避'},
  naruto:{...ANIME_COMMON,name:'うずまきナルト',en:'NARUTO',mark:'忍',spd:1.13,jump:1.08,wt:.96,pow:1.05,st:[5,3,3],sp:'特殊短押し＝螺旋手裏剣、長押し約0.5秒で即影分身（チャクラ60消費・同時最大2体・被弾で消滅）。横特殊＝螺旋丸、下特殊＝チャクラ解放・2段変身',up:'上特殊：一瞬で上へ移動する高速瞬身（攻撃判定なし）',ab:'チャクラは時間経過で蓄積。特殊長押しでチャクラを60消費し、最強級AIの影分身を即召喚（離す必要なし）。分身は敵の一撃で煙になり消える。MAXで仙人モード→九尾チャクラモード'},
  jotaro:{...ANIME_COMMON,name:'空条承太郎',en:'JOTARO KUJO',mark:'星',spd:1.02,jump:1.02,wt:.90,pow:1.13,st:[4,4,4],sp:'特殊＝スタープラチナのオラオララッシュ。横特殊＝スターフィンガー',up:'上特殊：スタープラチナと共に大ジャンプ（攻撃判定なし）。下特殊：ゲージMAXで時を止める',ab:'時止め中は時間経過・攻撃ヒットのどちらでもゲージが増えない。承太郎だけが行動でき、止まった相手へのダメージと吹っ飛ばしは時が動き出した瞬間に反映される'}
 
@@ -6991,7 +7147,7 @@ function updateFighterShowcase(){
  document.getElementById('char-info').style.setProperty('--fighter-color',col);
  document.querySelectorAll('#char-grid .ci').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cid===id)));
 }
-function fighterInfo(C){return `<div class="ability-line"><b>特殊技</b>　${C.sp}</div>`+['スピード','パワー','おもさ'].map((l,i)=>`<div class="stat"><b>${l}</b><div class="gauge"><i style="width:${C.st[i]*20}%"></i></div></div>`).join('')+`<details class="ability-detail"><summary>上必殺技・キャラ特性を見る</summary><p><b>上技</b>　${C.up}</p><p><b>特性</b>　${C.ab}</p></details>`;}
+function fighterInfo(C){return `<div class="ability-line"><b>主力の特殊技</b><span>${esc(C.sp)}</span></div>`+['スピード','パワー','おもさ'].map((l,i)=>`<div class="stat"><b>${l}</b><div class="gauge"><i style="width:${C.st[i]*20}%"></i></div></div>`).join('')+`<p class="fighter-info-guide-hint">すべての技・変身・特性は上の「技・キャラクター解説」から確認できます。</p>`;}
 let hudKey='';
 function setTxt(el,v){if(el&&el.textContent!==v)el.textContent=v;}
 function setVar(el,k,v){if(el&&el['_'+k]!==v){el['_'+k]=v;el.style.setProperty(k,v);}}
@@ -8938,9 +9094,214 @@ renderStageGrid=function(id,current,pick){menuStageBase(id,current,pick);
  document.querySelectorAll('#'+id+' .stc').forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('sel'))));if(id==='stage-grid')menuUpdateArena();};
 const menuShowBase=show;
 show=function(id){const result=menuShowBase(id);if(id==='sc-stage')menuUpdateArena();if(id!=='battle'){const screen=document.getElementById(id);if(screen){screen.scrollTop=0;const heading=screen.querySelector('.hd,h2');heading?.setAttribute('tabindex','-1');heading?.focus?.({preventScroll:true});}}return result;};
+
+// Full, per-fighter move explanations. Keep labels aligned with the actual input
+// paths (A/charged A and neutral/side/up/down special) in 07-movement.js and
+// the fighter-specific modules; standard characters share their B with side/down.
+const FIGHTER_GUIDE_DATA={
+ karate:{
+  lead:'扱いやすい近距離と飛び道具のバランス型。波動拳で相手を動かし、昇龍拳で迎え撃とう。',
+  a:'素早い近距離パンチ。相手との距離が近いときの主力。',
+  charge:'長押しで力を溜めて放つ強打。撃墜を狙える。',
+  b:'波動拳｜前方に遅めの気弾を放つ。連続で撃って牽制できる。',
+  up:'昇龍拳｜炎をまとって高く跳び上がるアッパー。復帰と対空に使える。'
+ },
+ bomber:{
+  lead:'爆弾と地雷で相手の動きを制限するトラップ型。爆発の巻き込みに注意。',
+  b:'爆弾投げ｜短押しで爆弾を投げる。敵や地形に当たると爆発する。',
+  hold:'特殊ボタン長押しで地雷設置。足場に仕掛けて接近を阻む。',
+  up:'爆風ジャンプ｜足元で爆発を起こして上昇。近くの敵も吹っ飛ばす。'
+ },
+ ninja:{
+  lead:'高速移動と3段ジャンプで翻弄する軽量ファイター。被弾すると飛ばされやすい。',
+  b:'手裏剣｜速い手裏剣を連続で放つ。射程は短め。',
+  up:'変わり身｜煙とともに上方向へワープ。一瞬の無敵で危険を回避。',
+  a:'軽快な打撃。足の速さで間合いを作ってから攻める。'
+ },
+ sumo:{
+  lead:'鈍重だが非常に頑丈。強烈な張り手とアーマーを生かして押し込む。',
+  b:'張り手｜溜め攻撃級の強力な一撃。使うと約2.5秒の待ち時間が発生。',
+  up:'どすこいジャンプ｜アーマー付きで跳び上がる復帰技。攻撃判定はない。'
+ },
+ boxer:{
+  lead:'接近戦で手数を稼ぎ、KOゲージが溜まったら必殺のアッパーを狙おう。',
+  a:'高威力のパンチ。攻め続けてKOゲージを溜めよう。',
+  b:'KOアッパー｜KOゲージMAX時だけ発動できる、カウンターを貫く必殺の一撃。',
+  up:'ジャンピングアッパー｜上昇しながら拳を突き上げる。'
+ },
+ yankee:{
+  lead:'ダメージを受けながら怒りを溜め、変身後の圧倒的な火力で反撃する。',
+  a:'重いパンチ。怒り状態では威力と吹っ飛ばし性能がさらに上がる。',
+  b:'怒り解放｜怒りゲージがMAXになると、10秒間の強化状態に変身。',
+  up:'根性ジャンプ｜大きく跳ぶ復帰技。攻撃判定はない。'
+ },
+ swordsman:{
+  lead:'通常攻撃の長い剣で間合いを制し、ゲージMAXの「旋空」で決着をつける。',
+  a:'刀による斬撃。拳より長いリーチがある。',
+  charge:'刀を大きく振る溜め斬り。射程と吹っ飛ばしに優れる。',
+  b:'旋空｜ゲージがMAXになると発動。時間を止めて前方を一閃し、ガード・アーマーを貫く。',
+  up:'斬り上げ｜上昇しながら頭上を切り払う。'
+ },
+ lancer:{
+  lead:'長い槍で距離を取り、溜めた突撃で一気に間合いを詰める。',
+  a:'槍の長いリーチを生かした突き。',
+  charge:'強力な溜め突き。普通のキャラより遠くまで届く。',
+  b:'突撃｜特殊を長押しして離すと槍を構えて突進。長く溜めるほど遠く、強くなる。突進中はアーマー。',
+  up:'昇槍｜上へ槍を突き上げながら跳ぶ。'
+ },
+ gunman:{
+  lead:'距離を保って射撃し、弾切れのタイミングを狙われないようにする。',
+  b:'リボルバー｜6発装填。特殊の短押しで1発ずつ射撃し、約0.6秒間隔で撃てる。',
+  hold:'特殊を長押しするとリロード。弾切れ後は自動装填。',
+  up:'ガンジャンプ｜足元に撃ち込んだ爆風で上昇。周囲にも攻撃判定があり弾は消費しない。'
+ },
+ archer:{
+  lead:'貫通する矢で遠距離から戦う。上必殺技も射撃技なので、復帰用ジャンプではない。',
+  b:'弓射ち｜短押しで高速の貫通矢を発射（20%）。',
+  hold:'約0.45秒以上弓を引いてから離すと、貫通する矢を5本扇状に放つ。',
+  up:'天射ち｜真上に3本の矢を放つ。上昇はしない。'
+ },
+ berserker:{
+  lead:'遅い代わりに重い鎧でダメージを半減。巨大斧の破壊力が最大の強み。',
+  a:'大きな斧による重い通常攻撃。振り始めは遅め。',
+  charge:'巨大斧を溜めて強烈に振り下ろす。',
+  b:'断頭斬｜48%の大ダメージと非常に強い吹っ飛ばし。カウンター無効だが後隙が大きい。',
+  up:'天断ち｜頭上を斧で薙ぎ払う（42%）。上昇はしない。'
+ },
+ rubber:{
+  lead:'伸びる腕とギアチェンジを使う変則型。覚醒すると技の性能が大幅に変化する。',
+  a:'ゴムの腕を伸ばしてパンチ。ギア状態で威力と動きが変化。',
+  b:'ゴムゴムの銃｜腕を遠くまで伸ばして殴る。',
+  side:'ゴムゴムのバズーカ｜両腕を引き絞って前方に放つ。',
+  up:'ゴムゴムのロケット｜ゴムの反動で大きく上昇。頭上に攻撃判定。',
+  down:'ギアチェンジ｜ゲージMAX時に下特殊。ギア2→3→4→5と変身し、ギア5は15秒間。'
+ },
+ goku:{
+  lead:'気弾・かめはめ波で牽制し、超サイヤ人へ変身して戦闘性能を引き上げる。',
+  b:'気弾｜短押しで連射できる。長押しして離すとかめはめ波（移動しながらチャージ可能）。',
+  side:'瞬間移動｜進行方向の離れた足場へワープ。位置取りや奇襲に使う。',
+  up:'上昇技｜通常〜超サイヤ人2は攻撃判定なしの大ジャンプ。超3のみ「龍拳」。',
+  down:'気を溜める／変身｜下特殊で気を溜め、ゲージMAXで超サイヤ人→2→3へ。'
+ },
+ gojo:{
+  lead:'無下限で飛び道具を無効化。蒼・赫・茈を使い分け、ゲージMAXで領域展開。',
+  b:'術式｜短押しで「蒼」、少し長押しで「赫」、長押しで虚式「茈」。',
+  side:'踏み込み打撃｜前へ踏み込み攻撃。まれに黒閃が発生する。',
+  up:'上昇技｜攻撃判定のない大ジャンプ。',
+  down:'無量空処｜術式ゲージMAXで領域展開。範囲内の敵を行動不能にする。'
+ },
+ tanjiro:{
+  lead:'日輪刀の剣技で攻める軽量アタッカー。呼吸ゲージを溜めてヒノカミ神楽に覚醒する。',
+  a:'日輪刀の斬撃。通常攻撃・溜め攻撃ともに刀で攻める。',
+  charge:'日輪刀を大きく振る溜め斬り。攻撃後の隙に注意。',
+  b:'壱ノ型・水面斬り｜水の呼吸で前方を斬る。神楽中は「碧羅の天」に変化。',
+  side:'参ノ型・流流舞い｜踏み込む連続斬り。神楽中は「烈日紅鏡」。',
+  up:'弐ノ型・水車｜斬りながら上昇して復帰。神楽中は「飛輪陽炎」。',
+  down:'ヒノカミ神楽｜呼吸ゲージMAX時に18秒間強化。神楽中の下特殊は残像回避「幻日虹」。'
+ },
+ naruto:{
+  lead:'螺旋丸・螺旋手裏剣を使い分け、チャクラで影分身と段階変身を使う。',
+  b:'風遁・螺旋手裏剣｜短押しで遠距離に放つ。',
+  hold:'約0.5秒の特殊長押しで影分身を召喚（チャクラ60消費・最大2体）。',
+  side:'螺旋丸｜前方へ踏み込んで打ち込む。',
+  up:'高速瞬身｜一瞬で上へ移動する。攻撃判定はない。',
+  down:'チャクラ解放｜MAXで仙人モード→九尾チャクラモードの2段階に変身。'
+ },
+ jotaro:{
+  lead:'スタープラチナの近距離ラッシュが主力。時止め中は承太郎だけが動ける。',
+  b:'オラオララッシュ｜スタープラチナで連続攻撃。最後に重い一撃。',
+  side:'スターフィンガー｜指を伸ばして前方を攻撃。',
+  up:'スタープラチナと大ジャンプ｜復帰用の上昇技。攻撃判定なし。',
+  down:'ザ・ワールド｜ゲージMAXで時間を止める。停止中に与えたダメージは解除時に反映。'
+ },
+ eren:{
+  lead:'人間時は立体機動装置で追撃し、ゲージMAXで18秒間の巨人へ変身。',
+  a:'二刀による素早い斬撃。溜め攻撃で回転斬りを繰り出す。',
+  charge:'強い回転斬り。巨人時は重いスマッシュに変化。',
+  b:'ワイヤー追尾急襲／横回転斬り｜離れた敵には急接近、近くでは回転斬り。巨人時は掴み投げ。',
+  side:'立体機動急襲｜ワイヤーで敵に接近して斬る。巨人時はタックル。',
+  up:'縦回転斬り｜ガスで斬りながら上昇（空中1回）。巨人時は対空アッパー。',
+  down:'巨人化｜TITANゲージMAXで18秒間巨人化。巨人時の下特殊は約2秒の硬質化。'
+ },
+ kaneki:{
+  lead:'4本の鱗赫を使う中距離ラッシュ型。捕縛で相手の攻撃を中断してから連撃へ。',
+  a:'赫子打撃｜素早い近距離攻撃。溜めAは「四尾穿突」。',
+  charge:'四尾穿突｜長い赫子で相手を刺し貫く。半赫者時は「百足・貫穿」。',
+  b:'赫子乱舞｜4本の赫子で連続攻撃してスマッシュで締める。半赫者時は「百足乱舞」。',
+  side:'赫子捕縛｜射線上の途中の敵も捉える長距離の掴み技。命中で相手の技を中断。半赫者時は「百足急襲」。',
+  up:'赫子跳躍｜赫子で上昇する復帰技（空中1回）。半赫者時は強化。',
+  down:'半赫者「百足」｜ゲージMAXで15秒間覚醒。覚醒中の下特殊は範囲攻撃「狂乱衝撃」。'
+ }
+};
+function fighterMoveGuide(id){
+ const C=CC(id),g=FIGHTER_GUIDE_DATA[id]||{};
+ const defaultAttack='通常攻撃｜短押しで素早く攻撃。';
+ const defaultCharge='溜め攻撃｜攻撃ボタンを長押しし、離すと強い一撃。';
+ const defaultSide='このキャラは横方向専用の特殊技がなく、通常の特殊技と同じ攻撃を使います。';
+ const defaultDown='このキャラは下方向専用の特殊技がなく、通常の特殊技と同じ攻撃を使います。';
+ return {
+  name:C.name,role:typeof fighterRoles!=='undefined'?(fighterRoles[id]||C.en):C.en,
+  lead:g.lead||C.sp,
+  ability:C.ab,
+  moves:[
+   {key:'A',label:'通常攻撃',desc:g.a||defaultAttack},
+   {key:'長押しA',label:'溜め攻撃',desc:g.charge||defaultCharge},
+   {key:'B',label:'特殊技',desc:g.b||C.sp},
+   {key:'横+B',label:'横必殺技',desc:g.side||defaultSide},
+   {key:'上+B',label:'上必殺技',desc:g.up||C.up},
+   {key:'下+B',label:'下必殺技',desc:g.down||defaultDown}
+  ],
+  hold:g.hold||''
+ };
+}
+function fighterGuideText(parent,tag,textValue,className){
+ const el=document.createElement(tag);
+ if(className)el.className=className;
+ el.textContent=textValue;
+ parent.appendChild(el);
+ return el;
+}
+function openFighterGuide(){
+ const id=settings.cid,guide=fighterMoveGuide(id);
+ const dialog=document.getElementById('fighter-guide-dialog');
+ if(!dialog||dialog.open)return;
+ setTxt(document.getElementById('fighter-guide-name'),guide.name+'｜技・キャラ解説');
+ setTxt(document.getElementById('fighter-guide-role'),guide.role);
+ setTxt(document.getElementById('fighter-guide-ability'),guide.ability);
+ const container=document.getElementById('fighter-guide-moves');
+ container.replaceChildren();
+ fighterGuideText(container,'p',guide.lead,'fighter-guide-lead');
+ for(const move of guide.moves){
+  const card=document.createElement('article');card.className='fighter-guide-move';
+  fighterGuideText(card,'span',move.key,'fighter-guide-key');
+  fighterGuideText(card,'h3',move.label,'fighter-guide-move-name');
+  fighterGuideText(card,'p',move.desc,'fighter-guide-move-desc');
+  container.appendChild(card);
+ }
+ if(guide.hold){
+  const extra=document.createElement('article');extra.className='fighter-guide-move fighter-guide-hold';
+  fighterGuideText(extra,'span','長押しB','fighter-guide-key');
+  fighterGuideText(extra,'h3','特殊ボタンの長押し','fighter-guide-move-name');
+  fighterGuideText(extra,'p',guide.hold,'fighter-guide-move-desc');
+  container.appendChild(extra);
+ }
+ dialog.showModal();
+ document.getElementById('fighter-guide-close')?.focus();
+}
+
 const menuBuildBase=buildMenus;
 buildMenus=function(){
  menuBuildBase();
+ const guideButton=document.getElementById('fighter-guide-open');
+ const guideDialog=document.getElementById('fighter-guide-dialog');
+ guideButton?.addEventListener('click',openFighterGuide);
+ for(const buttonId of ['fighter-guide-close','fighter-guide-done']){
+  document.getElementById(buttonId)?.addEventListener('click',()=>guideDialog?.close());
+ }
+ guideDialog?.addEventListener('close',()=>guideButton?.focus());
+ guideDialog?.addEventListener('click',event=>{
+  if(event.target===guideDialog)guideDialog.close();
+ });
  const previousRender=renderChars;
  renderChars=function(){const focused=document.activeElement?.dataset?.cid;previousRender();menuApplyFilter();if(focused)document.querySelector('#char-grid [data-cid="'+focused+'"]')?.focus?.({preventScroll:true});};
  document.getElementById('fighter-search').addEventListener('input',menuApplyFilter);
