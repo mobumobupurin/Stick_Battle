@@ -1143,7 +1143,7 @@ input,select{font-family:inherit}
 }
 </style>
 <style>/* GAME HUB / PREMIUM LOBBY REDESIGN 2026 — scoped to the online entry and hub only. */
-#sc-hub-room,#sc-online.hub-entry-screen{
+:is(#sc-hub-room,#sc-hub-play),#sc-online.hub-entry-screen{
   --hub-bg:#0c1422;--hub-surface:#141e2d;--hub-surface-2:#1b293a;
   --hub-stroke:#2a3b50;--hub-soft:#9dacbf;--hub-text:#f5f7fd;
   --hub-mint:#72e2c2;--hub-gold:#f4c986;
@@ -1154,21 +1154,21 @@ input,select{font-family:inherit}
   gap:18px;align-items:center;justify-content:flex-start;
   isolation:isolate;
 }
-#sc-hub-room::before,#sc-hub-room::after,
+:is(#sc-hub-room,#sc-hub-play)::before,:is(#sc-hub-room,#sc-hub-play)::after,
 #sc-online.hub-entry-screen::before,#sc-online.hub-entry-screen::after{display:none!important}
-#sc-hub-room *,#sc-online.hub-entry-screen *{box-sizing:border-box}
-#sc-hub-room button,#sc-online.hub-entry-screen button{font-family:inherit;touch-action:manipulation}
-#sc-hub-room button:focus-visible,#sc-online.hub-entry-screen button:focus-visible,
+:is(#sc-hub-room,#sc-hub-play) *,#sc-online.hub-entry-screen *{box-sizing:border-box}
+:is(#sc-hub-room,#sc-hub-play) button,#sc-online.hub-entry-screen button{font-family:inherit;touch-action:manipulation}
+:is(#sc-hub-room,#sc-hub-play) button:focus-visible,#sc-online.hub-entry-screen button:focus-visible,
 #sc-online.hub-entry-screen input:focus-visible{outline:3px solid #b1ffe7;outline-offset:3px}
-#sc-hub-room button:disabled{cursor:default}
-#sc-hub-room [hidden],#sc-online.hub-entry-screen [hidden]{display:none!important}
-#sc-hub-room .nav,#sc-online.hub-entry-screen .nav{width:min(1200px,100%);margin:0;padding:0;background:transparent;border:none;justify-content:flex-start}
-#sc-hub-room .nav .back,#sc-online.hub-entry-screen .nav .back{
+:is(#sc-hub-room,#sc-hub-play) button:disabled{cursor:default}
+:is(#sc-hub-room,#sc-hub-play) [hidden],#sc-online.hub-entry-screen [hidden]{display:none!important}
+:is(#sc-hub-room,#sc-hub-play) .nav,#sc-online.hub-entry-screen .nav{width:min(1200px,100%);margin:0;padding:0;background:transparent;border:none;justify-content:flex-start}
+:is(#sc-hub-room,#sc-hub-play) .nav .back,#sc-online.hub-entry-screen .nav .back{
   border:1px solid #3a4b60;background:#1b2737;color:#e4edfa;
   border-radius:12px;padding:13px 18px;font-size:13px;font-weight:700;
   box-shadow:none;min-height:46px;transition:background .18s
 }
-#sc-hub-room .nav .back:hover,#sc-online.hub-entry-screen .nav .back:hover{background:#293b50}
+:is(#sc-hub-room,#sc-hub-play) .nav .back:hover,#sc-online.hub-entry-screen .nav .back:hover{background:#293b50}
 
 /* The invite/create flow shares its transport with normal online play,
    but hub mode never displays matchmaking. */
@@ -1224,7 +1224,7 @@ input,select{font-family:inherit}
 #sc-online.hub-entry-screen .nav{width:min(1000px,100%);margin-top:8px}
 
 /* HUB room: product-like dashboard with a real table beside the library. */
-#sc-hub-room{gap:14px}
+:is(#sc-hub-room,#sc-hub-play){gap:14px}
 .hub-head,.hub-lobby-strip,.hub-shell{width:min(1200px,100%)}
 .hub-head{
   padding:23px 27px;border:1px solid #3a5263;border-radius:22px;
@@ -1244,9 +1244,9 @@ input,select{font-family:inherit}
 .hub-room-code{padding:11px 18px;min-width:160px;border-radius:13px;background:#091420;border:1px solid #4b6973;text-align:center;box-shadow:inset 0 1px 10px #0003}
 .hub-room-code small{display:block;color:#91abba;font-size:10px;font-weight:800;letter-spacing:.14em}
 .hub-room-code b{display:block;color:#f2fffd;font-size:25px;letter-spacing:.14em;line-height:1.3;margin-top:4px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-#sc-hub-room .hub-invite{border:none;background:#7ce8c7;color:#0b2b2f;border-radius:13px;padding:14px 20px;font-size:13px;font-weight:900;min-height:65px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .16s}
-#sc-hub-room .hub-invite:hover{background:#a6f7da}
-#sc-hub-room .hub-invite>span{font-size:18px}
+:is(#sc-hub-room,#sc-hub-play) .hub-invite{border:none;background:#7ce8c7;color:#0b2b2f;border-radius:13px;padding:14px 20px;font-size:13px;font-weight:900;min-height:65px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .16s}
+:is(#sc-hub-room,#sc-hub-play) .hub-invite:hover{background:#a6f7da}
+:is(#sc-hub-room,#sc-hub-play) .hub-invite>span{font-size:18px}
 .hub-lobby-strip{border:1px solid #2d3e51;background:#152231;border-radius:16px;padding:12px 17px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .hub-lobby-status{display:flex;align-items:center;gap:9px;flex:0 0 auto;font-size:12px;font-weight:750;color:#d9e8f0}
 .hub-online-dot,.hub-room-live i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#62e8b5;box-shadow:0 0 0 4px #2de89d20}
@@ -1269,7 +1269,7 @@ input,select{font-family:inherit}
 .hub-category-heading h4{font-size:12px;letter-spacing:.08em;font-weight:900;color:#cbd7e7;margin:0}
 .hub-category-count{font-size:10px;color:#8fa8ba;font-weight:800}
 .hub-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-#sc-hub-room .hub-card{
+:is(#sc-hub-room,#sc-hub-play) .hub-card{
   border:1px solid #344960;border-radius:13px;min-height:106px;min-width:0;
   background:linear-gradient(153deg,#26384c,#1b2b3d);
   color:#eaf5fb;display:flex;flex-wrap:wrap;align-content:flex-start;align-items:center;
@@ -1291,16 +1291,16 @@ input,select{font-family:inherit}
   font-size:9px;letter-spacing:.06em;color:#7fe7c8;flex:0 0 100%;
   margin-top:2px;font-weight:850
 }
-#sc-hub-room .hub-card:not(:disabled){cursor:pointer}
-#sc-hub-room .hub-card:not(:disabled):hover{
+:is(#sc-hub-room,#sc-hub-play) .hub-card:not(:disabled){cursor:pointer}
+:is(#sc-hub-room,#sc-hub-play) .hub-card:not(:disabled):hover{
   transform:translateY(-2px);border-color:#90e9d1;background:#264358;box-shadow:0 8px 20px #030d1955
 }
-#sc-hub-room .hub-card.is-current{border-color:#7ee6c7;background:#22433f;box-shadow:inset 0 0 0 1px #61cdab77}
-#sc-hub-room .hub-card.is-current .hub-card-status{color:#f3d08b}
-#sc-hub-room .hub-card:disabled:not(.is-coming){opacity:1}
-#sc-hub-room .hub-card:disabled:not(.is-coming) .hub-card-status{color:#b0becb}
-#sc-hub-room .hub-card.is-coming{opacity:.45;filter:saturate(.55)}
-#sc-hub-room .hub-card.is-coming .hub-card-status{color:#aebdca}
+:is(#sc-hub-room,#sc-hub-play) .hub-card.is-current{border-color:#7ee6c7;background:#22433f;box-shadow:inset 0 0 0 1px #61cdab77}
+:is(#sc-hub-room,#sc-hub-play) .hub-card.is-current .hub-card-status{color:#f3d08b}
+:is(#sc-hub-room,#sc-hub-play) .hub-card:disabled:not(.is-coming){opacity:1}
+:is(#sc-hub-room,#sc-hub-play) .hub-card:disabled:not(.is-coming) .hub-card-status{color:#b0becb}
+:is(#sc-hub-room,#sc-hub-play) .hub-card.is-coming{opacity:.45;filter:saturate(.55)}
+:is(#sc-hub-room,#sc-hub-play) .hub-card.is-coming .hub-card-status{color:#aebdca}
 .hub-main{min-width:0;display:flex;flex-direction:column;gap:12px}
 .hub-playarea{padding:25px;min-width:0}
 .hub-play-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-bottom:14px;border-bottom:1px solid #324256}
@@ -1324,29 +1324,29 @@ input,select{font-family:inherit}
 .hub-player-score{color:#fff;font-size:23px;letter-spacing:-.05em;margin-left:auto;font-variant-numeric:tabular-nums}
 .hub-vs{font-size:10px;font-weight:900;letter-spacing:.03em;color:#7b91a5;flex-shrink:0}
 .hub-board-frame{display:grid;place-items:center;min-height:300px;border:1px solid #31445b;background:radial-gradient(ellipse at 50% 20%,#20364c,#111c2a 82%);padding:20px;border-radius:16px;overflow:hidden}
-#sc-hub-room .hub-board{
+:is(#sc-hub-room,#sc-hub-play) .hub-board{
   width:min(100%,488px);margin:0 auto;display:grid;grid-auto-rows:auto;gap:2px;
   border:9px solid #254c44;border-radius:13px;overflow:hidden;background:#076d50;
   box-shadow:0 13px 28px #0006,0 0 0 1px #ffffff1c;
   touch-action:manipulation;
 }
-#sc-hub-room .hub-connect4{background:#1356ba;border-color:#235dbb;border-width:11px;gap:5px;box-shadow:0 15px 0 #103d8d,0 21px 35px #0007}
-#sc-hub-room .hub-cell{
+:is(#sc-hub-room,#sc-hub-play) .hub-connect4{background:#1356ba;border-color:#235dbb;border-width:11px;gap:5px;box-shadow:0 15px 0 #103d8d,0 21px 35px #0007}
+:is(#sc-hub-room,#sc-hub-play) .hub-cell{
   aspect-ratio:1/1;min-width:0;width:100%;border:0;border-radius:0;padding:8%;
   display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;
 }
-#sc-hub-room .hub-reversi .hub-cell{background:#0e946c;border:1px solid #087557}
-#sc-hub-room .hub-connect4 .hub-cell{background:linear-gradient(150deg,#2c79d6,#1a5ab7);border-radius:4px}
-#sc-hub-room .hub-cell:disabled{cursor:default}
-#sc-hub-room .hub-disc{display:block;width:89%;height:89%;border-radius:50%;box-shadow:inset -4px -4px 8px #0004,0 2px 4px #0005}
-#sc-hub-room .hub-connect4 .hub-cell:not(.occupied)::after{
+:is(#sc-hub-room,#sc-hub-play) .hub-reversi .hub-cell{background:#0e946c;border:1px solid #087557}
+:is(#sc-hub-room,#sc-hub-play) .hub-connect4 .hub-cell{background:linear-gradient(150deg,#2c79d6,#1a5ab7);border-radius:4px}
+:is(#sc-hub-room,#sc-hub-play) .hub-cell:disabled{cursor:default}
+:is(#sc-hub-room,#sc-hub-play) .hub-disc{display:block;width:89%;height:89%;border-radius:50%;box-shadow:inset -4px -4px 8px #0004,0 2px 4px #0005}
+:is(#sc-hub-room,#sc-hub-play) .hub-connect4 .hub-cell:not(.occupied)::after{
   content:'';display:block;position:absolute;inset:8%;
   border-radius:50%;background:#09264d;box-shadow:inset 0 4px 9px #0009;
 }
-#sc-hub-room .hub-connect4 .hub-disc{z-index:1;position:relative}
-#sc-hub-room .hub-legal-dot{display:block;width:25%;aspect-ratio:1;border-radius:50%;background:#c8ffe188;box-shadow:0 0 0 4px #e5ffdf1f}
-#sc-hub-room .hub-cell.legal:hover{outline:3px solid #e9fff3;outline-offset:-4px}
-#sc-hub-room .hub-connect4 .hub-cell:not(:disabled):hover{background:#437fd4}
+:is(#sc-hub-room,#sc-hub-play) .hub-connect4 .hub-disc{z-index:1;position:relative}
+:is(#sc-hub-room,#sc-hub-play) .hub-legal-dot{display:block;width:25%;aspect-ratio:1;border-radius:50%;background:#c8ffe188;box-shadow:0 0 0 4px #e5ffdf1f}
+:is(#sc-hub-room,#sc-hub-play) .hub-cell.legal:hover{outline:3px solid #e9fff3;outline-offset:-4px}
+:is(#sc-hub-room,#sc-hub-play) .hub-connect4 .hub-cell:not(:disabled):hover{background:#437fd4}
 .hub-empty-state{text-align:center;padding:34px 12px 38px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .hub-empty-art{display:grid;grid-template-columns:repeat(2,55px);gap:10px;transform:rotate(-11deg);margin:0 0 12px}
 .hub-empty-art>span{width:55px;height:55px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#70bbad,#2e635e);box-shadow:inset -5px -5px 9px #0004,0 5px 9px #0004}
@@ -1357,7 +1357,7 @@ input,select{font-family:inherit}
 .hub-empty-state p{color:#9eafc1;font-size:12px;line-height:1.7;max-width:290px}
 .hub-game-footer{text-align:center;padding-top:14px;font-size:11px;color:#a6b9c9;line-height:1.6}
 .hub-room-note{font-size:11px;color:#9baec3;line-height:1.8;margin:0 7px}
-#sc-hub-room .hub-bottom-nav{margin-top:1px}
+:is(#sc-hub-room,#sc-hub-play) .hub-bottom-nav{margin-top:1px}
 .hub-switch-to-games{display:block;width:100%;padding:13px 18px;border:1px solid #78c5fb;background:linear-gradient(125deg,#244c76,#182f55);color:#fff;border-radius:12px;font-weight:900;margin:8px 0}
 .hub-switch-to-games small{display:block;font-weight:500;font-size:11px;margin-top:4px;color:#b7dffc}
 @media (max-width:1000px){
@@ -1367,32 +1367,32 @@ input,select{font-family:inherit}
   .hub-player-score{font-size:19px}
 }
 @media (max-width:740px){
-  #sc-hub-room,#sc-online.hub-entry-screen{padding:20px 14px 32px;gap:12px}
+  :is(#sc-hub-room,#sc-hub-play),#sc-online.hub-entry-screen{padding:20px 14px 32px;gap:12px}
   .hub-shell{display:flex;flex-direction:column;gap:12px}
   .hub-main{order:0;width:100%}.hub-sidebar{order:1;width:100%;padding:18px}
   .hub-head{padding:18px;align-items:flex-start;flex-direction:column;border-radius:16px}
   .hub-head h2{font-size:42px}.hub-head h2>small{display:block;margin:9px 0 0;font-size:13px}
   .hub-room-actions{width:100%;justify-content:flex-start}
   .hub-room-code{flex:1;min-width:115px}
-  #sc-hub-room .hub-invite{flex:1;justify-content:center;padding:12px;min-height:65px}
+  :is(#sc-hub-room,#sc-hub-play) .hub-invite{flex:1;justify-content:center;padding:12px;min-height:65px}
   .hub-lobby-strip{padding:11px;flex-direction:column;align-items:flex-start;gap:8px}
   .hub-playarea{padding:16px;border-radius:16px}
   .hub-game-title{margin:16px 0 5px}
   .hub-board-frame{min-height:230px;padding:12px}
-  #sc-hub-room .hub-board{width:min(100%,440px);border-width:5px;gap:1px}
-  #sc-hub-room .hub-connect4{border-width:7px;gap:3px}
+  :is(#sc-hub-room,#sc-hub-play) .hub-board{width:min(100%,440px);border-width:5px;gap:1px}
+  :is(#sc-hub-room,#sc-hub-play) .hub-connect4{border-width:7px;gap:3px}
   .hub-entry-choices{grid-template-columns:1fr}
   #sc-online .hub-entry-create,#sc-online .hub-entry-join{min-height:160px;padding:20px}
   .hub-entry-hero{padding-bottom:20px}
   .hub-entry-hero h2{font-size:clamp(48px,12vw,72px)}
 }
 @media(max-width:390px){
-  #sc-hub-room,#sc-online.hub-entry-screen{padding:13px 9px 25px}
+  :is(#sc-hub-room,#sc-hub-play),#sc-online.hub-entry-screen{padding:13px 9px 25px}
   .hub-head h2{font-size:36px}
   .hub-room-actions{gap:7px}
   .hub-room-code{padding:11px 9px;min-width:0}
   .hub-room-code b{font-size:21px}
-  #sc-hub-room .hub-invite{font-size:11px}
+  :is(#sc-hub-room,#sc-hub-play) .hub-invite{font-size:11px}
   .hub-versus{gap:4px}.hub-player{padding:7px;gap:5px}
   .hub-player-disc{width:16px;height:16px;flex-basis:16px}
   .hub-player-label{font-size:8px}.hub-player-name{font-size:10px}
@@ -1403,7 +1403,7 @@ input,select{font-family:inherit}
   #sc-online .hub-entry-create,#sc-online .hub-entry-join{gap:10px;padding:16px}
 }
 @media(prefers-reduced-motion:reduce){
-  #sc-hub-room button,#sc-online.hub-entry-screen button{transition:none!important}
+  :is(#sc-hub-room,#sc-hub-play) button,#sc-online.hub-entry-screen button{transition:none!important}
 }
 
 
@@ -1411,22 +1411,22 @@ input,select{font-family:inherit}
 .hub-cpu-settings{border:1px solid #4c665f;border-radius:13px;background:linear-gradient(145deg,#1f3e3c,#172e37);padding:13px;margin:0 0 17px}
 .hub-cpu-settings label{font-size:12px;font-weight:850;color:#e8fff4;display:flex;align-items:center;gap:6px;margin-bottom:9px}
 .hub-cpu-symbol{font-size:16px}
-#sc-hub-room #hub-cpu-count{display:block;width:100%;font:700 12px system-ui,sans-serif;padding:10px 32px 10px 10px;color:#effcf7;background:#142b31;border:1px solid #668577;border-radius:9px;cursor:pointer}
-#sc-hub-room #hub-cpu-count:disabled{opacity:.55}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-count{display:block;width:100%;font:700 12px system-ui,sans-serif;padding:10px 32px 10px 10px;color:#effcf7;background:#142b31;border:1px solid #668577;border-radius:9px;cursor:pointer}
+:is(#sc-hub-room,#sc-hub-play) #hub-cpu-count:disabled{opacity:.55}
 .hub-cpu-settings p{margin:8px 0 0;color:#b4d4c9;font-size:11px}
 .hub-member-cpu{border-color:#789e87;background:#29453c}
 .hub-member-cpu .hub-member-avatar{font-size:8px;background:#baf1ba;color:#173929}
 .hub-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
-#sc-hub-room .hub-action{border:1px solid #587487;background:#29435d;color:#f2f8fd;font-weight:850;font-size:13px;min-height:46px;padding:10px 19px;border-radius:11px;cursor:pointer;transition:transform .16s,background .16s}
-#sc-hub-room .hub-action.is-primary{border-color:#83f5d6;background:#70e4bc;color:#102e2a}
-#sc-hub-room .hub-action:not(:disabled):hover{transform:translateY(-2px)}
-#sc-hub-room .hub-action:disabled{cursor:default;opacity:.4}
+:is(#sc-hub-room,#sc-hub-play) .hub-action{border:1px solid #587487;background:#29435d;color:#f2f8fd;font-weight:850;font-size:13px;min-height:46px;padding:10px 19px;border-radius:11px;cursor:pointer;transition:transform .16s,background .16s}
+:is(#sc-hub-room,#sc-hub-play) .hub-action.is-primary{border-color:#83f5d6;background:#70e4bc;color:#102e2a}
+:is(#sc-hub-room,#sc-hub-play) .hub-action:not(:disabled):hover{transform:translateY(-2px)}
+:is(#sc-hub-room,#sc-hub-play) .hub-action:disabled{cursor:default;opacity:.4}
 .hub-finished-note{align-self:center;color:#a8c5b7;font-size:12px}
 .hub-table-player{padding:8px 11px;border:1px solid #435770;border-radius:10px;font-size:11px;color:#bed5e8;line-height:1.45}
 .hub-table-player.is-you{border-color:#81f5d7}
 .hub-table-player.is-turn{background:#244b42;color:#f5fff7}
-#sc-hub-room .hub-versus:has(.hub-table-player){flex-wrap:wrap;justify-content:flex-start;gap:6px;margin:15px 0}
-#sc-hub-room .hub-board.hub-card-table{display:flex;flex-direction:column;align-items:stretch;gap:13px;width:100%;max-width:620px;overflow-x:auto;overflow-y:hidden;border:1px solid #47655c;border-radius:14px;background:radial-gradient(ellipse at 50% 30%,#1b6956,#103f37 75%);box-shadow:0 11px 25px #030c166b;padding:17px 12px;min-height:200px}
+:is(#sc-hub-room,#sc-hub-play) .hub-versus:has(.hub-table-player){flex-wrap:wrap;justify-content:flex-start;gap:6px;margin:15px 0}
+:is(#sc-hub-room,#sc-hub-play) .hub-board.hub-card-table{display:flex;flex-direction:column;align-items:stretch;gap:13px;width:100%;max-width:620px;overflow-x:auto;overflow-y:hidden;border:1px solid #47655c;border-radius:14px;background:radial-gradient(ellipse at 50% 30%,#1b6956,#103f37 75%);box-shadow:0 11px 25px #030c166b;padding:17px 12px;min-height:200px}
 .hub-casino-row{width:100%;display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid #73a18a48;border-radius:13px;background:#132e2b86}
 .hub-casino-row-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .hub-casino-row-head strong{font-size:12px;letter-spacing:.07em;color:#eefcf8}
@@ -1452,44 +1452,44 @@ input,select{font-family:inherit}
 .hub-seven-slot.is-placed{color:#17282c;background:#e7ead9;border:1px solid #fff;border-radius:4px;font-weight:950}
 .hub-seven-hand-title{font-size:12px;font-weight:850;color:#f1e9c5;letter-spacing:.04em}
 .hub-seven-hand{display:flex;gap:6px;overflow-x:auto;padding:7px 0 14px;max-width:100%}
-#sc-hub-room .hub-seven-card{flex:0 0 auto;min-width:44px;padding:0;border:none;border-radius:8px;background:transparent;cursor:pointer}
-#sc-hub-room .hub-seven-card.is-legal{box-shadow:0 0 0 3px #8df9b8,0 0 18px #9cf7ba66}
-#sc-hub-room .hub-seven-card:disabled:not(.is-legal){opacity:.6;cursor:default}
+:is(#sc-hub-room,#sc-hub-play) .hub-seven-card{flex:0 0 auto;min-width:44px;padding:0;border:none;border-radius:8px;background:transparent;cursor:pointer}
+:is(#sc-hub-room,#sc-hub-play) .hub-seven-card.is-legal{box-shadow:0 0 0 3px #8df9b8,0 0 18px #9cf7ba66}
+:is(#sc-hub-room,#sc-hub-play) .hub-seven-card:disabled:not(.is-legal){opacity:.6;cursor:default}
 @media(max-width:740px){
  .hub-cpu-settings{padding:11px}
- #sc-hub-room .hub-board.hub-card-table{padding:10px 7px;border-width:1px;box-shadow:none}
+ :is(#sc-hub-room,#sc-hub-play) .hub-board.hub-card-table{padding:10px 7px;border-width:1px;box-shadow:none}
  .hub-playing-card{width:38px;flex-basis:38px;height:54px;font-size:14px}
  .hub-casino-row{padding:9px}
  .hub-seven-layout{min-width:350px}
  .hub-seven-slots{grid-template-columns:repeat(13,22px)}
  .hub-seven-slot{height:27px;font-size:10px}
  .hub-seven-hand{padding:7px 3px}
- #sc-hub-room .hub-seven-card{min-width:38px}
+ :is(#sc-hub-room,#sc-hub-play) .hub-seven-card{min-width:38px}
  .hub-actions{gap:8px}
- #sc-hub-room .hub-action{flex:1;min-width:120px;padding:10px 13px}
+ :is(#sc-hub-room,#sc-hub-play) .hub-action{flex:1;min-width:120px;padding:10px 13px}
 }
 
 
 /* HUB strategy & card games — keyboard and touch-accessible surfaces */
-#sc-hub-room .hub-board.hub-strategy-board{
+:is(#sc-hub-room,#sc-hub-play) .hub-board.hub-strategy-board{
   width:min(100%,590px);display:grid;gap:0;padding:7px;border:8px solid #655044;
   border-radius:13px;overflow:hidden;background:#392e27;
   box-shadow:0 18px 36px #05090d77;
 }
-#sc-hub-room .hub-board.hub-mini-board{width:min(100%,430px);border-color:#947045;background:#8a6538}
-#sc-hub-room .hub-strategy-cell{
+:is(#sc-hub-room,#sc-hub-play) .hub-board.hub-mini-board{width:min(100%,430px);border-color:#947045;background:#8a6538}
+:is(#sc-hub-room,#sc-hub-play) .hub-strategy-cell{
   position:relative;display:grid;place-items:center;min-width:0;min-height:0;width:100%;aspect-ratio:1;
   padding:0;border:1px solid #ffffff14;border-radius:0;font-weight:800;
   transition:filter .1s;touch-action:manipulation;
 }
-#sc-hub-room .hub-chess-board .hub-strategy-cell.is-light{background:#d1dbd0}
-#sc-hub-room .hub-chess-board .hub-strategy-cell.is-dark{background:#678c87}
-#sc-hub-room .hub-mini-board .hub-strategy-cell.is-light{background:#d6b47b}
-#sc-hub-room .hub-mini-board .hub-strategy-cell.is-dark{background:#c49b60}
-#sc-hub-room .hub-strategy-cell.is-selected{outline:4px solid #ffdf70;outline-offset:-4px;z-index:1}
-#sc-hub-room .hub-strategy-cell.is-target{box-shadow:inset 0 0 0 3px #baff6e;z-index:1}
-#sc-hub-room .hub-strategy-cell:not(:disabled):hover{filter:brightness(1.12)}
-#sc-hub-room .hub-strategy-cell:disabled{opacity:1}
+:is(#sc-hub-room,#sc-hub-play) .hub-chess-board .hub-strategy-cell.is-light{background:#d1dbd0}
+:is(#sc-hub-room,#sc-hub-play) .hub-chess-board .hub-strategy-cell.is-dark{background:#678c87}
+:is(#sc-hub-room,#sc-hub-play) .hub-mini-board .hub-strategy-cell.is-light{background:#d6b47b}
+:is(#sc-hub-room,#sc-hub-play) .hub-mini-board .hub-strategy-cell.is-dark{background:#c49b60}
+:is(#sc-hub-room,#sc-hub-play) .hub-strategy-cell.is-selected{outline:4px solid #ffdf70;outline-offset:-4px;z-index:1}
+:is(#sc-hub-room,#sc-hub-play) .hub-strategy-cell.is-target{box-shadow:inset 0 0 0 3px #baff6e;z-index:1}
+:is(#sc-hub-room,#sc-hub-play) .hub-strategy-cell:not(:disabled):hover{filter:brightness(1.12)}
+:is(#sc-hub-room,#sc-hub-play) .hub-strategy-cell:disabled{opacity:1}
 .hub-strategy-piece{font-family:"Apple Symbols","DejaVu Sans","Segoe UI Symbol",serif;font-size:clamp(23px,5.3vw,49px);line-height:1;pointer-events:none;user-select:none}
 .hub-chess-board .hub-strategy-piece.is-first{color:#fffefd;text-shadow:0 2px 0 #364442,1px 0 1px #121a1b,-1px 0 1px #121a1b}
 .hub-chess-board .hub-strategy-piece.is-second{color:#1a2725;text-shadow:0 2px 1px #ffffff61}
@@ -1499,39 +1499,108 @@ input,select{font-family:inherit}
 .hub-mini-board .hub-strategy-piece.is-second{transform:rotate(180deg);background:#e6c495;color:#563b2b}
 .hub-strategy-target-dot{width:25%;aspect-ratio:1;border-radius:50%;background:#214c39bb;pointer-events:none}
 .hub-option-label{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#e0ebec;font-weight:800}
-#sc-hub-room .hub-strategy-select{border-radius:8px;background:#1e333a;color:#effcf8;border:1px solid #647e77;font-size:12px;padding:8px}
+:is(#sc-hub-room,#sc-hub-play) .hub-strategy-select{border-radius:8px;background:#1e333a;color:#effcf8;border:1px solid #647e77;font-size:12px;padding:8px}
 .hub-mini-hand{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;width:100%}
-#sc-hub-room .hub-mini-hand .hub-action{min-height:40px;padding:6px 11px}
-#sc-hub-room .hub-mini-hand .hub-action.is-selected{border-color:#ffdd85;background:#584f35;color:#fff4c3}
-#sc-hub-room .hub-promote-toggle{background:#4b3b67}
+:is(#sc-hub-room,#sc-hub-play) .hub-mini-hand .hub-action{min-height:40px;padding:6px 11px}
+:is(#sc-hub-room,#sc-hub-play) .hub-mini-hand .hub-action.is-selected{border-color:#ffdd85;background:#584f35;color:#fff4c3}
+:is(#sc-hub-room,#sc-hub-play) .hub-promote-toggle{background:#4b3b67}
 .hub-oldmaid-table,.hub-poker-table{min-width:0}
 .hub-oldmaid-heading{font-size:13px;color:#dff9eb;letter-spacing:.08em}
 .hub-oldmaid-hand{min-height:62px;padding:5px}
 .hub-playing-card.is-joker{font-size:10px;color:#ab2861;background:linear-gradient(165deg,#faf6f4,#f1d3df);font-weight:950}
 .hub-card-empty{font-size:12px;color:#b6d5c5;padding:15px}
 .hub-oldmaid-face-down{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;padding:12px 7px;max-width:100%}
-#sc-hub-room .hub-oldmaid-card{display:grid;place-items:center;flex:0 0 42px;height:60px;padding:0;
+:is(#sc-hub-room,#sc-hub-play) .hub-oldmaid-card{display:grid;place-items:center;flex:0 0 42px;height:60px;padding:0;
   color:#d4e9fc;font-size:20px;border:3px double #9db9d9;border-radius:7px;
   background:repeating-linear-gradient(42deg,#264581 0,#264581 7px,#4269a1 7px,#4269a1 14px);
   box-shadow:0 3px 8px #03122376;transition:transform .12s}
-#sc-hub-room .hub-oldmaid-card:not(:disabled):hover{transform:translateY(-7px)}
-#sc-hub-room .hub-oldmaid-card:disabled{opacity:.65}
+:is(#sc-hub-room,#sc-hub-play) .hub-oldmaid-card:not(:disabled):hover{transform:translateY(-7px)}
+:is(#sc-hub-room,#sc-hub-play) .hub-oldmaid-card:disabled{opacity:.65}
 .hub-poker-top{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;
   background:#132e2b;border:1px solid #79a6936b;padding:12px;border-radius:10px}
 .hub-poker-pot{font-size:17px;font-weight:950;color:#f6d88a;letter-spacing:.04em}
 .hub-poker-phase{font-size:12px;font-weight:800;color:#bee0d1}
 .hub-poker-player.is-folded{opacity:.55}
-#sc-hub-room .hub-poker-pick{background:transparent;padding:0;border:0;border-radius:8px;cursor:pointer}
-#sc-hub-room .hub-poker-pick.is-selected{transform:translateY(-7px);box-shadow:0 0 0 3px #fce58e}
-#sc-hub-room .hub-poker-pick .hub-playing-card{pointer-events:none}
+:is(#sc-hub-room,#sc-hub-play) .hub-poker-pick{background:transparent;padding:0;border:0;border-radius:8px;cursor:pointer}
+:is(#sc-hub-room,#sc-hub-play) .hub-poker-pick.is-selected{transform:translateY(-7px);box-shadow:0 0 0 3px #fce58e}
+:is(#sc-hub-room,#sc-hub-play) .hub-poker-pick .hub-playing-card{pointer-events:none}
 @media(max-width:740px){
- #sc-hub-room .hub-board.hub-strategy-board{border-width:5px;padding:3px;width:min(100%,420px)}
- #sc-hub-room .hub-board.hub-mini-board{width:min(100%,360px)}
+ :is(#sc-hub-room,#sc-hub-play) .hub-board.hub-strategy-board{border-width:5px;padding:3px;width:min(100%,420px)}
+ :is(#sc-hub-room,#sc-hub-play) .hub-board.hub-mini-board{width:min(100%,360px)}
  .hub-strategy-piece{font-size:clamp(20px,7vw,41px)}
  .hub-mini-board .hub-strategy-piece{font-size:clamp(17px,7vw,34px)}
  .hub-oldmaid-face-down{gap:5px}
- #sc-hub-room .hub-oldmaid-card{flex-basis:35px;height:49px}
+ :is(#sc-hub-room,#sc-hub-play) .hub-oldmaid-card{flex-basis:35px;height:49px}
  .hub-poker-pot{font-size:14px}
+}
+
+
+/* GAME HUB / Two-step selection and dedicated gameplay screen */
+.hub-setup-main{width:100%;min-width:0}
+.hub-setup-card{padding:clamp(21px,3vw,38px);border-radius:20px;
+  border:1px solid #476c6b;background:linear-gradient(150deg,#20393f,#111d2f 85%);
+  box-shadow:0 18px 38px #02091639;min-height:460px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.hub-setup-card .hub-play-top{width:100%;align-self:stretch}
+.hub-setup-icon{display:grid;place-items:center;height:88px;width:88px;margin:27px auto 13px;
+  border-radius:22px;background:#315d60;border:1px solid #73cbb6;color:#bcf8eb;font-size:48px;
+  box-shadow:0 0 0 8px #75cbb80d,0 16px 35px #02081455}
+.hub-setup-eyebrow{margin:4px 0 0;font-size:10px;font-weight:850;letter-spacing:.22em;color:#84dec4}
+.hub-setup-card .hub-game-title{font-size:clamp(28px,3.4vw,43px);margin:12px 0 4px}
+.hub-setup-card .hub-game-info{max-width:530px;color:#b5cad6;font-size:13px;line-height:1.8}
+.hub-selection-members{display:flex;justify-content:center;flex-wrap:wrap;align-items:center;gap:8px;margin:26px 0 20px}
+.hub-selection-member{display:flex;align-items:center;gap:7px;background:#1c3d43;border:1px solid #56877d;
+  padding:8px 11px;border-radius:100px;color:#f0fff7;font-size:11px;font-weight:780}
+.hub-selection-member.is-cpu{background:#2e3649;border-color:#69758f;color:#d4e2fa}
+.hub-selection-member-icon{font-size:10px;color:#8df0c0}
+.hub-selection-empty{font-size:12px;color:#f5cdab}
+:is(#sc-hub-room,#sc-hub-play) #hub-game-start,.hub-start-btn{
+  cursor:pointer;width:min(420px,100%);padding:20px 24px;border-radius:14px;
+  background:linear-gradient(100deg,#93efc1,#62d7cb);color:#0d3437;border:0;
+  font-size:19px;letter-spacing:.035em;font-weight:950;
+  box-shadow:0 8px 0 #2c8874,0 18px 28px #010c154f;
+  transition:transform .13s,filter .13s
+}
+:is(#sc-hub-room,#sc-hub-play) #hub-game-start:not(:disabled):hover{transform:translateY(-2px);filter:brightness(1.07)}
+:is(#sc-hub-room,#sc-hub-play) #hub-game-start:disabled{opacity:.42;box-shadow:none;cursor:default}
+.hub-selection-status{margin:16px auto 0;max-width:460px;font-size:11px;color:#b8ced0;line-height:1.8}
+.hub-resume-btn{border:1px solid #f9d28f;color:#ffe5ae;background:#483c2a;padding:12px 16px;
+  border-radius:10px;font-size:13px;font-weight:850;margin-top:13px;cursor:pointer}
+:is(#sc-hub-room,#sc-hub-play) .hub-card.is-selected{border-color:#8fffe0;background:#275c52;box-shadow:inset 0 0 0 2px #73f5d433}
+:is(#sc-hub-room,#sc-hub-play) .hub-card.is-selected .hub-card-status{color:#fbd79a}
+#sc-hub-play{gap:17px;padding-top:clamp(21px,4vh,43px);justify-content:flex-start}
+.hub-play-header{width:min(1100px,100%);display:flex;justify-content:space-between;align-items:center;gap:16px;
+  border:1px solid #304c60;border-radius:17px;background:#16263a;padding:15px 20px;box-shadow:0 12px 26px #040b1729}
+.hub-play-brand{min-width:0;display:flex;flex-direction:column;gap:5px}
+.hub-play-brand b{font-size:clamp(21px,3vw,30px);letter-spacing:-.05em;color:#fff;line-height:1.15;overflow-wrap:anywhere}
+.hub-play-room{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 15px;
+  border:1px solid #4e6873;border-radius:12px;background:#0b1928}
+.hub-play-room>span{font-size:9px;letter-spacing:.13em;color:#9fb5c9;font-weight:850}
+.hub-play-room>strong{font-family:ui-monospace,SFMono-Regular,monospace;letter-spacing:.12em;color:#f4e5bd;font-size:18px}
+#sc-hub-play .hub-play-back{border:1px solid #607c8c;color:#e6f5fc;background:#294051;
+  padding:13px 17px;border-radius:11px;font-weight:830;font-size:12px;min-height:46px;cursor:pointer}
+#sc-hub-play .hub-play-back:hover{background:#37596a}
+.hub-play-layout{width:min(1100px,100%);display:flex;flex-direction:column;gap:12px;min-width:0}
+#sc-hub-play .hub-playarea{width:100%;padding:clamp(15px,2.5vw,29px)}
+#sc-hub-play .hub-board-frame{min-height:260px}
+#sc-hub-play .hub-board.hub-reversi{width:min(100%,620px)}
+#sc-hub-play .hub-board.hub-connect4{width:min(100%,640px)}
+#sc-hub-play .hub-board.hub-strategy-board{width:min(100%,650px)}
+#sc-hub-play .hub-board.hub-mini-board{width:min(100%,470px)}
+#sc-hub-play .hub-board.hub-card-table{max-width:880px}
+@media(max-width:740px){
+ .hub-setup-card{padding:16px;min-height:340px;border-radius:15px}
+ .hub-setup-icon{height:65px;width:65px;font-size:34px;margin:18px auto 8px}
+ .hub-selection-members{margin:17px 0}
+ .hub-play-header{flex-wrap:wrap;padding:12px;gap:9px;border-radius:12px}
+ .hub-play-brand{flex:1}
+ #sc-hub-play .hub-play-back{width:100%;min-height:42px}
+ .hub-play-room{padding:5px 10px}
+ .hub-play-room>strong{font-size:14px}
+ #sc-hub-play{padding:13px 10px 27px;gap:10px}
+ #sc-hub-play .hub-playarea{padding:12px;border-radius:12px}
+ #sc-hub-play .hub-board-frame{padding:7px;min-height:180px}
+ #sc-hub-play .hub-board.hub-strategy-board{width:min(100%,430px)}
+ #sc-hub-play .hub-board.hub-mini-board{width:min(100%,370px)}
 }
 </style>
 </head>
@@ -1842,27 +1911,50 @@ input,select{font-family:inherit}
       </div>
       <div id="hub-catalog"></div>
     </aside>
-    <main class="hub-main">
-      <section class="hub-playarea" aria-label="対局画面">
-        <div class="hub-play-top"><span id="hub-game-meta" class="hub-game-meta">GAME TABLE / READY</span><span class="hub-room-live"><i aria-hidden="true"></i> LIVE ROOM</span></div>
-        <h3 id="hub-game-title" class="hub-game-title">ゲームを選ぼう</h3>
-        <div id="hub-game-info" class="hub-game-info" role="status" aria-live="polite">左のゲーム一覧から、遊びたいタイトルを選んでください。</div>
-        <div id="hub-versus" class="hub-versus" aria-label="対局プレイヤー"></div>
-        <div class="hub-board-frame">
-          <div id="hub-empty-state" class="hub-empty-state" aria-label="ゲーム選択待ち">
-            <div class="hub-empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-            <strong>次は、何で遊ぶ？</strong><p>チェス・5五将棋・ババ抜き・ポーカーなど、10種類のゲームをCPUと遊べます。</p>
-          </div>
-          <div id="hub-board" class="hub-board" aria-label="ゲーム盤" hidden></div>
-        </div>
-        <div id="hub-actions" class="hub-actions" aria-label="ゲーム操作"></div>
-        <div class="hub-game-footer" id="hub-game-footer">ゲームを選ぶと、ここに対局盤が表示されます。</div>
+    <main class="hub-main hub-setup-main" aria-label="ゲーム準備画面">
+      <section class="hub-setup-card">
+        <div class="hub-play-top"><span class="hub-game-meta">GAME SELECT / SETUP</span><span class="hub-room-live"><i aria-hidden="true"></i> ONLINE LOBBY</span></div>
+        <span id="hub-setup-icon" class="hub-setup-icon" aria-hidden="true">✦</span>
+        <p class="hub-setup-eyebrow">SELECT A GAME</p>
+        <h3 id="hub-selection-title" class="hub-game-title">遊ぶゲームを選ぼう</h3>
+        <p id="hub-selection-description" class="hub-game-info">左のゲーム一覧から遊びたいタイトルを選択してください。</p>
+        <div id="hub-selection-members" class="hub-selection-members" aria-label="対戦人数"></div>
+        <button id="hub-game-start" type="button" class="hub-start-btn" disabled>ゲームを選択してください</button>
+        <p id="hub-selection-status" class="hub-selection-status" role="status" aria-live="polite">ホストがゲームを選ぶと、ここからスタートできます。</p>
+        <button id="hub-resume-play" type="button" class="hub-resume-btn" hidden>進行中のゲーム画面に戻る →</button>
       </section>
-      <p class="hub-room-note">人数が足りないときはCPUを補充できます。対局中に友達が参加した場合は、次のゲームから一緒に遊べます。ホストはゲームの変更や再戦ができます。</p>
+      <p class="hub-room-note">① ゲームを選ぶ → ② CPUの人数を設定 → ③「ゲームスタート」で専用画面へ。参加者全員が同じゲームに移動します。</p>
     </main>
   </div>
   <div class="nav hub-bottom-nav"><button class="back" id="hub-leave" type="button">← ゲームHUBから退出</button></div>
 </div>
+<div id="sc-hub-play" class="screen hub-play-screen" aria-label="ゲームHUBのプレイ画面">
+  <div class="hub-play-header">
+    <div class="hub-play-brand"><span class="hub-section-kicker">GAME HUB / NOW PLAYING</span><b id="hub-play-name">ゲームを開始しよう</b></div>
+    <div class="hub-play-room"><span>ROOM</span><strong id="hub-play-code">------</strong></div>
+    <button id="hub-play-back" class="hub-play-back" type="button">← ゲームHUBへ戻る</button>
+  </div>
+  <main class="hub-play-layout" aria-label="ゲーム進行">
+    <section class="hub-playarea" aria-label="対局画面">
+      <div class="hub-play-top"><span id="hub-game-meta" class="hub-game-meta">GAME TABLE / READY</span><span class="hub-room-live"><i aria-hidden="true"></i> LIVE ROOM</span></div>
+      <h3 id="hub-game-title" class="hub-game-title">ゲームを選ぼう</h3>
+      <div id="hub-game-info" class="hub-game-info" role="status" aria-live="polite">ゲームスタートで専用画面に移動します。</div>
+      <div id="hub-versus" class="hub-versus" aria-label="対局プレイヤー"></div>
+      <div class="hub-board-frame">
+        <div id="hub-empty-state" class="hub-empty-state" aria-label="ゲーム選択待ち">
+          <div class="hub-empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <strong>READY TO PLAY</strong>
+          <p>ゲームHUBから「ゲームスタート」を押してください。</p>
+        </div>
+        <div id="hub-board" class="hub-board" aria-label="ゲーム盤" hidden></div>
+      </div>
+      <div id="hub-actions" class="hub-actions" aria-label="ゲーム操作"></div>
+      <div class="hub-game-footer" id="hub-game-footer">ゲームが始まるとここに操作方法が表示されます。</div>
+    </section>
+    <p class="hub-room-note">ゲーム終了後はホストが再戦できます。ゲームHUBに戻ると別のタイトルを選べます。</p>
+  </main>
+</div>
+
 <div id="sc-result" class="screen">
   <div class="hd">BATTLE RESULT<small>THE FIGHT IS OVER.</small></div><div id="winner-art"></div>
   <div id="res-win"></div>
@@ -10528,7 +10620,7 @@ const HUB_ICONS={
   oldmaid:'♠',mahjong:'🀄',blackjack:'21',poker:'♣',baccarat:'◆'
 };
 function hubRender(){
-  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
+  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room'&&scene!=='sc-hub-play')return;
   const members=lobbyMembers().filter(x=>!x.cpu);
   const code=hubEl('hub-code');if(code)code.textContent=roomId||'';
   const count=hubEl('hub-members');
@@ -10681,10 +10773,10 @@ onGm=function(g){
     gmCache=g;
     if(g.protocol!==NET_PROTOCOL){alert('部屋のバージョンが違います。再読み込みしてください。');return;}
     hubBindRoom();
-    if(scene!=='sc-hub-room')show('sc-hub-room');
+    if(scene!=='sc-hub-room'&&scene!=='sc-hub-play')show('sc-hub-room');
     hubRender();return;
   }
-  const wasHub=scene==='sc-hub-room';
+  const wasHub=scene==='sc-hub-room'||scene==='sc-hub-play';
   hubOriginalOnGm(g);
   if(wasHub&&g?.ph==='lobby'&&g.mode!=='hub'){
     show('sc-lobby');
@@ -10694,7 +10786,7 @@ onGm=function(g){
 const hubOriginalRenderLobby=renderLobby;
 renderLobby=function(){
   if(gmCache?.mode==='hub'){
-    if(scene!=='sc-hub-room')show('sc-hub-room');
+    if(scene!=='sc-hub-room'&&scene!=='sc-hub-play')show('sc-hub-room');
     hubRender();
     return;
   }
@@ -10709,7 +10801,7 @@ joinCommon=async function(){
   const meta=(await roomRef.child('gm').once('value')).val();
   if(meta?.mode==='hub'){
     hubBindRoom();
-    if(scene!=='sc-hub-room')show('sc-hub-room');
+    if(scene!=='sc-hub-room'&&scene!=='sc-hub-play')show('sc-hub-room');
     hubRender();
   }
   return joined;
@@ -10797,7 +10889,7 @@ function hubNewTableGame(kind,players){
       const card=deck[i];if(hubRank(card)!==7)state.hands[i%players.length].push(card);
     }
     for(const hand of state.hands)hand.sort((a,b)=>a-b);
-    state.passes=players.map(()=>0);state.finish=[];state.deck=[];
+    state.passes=players.map(()=>0);state.finish=[];state.eliminated=[];state.deck=[];
   }else if(kind==='blackjack'){
     state.dealer=[deck.pop()];state.hands=players.map(()=>[deck.pop()]);
     state.dealer.push(deck.pop());
@@ -10834,24 +10926,39 @@ function hubTableMove(state,actor,choice){
   const next={...state,players:state.players.slice(),deck:(state.deck||[]).slice()};
   const seat=state.turn;
   if(state.kind==='shichinarabe'){
-    next.hands=state.hands.map(hand=>Array.isArray(hand)?hand.slice():[]);next.placed=state.placed.slice();
-    next.passes=state.passes.slice();next.finish=Array.isArray(state.finish)?state.finish.slice():[];
-    const choices=hubSevenChoices(next,seat);
-    if(choice==='pass'&&choices.length===0){
-      next.passes[seat]++;
+    next.hands=state.hands.map(hand=>Array.isArray(hand)?hand.slice():[]);
+    next.placed=state.placed.slice();next.passes=state.passes.slice();
+    next.finish=Array.isArray(state.finish)?state.finish.slice():[];
+    next.eliminated=Array.isArray(state.eliminated)?state.eliminated.slice():[];
+    const choices=hubSevenChoices(next,seat),used=Number(next.passes[seat]||0);
+    if(choice==='pass'){
+      if(used<3){
+        // Any player may strategically pass, but only three times in total.
+        next.passes[seat]=used+1;
+      }else if(choices.length===0){
+        // No fourth pass: the player is out, remaining cards are revealed to
+        // keep both wings of the table reachable by the survivors.
+        next.eliminated.push(seat);
+        for(const card of next.hands[seat])next.placed[card]=true;
+        next.hands[seat]=[];
+      }else return null;
     }else if(Number.isInteger(choice)&&choices.includes(choice)){
       next.hands[seat]=next.hands[seat].filter(card=>card!==choice);
       next.placed[choice]=true;
       if(next.hands[seat].length===0)next.finish.push(seat);
     }else return null;
-    if(next.finish.length>=next.players.length-1){
-      for(let i=0;i<next.players.length;i++)if(!next.finish.includes(i))next.finish.push(i);
-      next.status='done';next.turn=-1;next.winner=next.finish[0];
+    const alive=next.hands.map((hand,i)=>hand.length&&!next.eliminated.includes(i)?i:-1)
+      .filter(i=>i>=0);
+    if(alive.length<=1){
+      if(alive.length===1&&!next.finish.includes(alive[0]))next.finish.push(alive[0]);
+      // Earlier eliminated players finish lower in the final ranking.
+      next.finish.push(...next.eliminated.slice().reverse());
+      next.status='done';next.turn=-1;next.winner=next.finish[0]??-1;
     }else{
       let candidate=seat;
       for(let i=0;i<next.players.length;i++){
         candidate=(candidate+1)%next.players.length;
-        if(next.hands[candidate].length>0){next.turn=candidate;break;}
+        if(alive.includes(candidate)){next.turn=candidate;break;}
       }
     }
   }else if(state.kind==='blackjack'){
@@ -10943,7 +11050,7 @@ function hubChooseSeats(kind,humans,cpuSelection='auto'){
 }
 function hubCpuTimer(){
   const state=hubGameSnapshot,ref=roomRef;
-  if(!isHost||!online||!ref||scene!=='sc-hub-room'||gmCache?.mode!=='hub'||
+  if(!isHost||!online||!ref||scene!=='sc-hub-play'||gmCache?.mode!=='hub'||
      !state||state.status!=='play'||!hubIsCpu(state.players?.[state.turn]))return;
   const key=state.kind+':'+state.created+':'+state.revision+':'+state.turn+':'+roomId;
   if(hubCpuScheduled?.key===key&&hubCpuScheduled.ref===ref)return;
@@ -11007,7 +11114,7 @@ function hubRenderTable(state){
   for(let i=0;i<state.players.length;i++){
     const entry=hubMake('span','hub-table-player'+(turn===i?' is-turn':'')+(me===i?' is-you':''));
     entry.textContent=hubDisplayName(state.players[i]);
-    if(kind==='shichinarabe')entry.textContent+=' · '+(state.hands[i]?.length||0)+'枚';
+    if(kind==='shichinarabe')entry.textContent+=' · '+(state.hands[i]?.length||0)+'枚 / パス '+Math.min(3,state.passes?.[i]||0)+'/3'+(state.eliminated?.includes(i)?'（失格）':'');
     if(kind==='blackjack')entry.textContent+=' · '+hubBJTotal(state.hands[i])+'点';
     if(kind==='baccarat'&&state.bets?.[state.players[i]])entry.textContent+=' · 予想済';
     vs.appendChild(entry);
@@ -11077,9 +11184,11 @@ function hubRenderTable(state){
         b.appendChild(hubMakeCard(card));b.onclick=()=>hubSubmitMove(card);hand.appendChild(b);
       }
       board.appendChild(hand);
-      if(!choices.size)hubAddAction(actions,'出せるカードがないのでパス','pass',isMyTurn,'is-primary');
+      const used=Math.min(3,Number(state.passes?.[me]||0));
+      if(used<3)hubAddAction(actions,'パス（残り '+(3-used)+' 回）','pass',isMyTurn,choices.size?'':'is-primary');
+      else if(!choices.size&&state.status==='play')hubAddAction(actions,'パス上限：失格して次へ','pass',isMyTurn,'is-primary');
     }else board.appendChild(hubMake('div','hub-seven-hand-title','観戦中：他の人の手札は表示されません。'));
-    footer.textContent='4つの「7」から、同じマークの数字を上下に隣接する順で並べます。手札を先に使い切れば勝ち。';
+    footer.textContent='4つの「7」から数字をつなげます。パスは1人3回まで。3回使い切ってカードを出せない場合は失格です。';
   }
   if(state.status==='done'){
     const text=isHost?'ゲーム一覧の同じタイトルを選べば再戦できます。':'ホストが再戦するまでお待ちください。';
@@ -11088,7 +11197,7 @@ function hubRenderTable(state){
 }
 const hubRenderBeforeExpansion=hubRender;
 hubRender=function(){
-  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
+  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room'&&scene!=='sc-hub-play')return;
   hubRenderBeforeExpansion();
   const members=lobbyMembers().filter(x=>!x.cpu),state=hubGameSnapshot;
   const cpuSelect=hubEl('hub-cpu-count');
@@ -11950,13 +12059,340 @@ function hubExtraPokerUI(state){
 const hubMoreOriginalRender=hubRender;
 hubRender=function(){
   hubMoreOriginalRender();
-  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
+  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room'&&scene!=='sc-hub-play')return;
   const state=hubGameSnapshot;
   if(!state||!['chess','mini-shogi','oldmaid','poker'].includes(state.kind))return;
   hubExtraSync(state);
   if(state.kind==='chess'||state.kind==='mini-shogi')hubExtraBoardUI(state);
   else if(state.kind==='oldmaid')hubExtraOldmaidUI(state);
   else hubExtraPokerUI(state);
+};
+// GAME HUB / UNIFIED FLOW: choose a game -> confirm CPU seats -> GAME START -> dedicated play scene.
+let hubSelectionSnapshot=null,hubSelectionBound=null,hubRoomBrowsing=false,hubActiveGameToken='';
+const hubBindRoomBeforeFlow=hubBindRoom;
+hubBindRoom=function(){
+  hubBindRoomBeforeFlow();
+  const ref=roomRef;
+  if(!ref||hubSelectionBound===ref)return;
+  hubSelectionBound=ref;
+  ref.child('hubSelection').on('value',snap=>{
+    if(ref!==roomRef)return;
+    hubSelectionSnapshot=snap.val();
+    hubRender();
+  });
+};
+function hubIsActiveScene(){return scene==='sc-hub-room'||scene==='sc-hub-play';}
+function hubFlowSyncScreen(){
+  if(!hubIsActiveScene())return;
+  const state=hubGameSnapshot;
+  const token=state?state.kind+':'+(state.created||0):'';
+  if(token!==hubActiveGameToken){
+    hubActiveGameToken=token;
+    hubRoomBrowsing=false;
+  }
+  if(!state&&scene==='sc-hub-play')show('sc-hub-room');
+  else if(state&&!hubRoomBrowsing&&scene==='sc-hub-room')show('sc-hub-play');
+}
+function hubFlowSetup(){
+  if(scene!=='sc-hub-room')return;
+  const chosen=HUB_CATALOG.find(x=>x.id===hubSelectionSnapshot?.kind&&x.ready);
+  const title=hubEl('hub-selection-title'),desc=hubEl('hub-selection-description');
+  const icon=hubEl('hub-setup-icon'),slots=hubEl('hub-selection-members');
+  const start=hubEl('hub-game-start'),status=hubEl('hub-selection-status');
+  const resume=hubEl('hub-resume-play');
+  if(!title||!desc||!start||!slots||!status)return;
+  title.textContent=chosen?chosen.name:'遊ぶゲームを選ぼう';
+  desc.textContent=chosen?(chosen.description||'CPUの人数を調整してゲームスタート！'):
+    '左のゲーム一覧から遊びたいタイトルを選択してください。';
+  if(icon)icon.textContent=chosen?(HUB_ICONS[chosen.id]||'✦'):'✦';
+  const humans=lobbyMembers().filter(m=>!m.cpu);
+  const auto=hubEl('hub-cpu-count')?.value||'auto';
+  const seats=chosen?hubChooseSeats(chosen.id,humans,auto):null;
+  slots.replaceChildren();
+  if(seats){
+    for(const id of seats){
+      const chip=hubMake('span','hub-selection-member'+(hubIsCpu(id)?' is-cpu':''));
+      chip.appendChild(hubMake('span','hub-selection-member-icon',hubIsCpu(id)?'CPU':'●'));
+      chip.appendChild(hubMake('span','',hubIsCpu(id)?hubDisplayName(id):hubDisplayName(id)));
+      slots.appendChild(chip);
+    }
+  }else if(chosen){
+    slots.appendChild(hubMake('span','hub-selection-empty','プレイヤー数が不足しています。CPU補充を設定してください。'));
+  }
+  const playing=!!hubGameSnapshot;
+  start.disabled=!chosen||!isHost||hubBusy||!seats||playing;
+  start.textContent=chosen?'ゲームスタート　→':'ゲームを選択してください';
+  status.textContent=playing?'ゲームが進行中です。対局画面に戻れます。':
+    !chosen?'ゲームを選ぶと、ホストがスタートできるようになります。':
+    !isHost?'ホストが「ゲームスタート」を押すと、全員がゲーム画面へ移動します。':
+    !seats?'CPUなしでは人数不足です。CPUを追加するか友達を招待してください。':
+    chosen.id==='stickbattle'?'ゲームスタートでスティックバトルの対戦ロビーへ進みます。':
+    '準備OK！「ゲームスタート」で全員が専用ゲーム画面に移動します。';
+  if(resume)resume.hidden=!playing;
+  const catalog=hubEl('hub-catalog');
+  if(catalog)for(const b of catalog.querySelectorAll('.hub-card')){
+    const selected=chosen&&b.dataset.game===chosen.id;
+    b.classList.toggle('is-selected',!!selected);
+    const tag=b.querySelector('.hub-card-status');
+    if(tag&&selected)tag.textContent='SELECTED ✓';
+    else if(tag&&b.dataset.game!=='stickbattle'&&!b.classList.contains('is-coming')&&isHost)tag.textContent='SELECT →';
+  }
+}
+function hubFlowPlayHeader(){
+  if(scene!=='sc-hub-play')return;
+  const state=hubGameSnapshot;
+  const name=hubEl('hub-play-name'),code=hubEl('hub-play-code');
+  const entry=HUB_CATALOG.find(x=>x.id===state?.kind);
+  if(name)name.textContent=entry?.name||'ゲームHUB';
+  if(code)code.textContent=roomId||'------';
+}
+const hubRenderBeforeFlow=hubRender;
+hubRender=function(){
+  if(!online||gmCache?.mode!=='hub'||!hubIsActiveScene())return;
+  hubFlowSyncScreen();
+  hubRenderBeforeFlow();
+  if(scene==='sc-hub-room')hubFlowSetup();
+  else hubFlowPlayHeader();
+};
+const hubPlayGameBeforeFlow=hubSelectGame;
+hubSelectGame=async function(kind){
+  if(!isHost||!roomRef||hubBusy||!HUB_CATALOG.some(x=>x.id===kind&&x.ready))return;
+  if(hubGameSnapshot){
+    if(hubGameSnapshot.status==='play'&&hubGameSnapshot.moves>0&&
+      !confirm('現在の対局を終了してゲーム選択に戻りますか？'))return;
+    try{await roomRef.child('hubGame').remove();}
+    catch(e){alert('対局を終了できませんでした。'+(e?.message||e));return;}
+  }
+  try{
+    await roomRef.child('hubSelection').set({kind,chosenAt:Date.now(),host:myId});
+    hubSelectionSnapshot={kind};
+    hubRoomBrowsing=true;
+    if(scene!=='sc-hub-room')show('sc-hub-room');
+    hubRender();
+  }catch(e){alert('ゲームを選択できませんでした。'+(e?.message||e));}
+};
+async function hubStartSelectedGame(){
+  const kind=hubSelectionSnapshot?.kind;
+  if(!kind||!isHost||!roomRef||hubBusy||hubGameSnapshot)return;
+  const humans=lobbyMembers().filter(x=>!x.cpu);
+  if(!hubChooseSeats(kind,humans,hubEl('hub-cpu-count')?.value||'auto')){
+    alert('CPUの人数を増やすか、友達を招待してください。');return;
+  }
+  hubRoomBrowsing=false;
+  await hubPlayGameBeforeFlow(kind);
+}
+async function hubReturnToLobby(){
+  const state=hubGameSnapshot;
+  if(isHost&&state){
+    if(state.status==='play'&&state.moves>0&&!confirm('進行中のゲームを終了して、ゲームHUBに戻りますか？'))return;
+    try{await roomRef.child('hubGame').remove();}
+    catch(e){alert('ゲームを終了できませんでした。'+(e?.message||e));return;}
+  }
+  hubRoomBrowsing=true;
+  show('sc-hub-room');
+  hubRender();
+}
+const hubFlowBuildMenusBefore=buildMenus;
+buildMenus=function(){
+  hubFlowBuildMenusBefore();
+  const start=hubEl('hub-game-start'),back=hubEl('hub-play-back'),resume=hubEl('hub-resume-play');
+  if(start)start.onclick=hubStartSelectedGame;
+  if(back)back.onclick=hubReturnToLobby;
+  if(resume)resume.onclick=()=>{
+    if(!hubGameSnapshot)return;
+    hubRoomBrowsing=false;show('sc-hub-play');hubRender();
+  };
+  const cpu=hubEl('hub-cpu-count');
+  if(cpu)cpu.onchange=()=>hubRender();
+};
+// GAME HUB / MID-LEVEL CPU: positional play, tactical threats and informed card decisions.
+// CPU picks from legal actions only; card opponents' hidden values are not used.
+const HUB_REV_WEIGHTS=[
+  110,-26,20,5,5,20,-26,110,
+  -26,-45,-5,-5,-5,-5,-45,-26,
+  20,-5,13,3,3,13,-5,20,
+  5,-5,3,2,2,3,-5,5,
+  5,-5,3,2,2,3,-5,5,
+  20,-5,13,3,3,13,-5,20,
+  -26,-45,-5,-5,-5,-5,-45,-26,
+  110,-26,20,5,5,20,-26,110
+];
+function hubRevPosition(board,color){
+  let material=0,position=0,occupied=0;
+  for(let i=0;i<64;i++){
+    const piece=Number(board[i]);
+    if(!piece)continue;
+    occupied++;
+    const sign=piece===color?1:-1;
+    material+=sign;
+    position+=sign*HUB_REV_WEIGHTS[i];
+  }
+  const mobility=hubReversiMoves(board,color).length-hubReversiMoves(board,3-color).length;
+  const phase=occupied<40?.7:occupied<52?.55:.35;
+  return position*phase+mobility*5+material*(occupied>48?4:1);
+}
+function hubRevSmart(state){
+  const color=state.turn+1,moves=hubReversiMoves(state.board,color);
+  if(!moves.length)return null;
+  let best=moves[0],score=-Infinity;
+  for(const m of moves){
+    const next=hubApplyMove(state,state.players[state.turn],m);
+    if(!next)continue;
+    let value=hubRevPosition(next.board,color);
+    if(next.status==='done'){
+      value+=next.winner===state.turn?100000:next.winner<0?0:-100000;
+    }else if(next.turn!==state.turn){
+      // Penalize giving the opponent a strong reply; keep the CPU beatable.
+      const replies=hubReversiMoves(next.board,3-color);
+      let worst=Infinity;
+      for(const reply of replies){
+        const after=hubApplyMove(next,next.players[next.turn],reply);
+        if(after)worst=Math.min(worst,hubRevPosition(after.board,color));
+      }
+      if(worst!==Infinity)value=value*.5+worst*.5;
+    }
+    value+=Math.random()*2.2;
+    if(value>score){score=value;best=m;}
+  }
+  return best;
+}
+function hubConnectThreats(board,color){
+  const threats=[];
+  for(let c=0;c<7;c++){
+    if(board[c])continue;
+    const copy=board.slice();let row=-1;
+    for(let r=5;r>=0;r--)if(!copy[r*7+c]){row=r;break;}
+    if(row<0)continue;
+    copy[row*7+c]=color;
+    if(hubConnectWinner(copy,row,c,color))threats.push(c);
+  }
+  return threats;
+}
+function hubConnectSmart(state){
+  const board=state.board,available=Array.from({length:7},(_,c)=>c).filter(c=>!board[c]);
+  const color=state.turn+1,other=3-color;
+  if(!available.length)return null;
+  const canWin=hubConnectThreats(board,color),mustBlock=hubConnectThreats(board,other);
+  if(canWin.length)return canWin[Math.floor(Math.random()*canWin.length)];
+  let best=available[0],score=-Infinity;
+  for(const c of available){
+    const next=hubApplyMove(state,state.players[state.turn],c);
+    if(!next)continue;
+    const opponentImmediate=hubConnectThreats(next.board,other);
+    const selfFuture=hubConnectThreats(next.board,color);
+    let value=11-Math.abs(c-3)*3+Math.random()*3;
+    if(mustBlock.includes(c))value+=170;
+    if(opponentImmediate.length)value-=1500;
+    if(selfFuture.length>=2)value+=230;
+    else if(selfFuture.length)value+=27;
+    // Prevent creating a losing fork: inspect each safe opponent reply.
+    if(next.status==='play'){
+      let danger=0;
+      for(let op=0;op<7;op++){
+        if(next.board[op])continue;
+        const response=hubApplyMove(next,next.players[next.turn],op);
+        if(!response)continue;
+        if(response.status==='done'&&response.winner===1-state.turn)danger=Math.max(danger,1000);
+        else if(hubConnectThreats(response.board,other).length>=2&&
+          !hubConnectThreats(response.board,color).length)danger=Math.max(danger,60);
+      }
+      value-=danger;
+    }
+    if(value>score){score=value;best=c;}
+  }
+  return best;
+}
+function hubSevenSmart(state){
+  const seat=state.turn,hand=state.hands[seat]||[];
+  const moves=hubSevenChoices(state,seat),passes=Number(state.passes?.[seat]||0);
+  if(!moves.length)return 'pass';
+  let best=moves[0],score=-Infinity;
+  for(const card of moves){
+    const rank=hubRank(card),suit=hubSuit(card),base=suit*13;
+    const next=rank===7?0:rank<7?card-1:card+1;
+    const unlock=next>=base&&next<base+13&&hand.includes(next);
+    const ownShape=hand.filter(c=>hubSuit(c)===suit).length;
+    const importance=unlock?15:0;
+    // Prefer opening a chain for ourselves; avoid handing away blockers too soon.
+    let value=importance+Math.max(0,7-Math.abs(7-rank))*1.5+ownShape*.65;
+    if(rank===1||rank===13)value+=2;
+    if(hand.length<=3)value+=12;
+    value+=Math.random()*3;
+    if(value>score){score=value;best=card;}
+  }
+  // Save a blocking card occasionally only while several passes remain.
+  if(passes===0&&hand.length>4&&moves.length===1&&score<9&&Math.random()<.13)return 'pass';
+  return best;
+}
+function hubBJSmart(state){
+  const cards=state.hands[state.turn],total=hubBJTotal(cards),up=hubRank(state.dealer[0]);
+  const dealer=up===1?11:Math.min(up,10);
+  const hasAce=cards.some(c=>hubRank(c)===1);
+  const raw=cards.reduce((n,c)=>n+Math.min(10,hubRank(c)),0);
+  const soft=hasAce&&total===raw+10;
+  if(soft){
+    if(total>=19)return 'stand';
+    if(total===18)return dealer>=9?'hit':'stand';
+    return 'hit';
+  }
+  if(total>=17)return 'stand';
+  if(total>=13&&dealer<=6)return 'stand';
+  if(total===12&&dealer>=4&&dealer<=6)return 'stand';
+  return 'hit';
+}
+function hubChessSmart(state){
+  const moves=hubChessLegalMoves(state),seat=state.turn;
+  if(!moves.length)return null;
+  let best=moves[0],score=-Infinity;
+  for(const m of moves){
+    const piece=state.board[m.from],other=state.board[m.to],after=hubChessMoveRaw(state,m);
+    const val=HUB_CHESS_VAL[piece[1]]||1;
+    const targetRisk=hubChessAttacked(after.board,m.to,1-seat);
+    const targetDefended=hubChessAttacked(after.board,m.to,seat);
+    const oldRisk=hubChessAttacked(state.board,m.from,1-seat);
+    const center=3.5-Math.abs(m.to%8-3.5)+3.5-Math.abs(Math.floor(m.to/8)-3.5);
+    let value=other?(HUB_CHESS_VAL[other[1]]||0)*13:0;
+    value+=center*.75+(oldRisk&&!targetRisk?val*1.3:0);
+    if(targetRisk)value-=val*(targetDefended?6.7:10.5);
+    if(hubChessCheck(after.board,1-seat))value+=6;
+    if(piece[1]==='P')value+=seat===0?(6-Math.floor(m.to/8))*.6:(Math.floor(m.to/8)-1)*.6;
+    if(piece[1]==='P'&&Math.floor(m.to/8)===(seat===0?0:7))value+=85;
+    if(piece[1]==='K'&&Math.abs(m.to-m.from)===2)value+=5;
+    value+=Math.random()*4.5;
+    if(value>score){score=value;best=m;}
+  }
+  return {from:best.from,to:best.to,promotion:'Q'};
+}
+function hubMiniSmart(state){
+  const moves=hubMiniLegalMoves(state),seat=state.turn;
+  if(!moves.length)return null;
+  let best=moves[0],score=-Infinity;
+  for(const m of moves){
+    const piece=m.drop?null:state.board[m.from],captured=state.board[m.to],after=hubMiniRaw(state,m);
+    if(!after)continue;
+    const val=m.drop?(HUB_MINI_VAL[m.drop]||1):(HUB_MINI_VAL[hubMiniType(piece)]||1);
+    const attacked=hubMiniAttacked(after.board,m.to,1-seat);
+    const ownCover=hubMiniAttacked(after.board,m.to,seat);
+    let value=(captured?(HUB_MINI_VAL[hubMiniType(captured)]||1)*12:0)+
+      (m.promote?11:0)+(m.drop?2:0)+(2-Math.abs(m.to%5-2));
+    if(attacked)value-=val*(ownCover?5:9);
+    if(hubMiniCheck(after.board,1-seat))value+=6;
+    value+=Math.random()*5;
+    if(value>score){score=value;best=m;}
+  }
+  return best;
+}
+const hubMidCpuEarlier=hubCpuChoice;
+hubCpuChoice=function(state){
+  if(!state||state.status!=='play'||!hubIsCpu(state.players?.[state.turn]))return null;
+  if(state.kind==='reversi')return hubRevSmart(state);
+  if(state.kind==='connect4')return hubConnectSmart(state);
+  if(state.kind==='shichinarabe')return hubSevenSmart(state);
+  if(state.kind==='blackjack')return hubBJSmart(state);
+  if(state.kind==='chess')return hubChessSmart(state);
+  if(state.kind==='mini-shogi')return hubMiniSmart(state);
+  if(state.kind==='baccarat')return Math.random()<.55?'banker':'player';
+  return hubMidCpuEarlier(state);
 };
 </script>
 </body>
