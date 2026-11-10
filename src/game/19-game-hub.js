@@ -1,5 +1,6 @@
 // GAME HUB + QUICK MATCH — additive layer; existing battle simulation stays unchanged.
 const HUB_CATALOG = [
+  {id:'stickbattle',name:'スティックバトル',category:'2人対戦',players:'2〜8人',ready:true,description:'格闘対戦に戻る。同じ部屋のメンバーで遊べます。'},
   {id:'reversi',name:'リバーシ',category:'2人対戦',players:'2人',ready:true,description:'石を挟んでひっくり返す。置けないときは自動パス。'},
   {id:'connect4',name:'コネクトフォー',category:'2人対戦',players:'2人',ready:true,description:'縦・横・斜めに4個並べた方が勝ち。'},
   {id:'airhockey',name:'エアホッケー',category:'2人対戦',players:'2人',ready:false},
@@ -87,6 +88,13 @@ function hubApplyMove(current,actor,choice){
 let hubGameSnapshot=null;
 let hubRoomBound=null;
 let hubBusy=false;
+function hubBindRoom(){
+  if(!roomRef||hubRoomBound===roomRef)return;
+  hubRoomBound=roomRef;
+  const ref=roomRef;
+  ref.child('hubGame').on('value',s=>{if(ref!==roomRef)return;hubGameSnapshot=s.val();hubRender();});
+  ref.child('mem').on('value',()=>{if(ref===roomRef)hubRender();});
+}
 function hubDisplayName(id){
   const v=memCache[id];
   return v?String(v.label||'PLAYER').slice(0,24):'退出したプレイヤー';
@@ -154,6 +162,11 @@ async function hubSelectGame(kind){
   if(hubGameSnapshot?.status==='play'&&hubGameSnapshot.moves>0&&!confirm('対局中のゲームを終了して切り替えますか？'))return;
   hubBusy=true;hubRender();
   try{
+    if(kind==='stickbattle'){
+      await roomRef.child('hubGame').remove();
+      await roomRef.child('gm').update({mode:'normal',ph:'lobby',cpuN:0,teamMode:0});
+      return;
+    }
     const ids=humans.slice(0,2).map(x=>x.id);
     const snap=await roomRef.child('hubGame').once('value');
     const prior=snap.val();
@@ -177,10 +190,16 @@ onGm=function(g){
   if(g&&g.mode==='hub'){
     gmCache=g;
     if(g.protocol!==NET_PROTOCOL){alert('部屋のバージョンが違います。再読み込みしてください。');return;}
+    hubBindRoom();
     if(scene!=='sc-hub-room')show('sc-hub-room');
     hubRender();return;
   }
+  const wasHub=scene==='sc-hub-room';
   hubOriginalOnGm(g);
+  if(wasHub&&g?.ph==='lobby'&&g.mode!=='hub'){
+    show('sc-lobby');
+    renderLobby();
+  }
 };
 const hubOriginalRenderLobby=renderLobby;
 let quickStartPending=false;
@@ -190,6 +209,8 @@ renderLobby=function(){
     hubRender();return;
   }
   hubOriginalRenderLobby();
+  const switchButton=hubEl('lb-to-hub');
+  if(switchButton)switchButton.style.display=(gmCache?.mode==='normal'&&isHost)?'block':'none';
   if(gmCache?.mode!=='match'||scene!=='sc-lobby')return;
   const humans=lobbyMembers().filter(x=>!x.cpu);
   const set=hubEl('lb-set'),start=hubEl('lb-start'),wait=hubEl('lb-wait');
@@ -220,10 +241,7 @@ joinCommon=async function(){
   const ref=roomRef;
   const meta=(await ref.child('gm').once('value')).val();
   if(meta?.mode==='hub'){
-    hubRoomBound=ref;
-    hubGameSnapshot=null;
-    ref.child('hubGame').on('value',s=>{if(ref!==roomRef)return;hubGameSnapshot=s.val();hubRender();});
-    ref.child('mem').on('value',()=>{if(ref===roomRef)hubRender();});
+    hubBindRoom();
     if(scene!=='sc-hub-room')show('sc-hub-room');
     hubRender();
   }else if(meta?.mode==='match'){
@@ -317,6 +335,13 @@ buildMenus=function(){
   const hubButton=hubEl('go-hub');
   hubButton.onclick=()=>{requestedOnlineMode='hub';show('sc-online');};
   hubEl('online-quick').onclick=startQuickMatch;
+  hubEl('lb-to-hub').onclick=async()=>{
+    if(isHost&&roomRef&&gmCache?.mode==='normal'&&gmCache.ph==='lobby'){
+      await roomRef.child('gm').update({mode:'hub',ph:'lobby',cpuN:0,teamMode:0});
+    }
+  };
+  hubEl('go-online').addEventListener('click',()=>{hubEl('online-context').textContent='友達との対戦は部屋コードで招待。ランダムマッチなら相手を自動で探せます。';});
+  hubButton.addEventListener('click',()=>{hubEl('online-context').textContent='ゲームハブの部屋を作って友達に招待URL・6文字のコードを送ろう！';});
   hubEl('hub-copy').onclick=()=>{
     const url=location.href.split('?')[0]+'?room='+roomId;
     if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>alert('招待URLをコピーしました')).catch(()=>prompt('このURLを送ってください',url));
