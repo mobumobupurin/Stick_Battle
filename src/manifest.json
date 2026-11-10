@@ -5,7 +5,8 @@
     "src/styles/overrides.css",
     "src/styles/mode-bracket.css",
     "src/styles/menu-v2.css",
-    "src/styles/raid.css"
+    "src/styles/raid.css",
+    "src/styles/ui-renewal.css"
   ],
   "scripts": [
     "src/game/00-firebase.js",
