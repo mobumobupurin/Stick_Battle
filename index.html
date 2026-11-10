@@ -1468,6 +1468,71 @@ input,select{font-family:inherit}
  .hub-actions{gap:8px}
  #sc-hub-room .hub-action{flex:1;min-width:120px;padding:10px 13px}
 }
+
+
+/* HUB strategy & card games — keyboard and touch-accessible surfaces */
+#sc-hub-room .hub-board.hub-strategy-board{
+  width:min(100%,590px);display:grid;gap:0;padding:7px;border:8px solid #655044;
+  border-radius:13px;overflow:hidden;background:#392e27;
+  box-shadow:0 18px 36px #05090d77;
+}
+#sc-hub-room .hub-board.hub-mini-board{width:min(100%,430px);border-color:#947045;background:#8a6538}
+#sc-hub-room .hub-strategy-cell{
+  position:relative;display:grid;place-items:center;min-width:0;min-height:0;width:100%;aspect-ratio:1;
+  padding:0;border:1px solid #ffffff14;border-radius:0;font-weight:800;
+  transition:filter .1s;touch-action:manipulation;
+}
+#sc-hub-room .hub-chess-board .hub-strategy-cell.is-light{background:#d1dbd0}
+#sc-hub-room .hub-chess-board .hub-strategy-cell.is-dark{background:#678c87}
+#sc-hub-room .hub-mini-board .hub-strategy-cell.is-light{background:#d6b47b}
+#sc-hub-room .hub-mini-board .hub-strategy-cell.is-dark{background:#c49b60}
+#sc-hub-room .hub-strategy-cell.is-selected{outline:4px solid #ffdf70;outline-offset:-4px;z-index:1}
+#sc-hub-room .hub-strategy-cell.is-target{box-shadow:inset 0 0 0 3px #baff6e;z-index:1}
+#sc-hub-room .hub-strategy-cell:not(:disabled):hover{filter:brightness(1.12)}
+#sc-hub-room .hub-strategy-cell:disabled{opacity:1}
+.hub-strategy-piece{font-family:"Apple Symbols","DejaVu Sans","Segoe UI Symbol",serif;font-size:clamp(23px,5.3vw,49px);line-height:1;pointer-events:none;user-select:none}
+.hub-chess-board .hub-strategy-piece.is-first{color:#fffefd;text-shadow:0 2px 0 #364442,1px 0 1px #121a1b,-1px 0 1px #121a1b}
+.hub-chess-board .hub-strategy-piece.is-second{color:#1a2725;text-shadow:0 2px 1px #ffffff61}
+.hub-mini-board .hub-strategy-piece{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(18px,4.5vw,34px);font-weight:950;
+  width:79%;height:88%;display:grid;place-items:center;background:#f4d4a2;border:1px solid #825c32;border-radius:30% 30% 5px 5px;clip-path:polygon(50% 0,100% 24%,100% 100%,0 100%,0 24%);
+  color:#382416;text-shadow:0 1px #fff6}
+.hub-mini-board .hub-strategy-piece.is-second{transform:rotate(180deg);background:#e6c495;color:#563b2b}
+.hub-strategy-target-dot{width:25%;aspect-ratio:1;border-radius:50%;background:#214c39bb;pointer-events:none}
+.hub-option-label{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#e0ebec;font-weight:800}
+#sc-hub-room .hub-strategy-select{border-radius:8px;background:#1e333a;color:#effcf8;border:1px solid #647e77;font-size:12px;padding:8px}
+.hub-mini-hand{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;width:100%}
+#sc-hub-room .hub-mini-hand .hub-action{min-height:40px;padding:6px 11px}
+#sc-hub-room .hub-mini-hand .hub-action.is-selected{border-color:#ffdd85;background:#584f35;color:#fff4c3}
+#sc-hub-room .hub-promote-toggle{background:#4b3b67}
+.hub-oldmaid-table,.hub-poker-table{min-width:0}
+.hub-oldmaid-heading{font-size:13px;color:#dff9eb;letter-spacing:.08em}
+.hub-oldmaid-hand{min-height:62px;padding:5px}
+.hub-playing-card.is-joker{font-size:10px;color:#ab2861;background:linear-gradient(165deg,#faf6f4,#f1d3df);font-weight:950}
+.hub-card-empty{font-size:12px;color:#b6d5c5;padding:15px}
+.hub-oldmaid-face-down{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;padding:12px 7px;max-width:100%}
+#sc-hub-room .hub-oldmaid-card{display:grid;place-items:center;flex:0 0 42px;height:60px;padding:0;
+  color:#d4e9fc;font-size:20px;border:3px double #9db9d9;border-radius:7px;
+  background:repeating-linear-gradient(42deg,#264581 0,#264581 7px,#4269a1 7px,#4269a1 14px);
+  box-shadow:0 3px 8px #03122376;transition:transform .12s}
+#sc-hub-room .hub-oldmaid-card:not(:disabled):hover{transform:translateY(-7px)}
+#sc-hub-room .hub-oldmaid-card:disabled{opacity:.65}
+.hub-poker-top{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;
+  background:#132e2b;border:1px solid #79a6936b;padding:12px;border-radius:10px}
+.hub-poker-pot{font-size:17px;font-weight:950;color:#f6d88a;letter-spacing:.04em}
+.hub-poker-phase{font-size:12px;font-weight:800;color:#bee0d1}
+.hub-poker-player.is-folded{opacity:.55}
+#sc-hub-room .hub-poker-pick{background:transparent;padding:0;border:0;border-radius:8px;cursor:pointer}
+#sc-hub-room .hub-poker-pick.is-selected{transform:translateY(-7px);box-shadow:0 0 0 3px #fce58e}
+#sc-hub-room .hub-poker-pick .hub-playing-card{pointer-events:none}
+@media(max-width:740px){
+ #sc-hub-room .hub-board.hub-strategy-board{border-width:5px;padding:3px;width:min(100%,420px)}
+ #sc-hub-room .hub-board.hub-mini-board{width:min(100%,360px)}
+ .hub-strategy-piece{font-size:clamp(20px,7vw,41px)}
+ .hub-mini-board .hub-strategy-piece{font-size:clamp(17px,7vw,34px)}
+ .hub-oldmaid-face-down{gap:5px}
+ #sc-hub-room .hub-oldmaid-card{flex-basis:35px;height:49px}
+ .hub-poker-pot{font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -1762,7 +1827,7 @@ input,select{font-family:inherit}
   </div>
   <div class="hub-shell">
     <aside class="hub-sidebar" aria-label="ゲーム選択">
-      <div class="hub-sidebar-header"><div><span class="hub-section-kicker">GAME LIBRARY</span><h3>ゲームを選ぶ<span class="hub-title-dot">.</span></h3></div><span class="hub-sidebar-count">6 PLAYABLE / 13 GAMES</span></div>
+      <div class="hub-sidebar-header"><div><span class="hub-section-kicker">GAME LIBRARY</span><h3>ゲームを選ぶ<span class="hub-title-dot">.</span></h3></div><span class="hub-sidebar-count">10 PLAYABLE / 13 GAMES</span></div>
       <p class="hub-sidebar-tip">ゲームを選択すると全員の画面に反映。1人でもCPUと対戦できます。ホストがゲームを開始します。</p>
       <div class="hub-cpu-settings"><label for="hub-cpu-count"><span class="hub-cpu-symbol" aria-hidden="true">🤖</span> CPUを追加する</label>
         <select id="hub-cpu-count" aria-label="追加するCPUの人数">
@@ -1786,7 +1851,7 @@ input,select{font-family:inherit}
         <div class="hub-board-frame">
           <div id="hub-empty-state" class="hub-empty-state" aria-label="ゲーム選択待ち">
             <div class="hub-empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-            <strong>次は、何で遊ぶ？</strong><p>リバーシ・コネクトフォー・七並べ・ブラックジャック・バカラはCPUを追加して遊べます。</p>
+            <strong>次は、何で遊ぶ？</strong><p>チェス・5五将棋・ババ抜き・ポーカーなど、10種類のゲームをCPUと遊べます。</p>
           </div>
           <div id="hub-board" class="hub-board" aria-label="ゲーム盤" hidden></div>
         </div>
@@ -11090,6 +11155,808 @@ hubSelectGame=async function(kind){
     await roomRef.child('hubGame').set(game);
   }catch(e){alert('ゲームを開始できませんでした。'+(e?.message||e));}
   finally{hubBusy=false;hubRender();}
+};
+// GAME HUB / CHESS — orthodox king-safety, castling, en passant, and promotions.
+const HUB_BOARD_EXTRAS=['chess','mini-shogi'];
+for(const id of HUB_BOARD_EXTRAS){const entry=HUB_CATALOG.find(g=>g.id===id);entry.ready=true;}
+HUB_CATALOG.find(g=>g.id==='chess').description='王手・詰み・キャスリング・アンパッサンに対応。昇格はクイーンを初期選択。';
+HUB_PLAYERS_MIN.chess=2;HUB_PLAYERS_MAX.chess=2;
+const HUB_CHESS_VAL={P:1,N:3,B:3,R:5,Q:9,K:1000};
+function hubChessNew(players){
+ const board=Array(64).fill(0),back=['R','N','B','Q','K','B','N','R'];
+ for(let c=0;c<8;c++){board[c]='b'+back[c];board[8+c]='bP';board[48+c]='wP';board[56+c]='w'+back[c];}
+ return {kind:'chess',players:players.slice(),board,turn:0,status:'play',winner:-1,
+   castle:'KQkq',ep:-1,half:0,moves:0,revision:0,created:Date.now()};
+}
+const hubChessSide=i=>i===0?'w':'b';
+function hubChessAttacked(board,target,bySeat){
+ const y=Math.floor(target/8),x=target%8,side=hubChessSide(bySeat);
+ const pawnRow=y+(bySeat===0?1:-1);
+ for(const dc of [-1,1])if(pawnRow>=0&&pawnRow<8&&x+dc>=0&&x+dc<8&&board[pawnRow*8+x+dc]===side+'P')return true;
+ for(const [dr,dc] of [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]]){
+  const r=y+dr,c=x+dc;if(r>=0&&r<8&&c>=0&&c<8&&board[r*8+c]===side+'N')return true;
+ }
+ for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){
+  const diag=!!dr&&!!dc;let r=y+dr,c=x+dc,n=1;
+  while(r>=0&&r<8&&c>=0&&c<8){
+   const piece=board[r*8+c];
+   if(piece){
+    if(piece[0]===side&&(piece[1]==='Q'||n===1&&piece[1]==='K'||diag&&piece[1]==='B'||!diag&&piece[1]==='R'))return true;
+    break;
+   }
+   r+=dr;c+=dc;n++;
+  }
+ }
+ return false;
+}
+function hubChessCheck(board,seat){
+ const king=board.indexOf(hubChessSide(seat)+'K');
+ return king<0||hubChessAttacked(board,king,1-seat);
+}
+function hubChessCandidates(state,seat){
+ const board=state.board,side=hubChessSide(seat),other=hubChessSide(1-seat);
+ const list=[],push=(from,to,promotion='Q')=>{
+  const dest=board[to];if(dest&&dest[0]===side||dest===other+'K')return;
+  list.push({from,to,promotion});
+ };
+ for(let from=0;from<64;from++){
+  const piece=board[from];if(typeof piece!=='string'||piece[0]!==side)continue;
+  const type=piece[1],y=Math.floor(from/8),x=from%8;
+  if(type==='P'){
+   const dir=seat===0?-1:1,next=y+dir,promo=seat===0?0:7;
+   if(next>=0&&next<8){
+    const target=next*8+x;
+    if(!board[target]){
+     push(from,target);
+     const start=seat===0?6:1,twice=y+dir*2;
+     if(y===start&&!board[twice*8+x])push(from,twice*8+x);
+    }
+    for(const dc of [-1,1])if(x+dc>=0&&x+dc<8){
+     const to=next*8+x+dc;
+     if(board[to]&&board[to][0]===other||to===state.ep&&
+       board[y*8+x+dc]===other+'P')push(from,to);
+    }
+   }
+   continue;
+  }
+  if(type==='N'){
+   for(const [dr,dc] of [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]]){
+    const r=y+dr,c=x+dc;if(r>=0&&r<8&&c>=0&&c<8)push(from,r*8+c);
+   }
+   continue;
+  }
+  const directions=type==='B'?[[1,1],[1,-1],[-1,1],[-1,-1]]:
+    type==='R'?[[1,0],[-1,0],[0,1],[0,-1]]:
+    [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  for(const [dr,dc] of directions){
+   const max=type==='K'?1:8;
+   for(let step=1;step<=max;step++){
+    const r=y+dr*step,c=x+dc*step;
+    if(r<0||r>7||c<0||c>7)break;
+    const to=r*8+c;
+    if(board[to]){
+      if(board[to][0]!==side)push(from,to);
+      break;
+    }
+    push(from,to);
+   }
+  }
+  if(type==='K'&&from===(seat===0?60:4)&&!hubChessCheck(board,seat)){
+   const rights=state.castle||'',k=seat===0?'K':'k',q=seat===0?'Q':'q';
+   if(rights.includes(k)&&board[from+1]===0&&board[from+2]===0&&board[from+3]===side+'R'&&
+     !hubChessAttacked(board,from+1,1-seat)&&!hubChessAttacked(board,from+2,1-seat))push(from,from+2);
+   if(rights.includes(q)&&board[from-1]===0&&board[from-2]===0&&board[from-3]===0&&board[from-4]===side+'R'&&
+     !hubChessAttacked(board,from-1,1-seat)&&!hubChessAttacked(board,from-2,1-seat))push(from,from-2);
+  }
+ }
+ return list;
+}
+function hubChessMoveRaw(state,move){
+ const from=move.from,to=move.to,board=state.board.slice(),piece=board[from],dest=board[to],seat=piece[0]==='w'?0:1;
+ const next={...state,board,players:state.players.slice(),castle:state.castle||'',ep:-1};
+ if(piece[1]==='K'){
+  next.castle=next.castle.replace(seat===0?/[KQ]/g:/[kq]/g,'');
+  if(Math.abs(to-from)===2){
+   const rookFrom=to>from?from+3:from-4,rookTo=to>from?from+1:from-1;
+   board[rookTo]=board[rookFrom];board[rookFrom]=0;
+  }
+ }
+ if(piece[1]==='R'){
+  if(from===63)next.castle=next.castle.replace('K','');
+  if(from===56)next.castle=next.castle.replace('Q','');
+  if(from===7)next.castle=next.castle.replace('k','');
+  if(from===0)next.castle=next.castle.replace('q','');
+ }
+ if(dest&&dest[1]==='R'){
+  if(to===63)next.castle=next.castle.replace('K','');
+  if(to===56)next.castle=next.castle.replace('Q','');
+  if(to===7)next.castle=next.castle.replace('k','');
+  if(to===0)next.castle=next.castle.replace('q','');
+ }
+ if(piece[1]==='P'){
+  if(to===state.ep&&!dest&&to%8!==from%8)board[Math.floor(from/8)*8+to%8]=0;
+  if(Math.abs(to-from)===16)next.ep=(to+from)/2;
+  if(Math.floor(to/8)===(seat===0?0:7))board[to]=piece[0]+(move.promotion||'Q');
+  else board[to]=piece;
+ }else board[to]=piece;
+ board[from]=0;
+ next.half=(piece[1]==='P'||dest?0:(state.half||0)+1);
+ return next;
+}
+function hubChessLegalMoves(state,seat=state.turn){
+ if(!state||!Array.isArray(state.board)||state.board.length!==64)return [];
+ return hubChessCandidates(state,seat).filter(m=>!hubChessCheck(hubChessMoveRaw(state,m).board,seat));
+}
+function hubChessPlay(state,actor,choice){
+ if(!state||state.status!=='play'||state.players[state.turn]!==actor||!choice||
+  !Number.isInteger(choice.from)||!Number.isInteger(choice.to))return null;
+ const legal=hubChessLegalMoves(state);
+ const chosen=legal.find(m=>m.from===choice.from&&m.to===choice.to);
+ if(!chosen)return null;
+ const promotion=['Q','R','B','N'].includes(choice.promotion)?choice.promotion:'Q';
+ const next=hubChessMoveRaw(state,{...chosen,promotion});
+ next.turn=1-state.turn;next.revision=(state.revision||0)+1;next.moves=(state.moves||0)+1;
+ if(!hubChessLegalMoves(next).length){
+  next.status='done';next.winner=hubChessCheck(next.board,next.turn)?state.turn:-1;next.turn=-1;
+ }else if(next.half>=100||next.moves>=300){
+  next.status='done';next.winner=-1;next.turn=-1;
+ }
+ return next;
+}
+function hubChessBot(state){
+ const legal=hubChessLegalMoves(state);
+ if(!legal.length)return null;
+ let best=null,score=-Infinity;
+ for(const m of legal){
+  const captured=state.board[m.to],after=hubChessMoveRaw(state,m);
+  const row=Math.floor(m.to/8),col=m.to%8;
+  let value=(captured?HUB_CHESS_VAL[captured[1]]*10:0)+(hubChessCheck(after.board,1-state.turn)?5:0)
+    +(3.5-Math.abs(row-3.5))+(3.5-Math.abs(col-3.5))+Math.random()*5;
+  if(state.board[m.from][1]==='P'&&Math.floor(m.to/8)===(state.turn===0?0:7))value+=85;
+  if(value>score){score=value;best=m;}
+ }
+ return best?{from:best.from,to:best.to,promotion:'Q'}:null;
+}
+const hubChessEarlierNew=hubNewGame,hubChessEarlierMove=hubApplyMove,hubChessEarlierCpu=hubCpuChoice;
+hubNewGame=function(kind,players){
+ if(kind==='chess'&&players.length===2&&new Set(players).size===2)return hubChessNew(players);
+ return hubChessEarlierNew(kind,players);
+};
+hubApplyMove=function(state,actor,choice){
+ if(state?.kind==='chess')return hubChessPlay(state,actor,choice);
+ return hubChessEarlierMove(state,actor,choice);
+};
+hubCpuChoice=function(state){
+ if(state?.kind==='chess'&&hubIsCpu(state.players?.[state.turn]))return hubChessBot(state);
+ return hubChessEarlierCpu(state);
+};
+// GAME HUB / 5五将棋 — check/checkmate, promotions, captures, drops, nifu and pawn-drop mate.
+HUB_CATALOG.find(g=>g.id==='mini-shogi').ready=true;
+HUB_CATALOG.find(g=>g.id==='mini-shogi').description='5×5の将棋。王手・詰み・成り・持ち駒・二歩・打ち歩詰めに対応。';
+HUB_PLAYERS_MIN['mini-shogi']=2;HUB_PLAYERS_MAX['mini-shogi']=2;
+const HUB_MINI_VAL={K:1000,G:6,S:5,B:8,R:9,P:2,'+S':6,'+B':11,'+R':12,'+P':6};
+const hubMiniColor=seat=>seat===0?'s':'g';
+const hubMiniType=p=>typeof p==='string'?p.slice(1):'';
+const hubMiniOwner=p=>typeof p==='string'?p[0]:'';
+function hubMiniNew(players){
+ const board=Array(25).fill(0),upper=['R','B','S','G','K'],lower=['K','G','S','B','R'];
+ for(let i=0;i<5;i++){board[i]='g'+upper[i];board[20+i]='s'+lower[i];}
+ board[9]='gP';board[15]='sP';
+ return {kind:'mini-shogi',players:players.slice(),board,hand:[{},{}],turn:0,
+  status:'play',winner:-1,moves:0,revision:0,created:Date.now(),history:[]};
+}
+function hubMiniPseudo(state,seat){
+ const board=state.board,own=hubMiniColor(seat),enemy=hubMiniColor(1-seat),forward=seat===0?-1:1;
+ const out=[],push=(from,to,promote=false,drop=null)=>{out.push(drop?{drop,to}:{from,to,promote});};
+ const dirsGold=[[forward,0],[forward,1],[forward,-1],[0,1],[0,-1],[-forward,0]];
+ const dirsSilver=[[forward,0],[forward,1],[forward,-1],[-forward,1],[-forward,-1]];
+ const directionsKing=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+ const orth=[[1,0],[-1,0],[0,1],[0,-1]],diag=[[1,1],[1,-1],[-1,1],[-1,-1]];
+ for(let from=0;from<25;from++){
+  const piece=board[from];
+  if(!piece||piece[0]!==own)continue;
+  const type=hubMiniType(piece),r=Math.floor(from/5),c=from%5;
+  const steps=type==='K'?directionsKing:type==='G'||type==='+S'||type==='+P'?dirsGold:
+    type==='S'?dirsSilver:type==='P'?[[forward,0]]:type==='R'?orth:type==='B'?diag:
+    type==='+R'?directionsKing:type==='+B'?directionsKing:[];
+  const sliding=type==='R'||type==='B'||type==='+R'||type==='+B';
+  for(const [dr,dc] of steps){
+   const canSlide=sliding&&(type==='R'||type==='+R'?!!(dr===0||dc===0):!!dr&&!!dc);
+   for(let len=1;len<=(canSlide?5:1);len++){
+    const y=r+dr*len,x=c+dc*len;
+    if(y<0||y>4||x<0||x>4)break;
+    const to=y*5+x,other=board[to];
+    if(other&&other[0]===own||other===enemy+'K')break;
+    const canPromote=['S','P','R','B'].includes(type)&&
+      (r===(seat===0?0:4)||y===(seat===0?0:4));
+    if(canPromote){
+      if(type!=='P'||y!==(seat===0?0:4))push(from,to,false);
+      push(from,to,true);
+    }else push(from,to,false);
+    if(other)break;
+   }
+  }
+ }
+ const holdings=state.hand?.[seat]||{};
+ for(const type of ['P','S','G','B','R'])if(Number(holdings[type])>0){
+  for(let to=0;to<25;to++){
+   if(board[to])continue;
+   const row=Math.floor(to/5),col=to%5,far=seat===0?0:4;
+   if(type==='P'){
+    if(row===far)continue;
+    let nifu=false;
+    for(let r=0;r<5;r++)if(board[r*5+col]===own+'P')nifu=true;
+    if(nifu)continue;
+   }
+   push(-1,to,false,type);
+  }
+ }
+ return out;
+}
+function hubMiniRaw(state,move){
+ const next={...state,board:state.board.slice(),players:state.players.slice(),
+  hand:(state.hand||[{},{}]).map(x=>({...x}))};
+ const seat=state.turn,own=hubMiniColor(seat),board=next.board;
+ if(move.drop){
+  if(Number(next.hand[seat][move.drop])<=0||board[move.to])return null;
+  next.hand[seat][move.drop]--;
+  board[move.to]=own+move.drop;
+ }else{
+  const piece=board[move.from],captured=board[move.to];
+  if(!piece||piece[0]!==own)return null;
+  if(captured){
+   const type=hubMiniType(captured).replace('+','');
+   if(type==='K')return null;
+   next.hand[seat][type]=(next.hand[seat][type]||0)+1;
+  }
+  board[move.to]=own+(move.promote?'+'+hubMiniType(piece):hubMiniType(piece));
+  board[move.from]=0;
+ }
+ return next;
+}
+function hubMiniAttacked(board,target,bySeat){
+ const other=hubMiniColor(bySeat),own=hubMiniColor(1-bySeat);
+ const test={board,hand:[{},{}],turn:bySeat};
+ // Only board-piece moves count as attacks; fake the king on the attacked square.
+ const copy=board.slice();copy[target]=own+'G';
+ return hubMiniPseudo({...test,board:copy},bySeat).some(m=>m.drop===undefined&&m.to===target&&copy[m.from]?.[0]===other);
+}
+function hubMiniCheck(board,seat){
+ const king=board.indexOf(hubMiniColor(seat)+'K');
+ return king<0||hubMiniAttacked(board,king,1-seat);
+}
+function hubMiniLegalMoves(state,seat=state.turn,pawnMate=true){
+ if(!state||!Array.isArray(state.board)||state.board.length!==25)return [];
+ const temp={...state,turn:seat};
+ const legal=[];
+ for(const move of hubMiniPseudo(temp,seat)){
+  const after=hubMiniRaw(temp,move);
+  if(!after||hubMiniCheck(after.board,seat))continue;
+  if(pawnMate&&move.drop==='P'&&hubMiniCheck(after.board,1-seat)){
+   after.turn=1-seat;
+   if(!hubMiniLegalMoves(after,1-seat,false).length)continue;
+  }
+  legal.push(move);
+ }
+ return legal;
+}
+function hubMiniSignature(state){
+ return state.board.join(',')+'|'+JSON.stringify(state.hand)+'|'+state.turn;
+}
+function hubMiniPlay(state,actor,choice){
+ if(!state||state.status!=='play'||state.players[state.turn]!==actor||!choice||!Number.isInteger(choice.to))return null;
+ const legal=hubMiniLegalMoves(state);
+ const selected=legal.find(m=>m.to===choice.to&&(m.drop?m.drop===choice.drop:m.from===choice.from&&!!m.promote===!!choice.promote));
+ if(!selected)return null;
+ const next=hubMiniRaw(state,selected);
+ if(!next)return null;
+ next.turn=1-state.turn;next.revision=(state.revision||0)+1;next.moves=(state.moves||0)+1;
+ next.history=Array.isArray(state.history)?state.history.slice(-100):[];
+ const key=hubMiniSignature(next);
+ next.history.push(key);
+ if(!hubMiniLegalMoves(next).length){
+  next.status='done';next.winner=hubMiniCheck(next.board,next.turn)?state.turn:-1;next.turn=-1;
+ }else if(next.history.filter(x=>x===key).length>=4||next.moves>=250){
+  next.status='done';next.winner=-1;next.turn=-1;
+ }
+ return next;
+}
+function hubMiniBot(state){
+ const legal=hubMiniLegalMoves(state);if(!legal.length)return null;
+ let best=null,score=-Infinity;
+ for(const m of legal){
+  const target=state.board[m.to];
+  let value=(target?(HUB_MINI_VAL[hubMiniType(target)]||1)*10:0)+
+    (m.promote?10:0)+(m.drop?4:0)+(2-Math.abs(2-Math.floor(m.to/5)))+Math.random()*6;
+  const after=hubMiniRaw(state,m);
+  if(after&&hubMiniCheck(after.board,1-state.turn))value+=8;
+  if(value>score){score=value;best=m;}
+ }
+ return best;
+}
+const hubMiniEarlierNew=hubNewGame,hubMiniEarlierMove=hubApplyMove,hubMiniEarlierCpu=hubCpuChoice;
+hubNewGame=function(kind,players){
+ if(kind==='mini-shogi'&&players.length===2&&new Set(players).size===2)return hubMiniNew(players);
+ return hubMiniEarlierNew(kind,players);
+};
+hubApplyMove=function(state,actor,choice){
+ if(state?.kind==='mini-shogi')return hubMiniPlay(state,actor,choice);
+ return hubMiniEarlierMove(state,actor,choice);
+};
+hubCpuChoice=function(state){
+ if(state?.kind==='mini-shogi'&&hubIsCpu(state.players?.[state.turn]))return hubMiniBot(state);
+ return hubMiniEarlierCpu(state);
+};
+// GAME HUB / OLD MAID + FIVE-CARD DRAW POKER (fictional chips; no cash betting).
+const HUB_PARTY_EXTRAS=['oldmaid','poker'];
+for(const id of HUB_PARTY_EXTRAS)HUB_CATALOG.find(x=>x.id===id).ready=true;
+HUB_CATALOG.find(x=>x.id==='oldmaid').description='ジョーカー1枚入り53枚でババ抜き。順に隣の手札からカードを引き、同じ数字を捨てます。';
+HUB_CATALOG.find(x=>x.id==='poker').description='5カード・ドローポーカー。手札交換・役・仮想チップでのBET/CALL/FOLDに対応。';
+HUB_PLAYERS_MIN.oldmaid=2;HUB_PLAYERS_MAX.oldmaid=8;
+HUB_PLAYERS_MIN.poker=2;HUB_PLAYERS_MAX.poker=6;
+function hubDeckShuffle(deck){
+ for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+ return deck;
+}
+function hubOldmaidStrip(hand){
+ const byRank={};const removed=[];
+ for(const c of hand){const rank=c===52?'joker':String(hubRank(c));(byRank[rank]??=[]).push(c);}
+ const kept=[];
+ for(const cards of Object.values(byRank)){
+  if(cards[0]===52){kept.push(...cards);continue;}
+  const take=cards.length-cards.length%2;
+  removed.push(...cards.slice(0,take));kept.push(...cards.slice(take));
+ }
+ return {cards:hubDeckShuffle(kept),removed};
+}
+function hubOldmaidTarget(state,seat){
+ const n=state.players.length;
+ for(let step=1;step<n;step++){
+  const j=(seat+step)%n;
+  if((state.hands[j]||[]).length>0)return j;
+ }
+ return -1;
+}
+function hubOldmaidNew(players){
+ const deck=hubDeckShuffle(Array.from({length:53},(_,i)=>i));
+ const hands=players.map(()=>[]);
+ deck.forEach((c,i)=>hands[i%players.length].push(c));
+ for(let i=0;i<hands.length;i++)hands[i]=hubOldmaidStrip(hands[i]).cards;
+ const finish=hands.map((h,i)=>h.length===0?i:-1).filter(i=>i>=0);
+ const remaining=hands.map((h,i)=>h.length?i:-1).filter(i=>i>=0);
+ return {kind:'oldmaid',players:players.slice(),hands,finish,loser:-1,turn:remaining[0]??-1,
+  status:remaining.length>1?'play':'done',winner:finish[0]??-1,
+  moves:0,revision:0,created:Date.now()};
+}
+function hubOldmaidPlay(state,actor,choice){
+ if(!state||state.status!=='play'||state.players[state.turn]!==actor||
+   !Number.isInteger(choice)||choice<0)return null;
+ const seat=state.turn,target=hubOldmaidTarget(state,seat);
+ if(target<0||(state.hands[target]||[]).length<=choice)return null;
+ const next={...state,players:state.players.slice(),hands:state.hands.map(x=>(x||[]).slice()),
+  finish:(state.finish||[]).slice()};
+ const drawn=next.hands[target].splice(choice,1)[0];
+ next.hands[seat].push(drawn);
+ next.hands[seat]=hubOldmaidStrip(next.hands[seat]).cards;
+ for(const i of [target,seat])if(next.hands[i].length===0&&!next.finish.includes(i))next.finish.push(i);
+ const alive=next.hands.map((h,i)=>h.length?i:-1).filter(i=>i>=0);
+ if(alive.length<=1){
+  next.status='done';next.turn=-1;next.loser=alive[0]??-1;next.winner=next.finish[0]??-1;
+ }else{
+  let turn=seat;
+  for(let j=0;j<next.players.length;j++){
+   turn=(turn+1)%next.players.length;
+   if(next.hands[turn].length){next.turn=turn;break;}
+  }
+ }
+ next.moves=(state.moves||0)+1;next.revision=(state.revision||0)+1;
+ return next;
+}
+// High card=0, pair=1, two pairs=2, three-of-a-kind=3, straight=4,
+// flush=5, full house=6, four-of-a-kind=7, straight flush=8.
+function hubPokerValue(hand){
+ if(!Array.isArray(hand)||hand.length!==5||new Set(hand).size!==5)return null;
+ const ranks=hand.map(x=>hubRank(x)===1?14:hubRank(x)),values=[...new Set(ranks)].sort((a,b)=>b-a);
+ const suits=new Set(hand.map(hubSuit)),flush=suits.size===1;
+ const straight=values.length===5&&(values[0]-values[4]===4||values.join(',')==='14,5,4,3,2');
+ const straightTop=values.join(',')==='14,5,4,3,2'?5:values[0];
+ const counts=new Map();for(const r of ranks)counts.set(r,(counts.get(r)||0)+1);
+ const grouped=[...counts].sort((a,b)=>b[1]-a[1]||b[0]-a[0]);
+ const order=grouped.flatMap(([rank,num])=>Array(num).fill(rank));
+ if(straight&&flush)return [8,straightTop];
+ if(grouped[0][1]===4)return [7,...order];
+ if(grouped[0][1]===3&&grouped[1][1]===2)return [6,...order];
+ if(flush)return [5,...values];
+ if(straight)return [4,straightTop];
+ if(grouped[0][1]===3)return [3,...order];
+ if(grouped[0][1]===2&&grouped[1][1]===2)return [2,...order];
+ if(grouped[0][1]===2)return [1,...order];
+ return [0,...values];
+}
+const HUB_POKER_HANDS=['ハイカード','ワンペア','ツーペア','スリーカード','ストレート',
+ 'フラッシュ','フルハウス','フォーカード','ストレートフラッシュ'];
+function hubPokerCompare(a,b){
+ for(let i=0;i<Math.max(a?.length||0,b?.length||0);i++){
+  const diff=(a?.[i]??0)-(b?.[i]??0);
+  if(diff!==0)return Math.sign(diff);
+ }
+ return 0;
+}
+const hubPokerPlayers=s=>s.players.map((_,i)=>i).filter(i=>!s.folded[i]);
+function hubPokerNew(players){
+ const deck=hubShuffle(),hands=players.map(()=>[]);
+ for(let i=0;i<5;i++)for(const hand of hands)hand.push(deck.pop());
+ return {kind:'poker',players:players.slice(),hands,deck,stack:players.map(()=>95),
+   pot:5*players.length,bets:players.map(()=>0),folded:players.map(()=>false),
+   acted:players.map(()=>false),exchanged:players.map(()=>false),phase:'bet1',raises:0,currentBet:0,
+   results:[],winners:[],winner:-1,turn:0,status:'play',moves:0,revision:0,created:Date.now()};
+}
+function hubPokerShowdown(state){
+ const active=hubPokerPlayers(state);
+ if(!active.length){state.status='done';state.winner=-1;state.turn=-1;return;}
+ let winners=[],top=null;
+ for(const i of active){
+  const value=hubPokerValue(state.hands[i]);
+  if(!top||hubPokerCompare(value,top)>0){top=value;winners=[i];}
+  else if(hubPokerCompare(value,top)===0)winners.push(i);
+ }
+ state.winners=winners;state.winner=winners.length===1?winners[0]:-1;
+ state.results=state.hands.map((hand,i)=>({rank:hubPokerValue(hand),folded:state.folded[i]}));
+ state.stack=winners.reduce((arr,i,k)=>{arr[i]+=Math.floor(state.pot/winners.length)+(k<state.pot%winners.length?1:0);return arr;},state.stack);
+ state.phase='done';state.status='done';state.turn=-1;
+}
+function hubPokerTurnFrom(state,seat){
+ for(let i=1;i<=state.players.length;i++){
+  const j=(seat+i)%state.players.length;
+  if(!state.folded[j])return j;
+ }
+ return -1;
+}
+function hubPokerNextPhase(state){
+ const active=hubPokerPlayers(state);
+ if(active.length<=1){
+  const winner=active[0]??-1;state.winners=winner>=0?[winner]:[];state.winner=winner;
+  if(winner>=0)state.stack[winner]+=state.pot;
+  state.status='done';state.phase='done';state.turn=-1;
+  return;
+ }
+ if(state.phase==='bet1'){
+  state.phase='draw';state.turn=active[0];state.exchanged=state.players.map(()=>false);
+ }else if(state.phase==='draw'){
+  state.phase='bet2';state.turn=active[0];state.currentBet=0;
+  state.bets=state.players.map(()=>0);state.acted=state.players.map(()=>false);state.raises=0;
+ }else if(state.phase==='bet2')hubPokerShowdown(state);
+}
+function hubPokerPlay(state,actor,choice){
+ if(!state||state.status!=='play'||state.players[state.turn]!==actor||state.folded[state.turn])return null;
+ const next={...state,players:state.players.slice(),hands:state.hands.map(h=>h.slice()),
+  deck:state.deck.slice(),stack:state.stack.slice(),bets:state.bets.slice(),
+  folded:state.folded.slice(),acted:state.acted.slice(),exchanged:state.exchanged.slice()};
+ const i=state.turn;
+ if(next.phase==='draw'){
+  const discard=choice?.discard;
+  if(!Array.isArray(discard)||discard.length>3||new Set(discard).size!==discard.length||
+     discard.some(x=>!Number.isInteger(x)||x<0||x>=5)||next.deck.length<discard.length)return null;
+  next.hands[i]=next.hands[i].filter((_,idx)=>!discard.includes(idx));
+  for(let n=0;n<discard.length;n++)next.hands[i].push(next.deck.pop());
+  next.exchanged[i]=true;
+  const active=hubPokerPlayers(next);
+  if(active.every(j=>next.exchanged[j]))hubPokerNextPhase(next);
+  else{
+   let candidate=i;
+   for(let k=0;k<next.players.length;k++){
+    candidate=(candidate+1)%next.players.length;
+    if(!next.folded[candidate]&&!next.exchanged[candidate]){next.turn=candidate;break;}
+   }
+  }
+ }else if(['bet1','bet2'].includes(next.phase)){
+  if(typeof choice!=='string')return null;
+  const owe=next.currentBet-next.bets[i],increment=10;
+  if(choice==='fold'){next.folded[i]=true;next.acted[i]=true;}
+  else if(choice==='check'){if(owe!==0)return null;next.acted[i]=true;}
+  else if(choice==='call'){
+   if(owe<=0||next.stack[i]<owe)return null;
+   next.stack[i]-=owe;next.bets[i]+=owe;next.pot+=owe;next.acted[i]=true;
+  }else if(choice==='bet'||choice==='raise'){
+   if((choice==='bet'&&next.currentBet!==0)||(choice==='raise'&&next.currentBet===0)||
+      next.raises>=2||next.stack[i]<owe+increment)return null;
+   const amount=owe+increment;next.stack[i]-=amount;next.bets[i]+=amount;
+   next.pot+=amount;next.currentBet+=increment;next.raises++;
+   next.acted=next.acted.map((_,seat)=>next.folded[seat]);next.acted[i]=true;
+  }else return null;
+  const active=hubPokerPlayers(next);
+  if(active.length<=1){
+   hubPokerNextPhase(next);
+  }else if(active.every(j=>next.acted[j]&&next.bets[j]===next.currentBet)){
+   hubPokerNextPhase(next);
+  }else next.turn=hubPokerTurnFrom(next,i);
+ }else return null;
+ next.moves=(state.moves||0)+1;next.revision=(state.revision||0)+1;
+ return next;
+}
+function hubPokerCpuDiscard(hand){
+ const rankCount=new Map();for(const c of hand)rankCount.set(hubRank(c),(rankCount.get(hubRank(c))||0)+1);
+ const type=hubPokerValue(hand)?.[0]??0;
+ if(type>=4)return [];
+ const singles=hand.map((c,i)=>({i,rank:hubRank(c),n:rankCount.get(hubRank(c))}))
+  .filter(x=>x.n===1).sort((a,b)=>a.rank-b.rank);
+ return singles.slice(0,3).map(x=>x.i);
+}
+function hubPokerCpuAction(state){
+ if(state.phase==='draw')return {discard:hubPokerCpuDiscard(state.hands[state.turn])};
+ const owe=state.currentBet-state.bets[state.turn],strength=hubPokerValue(state.hands[state.turn])?.[0]??0;
+ if(owe>0)return owe>10&&strength===0&&Math.random()<.3?'fold':'call';
+ if(strength>=2&&state.raises<2&&state.stack[state.turn]>=10&&Math.random()<.65)
+   return state.currentBet===0?'bet':'raise';
+ return 'check';
+}
+const hubPartyEarlierNew=hubNewGame,hubPartyEarlierMove=hubApplyMove,hubPartyEarlierCpu=hubCpuChoice;
+hubNewGame=function(kind,players){
+ if(HUB_PARTY_EXTRAS.includes(kind)){
+  if(players.length<(HUB_PLAYERS_MIN[kind]||2)||players.length>(HUB_PLAYERS_MAX[kind]||8)||
+     new Set(players).size!==players.length)return null;
+  return kind==='oldmaid'?hubOldmaidNew(players):hubPokerNew(players);
+ }
+ return hubPartyEarlierNew(kind,players);
+};
+hubApplyMove=function(state,actor,choice){
+ if(state?.kind==='oldmaid')return hubOldmaidPlay(state,actor,choice);
+ if(state?.kind==='poker')return hubPokerPlay(state,actor,choice);
+ return hubPartyEarlierMove(state,actor,choice);
+};
+hubCpuChoice=function(state){
+ if(!hubIsCpu(state?.players?.[state?.turn]))return hubPartyEarlierCpu(state);
+ if(state.kind==='oldmaid'){
+  const target=hubOldmaidTarget(state,state.turn);
+  return target<0?null:Math.floor(Math.random()*(state.hands[target]?.length||1));
+ }
+ if(state.kind==='poker')return hubPokerCpuAction(state);
+ return hubPartyEarlierCpu(state);
+};
+// GAME HUB — board, hand and poker-table controls (mobile-first; server moves remain transactional).
+const HUB_EXTRA_GAME_NAMES={chess:'チェス','mini-shogi':'5五将棋',oldmaid:'ババ抜き',poker:'ポーカー'};
+const HUB_CHESS_GLYPH={wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',
+ bK:'♚',bQ:'♛',bR:'♜',bB:'♝',bN:'♞',bP:'♟'};
+const HUB_MINI_GLYPH={K:'玉',G:'金',S:'銀',B:'角',R:'飛',P:'歩',
+ '+S':'全','+B':'馬','+R':'龍','+P':'と'};
+let hubExtraBoardKey='',hubExtraSelected=null,hubExtraDrop='',hubExtraPromote=true,hubChessPromotionPref='Q';
+let hubPokerPickKey='',hubPokerPicked=new Set();
+function hubExtraSync(state){
+ const key=state.kind+':'+(state.created||0);
+ if(key!==hubExtraBoardKey){
+  hubExtraBoardKey=key;hubExtraSelected=null;hubExtraDrop='';hubExtraPromote=true;hubChessPromotionPref='Q';
+ }
+ const pk=key+':'+state.phase+':'+state.turn;
+ if(pk!==hubPokerPickKey){hubPokerPickKey=pk;hubPokerPicked=new Set();}
+}
+function hubExtraInfo(state,text,footerText){
+ hubEl('hub-game-title').textContent=HUB_EXTRA_GAME_NAMES[state.kind]||state.kind;
+ hubEl('hub-game-meta').textContent=(state.kind==='mini-shogi'?'MINI SHOGI':state.kind.toUpperCase())+' / '+(state.status==='done'?'RESULT':'IN PROGRESS');
+ hubEl('hub-game-info').textContent=text;
+ hubEl('hub-game-footer').textContent=footerText;
+ hubEl('hub-empty-state').hidden=true;
+ const board=hubEl('hub-board');board.hidden=false;board.replaceChildren();
+ const actions=hubEl('hub-actions');actions.replaceChildren();
+ const versus=hubEl('hub-versus');versus.replaceChildren();
+ return {board,actions,versus};
+}
+function hubExtraPlayers(state,vs){
+ for(let i=0;i<state.players.length;i++){
+  const entry=hubMake('span','hub-table-player'+(state.turn===i?' is-turn':'')+(state.players[i]===myId?' is-you':''));
+  entry.textContent=hubDisplayName(state.players[i]);
+  vs.appendChild(entry);
+ }
+}
+function hubExtraButton(container,label,fn,enabled=true,cls=''){
+ const button=hubMake('button','hub-action '+cls,label);
+ button.type='button';button.disabled=!enabled||hubBusy;button.onclick=fn;
+ container.appendChild(button);return button;
+}
+function hubExtraFinish(state,actions){
+ if(state.status==='done'&&isHost)
+  hubExtraButton(actions,'↻ 同じゲームで再戦',()=>hubSelectGame(state.kind),true,'is-primary');
+}
+function hubExtraBoardUI(state){
+ const chess=state.kind==='chess',N=chess?8:5,seat=state.players.indexOf(myId),myTurn=state.status==='play'&&state.turn===seat;
+ const checked=state.status==='play'&&(chess?hubChessCheck(state.board,state.turn):hubMiniCheck(state.board,state.turn));
+ let message=state.status==='done'?
+   (state.winner>=0?hubDisplayName(state.players[state.winner])+'の勝ち！':'引き分けです。'):
+   (myTurn?'あなたの番です。駒を選んで移動先をタップしよう。':hubDisplayName(state.players[state.turn])+'の番です。');
+ if(checked)message+='　王手！';
+ const ui=hubExtraInfo(state,message,chess?
+  'チェス：王手放置は禁止。キャスリング・アンパッサン・昇格に対応。':
+  '5五将棋：成り・持ち駒を打つ・王手・詰み・二歩を判定します。');
+ hubExtraPlayers(state,ui.versus);
+ const legal=myTurn?(chess?hubChessLegalMoves(state):hubMiniLegalMoves(state)):[];
+ const own=chess?(seat===0?'w':'b'):(seat===0?'s':'g');
+ const selectValid=hubExtraSelected!==null&&state.board[hubExtraSelected]?.[0]===own;
+ const targets=legal.filter(m=>hubExtraDrop?m.drop===hubExtraDrop:
+   selectValid&&!m.drop&&m.from===hubExtraSelected);
+ const targetIndices=new Set(targets.map(m=>m.to));
+ const board=ui.board;
+ board.className='hub-board hub-strategy-board '+(chess?'hub-chess-board':'hub-mini-board');
+ board.style.gridTemplateColumns='repeat('+N+',minmax(0,1fr))';
+ for(let visible=0;visible<N*N;visible++){
+  const pos=seat===1?N*N-1-visible:visible,rank=Math.floor(pos/N),file=pos%N,piece=state.board[pos];
+  const cell=hubMake('button','hub-strategy-cell'+((rank+file)%2?' is-dark':' is-light')+
+    (hubExtraSelected===pos?' is-selected':'')+(targetIndices.has(pos)?' is-target':''));
+  cell.type='button';cell.disabled=!myTurn||hubBusy;
+  if(piece){
+   const symbol=chess?HUB_CHESS_GLYPH[piece]||'?':HUB_MINI_GLYPH[hubMiniType(piece)]||'?';
+   const text=hubMake('span','hub-strategy-piece '+(piece[0]===(chess?'w':'s')?'is-first':'is-second'),symbol);
+   cell.appendChild(text);
+  }else if(targetIndices.has(pos))cell.appendChild(hubMake('span','hub-strategy-target-dot'));
+  cell.setAttribute('aria-label', '行'+(rank+1)+' 列'+(file+1)+ (piece?' '+(chess?HUB_CHESS_GLYPH[piece]:HUB_MINI_GLYPH[hubMiniType(piece)]):' 空'));
+  cell.onclick=()=>{
+   if(!myTurn)return;
+   const hit=targets.filter(m=>m.to===pos);
+   if(hit.length){
+    let move;
+    if(chess)move={from:hubExtraSelected,to:pos,promotion:hubChessPromotionPref};
+    else if(hubExtraDrop)move={drop:hubExtraDrop,to:pos};
+    else move=hit.find(m=>!!m.promote===hubExtraPromote)||hit[0];
+    hubExtraSelected=null;hubExtraDrop='';
+    hubSubmitMove(move);
+   }else if(piece&&piece[0]===own){
+    hubExtraSelected=pos;hubExtraDrop='';hubExtraBoardUI(state);
+   }else{
+    hubExtraSelected=null;hubExtraDrop='';hubExtraBoardUI(state);
+   }
+  };
+  board.appendChild(cell);
+ }
+ if(chess){
+  if(myTurn){
+   const label=hubMake('label','hub-option-label','昇格時の駒：');
+   const sel=hubMake('select','hub-strategy-select');sel.id='hub-chess-promotion';
+   const options=[['Q','クイーン'],['R','ルーク'],['B','ビショップ'],['N','ナイト']];
+   const prev=hubChessPromotionPref;
+   options.forEach(([v,text])=>{const op=document.createElement('option');op.value=v;op.textContent=text;sel.appendChild(op);});
+   sel.value=prev;sel.onchange=()=>{hubChessPromotionPref=sel.value;};label.appendChild(sel);ui.actions.appendChild(label);
+  }
+ }else{
+  const pieces=['R','B','G','S','P'],hand=(state.hand?.[seat]||{});
+  if(seat>=0){
+   const holder=hubMake('div','hub-mini-hand');
+   holder.appendChild(hubMake('span','hub-option-label','持ち駒：'));
+   for(const kind of pieces){
+    const count=Number(hand[kind]||0);
+    if(!count)continue;
+    const btn=hubExtraButton(holder,HUB_MINI_GLYPH[kind]+' ×'+count,()=>{
+     hubExtraSelected=null;hubExtraDrop=kind;hubExtraBoardUI(state);
+    },myTurn);
+    if(hubExtraDrop===kind)btn.classList.add('is-selected');
+   }
+   ui.actions.appendChild(holder);
+  }
+  if(myTurn){
+   const button=hubExtraButton(ui.actions,'成り：'+(hubExtraPromote?'ON':'OFF'),()=>{
+    hubExtraPromote=!hubExtraPromote;hubExtraBoardUI(state);
+   },true,'hub-promote-toggle');
+   button.setAttribute('aria-pressed',String(hubExtraPromote));
+  }
+ }
+ hubExtraFinish(state,ui.actions);
+}
+function hubExtraOldmaidUI(state){
+ const mySeat=state.players.indexOf(myId),me=state.hands?.[mySeat]||[],target=state.status==='play'?hubOldmaidTarget(state,state.turn):-1;
+ const canDraw=state.status==='play'&&state.turn===mySeat&&target>=0;
+ const message=state.status==='done'?
+   '終了！ '+(state.loser>=0?hubDisplayName(state.players[state.loser])+' がジョーカーを持って終了。':'')+
+   (state.winner>=0?'　1位：'+hubDisplayName(state.players[state.winner]):''):
+   canDraw?'あなたの番です。相手の裏向きカードを1枚選ぼう。':hubDisplayName(state.players[state.turn])+' がカードを引きます。';
+ const ui=hubExtraInfo(state,message,'ババ抜き：同じ数字の2枚が自動で消えます。最後にジョーカーを持っていた人が負け。');
+ ui.board.className='hub-board hub-card-table hub-oldmaid-table';ui.board.style.gridTemplateColumns='none';
+ for(let i=0;i<state.players.length;i++){
+  const chip=hubMake('span','hub-table-player'+(state.turn===i?' is-turn':''),hubDisplayName(state.players[i])+
+   ' · '+(state.hands[i]?.length||0)+'枚'+(state.finish.includes(i)?' / 上がり':''));
+  ui.versus.appendChild(chip);
+ }
+ const handTitle=hubMake('strong','hub-oldmaid-heading','あなたのカード');
+ ui.board.appendChild(handTitle);
+ const myCards=hubMake('div','hub-casino-hand hub-oldmaid-hand');
+ if(mySeat>=0){
+  me.forEach(c=>{
+   if(c===52){
+    const joker=hubMake('span','hub-playing-card is-joker','JOKER');
+    joker.setAttribute('aria-label','ジョーカー');
+    myCards.appendChild(joker);
+   }else myCards.appendChild(hubMakeCard(c));
+  });
+  if(!me.length)myCards.appendChild(hubMake('span','hub-card-empty','手札なし（上がり）'));
+ }else myCards.appendChild(hubMake('span','hub-card-empty','観戦中'));
+ ui.board.appendChild(myCards);
+ if(state.status==='play'&&target>=0){
+  ui.board.appendChild(hubMake('strong','hub-oldmaid-heading','引く相手：'+hubDisplayName(state.players[target])));
+  const targetRow=hubMake('div','hub-oldmaid-face-down');
+  for(let i=0;i<(state.hands[target]?.length||0);i++){
+   const btn=hubMake('button','hub-oldmaid-card','✦');
+   btn.type='button';btn.disabled=!canDraw||hubBusy;
+   btn.setAttribute('aria-label',hubDisplayName(state.players[target])+'の裏向きカード '+(i+1)+'番目');
+   btn.onclick=()=>hubSubmitMove(i);
+   targetRow.appendChild(btn);
+  }
+  ui.board.appendChild(targetRow);
+ }
+ if(state.status==='done'){
+  const order=hubMake('div','hub-game-results');
+  state.finish.forEach((i,n)=>order.appendChild(hubMake('span','hub-result-pill is-win',(n+1)+'位 '+hubDisplayName(state.players[i]))));
+  if(state.loser>=0)order.appendChild(hubMake('span','hub-result-pill','最後 '+hubDisplayName(state.players[state.loser])));
+  ui.board.appendChild(order);
+ }
+ hubExtraFinish(state,ui.actions);
+}
+function hubExtraPokerUI(state){
+ const mySeat=state.players.indexOf(myId),canAct=state.status==='play'&&state.turn===mySeat;
+ const phaseLabel={bet1:'1回目のベット',draw:'カードの交換',bet2:'2回目のベット',done:'ショーダウン'};
+ const message=state.status==='done'?('決着！ '+(state.winners?.length?state.winners.map(i=>hubDisplayName(state.players[i])).join('・')+' の勝ち':'引き分け')):(canAct?'あなたの番：'+phaseLabel[state.phase]:hubDisplayName(state.players[state.turn])+' の番：'+phaseLabel[state.phase]);
+ const ui=hubExtraInfo(state,message,'5カード・ドロー：5枚の役で比較。各ベットは仮想チップのみで、現金を扱いません。');
+ ui.board.className='hub-board hub-card-table hub-poker-table';ui.board.style.gridTemplateColumns='none';
+ const statusBar=hubMake('div','hub-poker-top');
+ statusBar.append(hubMake('span','hub-poker-pot','POT / '+state.pot+' チップ'),
+   hubMake('span','hub-poker-phase',phaseLabel[state.phase]||state.phase));
+ ui.board.appendChild(statusBar);
+ for(let i=0;i<state.players.length;i++){
+  const mine=i===mySeat,reveal=mine||state.status==='done',folded=state.folded[i],hand=state.hands[i];
+  const chip=hubMake('span','hub-table-player'+(state.turn===i?' is-turn':'')+(mine?' is-you':''),hubDisplayName(state.players[i])+' · '+state.stack[i]+'枚'+(folded?'（降り）':''));
+  ui.versus.appendChild(chip);
+  const line=hubMake('div','hub-casino-row hub-poker-player'+(folded?' is-folded':''));
+  const title=hubMake('div','hub-casino-row-head');
+  title.appendChild(hubMake('strong','',hubDisplayName(state.players[i])+(mine?'（あなた）':'')));
+  if(reveal)title.appendChild(hubMake('small','',HUB_POKER_HANDS[hubPokerValue(hand)?.[0]||0]));
+  line.appendChild(title);
+  const cards=hubMake('div','hub-casino-hand');
+  for(let j=0;j<hand.length;j++){
+   if(canAct&&state.phase==='draw'&&mine){
+    const b=hubMake('button','hub-poker-pick'+(hubPokerPicked.has(j)?' is-selected':''));b.type='button';
+    b.appendChild(hubMakeCard(hand[j]));
+    b.setAttribute('aria-pressed',String(hubPokerPicked.has(j)));
+    b.onclick=()=>{
+     if(hubPokerPicked.has(j))hubPokerPicked.delete(j);
+     else if(hubPokerPicked.size<3)hubPokerPicked.add(j);
+     hubExtraPokerUI(state);
+    };
+    cards.appendChild(b);
+   }else cards.appendChild(hubMakeCard(hand[j],!reveal));
+  }
+  line.appendChild(cards);ui.board.appendChild(line);
+ }
+ if(state.status==='done'){
+  const outcomes=hubMake('div','hub-game-results');
+  state.players.forEach((_,i)=>{
+   const rank=HUB_POKER_HANDS[hubPokerValue(state.hands[i])?.[0]||0];
+   const win=state.winners?.includes(i);
+   outcomes.appendChild(hubMake('span','hub-result-pill'+(win?' is-win':''),hubDisplayName(state.players[i])+' · '+(state.folded[i]?'FOLD':rank)+(win?' WIN!':'')));
+  });
+  ui.board.appendChild(outcomes);
+ }
+ if(canAct){
+  if(state.phase==='draw'){
+   hubExtraButton(ui.actions,'手札を交換（'+hubPokerPicked.size+'/3枚）',()=>{
+    const picked=[...hubPokerPicked];hubPokerPicked.clear();hubSubmitMove({discard:picked});
+   },true,'is-primary');
+  }else{
+   const owe=state.currentBet-state.bets[mySeat];
+   hubAddAction(ui.actions,owe>0?'CALL / '+owe+'枚':'CHECK',owe>0?'call':'check',owe<=state.stack[mySeat],'is-primary');
+   const allowedRaise=state.raises<2&&state.stack[mySeat]>=owe+10;
+   hubAddAction(ui.actions,state.currentBet>0?'RAISE / ＋10':'BET / 10',state.currentBet>0?'raise':'bet',allowedRaise);
+   hubAddAction(ui.actions,'FOLD / 降りる','fold',true);
+  }
+ }else if(state.phase==='draw'&&state.status==='play'){
+  ui.actions.appendChild(hubMake('span','hub-finished-note','カード交換の順番を待っています。'));
+ }
+ hubExtraFinish(state,ui.actions);
+}
+const hubMoreOriginalRender=hubRender;
+hubRender=function(){
+  hubMoreOriginalRender();
+  if(!online||gmCache?.mode!=='hub'||scene!=='sc-hub-room')return;
+  const state=hubGameSnapshot;
+  if(!state||!['chess','mini-shogi','oldmaid','poker'].includes(state.kind))return;
+  hubExtraSync(state);
+  if(state.kind==='chess'||state.kind==='mini-shogi')hubExtraBoardUI(state);
+  else if(state.kind==='oldmaid')hubExtraOldmaidUI(state);
+  else hubExtraPokerUI(state);
 };
 </script>
 </body>
