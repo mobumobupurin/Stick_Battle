@@ -287,8 +287,14 @@ async function hostStart() {
     round: (g.round || 0) + 1, w: '', wt: 0 });
 }
 
+let tournamentAdvancePending=false;
 async function hostStartTournament(){
- const g=gmCache;if(!isHost||!g||!roomRef)return;
+ const g=gmCache;
+ if(!isHost||!g||!roomRef||tournamentAdvancePending)return;
+ tournamentAdvancePending=true;
+ const nextButton=document.getElementById('res-again');
+ if(nextButton)nextButton.disabled=true;
+ try{
  let t=g.tour;
  if(!t||!t.active){
   // 新規勝ち抜き戦。最低2人から開催でき、不足分はCPUで埋める。
@@ -308,7 +314,7 @@ async function hostStartTournament(){
   await roomRef.update(patch);
  }else if(g.ph==='end'){
    if(!g.w||!t.matches[t.index]?.includes(g.w)){alert('引き分けです。同じ対戦カードを再試合します。');}
-   else progressTournament(t,g.w,g.matchDetail||{method:'場外撃墜',map:g.map});
+   else if(!progressTournament(t,g.w,g.matchDetail||{method:'場外撃墜',map:g.map}))throw new Error('前の試合結果を反映できませんでした。');
  }
  if(t.champion){
   await roomRef.child('gm').set({...g,mode:'tournament',tour:t,ph:'champion',w:t.champion,players:[]});
@@ -318,6 +324,13 @@ async function hostStartTournament(){
  if(players.length!==2)return;
  await roomRef.update({items:null,p:null,ev:null});
  await roomRef.child('gm').set({...g,map:t.map,mode:'tournament',teamMode:0,wpn:0,stocks:clampInt(t.stocks||g.stocks,1,MAX_STOCK,DEFAULT_STOCK),players,tour:t,ph:'play',round:(g.round||0)+1,w:'',wt:0,matchDetail:null});
+ }catch(err){
+  console.error('トーナメントを進められませんでした',err);
+  alert('次の試合を開始できませんでした。通信状況を確認し、もう一度押してください。\n'+(err?.message||err));
+ }finally{
+  tournamentAdvancePending=false;
+  if(nextButton)nextButton.disabled=false;
+ }
 }
 
 function hostTick() {
