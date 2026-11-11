@@ -2463,7 +2463,9 @@ function animeVisual(e){
  if(e.cid==='goku'&&e.kind==='transform')playGokuMp3('transform',{dedupe:220,volume:.92});
  if(e.cid==='goku'&&e.kind==='instant'&&e.phase==='out')playGokuMp3('teleport',{dedupe:180,volume:.92});
  const gokuMp3Fx=e.cid==='goku'&&(e.kind==='transform'||e.kind==='instant');
- const localJotaroMp3Fx=e.cid==='jotaro'&&e.kind==='timestop'&&e.id===myId;
+ const localJotaroMp3Fx=e.cid==='jotaro'&&e.kind==='timestop'&&isLocal(byId(e.id));
+ // Play the original time-stop audio for opponents as well as the caster.
+ if(e.cid==='jotaro'&&e.kind==='timestop'&&!localJotaroMp3Fx)playRemoteJotaroTimeStopBgm(e);
  if(e.kind!=='echo'&&e.kind!=='impact'&&!gokuMp3Fx&&!localJotaroMp3Fx)animeSound(e.kind);
 }
 function animeEmit(p,kind,data={}){
@@ -2590,6 +2592,7 @@ function animeTimeStop(p){
 function beginJotaroTimeStopCutin(e){
  if(online&&!cinDispatching){requestCinematic('timestop',e);return;}
  const p=byId(e.id);if(!p||p.cid!=='jotaro')return;
+ if(!isLocal(p))playRemoteJotaroTimeStopBgm(e);
  freezeT=JOTARO_TIMESTOP_CUTIN_FREEZE;freezeMax=JOTARO_TIMESTOP_CUTIN_FREEZE;
  fzType='timestopcin';fz={x:e.x,y:e.y,att:e.id,cnt:e.id};
  shake=Math.max(shake,12);
@@ -2765,6 +2768,7 @@ function animeTick(p){
 }
 function animeWorldTick(){
  animeClock++;
+ syncRemoteJotaroTimeStopBgm();
  // 時止めの発動カットイン中は3.5秒の停止時間を消費しない。
  for(const e of animeFx){if(!(freezeT>0&&((fzType==='timestopcin'&&e.kind==='timestop')||(fzType==='domain'&&e.kind==='domain'))))e.life--;}
  animeFx=animeFx.filter(e=>e.life>0);
@@ -3988,8 +3992,14 @@ async function hostStart() {
     round: (g.round || 0) + 1, w: '', wt: 0 });
 }
 
+let tournamentAdvancePending=false;
 async function hostStartTournament(){
- const g=gmCache;if(!isHost||!g||!roomRef)return;
+ const g=gmCache;
+ if(!isHost||!g||!roomRef||tournamentAdvancePending)return;
+ tournamentAdvancePending=true;
+ const nextButton=document.getElementById('res-again');
+ if(nextButton)nextButton.disabled=true;
+ try{
  let t=g.tour;
  if(!t||!t.active){
   // 新規勝ち抜き戦。最低2人から開催でき、不足分はCPUで埋める。
@@ -4009,7 +4019,7 @@ async function hostStartTournament(){
   await roomRef.update(patch);
  }else if(g.ph==='end'){
    if(!g.w||!t.matches[t.index]?.includes(g.w)){alert('引き分けです。同じ対戦カードを再試合します。');}
-   else progressTournament(t,g.w,g.matchDetail||{method:'場外撃墜',map:g.map});
+   else if(!progressTournament(t,g.w,g.matchDetail||{method:'場外撃墜',map:g.map}))throw new Error('前の試合結果を反映できませんでした。');
  }
  if(t.champion){
   await roomRef.child('gm').set({...g,mode:'tournament',tour:t,ph:'champion',w:t.champion,players:[]});
@@ -4019,6 +4029,13 @@ async function hostStartTournament(){
  if(players.length!==2)return;
  await roomRef.update({items:null,p:null,ev:null});
  await roomRef.child('gm').set({...g,map:t.map,mode:'tournament',teamMode:0,wpn:0,stocks:clampInt(t.stocks||g.stocks,1,MAX_STOCK,DEFAULT_STOCK),players,tour:t,ph:'play',round:(g.round||0)+1,w:'',wt:0,matchDetail:null});
+ }catch(err){
+  console.error('トーナメントを進められませんでした',err);
+  alert('次の試合を開始できませんでした。通信状況を確認し、もう一度押してください。\n'+(err?.message||err));
+ }finally{
+  tournamentAdvancePending=false;
+  if(nextButton)nextButton.disabled=false;
+ }
 }
 
 function hostTick() {
