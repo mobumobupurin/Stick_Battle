@@ -368,6 +368,7 @@ function checkEnd() {
 }
 
 function showResult(){
+  document.getElementById('sc-result').classList.toggle('online-tournament-result',!!(online&&gmCache?.mode==='tournament'));
   const mainFighters=fighters.filter(f=>!f.shadowClone);
   const order = [];
   if (battleTeamMode && bt.winnerTeam) {
