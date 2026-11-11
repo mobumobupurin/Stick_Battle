@@ -142,8 +142,17 @@ function newSoloTournament(){
  return {entrants,matches:Array.from({length:4},(_,i)=>[entrants[2*i].id,entrants[2*i+1].id]),round:1,index:0,winners:[],details:[],history:[],champion:'',active:1,map:settings.map,stocks:settings.stocks};
 }
 function progressTournament(t,winner,detail=null){
- const current=t.matches[t.index];if(!current||!current.includes(winner))return false;
- t.winners.push(winner);if(!Array.isArray(t.details))t.details=[];t.details.push(detail);t.index++;
+ if(!t||!Array.isArray(t.matches))return false;
+ // Firebase Realtime Database omits empty arrays on round creation. Restore
+ // them before recording the FIRST online result or finishing a round.
+ if(!Array.isArray(t.winners))t.winners=[];
+ if(!Array.isArray(t.details))t.details=[];
+ if(!Array.isArray(t.history))t.history=[];
+ if(!Number.isInteger(t.index)||t.index<0)t.index=0;
+ const current=t.matches[t.index];if(!Array.isArray(current)||!current.includes(winner))return false;
+ // Guard against a stale duplicate advance after a partially persisted result.
+ if(t.winners.length>t.index)t.winners=t.winners.slice(0,t.index);
+ t.winners.push(winner);t.details.push(detail);t.index++;
  if(t.index>=t.matches.length){
   t.history.push({round:t.round,pairs:t.matches.map((ids,i)=>({ids,winner:t.winners[i],detail:t.details[i]||null}))});
   if(t.winners.length===1){t.champion=t.winners[0];t.matches=[];t.index=0;t.winners=[];return true;}
@@ -402,7 +411,7 @@ function showResult(){
    const winner=bt.winner||mainFighters.slice().sort((a,b)=>b.s-a.s||a.d-b.d)[0]?.id;
    if(winner)progressTournament(offlineTour,winner,matchDetailFor(winner));
    tourBox.style.display='block';tourBox.innerHTML=tourBoardHTML(offlineTour);
-  }else if(online&&gmCache?.mode==='tournament'&&gmCache.tour){tourBox.style.display='block';tourBox.innerHTML=tourBoardHTML(gmCache.tour);}
+  }else if(online&&gmCache?.mode==='tournament'&&gmCache.tour){tourBox.style.display='block';tourBox.innerHTML=tourBoardHTML(currentTournament());}
   else if(!online&&offlineMode==='kumite'){
    tourBox.style.display='block';tourBox.innerHTML='<h3>組み手の記録</h3><p>'+kumiteCount+'人抜き達成！'+'</p>';
    void submitKumiteResult();
