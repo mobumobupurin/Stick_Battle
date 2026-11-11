@@ -25,14 +25,14 @@ test('Firebase-stripped first-round tournament arrays are restored before pushin
 
 test('host NEXT advances from first online match through final and champion after Firebase roundtrips',async()=>{
  const g=game();
- g.run(\`online=true;isHost=true;scene='sc-result';gmCache={mode:'tournament',ph:'end',round:1,w:'a',map:'std',stocks:3,
+ g.run(`online=true;isHost=true;scene='sc-result';gmCache={mode:'tournament',ph:'end',round:1,w:'a',map:'std',stocks:3,
    tour:{active:1,entrants:[{id:'a'},{id:'b'},{id:'c'},{id:'d'}],
     round:1,index:0,matches:[['a','b'],['c','d']],map:'std',stocks:3}};
  let tourWrite=null,patchCount=0;
  roomRef={update:async patch=>{patchCount++},child:path=>({
   set:async value=>{if(path==='gm')tourWrite=JSON.parse(JSON.stringify(value))},
  })};
- \`);
+ `);
  await g.run('hostStartTournament()');
  assert.equal(g.run('tourWrite.ph'),'play');
  assert.equal(g.run('tourWrite.round'),2);
@@ -55,12 +55,12 @@ test('host NEXT advances from first online match through final and champion afte
 
 test('host NEXT refuses invalid winner and exposes retry instead of losing the entire tournament',async()=>{
  const g=game();
- g.run(\`online=true;isHost=true;gmCache={mode:'tournament',ph:'end',round:1,w:'invalid',map:'std',
+ g.run(`online=true;isHost=true;gmCache={mode:'tournament',ph:'end',round:1,w:'invalid',map:'std',
  tour:{active:1,round:1,index:0,matches:[['a','b'],['c','d']],
    entrants:[{id:'a'},{id:'b'},{id:'c'},{id:'d'}]}};
  let writes=0,notices=[];alert=message=>{notices.push(message)};
  roomRef={update:async()=>{writes++},child:()=>({set:async()=>{writes++}})};
- \`);
+ `);
  await g.run('hostStartTournament()');
  assert.equal(g.run('tournamentAdvancePending'),false);
  assert.equal(g.run('writes'),2); // one cleanup and a replay of the same match (draw)
@@ -69,7 +69,7 @@ test('host NEXT refuses invalid winner and exposes retry instead of losing the e
 
 test('time-stop audio starts on remote opponent only once even if FX and cinematic both arrive',()=>{
  const g=game();
- g.run(\`online=true;scene='battle';curRound=2;bt={phase:'play'};
+ g.run(`online=true;scene='battle';curRound=2;bt={phase:'play'};
  fighters=[makeFighter({id:myId,cid:'karate',owner:myId},0),
   makeFighter({id:'remote',cid:'jotaro',owner:'remote'},1)];
  let remoteAudioPlays=0;
@@ -78,7 +78,7 @@ test('time-stop audio starts on remote opponent only once even if FX and cinemat
  cinDispatching=true;
  beginJotaroTimeStopCutin({id:'remote',x:200,y:120});
  cinDispatching=false;
- \`);
+ `);
  assert.equal(g.run('remoteAudioPlays'),1);
  assert.equal(g.run('remoteJotaroSoundKey'),'remote:2');
  g.run('remoteJotaroSoundStarted=Date.now()-1600;animeFx=[];animeWorldTick()');
@@ -87,13 +87,13 @@ test('time-stop audio starts on remote opponent only once even if FX and cinemat
 
 test('remote time-stop MP3 does not play twice for local caster or change other characters',()=>{
  const g=game();
- g.run(\`online=true;scene='battle';curRound=1;bt={phase:'play'};
+ g.run(`online=true;scene='battle';curRound=1;bt={phase:'play'};
  fighters=[makeFighter({id:myId,cid:'jotaro',owner:myId},0),
   makeFighter({id:'guest',cid:'karate',owner:'guest'},1)];
  let plays=0;playJotaroTimeStopBgm=()=>{plays++};
  animeVisual({kind:'timestop',cid:'jotaro',id:myId,x:0,y:0,life:210});
  animeVisual({kind:'charge',cid:'jotaro',id:'guest',x:0,y:0,life:20});
- \`);
+ `);
  assert.equal(g.run('plays'),0);
  assert.equal(g.run('remoteJotaroSoundKey'),'');
 });
