@@ -455,6 +455,82 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
 .bracket-history-row span{font-size:9px;color:#abc0db}
 .bracket-history-row b{font-size:12px;color:#f5d9a0}
 .bracket-history-row small{font-size:10px;color:#a7b6ca}
+
+/* Tournament 2.0 — desktop horizontal bracket, mobile stacked rounds. */
+.tour-board{max-width:1120px;border-radius:17px;border:1px solid #40546e;background:linear-gradient(145deg,#111c2d,#0c1422);box-shadow:0 14px 42px #0208174d}
+#lb-tourney-board,#battle-bracket,#tour-result{overflow-y:auto;overflow-x:hidden;scrollbar-color:#536a82 #111b2a}
+.bracket-panel{display:flex;flex-direction:column;gap:17px;min-width:0;color:#eaf2f8}
+.bracket-panel-header{margin:0;padding:0 0 15px;align-items:center;border-bottom:1px solid #50657a66;gap:16px}
+.bracket-panel-header h3{font-size:clamp(24px,3.6vw,37px);letter-spacing:-.05em;margin:4px 0 6px;line-height:1.2}
+.bracket-panel-header p{font-size:12px;margin:0;color:#adc1d3}
+.bracket-panel-kicker{font-size:10px;font-weight:850;color:#6fe1c5;letter-spacing:.15em}
+.bracket-panel-meta{align-items:center;gap:7px}
+.bracket-panel-meta span{font-size:11px;font-weight:800;white-space:nowrap;padding:7px 10px;border:1px solid #4f657e;background:#1b2e43;color:#e0eaf1;border-radius:9px}
+.bracket-spotlight{border:1px solid #dfb65e6e;background:radial-gradient(ellipse at 0 0,#85704426,transparent 55%),#1b2b3d;
+  border-radius:15px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:19px 22px;box-shadow:inset 3px 0 0 #e6bd69}
+.bracket-spotlight>div:first-child{min-width:0;flex:1}
+.bracket-spotlight small{display:block;color:#f1c979;letter-spacing:.11em;font-size:10px;font-weight:900;margin-bottom:5px}
+.bracket-spotlight strong{display:block;color:#fff;font-weight:950;font-size:clamp(15px,2.5vw,23px);line-height:1.3}
+.bracket-spotlight-pair{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:11px;color:#e9f4ff;font-size:12px;font-weight:800}
+.bracket-spotlight-pair span{border-radius:8px;background:#31465c;padding:7px 10px;border:1px solid #506e85}
+.bracket-spotlight-pair b{font-size:11px;color:#e2b971;letter-spacing:.08em}
+.bracket-progress{flex:0 0 145px;max-width:33%}
+.bracket-progress>span{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#bacdd9;margin-bottom:8px}
+.bracket-progress>span b{color:#fff}
+.bracket-progress-rail{height:7px;border-radius:12px;overflow:hidden;background:#0b1826}
+.bracket-progress-rail span{display:block;height:100%;border-radius:12px;background:linear-gradient(90deg,#71d4c4,#ead382);transition:width .3s}
+.bracket-scroller{max-width:100%;overflow-x:auto;overflow-y:visible;scrollbar-width:thin;scrollbar-color:#65849b #102033}
+.bracket-rounds{display:flex;align-items:stretch;gap:8px;min-width:0;padding:4px 1px 11px}
+.bracket-round{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:12px}
+.bracket-round-title{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;min-height:49px;border-bottom:1px solid #68839344;padding:6px 3px 10px}
+.bracket-round-title span{display:block;flex-basis:100%;font-size:9px;letter-spacing:.12em;font-weight:900;color:#80bcb2}
+.bracket-round-title b{font-size:16px;font-weight:950;color:#fff}
+.bracket-round-title small{font-size:10px;color:#9aafc3}
+.bracket-round-matches{display:flex;flex:1;justify-content:space-around;flex-direction:column;gap:12px;min-width:0}
+.bracket-round-arrow{display:grid;place-items:center;align-self:center;flex:0 0 14px;color:#f2c773;font-size:21px;font-weight:950;opacity:.9}
+.bracket-match{flex:0 0 auto;min-height:129px;padding:11px 10px 10px;background:linear-gradient(140deg,#25374a,#152337);
+  border:1px solid #425e72;border-radius:11px;box-shadow:0 5px 14px #03081722}
+.bracket-match.is-done{border-color:#7ea6a48c;background:#1d3440}
+.bracket-match.is-current{border-color:#e5bd68;background:linear-gradient(140deg,#483d30,#25333f);
+  box-shadow:0 0 0 2px #e7bd6a34,0 9px 22px #a5742733}
+.bracket-match-top{font-size:9px;font-weight:900;color:#a9c0ce;letter-spacing:0;margin-bottom:9px}
+.bracket-match.is-current .bracket-match-top span:last-child{color:#ffd27d}
+.bracket-match.is-done .bracket-match-top span:last-child{color:#9eebd0}
+.bracket-match .tour-fighter{min-width:0;gap:7px;padding:5px;border-radius:7px;min-height:36px}
+.bracket-match .tour-fighter svg{width:31px;height:31px;flex:0 0 31px}
+.bracket-match .tour-fighter b{font-size:12px;line-height:1.25}
+.bracket-match .tour-fighter small{font-size:10px}
+.bracket-match .tour-fighter.winner{background:#5f724c48;color:#fff0b1}
+.bracket-match .tour-fighter.me{outline:1px solid #73e6d2}
+.bracket-competitors{gap:4px}
+.bracket-vs{font-size:9px;color:#839db5}
+.bracket-match-foot{font-size:10px;min-height:18px;color:#afc1cb;padding-top:7px;margin-top:7px}
+.bracket-match.is-current .bracket-match-foot{color:#ffdf9f}
+.bracket-match.is-done .bracket-match-foot{color:#a5eccf}
+.bracket-champion{flex:0 1 170px;min-width:125px;max-width:210px;width:auto;align-self:center;min-height:159px;
+  padding:17px 13px;border-radius:13px;background:radial-gradient(circle at 50% 0,#b9955540,#23252d 75%);
+  border:1px solid #a68b5899;box-shadow:0 5px 24px #c7a0451a}
+.bracket-champion.is-complete{box-shadow:0 0 0 2px #e6be6840,0 8px 25px #a98d3438}
+.bracket-crown-mark{font-size:31px;line-height:1}
+.bracket-crown-label{font-size:10px;color:#ffe19f;letter-spacing:.05em}
+.bracket-champion-fighter .tour-fighter{min-width:0;gap:6px}
+.bracket-champion-pending{font-size:12px;font-weight:800;color:#c8d6e3;text-align:center}
+.bracket-history{margin-top:0;padding-top:15px;border-color:#52657c66}
+.bracket-history summary{font-size:12px;padding:10px 3px;color:#f1c982}
+.bracket-history-list{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.bracket-history-row{padding:12px;border:1px solid #435a70;border-radius:10px;background:#1d3041}
+.bracket-empty{padding:25px;text-align:center;color:#bacbdc}
+#sc-result.online-tournament-result .hd{font-size:clamp(23px,4vw,42px)}
+#sc-result.online-tournament-result #tour-result{width:min(1080px,100%);max-height:none}
+#sc-result.online-tournament-result #res-win{margin-top:3px}
+#sc-result.online-tournament-result #res-nav1{width:min(1080px,100%);justify-content:center}
+#sc-result.online-tournament-result #res-nav1 #res-again{
+  width:min(440px,100%);min-height:56px;border-radius:12px;background:linear-gradient(100deg,#f2d388,#dbab5e);
+  color:#1b2934;font-size:17px;font-weight:950;border:0;box-shadow:0 8px 22px #030a1944;
+}
+#sc-result.online-tournament-result #res-nav1 #res-again:disabled{opacity:.45;cursor:progress}
+#sc-result.online-tournament-result #res-wait{max-width:760px;text-align:center;color:#e5d29c}
+#sc-lobby #lb-tourney-board{width:min(1120px,100%);margin:14px auto}
 @media(max-width:760px){
  .mode-rework-head{margin-top:1px}.mode-head-stamp{display:none}
  .mode-grid.mode-rework-grid{grid-template-columns:1fr;gap:11px;grid-auto-rows:auto}
@@ -476,6 +552,34 @@ html,body{touch-action:pan-y}#wrap,#pad,#acts{touch-action:none;-webkit-touch-ca
 }
 @media(prefers-reduced-motion:reduce){
  .mode-rework-grid .mode-card,.mode-rework-extra .mode-card,.mode-rework-tour .mode-card{transition:none}
+}
+
+@media(max-width:980px){
+ .bracket-rounds{flex-wrap:wrap;gap:16px}
+ .bracket-round{flex:1 1 calc(50% - 22px);min-width:210px}
+ .bracket-round-arrow{display:none}
+ .bracket-champion{flex:1 1 210px;max-width:none;min-height:140px}
+ .bracket-round-matches{justify-content:flex-start}
+}
+@media(max-width:640px){
+ .tour-board{padding:13px 11px;border-radius:12px}
+ .bracket-panel{gap:13px}
+ .bracket-panel-header{align-items:flex-start;gap:8px}
+ .bracket-panel-header h3{font-size:26px}
+ .bracket-panel-meta{gap:5px;max-width:100%}
+ .bracket-panel-meta span{padding:5px 7px;font-size:10px}
+ .bracket-spotlight{flex-direction:column;align-items:stretch;padding:15px 13px;gap:11px}
+ .bracket-progress{flex:auto;max-width:none;width:100%}
+ .bracket-rounds{display:flex;flex-direction:column;gap:16px;padding:0}
+ .bracket-round{width:100%;min-width:0}
+ .bracket-round-title{min-height:auto;padding-bottom:7px}
+ .bracket-round-title span{flex-basis:auto}
+ .bracket-round-title b{font-size:16px}
+ .bracket-round-matches{gap:9px}
+ .bracket-match{min-height:0;padding:10px 12px}
+ .bracket-match .tour-fighter{min-height:34px}
+ .bracket-champion{max-width:none;width:100%;min-height:140px}
+ #lb-tourney-board,#battle-bracket,#tour-result{max-height:none}
 }
 </style>
 <style>/* Menu system: paper, ink, vermilion. All selectors stay outside the battle HUD. */
@@ -2463,7 +2567,9 @@ function animeVisual(e){
  if(e.cid==='goku'&&e.kind==='transform')playGokuMp3('transform',{dedupe:220,volume:.92});
  if(e.cid==='goku'&&e.kind==='instant'&&e.phase==='out')playGokuMp3('teleport',{dedupe:180,volume:.92});
  const gokuMp3Fx=e.cid==='goku'&&(e.kind==='transform'||e.kind==='instant');
- const localJotaroMp3Fx=e.cid==='jotaro'&&e.kind==='timestop'&&e.id===myId;
+ const localJotaroMp3Fx=e.cid==='jotaro'&&e.kind==='timestop'&&isLocal(byId(e.id));
+ // Play the original time-stop audio for opponents as well as the caster.
+ if(e.cid==='jotaro'&&e.kind==='timestop'&&!localJotaroMp3Fx)playRemoteJotaroTimeStopBgm(e);
  if(e.kind!=='echo'&&e.kind!=='impact'&&!gokuMp3Fx&&!localJotaroMp3Fx)animeSound(e.kind);
 }
 function animeEmit(p,kind,data={}){
@@ -2590,6 +2696,7 @@ function animeTimeStop(p){
 function beginJotaroTimeStopCutin(e){
  if(online&&!cinDispatching){requestCinematic('timestop',e);return;}
  const p=byId(e.id);if(!p||p.cid!=='jotaro')return;
+ if(!isLocal(p))playRemoteJotaroTimeStopBgm(e);
  freezeT=JOTARO_TIMESTOP_CUTIN_FREEZE;freezeMax=JOTARO_TIMESTOP_CUTIN_FREEZE;
  fzType='timestopcin';fz={x:e.x,y:e.y,att:e.id,cnt:e.id};
  shake=Math.max(shake,12);
@@ -2765,6 +2872,7 @@ function animeTick(p){
 }
 function animeWorldTick(){
  animeClock++;
+ syncRemoteJotaroTimeStopBgm();
  // 時止めの発動カットイン中は3.5秒の停止時間を消費しない。
  for(const e of animeFx){if(!(freezeT>0&&((fzType==='timestopcin'&&e.kind==='timestop')||(fzType==='domain'&&e.kind==='domain'))))e.life--;}
  animeFx=animeFx.filter(e=>e.life>0);
@@ -3988,8 +4096,14 @@ async function hostStart() {
     round: (g.round || 0) + 1, w: '', wt: 0 });
 }
 
+let tournamentAdvancePending=false;
 async function hostStartTournament(){
- const g=gmCache;if(!isHost||!g||!roomRef)return;
+ const g=gmCache;
+ if(!isHost||!g||!roomRef||tournamentAdvancePending)return;
+ tournamentAdvancePending=true;
+ const nextButton=document.getElementById('res-again');
+ if(nextButton)nextButton.disabled=true;
+ try{
  let t=g.tour;
  if(!t||!t.active){
   // 新規勝ち抜き戦。最低2人から開催でき、不足分はCPUで埋める。
@@ -4009,7 +4123,7 @@ async function hostStartTournament(){
   await roomRef.update(patch);
  }else if(g.ph==='end'){
    if(!g.w||!t.matches[t.index]?.includes(g.w)){alert('引き分けです。同じ対戦カードを再試合します。');}
-   else progressTournament(t,g.w,g.matchDetail||{method:'場外撃墜',map:g.map});
+   else if(!progressTournament(t,g.w,g.matchDetail||{method:'場外撃墜',map:g.map}))throw new Error('前の試合結果を反映できませんでした。');
  }
  if(t.champion){
   await roomRef.child('gm').set({...g,mode:'tournament',tour:t,ph:'champion',w:t.champion,players:[]});
@@ -4019,6 +4133,13 @@ async function hostStartTournament(){
  if(players.length!==2)return;
  await roomRef.update({items:null,p:null,ev:null});
  await roomRef.child('gm').set({...g,map:t.map,mode:'tournament',teamMode:0,wpn:0,stocks:clampInt(t.stocks||g.stocks,1,MAX_STOCK,DEFAULT_STOCK),players,tour:t,ph:'play',round:(g.round||0)+1,w:'',wt:0,matchDetail:null});
+ }catch(err){
+  console.error('トーナメントを進められませんでした',err);
+  alert('次の試合を開始できませんでした。通信状況を確認し、もう一度押してください。\n'+(err?.message||err));
+ }finally{
+  tournamentAdvancePending=false;
+  if(nextButton)nextButton.disabled=false;
+ }
 }
 
 function hostTick() {
@@ -4328,8 +4449,17 @@ function newSoloTournament(){
  return {entrants,matches:Array.from({length:4},(_,i)=>[entrants[2*i].id,entrants[2*i+1].id]),round:1,index:0,winners:[],details:[],history:[],champion:'',active:1,map:settings.map,stocks:settings.stocks};
 }
 function progressTournament(t,winner,detail=null){
- const current=t.matches[t.index];if(!current||!current.includes(winner))return false;
- t.winners.push(winner);if(!Array.isArray(t.details))t.details=[];t.details.push(detail);t.index++;
+ if(!t||!Array.isArray(t.matches))return false;
+ // Firebase Realtime Database omits empty arrays on round creation. Restore
+ // them before recording the FIRST online result or finishing a round.
+ if(!Array.isArray(t.winners))t.winners=[];
+ if(!Array.isArray(t.details))t.details=[];
+ if(!Array.isArray(t.history))t.history=[];
+ if(!Number.isInteger(t.index)||t.index<0)t.index=0;
+ const current=t.matches[t.index];if(!Array.isArray(current)||!current.includes(winner))return false;
+ // Guard against a stale duplicate advance after a partially persisted result.
+ if(t.winners.length>t.index)t.winners=t.winners.slice(0,t.index);
+ t.winners.push(winner);t.details.push(detail);t.index++;
  if(t.index>=t.matches.length){
   t.history.push({round:t.round,pairs:t.matches.map((ids,i)=>({ids,winner:t.winners[i],detail:t.details[i]||null}))});
   if(t.winners.length===1){t.champion=t.winners[0];t.matches=[];t.index=0;t.winners=[];return true;}
@@ -4545,6 +4675,7 @@ function checkEnd() {
 }
 
 function showResult(){
+  document.getElementById('sc-result').classList.toggle('online-tournament-result',!!(online&&gmCache?.mode==='tournament'));
   const mainFighters=fighters.filter(f=>!f.shadowClone);
   const order = [];
   if (battleTeamMode && bt.winnerTeam) {
@@ -4588,7 +4719,7 @@ function showResult(){
    const winner=bt.winner||mainFighters.slice().sort((a,b)=>b.s-a.s||a.d-b.d)[0]?.id;
    if(winner)progressTournament(offlineTour,winner,matchDetailFor(winner));
    tourBox.style.display='block';tourBox.innerHTML=tourBoardHTML(offlineTour);
-  }else if(online&&gmCache?.mode==='tournament'&&gmCache.tour){tourBox.style.display='block';tourBox.innerHTML=tourBoardHTML(gmCache.tour);}
+  }else if(online&&gmCache?.mode==='tournament'&&gmCache.tour){tourBox.style.display='block';tourBox.innerHTML=tourBoardHTML(currentTournament());}
   else if(!online&&offlineMode==='kumite'){
    tourBox.style.display='block';tourBox.innerHTML='<h3>組み手の記録</h3><p>'+kumiteCount+'人抜き達成！'+'</p>';
    void submitKumiteResult();
@@ -4647,56 +4778,92 @@ function applyCharChange(id) {
   sfxPickup();
 }
 
-
 // ========================================================
-// Vertical tournament bracket / bottom-to-top championship path
-// Data source is unchanged (t.history, t.matches, t.winners, t.champion).
+// GAME HUB / TOURNAMENT BRACKET — readable round-by-round flow.
+// All match data derives from existing tournament state and is safe when
+// Firebase has omitted empty arrays or unplayed round fields.
 // ========================================================
-function tourBracketLinks(lowerCount){
- const upperCount=Math.max(1,lowerCount/2), paths=[];
- for(let j=0;j<upperCount;j++){
-  const parent=(j+.5)*1000/upperCount;
-  const left=(2*j+.5)*1000/lowerCount;
-  const right=(2*j+1.5)*1000/lowerCount;
-  paths.push('M'+left+' 58 V29 H'+parent+' V0');
-  paths.push('M'+right+' 58 V29 H'+parent);
- }
- return '<div class="bracket-links" aria-hidden="true"><svg viewBox="0 0 1000 58" preserveAspectRatio="none" focusable="false"><path d="'+paths.join(' ')+'"/></svg></div>';
-}
 function tourBoardHTML(t){
- if(!t)return '<div class="bracket-empty">組み合わせを準備中…</div>';
- const total=(t.entrants||[]).length;
- const rounds=total>=8?3:total>=4?2:1;
- const results=Array.isArray(t.history)?t.history.slice():[];
+ if(!t)return '<div class="bracket-empty">対戦表を準備しています…</div>';
+ const entrants=Array.isArray(t.entrants)?t.entrants:[];
+ const total=entrants.length,rounds=total>=8?3:total>=4?2:1;
+ const history=Array.isArray(t.history)?t.history:[];
  const matches=Array.isArray(t.matches)?t.matches:[];
  const winners=Array.isArray(t.winners)?t.winners:[];
  const details=Array.isArray(t.details)?t.details:[];
- if(!t.champion)results.push({round:t.round,pairs:matches.map((ids,i)=>({ids,winner:i<t.index?winners[i]:null,detail:details[i],active:i===t.index}))});
- const title=total>=8?'8 PLAYER TOURNAMENT':total>=4?'4 PLAYER TOURNAMENT':'CHAMPIONSHIP';
- const champion=t.champion?'<div class="bracket-champion-fighter">'+tourFighterHTML(t,t.champion,t.champion)+'</div>':'<div class="bracket-champion-pending">優勝者は誰だ？</div>';
+ const metaRound=Number(t.round)||1,metaIndex=Number(t.index)||0;
  const safeMap=esc(MAPS[t.map]?.name||'ステージ未定');
  const stocks=Number(t.stocks)||Number(settings.stocks)||DEFAULT_STOCK;
- const journal=results.flatMap(r=>(r.pairs||[]).filter(m=>m.winner).map((m,i)=>({round:r.round,i,m})));
- const matchHistory=journal.length?'<details class="bracket-history"><summary>試合結果・履歴 <span>'+journal.length+' 試合</span></summary><div class="bracket-history-list">'+journal.map(({round,i,m})=>'<div class="bracket-history-row"><span>'+round+'回戦</span><b>'+esc(tourName(t,m.winner))+' 勝利</b><small>'+esc(tourName(t,m.ids?.find(id=>id!==m.winner)))+' に勝利'+(m.detail?.method==='cpu-sim'?' · CPU自動判定':'')+'</small></div>').join('')+'</div></details>':'';
- let tree='<div class="bracket-champion '+(t.champion?'is-complete':'')+'"><span class="bracket-crown-mark" aria-hidden="true">♛</span><span class="bracket-crown-label">CHAMPION / 優勝</span>'+champion+'</div><div class="bracket-crown-link" aria-hidden="true"><span>↑</span></div>';
- for(let round=rounds;round>=1;round--){
-  const count=Math.max(1,Math.pow(2,rounds-round));
-  const data=results.find(r=>r.round===round);
-  const pairs=(data?.pairs||Array.from({length:count},()=>({ids:[null,null],winner:null,active:false})));
-  const stageName=round===rounds?'決勝':round===rounds-1?'準決勝':'1回戦';
-  const stageEnglish=round===rounds?'GRAND FINAL':round===rounds-1?'SEMI FINAL':'ROUND 1';
-  const cards=Array.from({length:count},(_,i)=>{
-   const m=pairs[i]||{ids:[null,null]};
-   const ids=Array.isArray(m.ids)?m.ids:[null,null];
-   const won=!!m.winner, active=!!m.active;
-   const text=won?'WINNER DECIDED':active?'NEXT MATCH':'AWAITING MATCH';
-   const foot=won?(m.detail?.method==='cpu-sim'?'CPU自動判定':'勝者が次へ進出'):active?'● 次の対戦':'対戦待ち';
-   return '<div class="bracket-match '+(won?'is-done ':'')+(active?'is-current':'')+'"><div class="bracket-match-top"><span>MATCH '+(i+1)+'</span><span>'+text+'</span></div><div class="bracket-competitors">'+ids.map(id=>id?tourFighterHTML(t,id,m.winner):'<div class="tour-fighter bracket-tbd"><span>勝ち上がり待ち</span></div>').join('<div class="bracket-vs">VS</div>')+'</div><div class="bracket-match-foot">'+foot+'</div></div>';
-  }).join('');
-  tree+='<section class="bracket-tier" aria-label="'+stageName+'"><div class="bracket-tier-label"><span>'+stageEnglish+'</span><b>'+stageName+'</b><small>'+count+'試合</small></div><div class="bracket-tier-grid" style="--match-count:'+count+'">'+cards+'</div></section>';
-  if(round>1)tree+=tourBracketLinks(count*2);
+ const stages=[],journal=[];
+ let prior=null;
+ for(let round=1;round<=rounds;round++){
+  const count=Math.max(1,Math.floor(total/Math.pow(2,round)));
+  const recorded=history.find(x=>x&&Number(x.round)===round);
+  const current=!t.champion&&metaRound===round?{
+    pairs:matches.map((ids,i)=>({ids,winner:i<metaIndex?winners[i]:null,detail:details[i]||null,active:i===metaIndex}))
+  }:null;
+  const source=recorded||current;
+  const pairs=Array.from({length:count},(_,i)=>{
+   const supplied=source?.pairs?.[i];
+   const derived=round===1?[entrants[i*2]?.id||null,entrants[i*2+1]?.id||null]:
+     [prior?.[i*2]?.winner||null,prior?.[i*2+1]?.winner||null];
+   const ids=Array.isArray(supplied?.ids)?supplied.ids:derived;
+   return {ids,winner:supplied?.winner||null,detail:supplied?.detail||null,active:!!supplied?.active};
+  });
+  for(let i=0;i<pairs.length;i++)if(pairs[i].winner)journal.push({round,i,m:pairs[i]});
+  stages.push({round,pairs});prior=pairs;
  }
- return '<div class="bracket-panel"><div class="bracket-panel-header"><div><span class="bracket-panel-kicker">'+title+'</span><h3>ROAD TO THE TOP</h3><p>下から上へ。勝者が次のラウンドに進む。</p></div><div class="bracket-panel-meta"><span>'+safeMap+'</span><span>残機 '+stocks+'</span><span>'+(t.champion?'優勝決定':'第'+(t.round||1)+'ラウンド')+'</span></div></div><div class="bracket-scroller" role="region" tabindex="0" aria-label="トーナメント表。左右にスクロールできます"><div class="bracket-vertical">'+tree+'</div></div><p class="bracket-pan-tip">↑ 優勝に向かって勝ち上がる <span>／ 横に動かして全体を確認</span></p>'+matchHistory+'</div>';
+ const completed=journal.length,totalMatches=Math.max(1,total-1);
+ const progress=Math.min(100,Math.round(completed/totalMatches*100));
+ const champion=t.champion?
+   '<div class="bracket-champion-fighter">'+tourFighterHTML(t,t.champion,t.champion)+'</div>':
+   '<div class="bracket-champion-pending">まだ決まっていません</div>';
+ const livePair=!t.champion?matches[metaIndex]:null;
+ const liveNames=Array.isArray(livePair)&&livePair.length===2?
+  '<span>'+esc(tourName(t,livePair[0]))+'</span><b>VS</b><span>'+esc(tourName(t,livePair[1]))+'</span>':
+  '<span>勝ち上がり待ち</span>';
+ const hero='<div class="bracket-spotlight"><div><small>'+(t.champion?'TOURNAMENT COMPLETE':'NEXT MATCH / 注目の対戦')+
+  '</small><strong>'+(t.champion?'優勝者決定！':'第'+metaRound+'ラウンド · 第'+(metaIndex+1)+'試合')+
+  '</strong><div class="bracket-spotlight-pair">'+(t.champion?esc(tourName(t,t.champion)):liveNames)+
+  '</div></div><div class="bracket-progress"><span>進行状況 <b>'+completed+' / '+totalMatches+' 試合</b></span>'+
+  '<div class="bracket-progress-rail"><span style="width:'+progress+'%"></span></div></div></div>';
+ const roundsHTML=stages.map((stage,index)=>{
+  const round=stage.round;
+  const name=round===rounds?'決勝':round===rounds-1?'準決勝':'1回戦';
+  const en=round===rounds?'GRAND FINAL':round===rounds-1?'SEMI FINAL':'ROUND 1';
+  const rows=stage.pairs.map((m,i)=>{
+   const active=m.active,done=!!m.winner;
+   const status=done?'終了':active?'対戦中・次の試合':'待機中';
+   const people=m.ids.map(id=>id?tourFighterHTML(t,id,m.winner):
+     '<div class="tour-fighter bracket-tbd"><span>勝ち上がり待ち</span></div>').join('<div class="bracket-vs">VS</div>');
+   return '<div class="bracket-match '+(done?'is-done ':'')+(active?'is-current':'')+
+      '"><div class="bracket-match-top"><span>試合 '+(i+1)+'</span><span>'+status+
+      '</span></div><div class="bracket-competitors">'+people+'</div>'+
+      '<div class="bracket-match-foot">'+(done?esc(tourName(t,m.winner))+' 勝利':active?'● この組み合わせで対戦':'結果待ち')+
+      '</div></div>';
+  }).join('');
+  return '<section class="bracket-round" aria-label="'+name+'"><div class="bracket-round-title"><span>'+
+    en+'</span><b>'+name+'</b><small>'+stage.pairs.length+'試合</small></div>'+
+    '<div class="bracket-round-matches">'+rows+'</div></section>';
+ }).join('<div class="bracket-round-arrow" aria-hidden="true">→</div>');
+ const crown='<section class="bracket-champion '+(t.champion?'is-complete':'')+
+  '" aria-label="優勝者"><span class="bracket-crown-mark" aria-hidden="true">♛</span>'+
+  '<span class="bracket-crown-label">CHAMPION / 優勝</span>'+champion+'</section>';
+ const journalHTML=journal.length?'<details class="bracket-history"><summary>終了した試合の記録　'+
+  journal.length+'試合</summary><div class="bracket-history-list">'+journal.map(({round,i,m})=>
+  '<div class="bracket-history-row"><span>第'+round+'ラウンド・第'+(i+1)+'試合</span>'+
+   '<b>'+esc(tourName(t,m.winner))+' 勝利</b><small>'+esc(tourName(t,m.ids.find(id=>id!==m.winner)))+
+   ' に勝利'+(m.detail?.method==='cpu-sim'?' · CPU自動判定':'')+'</small></div>').join('')+
+  '</div></details>':'';
+ return '<div class="bracket-panel"><div class="bracket-panel-header"><div>'+
+   '<span class="bracket-panel-kicker">ONLINE / TOURNAMENT</span><h3>トーナメント表</h3>'+
+   '<p>左から右へ勝ち上がり。黄色の枠が今の対戦です。</p></div>'+
+   '<div class="bracket-panel-meta"><span>'+total+'人参加</span><span>'+safeMap+'</span>'+
+   '<span>残機 '+stocks+'</span></div></div>'+hero+
+   '<div class="bracket-scroller" role="region" tabindex="0" aria-label="ラウンド別のトーナメント対戦表">'+
+   '<div class="bracket-rounds">'+roundsHTML+
+   '<div class="bracket-round-arrow" aria-hidden="true">→</div>'+crown+'</div></div>'+
+   journalHTML+'</div>';
 }
 // ========================================================
 // ⑧ キャラの動き
@@ -7243,11 +7410,11 @@ function buildMenus() {
   document.getElementById('lb-leave').onclick = () => { if (confirm('部屋から退出しますか？')) leaveRoom(); };
 
   document.getElementById('res-pick').onclick = () => openChars('result');
-  document.getElementById('res-again').onclick = () => {
+  document.getElementById('res-again').onclick = async () => {
     if(!online){
       if(offlineMode==='tournament'&&offlineTour?.champion)showSoloChampion();
       else{if(offlineMode==='kumite'){kumiteCount=0;resetKumiteRankingSubmission();}startBattleOffline();}
-    }else if (isHost) hostStart();
+    }else if(isHost)await hostStart();
   };
   document.getElementById('res-chars').onclick = () => {
     if (!online) {if(offlineMode==='tournament')offlineTour=null;openChars('cpu');configureExtraCpuOptions();}
@@ -7422,7 +7589,29 @@ function playJotaroTimeStopBgm(){
   const pr=jotaroTimeStopBgm.play();if(pr&&pr.catch)pr.catch(()=>{});
  }catch(_){}
 }
+let remoteJotaroSoundKey='',remoteJotaroSoundStarted=0,remoteJotaroSoundRound=-1;
+function playRemoteJotaroTimeStopBgm(e){
+ // Both the animefx packet and the cinematic packet may arrive. Start once.
+ if(!online||!e||!battleSessionActive())return;
+ const actor=byId(e.id);
+ if(!actor||actor.cid!=='jotaro'||isLocal(actor))return;
+ const key=e.id+':'+curRound;
+ if(remoteJotaroSoundKey===key)return;
+ remoteJotaroSoundKey=key;remoteJotaroSoundRound=curRound;
+ remoteJotaroSoundStarted=Date.now();
+ playJotaroTimeStopBgm();
+}
+function syncRemoteJotaroTimeStopBgm(){
+ if(!remoteJotaroSoundKey)return;
+ const owner=remoteJotaroSoundKey.slice(0,remoteJotaroSoundKey.lastIndexOf(':'));
+ const hasFx=animeFx.some(e=>e.kind==='timestop'&&e.id===owner&&e.life>0);
+ // Stop with the replicated world effect, or use a cap if a packet was lost.
+ if(!battleSessionActive()||curRound!==remoteJotaroSoundRound||
+    Date.now()-remoteJotaroSoundStarted>6500||
+    Date.now()-remoteJotaroSoundStarted>1200&&!hasFx)stopJotaroTimeStopBgm();
+}
 function stopJotaroTimeStopBgm(){
+ remoteJotaroSoundKey='';remoteJotaroSoundStarted=0;remoteJotaroSoundRound=-1;
  try{jotaroTimeStopBgm.pause();jotaroTimeStopBgm.currentTime=0;}catch(_){}
 }
 

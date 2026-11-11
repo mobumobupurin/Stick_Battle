@@ -282,7 +282,9 @@ function animeVisual(e){
  if(e.cid==='goku'&&e.kind==='transform')playGokuMp3('transform',{dedupe:220,volume:.92});
  if(e.cid==='goku'&&e.kind==='instant'&&e.phase==='out')playGokuMp3('teleport',{dedupe:180,volume:.92});
  const gokuMp3Fx=e.cid==='goku'&&(e.kind==='transform'||e.kind==='instant');
- const localJotaroMp3Fx=e.cid==='jotaro'&&e.kind==='timestop'&&e.id===myId;
+ const localJotaroMp3Fx=e.cid==='jotaro'&&e.kind==='timestop'&&isLocal(byId(e.id));
+ // Play the original time-stop audio for opponents as well as the caster.
+ if(e.cid==='jotaro'&&e.kind==='timestop'&&!localJotaroMp3Fx)playRemoteJotaroTimeStopBgm(e);
  if(e.kind!=='echo'&&e.kind!=='impact'&&!gokuMp3Fx&&!localJotaroMp3Fx)animeSound(e.kind);
 }
 function animeEmit(p,kind,data={}){
@@ -409,6 +411,7 @@ function animeTimeStop(p){
 function beginJotaroTimeStopCutin(e){
  if(online&&!cinDispatching){requestCinematic('timestop',e);return;}
  const p=byId(e.id);if(!p||p.cid!=='jotaro')return;
+ if(!isLocal(p))playRemoteJotaroTimeStopBgm(e);
  freezeT=JOTARO_TIMESTOP_CUTIN_FREEZE;freezeMax=JOTARO_TIMESTOP_CUTIN_FREEZE;
  fzType='timestopcin';fz={x:e.x,y:e.y,att:e.id,cnt:e.id};
  shake=Math.max(shake,12);
@@ -584,6 +587,7 @@ function animeTick(p){
 }
 function animeWorldTick(){
  animeClock++;
+ syncRemoteJotaroTimeStopBgm();
  // 時止めの発動カットイン中は3.5秒の停止時間を消費しない。
  for(const e of animeFx){if(!(freezeT>0&&((fzType==='timestopcin'&&e.kind==='timestop')||(fzType==='domain'&&e.kind==='domain'))))e.life--;}
  animeFx=animeFx.filter(e=>e.life>0);

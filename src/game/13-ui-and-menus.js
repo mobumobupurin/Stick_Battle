@@ -246,11 +246,11 @@ function buildMenus() {
   document.getElementById('lb-leave').onclick = () => { if (confirm('部屋から退出しますか？')) leaveRoom(); };
 
   document.getElementById('res-pick').onclick = () => openChars('result');
-  document.getElementById('res-again').onclick = () => {
+  document.getElementById('res-again').onclick = async () => {
     if(!online){
       if(offlineMode==='tournament'&&offlineTour?.champion)showSoloChampion();
       else{if(offlineMode==='kumite'){kumiteCount=0;resetKumiteRankingSubmission();}startBattleOffline();}
-    }else if (isHost) hostStart();
+    }else if(isHost)await hostStart();
   };
   document.getElementById('res-chars').onclick = () => {
     if (!online) {if(offlineMode==='tournament')offlineTour=null;openChars('cpu');configureExtraCpuOptions();}
@@ -425,7 +425,29 @@ function playJotaroTimeStopBgm(){
   const pr=jotaroTimeStopBgm.play();if(pr&&pr.catch)pr.catch(()=>{});
  }catch(_){}
 }
+let remoteJotaroSoundKey='',remoteJotaroSoundStarted=0,remoteJotaroSoundRound=-1;
+function playRemoteJotaroTimeStopBgm(e){
+ // Both the animefx packet and the cinematic packet may arrive. Start once.
+ if(!online||!e||!battleSessionActive())return;
+ const actor=byId(e.id);
+ if(!actor||actor.cid!=='jotaro'||isLocal(actor))return;
+ const key=e.id+':'+curRound;
+ if(remoteJotaroSoundKey===key)return;
+ remoteJotaroSoundKey=key;remoteJotaroSoundRound=curRound;
+ remoteJotaroSoundStarted=Date.now();
+ playJotaroTimeStopBgm();
+}
+function syncRemoteJotaroTimeStopBgm(){
+ if(!remoteJotaroSoundKey)return;
+ const owner=remoteJotaroSoundKey.slice(0,remoteJotaroSoundKey.lastIndexOf(':'));
+ const hasFx=animeFx.some(e=>e.kind==='timestop'&&e.id===owner&&e.life>0);
+ // Stop with the replicated world effect, or use a cap if a packet was lost.
+ if(!battleSessionActive()||curRound!==remoteJotaroSoundRound||
+    Date.now()-remoteJotaroSoundStarted>6500||
+    Date.now()-remoteJotaroSoundStarted>1200&&!hasFx)stopJotaroTimeStopBgm();
+}
 function stopJotaroTimeStopBgm(){
+ remoteJotaroSoundKey='';remoteJotaroSoundStarted=0;remoteJotaroSoundRound=-1;
  try{jotaroTimeStopBgm.pause();jotaroTimeStopBgm.currentTime=0;}catch(_){}
 }
 
