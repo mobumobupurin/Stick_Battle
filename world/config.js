@@ -1,2 +1,2 @@
-// Set true only after verified Firebase deployment and permission/rules checks.
-window.STICK_WORLD_ONLINE = false;
+// Spark mode: requires database.rules.json and email/password Auth in Firebase console.
+window.STICK_WORLD_ONLINE = true;
