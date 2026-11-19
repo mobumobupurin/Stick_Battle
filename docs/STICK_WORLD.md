@@ -1,4 +1,4 @@
-# STICK WORLD — Spark beta
+# STICK CASINO (旧 STICK WORLD) — Spark beta
 GitHub Pages /Stick_Battle/world/.
 
 ## Console setup (free Spark plan)
@@ -18,3 +18,14 @@ Admin picker: loads registered profiles only for an authenticated administrator,
 Resort lobby refresh: decorative SVG floor art, distinctive four-floor themes, responsive map-first mobile layout, separate wallet/bank HUD, nearby interaction cue, avatar sprites and same-floor player names. All saved coordinates, OAuth identities, profile fields and Firebase rules are unchanged. Decorations do not block movement; this is a visual and navigation improvement, not a new physics or game mode release.
 
 Royal Casino roulette table (UI refresh): modal dialogs for all facility panels, an SVG European wheel with spin/ball animation that lands on the actual draw, a felt betting layout (numbers 0–36, red/black/even/odd) with stackable chips (10/50/100/500/1K, one bet per spin as before), result history (kept in the browser), a round countdown bar for online play and automatic settlement once a round's result is available (also attempted from the background poll when the table is closed). Presentation only: bet validation, draws, payouts and Firebase rules are unchanged. The wallet display is held during the spin so the outcome is not revealed early. Mobile uses a vertical table and a sticky chip bar.
+
+
+## STICK CASINO（2026-11 リニューアル）
+STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメニューの「06 スティックカジノ」から `/world/` を開く（URLは互換のため据え置き）。ゲームHUB内のリンクは削除。
+
+- フロア：1F エントランス（キャッシャー・ボーナス・出口）／2F スロットホール（スロット・メダル落とし）／3F カードルーム（ブラックジャック）／4F ルーレットサロン（共通ルーレット）。保存済みのフロアIDと座標はそのまま。
+- ページ上部の「今夜のテーブル」から、歩かずに各ゲームを直接開ける。
+- **スロット**（`world/slot.js`）：3リール・6絵柄、3つそろい（×6〜×300）と左2つそろい（×2）。ベット 10/20/50/100。理論還元率 約96%（`slotRtp()`）。抽選は core.js の `slot` アクション。
+- **ブラックジャック**（`world/blackjack.js`）：6デッキ、ディーラーは17以上でスタンド、BJは1.5倍、最初の2枚でダブル可。ベット 10〜1,000。手札はブラウザ内で配り、結果だけを core.js の `blackjack` アクションで精算する。途中で閉じた手は精算されない。
+- **オンライン保存**：`database.rules.json` の profiles 書き込みルールに「カジノ1プレイ分」の枝を追加（plays +1、wins 同じか +1、ルーレット未精算なし、所持金の増加 30,000 以下・減少 2,000 以下）。**Firebaseコンソールで Realtime Database → ルール にこのファイル全体を貼り直して公開すること。** 貼り直すまで、オンラインでのスロット・ブラックジャックは保存エラーになる（練習版は動く）。
+- 抽選と結果はブラウザ側で行うため、不正対策には限界がある（従来どおり）。架空チップ専用。
