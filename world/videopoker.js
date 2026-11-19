@@ -27,7 +27,7 @@ function open(body){
  const betOne=h('button','egm-btn','BET ONE');betOne.type='button';
  const betMax=h('button','egm-btn egm-btn-amber','BET MAX');betMax.type='button';
  const deal=h('button','egm-spin','DEAL');deal.type='button';
- deck.append(sound,holds,betOne,betMax,deal);
+ deck.append(sound,WorldPace.button(),holds,betOne,betMax,deal);
  root.append(top,screen,msgBar,meters,deck);body.append(root);
  st={root,rowsEl,table,status,slots,holdBtns,msgBar,vCredit,vBet,vWin,betOne,betMax,deal,bet:st?.bet||10,phase:'bet',deckCards:[],hand:[],held:[false,false,false,false,false]};
  betOne.onclick=()=>{if(st.phase==='play'||st.phase==='busy')return;const B=C.VP_BETS;st.bet=B[(B.indexOf(st.bet)+1)%B.length];WorldSound.coin();sync();};
@@ -56,7 +56,7 @@ async function dealHand(){
  Object.values(st.rowsEl).forEach(r=>r.classList.remove('hit'));
  st.deckCards=shuffled();st.hand=st.deckCards.splice(0,5);st.held=[false,false,false,false,false];sync();
  for(let i=0;i<5;i++)renderCard(i,null,true);
- for(let i=0;i<5;i++){await wait(110);if(!st)return;renderCard(i,st.hand[i],false);WorldSound.card();}
+ for(let i=0;i<5;i++){await WorldPace.wait(300);if(!st)return;renderCard(i,st.hand[i],false);WorldSound.card();}
  const pre=WorldCore.vpRank(st.hand);
  if(pre){st.rowsEl[pre].classList.add('hit');st.status.textContent=WorldCore.VP_NAMES[pre];st.status.className='vp-status pre';}
  st.phase='play';say('残したいカードを HOLD して DRAW（キー 1〜5 / スペース）','');sync();
@@ -64,8 +64,10 @@ async function dealHand(){
 async function draw(){
  if(!st||st.phase!=='play'||busy)return;st.phase='busy';sync();
  for(let i=0;i<5;i++)if(!st.held[i])renderCard(i,null,true);
- await wait(180);
- for(let i=0;i<5;i++){if(st.held[i])continue;st.hand[i]=st.deckCards.shift();await wait(110);if(!st)return;renderCard(i,st.hand[i],false);WorldSound.card();}
+ await WorldPace.wait(500);if(!st)return;
+ const draws=[0,1,2,3,4].filter(i=>!st.held[i]);
+ for(const [k,i] of draws.entries()){st.hand[i]=st.deckCards.shift();await WorldPace.wait(k===draws.length-1&&draws.length<5?800:420);if(!st)return;renderCard(i,st.hand[i],false);WorldSound.card();}
+ await WorldPace.wait(450);if(!st)return;
  busy=true;let r;
  try{r=await request('videopoker',{amount:st.bet,hand:st.hand.map(c=>({r:c.r,s:c.s}))});}catch(e){busy=false;walletHold=false;renderProfile();if(st){st.phase='bet';say(e.message,'lose');sync();}return;}
  busy=false;if(!st){walletHold=false;return;}

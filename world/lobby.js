@@ -65,6 +65,7 @@ function closeDrawer(){drawer.hidden=true;shade.hidden=true;document.body.classL
 $('memberOpen').addEventListener('click',openDrawer);$('memberClose').addEventListener('click',closeDrawer);shade.addEventListener('click',closeDrawer);
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!drawer.hidden){closeDrawer();e.stopPropagation();}},true);
 const sound=$('soundToggle');const syncSound=()=>{sound.textContent='効果音：'+(WorldSound.muted?'OFF':'ON');};sound.addEventListener('click',()=>{WorldSound.toggle();syncSound();});syncSound();
+const pace=$('paceToggle');if(pace){const syncPace=()=>{pace.textContent='カードゲームの速度：'+WorldPace.label;};pace.addEventListener('click',()=>{WorldPace.next();});WorldPace.onChange(syncPace);syncPace();}
 $('heroBonus').addEventListener('click',()=>show('bonus'));
 document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.open)));
 $('heroArt').innerHTML=heroArt();

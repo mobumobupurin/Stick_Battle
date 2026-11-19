@@ -100,3 +100,13 @@ test('coin pusher field pushes medals off the front and loses some in the side g
  assert.ok(s.coins.every(c=>c.x>=P.R-1e-9&&c.x<=100-P.R+1e-9&&c.y>=s.face+P.R-1e-6));
  assert.equal(P.LOTTERY.length,5);assert.equal(P.LOTTERY[P.lottery(P.lotteryTotal-1)][0],'JACKPOT');
 });
+
+test('card games read their pacing from WorldPace (じっくり / ふつう / はやい)',()=>{
+ const store={};const ctx={localStorage:{getItem:k=>store[k]??null,setItem:(k,v)=>{store[k]=String(v);}},setTimeout};vm.createContext(ctx);
+ vm.runInContext(read('world/pace.js')+';globalThis.P=WorldPace',ctx);const P=ctx.P;
+ assert.equal(P.level,'slow');assert.equal(P.ms(1000),1000);
+ P.next();assert.equal(P.level,'normal');assert.ok(P.ms(1000)<1000);
+ P.next();assert.equal(P.level,'fast');assert.ok(P.ms(1000)<=250);assert.equal(store['stick-royale-pace'],'fast');
+ for(const f of ['baccarat','blackjack','videopoker'])assert.match(read('world/'+f+'.js'),/WorldPace\.button\(\)/);
+ assert.match(read('world/index.html'),/pace\.js\?v=/);
+});

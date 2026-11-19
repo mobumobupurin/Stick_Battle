@@ -29,7 +29,7 @@ function open(body){
  const clear=h('button','egm-btn','CLEAR');clear.type='button';clear.onclick=()=>{if(!st||st.dealing)return;st.amount=0;st.side=null;WorldSound.button();sync();};
  const rebet=h('button','egm-btn','REBET');rebet.type='button';rebet.onclick=()=>{if(!st||st.dealing||!st.last)return;st.side=st.last.side;st.amount=Math.min(st.last.amount,p.cash,WorldCore.BAC_MAX);WorldSound.chip();sync();};
  const deal=h('button','egm-spin','DEAL');deal.type='button';deal.onclick=go;
- deck.append(chips,sound,clear,rebet,deal);
+ deck.append(chips,sound,WorldPace.button(),clear,rebet,deal);
  root.append(top,screen,msgBar,meters,deck);body.append(root);
  st={root,hands,result,zoneEls,roadBox,msgBar,vCredit,vBet,vWin,chipBtns,clear,rebet,deal,chip:st?.chip||50,side:null,amount:0,last:st?.last||null,dealing:false};
  renderRoad();sync();
@@ -43,7 +43,9 @@ function sync(){
  st.deal.disabled=st.dealing||busy||!st.side||st.amount<WorldCore.BAC_MIN||st.amount>p.cash;st.clear.disabled=st.dealing;st.rebet.disabled=st.dealing||!st.last;
 }
 function renderRoad(){if(!st)return;const box=st.roadBox;box.replaceChildren();const cols=Math.max(12,Math.ceil(road.length/6));for(let i=0;i<cols*6;i++){const v=road[i];box.append(h('i',v?'bead '+v:'',v||''));}box.scrollLeft=box.scrollWidth;}
-async function flip(card){card.classList.remove('back');WorldSound.card();await wait(260);}
+const pw=n=>WorldPace.wait(n);
+// slow reveal: the card is lifted a little (peek) before it turns over
+async function flip(card,peek){if(peek){card.classList.add('peek');await pw(peek);if(!st)return;card.classList.remove('peek');}card.classList.remove('back');WorldSound.card();await pw(380);}
 async function go(){
  if(!st||st.dealing||busy||!st.side)return;const side=st.side,bet=st.amount;
  if(bet<WorldCore.BAC_MIN||bet>p.cash){say('ベットを置いてください','lose');return;}
@@ -55,10 +57,13 @@ async function go(){
  const before=p.cash-res.won;st.vCredit.textContent=yen(before);
  const val=cards=>WorldCore.bacValue(cards);
  const order=[['player',0],['banker',0],['player',1],['banker',1]],els={player:[],banker:[]};
- for(const [s,i] of order){const c=cardEl(res[s][i]);st.hands[s].cards.append(c);els[s].push(c);WorldSound.card();await wait(260);if(!st)return;}
- for(const [s,i] of order){await flip(els[s][i]);if(!st)return;if(i===1)st.hands[s].total.textContent=String(val(res[s].slice(0,2)));}
- for(const s of ['player','banker']){if(res[s].length===3){await wait(450);if(!st)return;const c=cardEl(res[s][2]);c.classList.add('third');st.hands[s].cards.append(c);WorldSound.card();await wait(380);await flip(c);if(!st)return;st.hands[s].total.textContent=String(val(res[s]));}}
- await wait(300);if(!st)return;
+ for(const [s,i] of order){const c=cardEl(res[s][i]);st.hands[s].cards.append(c);els[s].push(c);WorldSound.card();await pw(520);if(!st)return;}
+ const name={player:'PLAYER',banker:'BANKER'};
+ for(const [s,i] of order){say(name[s]+' '+(i+1)+'枚目…','');await flip(els[s][i],i===1?900:250);if(!st)return;if(i===1){st.hands[s].total.textContent=String(val(res[s].slice(0,2)));say(name[s]+' '+val(res[s].slice(0,2)),'');await pw(650);if(!st)return;}}
+ const p2=val(res.player.slice(0,2)),b2=val(res.banker.slice(0,2));
+ if(p2>=8||b2>=8){say('NATURAL '+Math.max(p2,b2)+'！','win');await pw(900);if(!st)return;}
+ for(const s of ['player','banker']){if(res[s].length===3){say(name[s]+' 3枚目を引きます','');await pw(1000);if(!st)return;const c=cardEl(res[s][2]);c.classList.add('third');st.hands[s].cards.append(c);WorldSound.card();await pw(600);if(!st)return;await flip(c,1100);if(!st)return;st.hands[s].total.textContent=String(val(res[s]));say(name[s]+' '+val(res[s]),'');await pw(700);if(!st)return;}}
+ await pw(500);if(!st)return;
  const w=res.winner;if(w!=='tie')st.hands[w].box.classList.add('win');
  st.result.hidden=false;st.result.className='bc-result '+w;st.result.textContent=w==='tie'?'TIE '+res.pv+' — '+res.bv:SIDES[w].label+' WINS  '+res.pv+' — '+res.bv;
  road.push(w==='player'?'P':w==='banker'?'B':'T');road=road.slice(-60);try{localStorage.setItem(HKEY,JSON.stringify(road));}catch{}renderRoad();

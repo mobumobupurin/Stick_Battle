@@ -35,7 +35,7 @@ function open(body){
  const stand=h('button','bj-btn','STAND');stand.type='button';stand.onclick=onStand;
  const dbl=h('button','bj-btn','DOUBLE');dbl.type='button';dbl.onclick=onDouble;
  const again=h('button','bj-btn primary','もう一度');again.type='button';again.onclick=()=>{if(!st)return;st.phase='bet';st.player=[];st.dealer=[];render();sync();show('PLACE YOUR BET','同じベットでDEALできます','');};
- bar.append(chips,sound,clear,deal,hit,stand,dbl,again);
+ bar.append(chips,sound,WorldPace.button(),clear,deal,hit,stand,dbl,again);
  root.append(top,table,meters,bar,h('p','bj-note','6デッキ・ディーラーは17以上でスタンド・ブラックジャックは1.5倍。1回のベットは10〜1,000 SC。'));
  body.append(root);
  st={vCredit,vBet,vWin,lastWon:0,root,dCards,pCards,dTotal,pTotal,mMain,mSub,msgBox,betChip,betText,chipBtns,clear,deal,hit,stand,dbl,again,bet:st?.lastBet||0,lastBet:st?.lastBet||0,phase:'bet',player:[],dealer:[],doubled:false,reveal:false};
@@ -58,24 +58,31 @@ function sync(){
 function render(){
  if(!st)return;st.dCards.replaceChildren();st.pCards.replaceChildren();
  WorldSound.card();
- st.dealer.forEach((c,i)=>st.dCards.append(cardEl(c,i===1&&!st.reveal,i*90)));
- st.player.forEach((c,i)=>st.pCards.append(cardEl(c,false,i*90)));
+ const seen=st.seen||{d:0,p:0,r:false};
+ st.dealer.forEach((c,i)=>{const e=cardEl(c,i===1&&!st.reveal,0);if(i<seen.d&&!(i===1&&st.reveal&&!seen.r))e.classList.add('still');else if(i===1&&st.reveal&&!seen.r)e.classList.add('flipin');st.dCards.append(e);});
+ st.player.forEach((c,i)=>{const e=cardEl(c,false,0);if(i<seen.p)e.classList.add('still');st.pCards.append(e);});
+ st.seen={d:st.dealer.length,p:st.player.length,r:st.reveal};
  st.pTotal.textContent=st.player.length?String(value(st.player)):'';
  st.dTotal.textContent=st.dealer.length?(st.reveal?String(value(st.dealer)):String(value([st.dealer[0]]))+' + ?'):'';
 }
-function startHand(){
+const pw=n=>WorldPace.wait(n);
+async function startHand(){
  if(!st||st.phase!=='bet'||busy)return;if(st.bet<WorldCore.BJ_MIN||st.bet>p.cash){show('ベットを置いてください','10 SC から','lose');return;}
- walletHold=true;st.lastBet=st.bet;st.doubled=false;st.reveal=false;st.player=[draw(),];st.dealer=[draw()];st.player.push(draw());st.dealer.push(draw());st.phase='play';
- render();sync();show('YOUR TURN','HIT でもう1枚 / STAND で勝負','');
+ walletHold=true;st.lastBet=st.bet;st.doubled=false;st.reveal=false;st.player=[];st.dealer=[];st.seen={d:0,p:0,r:false};st.phase='dealing';render();sync();show('DEALING','カードを配ります…','');
+ for(const who of ['player','dealer','player','dealer']){await pw(480);if(!st)return;st[who].push(draw());render();}
+ await pw(350);if(!st)return;
+ st.phase='play';sync();show('YOUR TURN','HIT でもう1枚 / STAND で勝負','');
  if(natural(st.player)||natural(st.dealer))finish();
 }
-function onHit(){if(!st||st.phase!=='play'||busy)return;st.player.push(draw());render();const v=value(st.player);if(v>21)finish();else if(v===21)onStand();else sync();}
+async function onHit(){if(!st||st.phase!=='play'||busy)return;st.phase='dealing';sync();st.player.push(draw());render();await pw(420);if(!st)return;st.phase='play';const v=value(st.player);if(v>21){show('BUST…',v+'','lose');await pw(600);if(!st)return;finish();}else if(v===21)onStand();else sync();}
 function onStand(){if(!st||st.phase!=='play'||busy)return;finish();}
-function onDouble(){if(!st||st.phase!=='play'||busy||st.player.length!==2||p.cash<st.bet*2)return;st.doubled=true;st.player.push(draw());render();finish();}
+async function onDouble(){if(!st||st.phase!=='play'||busy||st.player.length!==2||p.cash<st.bet*2)return;st.doubled=true;st.phase='dealing';sync();show('DOUBLE DOWN','1枚だけ引きます…','');await pw(600);if(!st)return;st.player.push(draw());render();await pw(700);if(!st)return;finish();}
 async function finish(){
  if(!st)return;st.phase='settle';sync();
- const pv=value(st.player),pBJ=natural(st.player);st.reveal=true;render();
- if(pv<=21&&!pBJ){while(value(st.dealer)<17){await new Promise(r=>setTimeout(r,420));if(!st)return;st.dealer.push(draw());render();}}
+ const pv=value(st.player),pBJ=natural(st.player);
+ show('DEALER','ホールカードをオープン…','');await pw(900);if(!st)return;st.reveal=true;render();WorldSound.card();await pw(700);if(!st)return;
+ if(pv<=21&&!pBJ){while(value(st.dealer)<17){show('DEALER '+value(st.dealer),'ヒット…','');await pw(950);if(!st)return;st.dealer.push(draw());render();WorldSound.card();await pw(500);if(!st)return;}
+  const dv0=value(st.dealer);show(dv0>21?'DEALER BUST':'DEALER '+dv0,dv0>21?'':'スタンド','');await pw(700);if(!st)return;}
  const dv=value(st.dealer),dBJ=natural(st.dealer);
  let outcome;
  if(pBJ&&dBJ)outcome='push';else if(pBJ)outcome='blackjack';else if(dBJ)outcome='lose';else if(pv>21)outcome='lose';else if(dv>21||pv>dv)outcome='win';else if(pv===dv)outcome='push';else outcome='lose';
@@ -89,7 +96,7 @@ async function finish(){
 }
 function close(){
  // A hand that was dealt but not finished is settled as a loss only if it was already resolved; otherwise nothing is charged.
- if(st&&st.phase!=='settle')walletHold=false;st=null;renderProfile();
+ if(st&&!busy)walletHold=false;st=null;renderProfile();
 }
 return {open,close,value};
 })();

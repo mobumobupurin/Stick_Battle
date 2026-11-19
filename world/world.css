@@ -703,3 +703,16 @@ button.ry-desk:hover,button.ry-desk:focus-visible{border-color:#8a6a34;color:var
  .ry-cards[data-n="2"]{max-width:none}
 }
 @media(max-width:640px){.ry-cards[data-n="2"]{grid-template-columns:1fr}}
+
+/* ---------- card game pacing (WorldPace) ---------- */
+.bj-card.still{animation:none}
+.bj-card.flipin{animation:bjFlip .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes bjFlip{from{transform:rotateY(90deg)}}
+.bc-card{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.bc-card.back.peek{transform:translateY(-10px) rotateY(180deg);animation:bcPeek .5s ease-in-out infinite alternate;filter:drop-shadow(0 0 10px #ffd36b88)}
+.bc-card.third.back.peek{transform:rotate(90deg) translateX(-10px) rotateY(180deg)}
+@keyframes bcPeek{from{translate:0 0}to{translate:0 -4px}}
+.pace-btn{min-width:92px}
+
+.bj-bar .bj-btn{white-space:nowrap}
+@media(max-width:520px){.bj-bar .pace-btn{min-width:0}}
