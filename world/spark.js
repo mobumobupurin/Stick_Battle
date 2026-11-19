@@ -4,7 +4,7 @@ function sparkAdapter(db, auth, C, random){
  const root=db.ref('stick_world'),off=db.ref('.info/serverTimeOffset');let offset=0;
  off.on('value',s=>{offset=Number(s.val())||0;});
  const now=()=>Date.now()+offset,day=()=>Math.floor((now()+32400000)/86400000);
- const fresh=()=>{let p=C.start();delete p.day;return {...p,bonusDay:-1,betRound:-1,betAmount:0,betChoice:'none'};};
+ const fresh=(nickname)=>{let name=typeof nickname==='string'?nickname.trim():'';let p=C.start(name&&name.length<=20?name:'PLAYER');delete p.day;return {...p,bonusDay:-1,betRound:-1,betAmount:0,betChoice:'none'};};
  const snap=async ref=>(await ref.once('value')).val();
  const isAdmin=async uid=>await snap(root.child('admins').child(uid))===true;
  async function tx(ref,fn){await ref.once('value');let failure;let r=await ref.transaction(v=>{try{return fn(v);}catch(e){failure=e;return undefined;}},undefined,false);if(!r.committed)throw failure||Error('更新できませんでした');return r.snapshot.val();}
@@ -12,7 +12,7 @@ function sparkAdapter(db, auth, C, random){
  async function ensureResult(uid,id){let ref=root.child('rounds').child(String(id)),old=await snap(ref);if(old)return old;if(now()<(id+1)*30000)throw Error('抽選終了までお待ちください');try{return await tx(ref,v=>v||{id,number:random(37)});}catch(e){let v=await snap(ref);if(v)return v;throw e;}}
  return async d=>{
   let u=auth.currentUser;if(!u)throw Error('ログインが必要です');let uid=u.uid,ref=root.child('profiles').child(uid),a=d.action;
-  if(a==='sync'){let p=await snap(ref);if(!p)p=await tx(ref,v=>v||fresh());await presence(uid,p);let rd=C.round(now());let previous=rd.id>0?await snap(root.child('rounds').child(String(rd.id-1))):null;let ps=await snap(root.child('presence').orderByChild('seenAt').startAt(now()-30000).limitToLast(60));let peers=Object.entries(ps||{}).filter(([k])=>k!==uid).map(([,v])=>v);return {data:{profile:p,peers,admin:await isAdmin(uid),round:{id:rd.id,open:now()<rd.close,previous:previous?.number??null}}};}
+  if(a==='sync'){let p=await snap(ref);if(!p)p=await tx(ref,v=>v||fresh(d.nickname));await presence(uid,p);let rd=C.round(now());let previous=rd.id>0?await snap(root.child('rounds').child(String(rd.id-1))):null;let ps=await snap(root.child('presence').orderByChild('seenAt').startAt(now()-30000).limitToLast(60));let peers=Object.entries(ps||{}).filter(([k])=>k!==uid).map(([,v])=>v);return {data:{profile:p,peers,admin:await isAdmin(uid),round:{id:rd.id,open:now()<rd.close,previous:previous?.number??null}}};}
   if(a==='admin'){
     if(!await isAdmin(uid))throw Error('管理者のみ');let target=String(d.target||'').trim(),n=C.integer(d.amount,1,C.LIMIT),reason=String(d.reason||'').trim();if(!/^[A-Za-z0-9_-]{1,128}$/.test(target)||!reason||reason.length>200)throw Error('UIDと理由（200文字以内）が必要です');
     let all=await tx(root.child('profiles'),v=>{if(!v?.[target]||!v?.[uid])throw Error('対象プレイヤーが未登録です');let q={...v[target]},me=target===uid?q:{...v[uid]};if(d.operation==='mint')q.cash+=n;else if(d.operation==='burn'){if(q.cash<n)throw Error('残高不足');q.cash-=n;}else if(d.operation==='transfer'){if(uid===target||me.cash<n)throw Error('譲渡先または残高を確認してください');me.cash-=n;q.cash+=n;}else throw Error('無効な操作');if(q.cash+q.bank>C.LIMIT)throw Error('残高上限');return {...v,[uid]:me,[target]:q};});let message='管理操作完了';try{await root.child('adminLog').push({actor:uid,target,operation:d.operation,amount:n,reason,at:firebase.database.ServerValue.TIMESTAMP});}catch{message+='（操作履歴の保存に失敗）';}return {data:{profile:all[uid],message}};
