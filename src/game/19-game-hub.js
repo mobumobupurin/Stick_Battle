@@ -124,6 +124,7 @@ function hubMake(tag,className,textValue){
   if(textValue!==undefined)el.textContent=String(textValue);
   return el;
 }
+const HUB_CATEGORY_LABEL={'2人対戦':'ふたりで対戦','みんなで遊ぶ':'みんなで遊ぶ','カジノ':'テーブルゲーム'};
 const HUB_ICONS={
   stickbattle:'⚔',reversi:'◑',connect4:'◉',airhockey:'◈',
   chess:'♞',shogi:'将', 'mini-shogi':'五',shichinarabe:'7',
@@ -151,11 +152,11 @@ function hubRender(){
   const cards=hubEl('hub-catalog');
   if(cards){
     cards.replaceChildren();
-    for(const category of ['2人対戦','みんなで遊ぶ','カジノ']){
+    for(const category of ['2人対戦','みんなで遊ぶ','カジノ']){const categoryLabel=HUB_CATEGORY_LABEL[category]||category;
       const games=HUB_CATALOG.filter(x=>x.category===category);
       const section=hubMake('section','hub-category');
       const heading=hubMake('div','hub-category-heading');
-      const title=hubMake('h4','',category);
+      const title=hubMake('h4','',categoryLabel);section.dataset.category=category;
       heading.append(title,hubMake('span','hub-category-count',String(games.length).padStart(2,'0')));
       section.appendChild(heading);
       const grid=hubMake('div','hub-cards');

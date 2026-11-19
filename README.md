@@ -61,6 +61,10 @@ Previous design history: [立体機動再設計](docs/EREN_FREEDOM_REWORK.md). O
 
 濃色UIと全体/狭い/広いステージ抽選：[現行デザインと抽選仕様](docs/PREMIUM_UI_RANDOM_ARENAS.md)。V44採用後は全員再読み込み・新規ルームが必要。
 
+### STICK CASINO
+
+メインメニュー「06 スティックカジノ」から開く独立カジノ（`world/`、旧 STICK WORLD）。スロット・ブラックジャック・ルーレット・メダル落とし。仕様とFirebaseルールの更新手順：[STICK CASINO](docs/STICK_WORLD.md)。
+
 ### Co-op raid
 
 最大4人で通常サイズの最強NPC・DIOを倒す協力戦。味方は普段のダメージ％・残機2、DIOだけHP制。承太郎の時止め返し、人数・キャラを選べる味方CPU：[協力ボスの操作と同期仕様](docs/DIO_COOP_RAID.md)。カイロ市街地・耐久戦調整・両者の時止め演出に対応。V47では全員再読み込み・新規ルームが必要。

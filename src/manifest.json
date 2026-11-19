@@ -8,7 +8,8 @@
     "src/styles/raid.css",
     "src/styles/ui-renewal.css",
     "src/styles/game-hub.css",
-    "src/styles/arcade.css"
+    "src/styles/arcade.css",
+    "src/styles/hub-play.css"
   ],
   "scripts": [
     "src/game/00-firebase.js",

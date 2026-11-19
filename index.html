@@ -2195,6 +2195,113 @@ body .ax-screen #lb-start:before{content:none}
 /* softer menu backdrop */
 body .screen.ax-screen>.ax-bg{background:linear-gradient(112deg,#ff2a4f14 0 22%,transparent 22.1%),linear-gradient(112deg,transparent 0 78%,#22d8ff0f 78.1%),radial-gradient(ellipse at 50% -10%,#1b1f42 0%,transparent 60%),#07080d!important}
 </style>
+<style>/* =====================================================================
+   GAME HUB — bright "party game collection" look.
+   A different face from the dark battle menus: cream paper, chunky
+   rounded tiles, one colour per category. Game boards keep a dark
+   table so the existing board/card UIs stay readable.
+   ===================================================================== */
+:root{--hb-paper:#f6f0e5;--hb-paper2:#efe6d6;--hb-ink:#2b2420;--hb-sub:#7a6d62;--hb-card:#fffdf8;--hb-line:#e3d8c6;
+ --hb-duo:#ff6b57;--hb-party:#16a99a;--hb-table:#e89a2c;--hb-shadow:0 5px 0 #0000000f,0 10px 24px #6b4e2a14;
+ --hb-round:'Hiragino Maru Gothic ProN','Hiragino Sans','Arial Rounded MT Bold','Noto Sans JP','Yu Gothic',system-ui,sans-serif}
+body .screen.ax-hubscreen{background:var(--hb-paper)!important;color:var(--hb-ink)!important;font-family:var(--hb-round);color-scheme:light}
+body .screen.ax-hubscreen>.ax-bg{background:radial-gradient(circle,#e6d9c4 1.3px,transparent 1.8px) 0 0/22px 22px,linear-gradient(180deg,#fbf6ee,var(--hb-paper) 40%)!important}
+body .screen.ax-hubscreen>.ax-bg:after{content:none!important}
+body .ax-hubscreen ::selection{background:#ffd9a8;color:var(--hb-ink)}
+body .ax-hubscreen h2,body .ax-hubscreen h3,body .ax-hubscreen h4{color:var(--hb-ink)}
+
+/* ---- room header ---- */
+body #sc-hub-room .hub-head,body #sc-hub-play .hub-play-header{background:var(--hb-card)!important;border:0!important;border-radius:24px!important;box-shadow:var(--hb-shadow)!important;color:var(--hb-ink)}
+body #sc-hub-room .hub-head{padding:22px 26px!important}
+body #sc-hub-room .hub-kicker{color:var(--hb-sub)!important;letter-spacing:.14em}
+body #sc-hub-room .hub-signal,body .ax-hubscreen .hub-online-dot,body .ax-hubscreen .hub-room-live i{background:var(--hb-party)!important;box-shadow:0 0 0 4px #16a99a26!important;animation:none!important}
+body #sc-hub-room .hub-heading h2{font:900 clamp(34px,4.6vw,56px)/1 var(--hb-round)!important;color:var(--hb-ink)!important;letter-spacing:-.01em;text-shadow:none!important}
+body #sc-hub-room .hub-heading h2 span{display:inline-block;margin-left:6px;padding:2px 16px 4px;border-radius:999px;background:var(--hb-duo)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;transform:rotate(-3deg)}
+body #sc-hub-room .hub-heading h2 small{color:var(--hb-sub)!important;font-weight:800}
+body #sc-hub-room .hub-heading p{color:var(--hb-sub)!important}
+body #sc-hub-room .hub-room-code,body #sc-hub-play .hub-play-room{background:var(--hb-paper2)!important;border:2px dashed #d8c8ae!important;border-radius:16px!important;color:var(--hb-ink)!important;box-shadow:none!important}
+body #sc-hub-room .hub-room-code small,body #sc-hub-play .hub-play-room span{color:var(--hb-sub)!important}
+body #sc-hub-room .hub-room-code b,body #sc-hub-play .hub-play-room strong{color:var(--hb-ink)!important;letter-spacing:.2em}
+body #sc-hub-room #hub-copy.hub-invite{border:0!important;border-radius:16px!important;background:var(--hb-party)!important;color:#fff!important;box-shadow:0 5px 0 #0c7a6f!important;font-weight:900}
+body #sc-hub-room #hub-copy.hub-invite:active{transform:translateY(3px);box-shadow:0 2px 0 #0c7a6f!important}
+
+/* ---- members ---- */
+body #sc-hub-room .hub-lobby-strip{background:var(--hb-card)!important;border:0!important;border-radius:20px!important;box-shadow:var(--hb-shadow)!important}
+body #sc-hub-room #hub-members{color:var(--hb-ink)!important;font-weight:800}
+body #sc-hub-room .hub-member{background:var(--hb-paper2)!important;border:0!important;border-radius:999px!important;color:var(--hb-ink)!important}
+body #sc-hub-room .hub-member.is-you{background:#ffe3dc!important;box-shadow:inset 0 0 0 2px var(--hb-duo)!important}
+body #sc-hub-room .hub-member-avatar{background:var(--hb-ink)!important;color:#fff!important}
+body #sc-hub-room .hub-member.is-you .hub-member-avatar{background:var(--hb-duo)!important}
+body #sc-hub-room .hub-member-label{color:var(--hb-ink)!important}
+body #sc-hub-room .hub-member-host{background:var(--hb-table)!important;color:#fff!important;border-radius:999px}
+
+/* ---- library ---- */
+body #sc-hub-room .hub-sidebar,body #sc-hub-room .hub-setup-card,body #sc-hub-play .hub-playarea{background:var(--hb-card)!important;border:0!important;border-radius:26px!important;box-shadow:var(--hb-shadow)!important;color:var(--hb-ink)}
+body #sc-hub-room .hub-section-kicker,body #sc-hub-play .hub-section-kicker,body .ax-hubscreen .hub-game-meta,body .ax-hubscreen .hub-setup-eyebrow{color:var(--hb-sub)!important}
+body #sc-hub-room .hub-sidebar-header h3{color:var(--hb-ink)!important;font-weight:900}
+body #sc-hub-room .hub-title-dot{color:var(--hb-duo)!important}
+body #sc-hub-room .hub-sidebar-count{background:var(--hb-paper2)!important;border:0!important;color:var(--hb-sub)!important;border-radius:999px!important}
+body #sc-hub-room .hub-sidebar-tip,body #sc-hub-room #hub-cpu-info,body #sc-hub-room #hub-cpu-level-info{color:var(--hb-sub)!important}
+body #sc-hub-room .hub-cpu-settings{background:var(--hb-paper)!important;border:0!important;border-radius:18px!important;box-shadow:none!important}
+body #sc-hub-room .hub-cpu-settings label{color:var(--hb-ink)!important;font-weight:900}
+body #sc-hub-room .hub-cpu-settings select{background:#fff!important;color:var(--hb-ink)!important;border:2px solid var(--hb-line)!important;border-radius:12px!important}
+body #sc-hub-room .hub-category{--cat:var(--hb-duo)}
+body #sc-hub-room .hub-category[data-category="みんなで遊ぶ"]{--cat:var(--hb-party)}
+body #sc-hub-room .hub-category[data-category="カジノ"]{--cat:var(--hb-table)}
+body #sc-hub-room .hub-category-heading{border:0!important;padding:0!important;margin:18px 0 10px!important;display:flex;align-items:center;gap:8px}
+body #sc-hub-room .hub-category-heading h4{display:inline-block;margin:0;padding:5px 14px;border-radius:999px;background:var(--cat)!important;color:#fff!important;font:900 13px/1.2 var(--hb-round)!important;letter-spacing:.04em}
+body #sc-hub-room .hub-category-count{color:var(--hb-sub)!important;font-weight:900}
+body #sc-hub-room .hub-cards{gap:10px!important}
+body #sc-hub-room .hub-card{position:relative;background:#fff!important;border:2px solid var(--hb-line)!important;border-radius:18px!important;box-shadow:0 4px 0 #0000000d!important;color:var(--hb-ink)!important;transition:transform .12s,border-color .12s,box-shadow .12s}
+body #sc-hub-room .hub-card:not(:disabled):hover,body #sc-hub-room .hub-card:not(:disabled):focus-visible{transform:translateY(-3px);border-color:var(--cat)!important;box-shadow:0 7px 0 color-mix(in srgb,var(--cat) 30%,transparent)!important;outline:none}
+body #sc-hub-room .hub-card.is-current{border-color:var(--cat)!important;background:color-mix(in srgb,var(--cat) 9%,#fff)!important}
+body #sc-hub-room .hub-card:disabled{opacity:1}
+body #sc-hub-room .hub-card.is-coming{opacity:.55}
+body #sc-hub-room .hub-card-icon{background:color-mix(in srgb,var(--cat) 15%,#fff)!important;color:var(--cat)!important;border:0!important;border-radius:14px!important;box-shadow:none!important;font-weight:900}
+body #sc-hub-room .hub-card-name{color:var(--hb-ink)!important;font-weight:900}
+body #sc-hub-room .hub-card-meta{color:var(--hb-sub)!important}
+body #sc-hub-room .hub-card-status{color:var(--cat)!important;font-weight:900}
+
+/* ---- setup card ---- */
+body #sc-hub-room .hub-play-top,body #sc-hub-play .hub-play-top{border-color:var(--hb-line)!important}
+body .ax-hubscreen .hub-room-live{color:var(--hb-sub)!important}
+body #sc-hub-room #hub-setup-icon.hub-setup-icon{background:#ffe3dc!important;color:var(--hb-duo)!important;border:0!important;border-radius:28px!important;box-shadow:0 6px 0 #ffc9bd!important;transform:rotate(-4deg)}
+body .ax-hubscreen .hub-game-title{color:var(--hb-ink)!important;font-weight:900!important}
+body .ax-hubscreen .hub-game-info,body .ax-hubscreen .hub-selection-status,body .ax-hubscreen .hub-room-note,body .ax-hubscreen .hub-game-footer{color:var(--hb-sub)!important}
+body #sc-hub-room #hub-game-start.hub-start-btn{border:0!important;border-radius:20px!important;background:var(--hb-duo)!important;color:#fff!important;font:900 18px/1 var(--hb-round)!important;box-shadow:0 6px 0 #c94a39!important;transition:transform .1s,box-shadow .1s}
+body #sc-hub-room #hub-game-start.hub-start-btn:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 8px 0 #c94a39!important}
+body #sc-hub-room #hub-game-start.hub-start-btn:not(:disabled):active{transform:translateY(4px);box-shadow:0 2px 0 #c94a39!important}
+body #sc-hub-room #hub-game-start.hub-start-btn:disabled{background:#e6dccb!important;color:#a39684!important;box-shadow:0 6px 0 #d6c8b2!important}
+body #sc-hub-room .hub-resume-btn{border:2px solid var(--hb-party)!important;background:#fff!important;color:var(--hb-party)!important;border-radius:16px!important}
+body #sc-hub-room .hub-selection-members>*{background:var(--hb-paper2)!important;color:var(--hb-ink)!important;border:0!important}
+body .ax-hubscreen .hub-bottom-nav{background:none!important;border:0!important}
+body .ax-hubscreen .hub-bottom-nav .back,body #sc-hub-play .hub-play-back{border:2px solid var(--hb-line)!important;border-radius:16px!important;background:#fff!important;color:var(--hb-ink)!important;box-shadow:0 4px 0 #0000000d!important;font-weight:900!important;transform:none!important}
+body .ax-hubscreen .hub-bottom-nav .back:hover,body #sc-hub-play .hub-play-back:hover{border-color:var(--hb-duo)!important;color:var(--hb-duo)!important}
+
+/* ---- play screen ---- */
+body #sc-hub-play .hub-play-header{padding:16px 22px!important}
+body #sc-hub-play .hub-play-brand b{color:var(--hb-ink)!important;font-weight:900}
+body #sc-hub-play .hub-player{background:var(--hb-paper)!important;border:2px solid transparent!important;border-radius:18px!important;color:var(--hb-ink)!important;box-shadow:none!important}
+body #sc-hub-play .hub-player.is-turn{border-color:var(--hb-duo)!important;background:#fff4f1!important}
+body #sc-hub-play .hub-player.is-winner{border-color:var(--hb-table)!important;background:#fff6e6!important}
+body #sc-hub-play .hub-player-label{color:var(--hb-sub)!important}
+body #sc-hub-play .hub-player-name{color:var(--hb-ink)!important}
+body #sc-hub-play .hub-player-score{color:var(--hb-ink)!important}
+body #sc-hub-play .hub-vs{color:var(--hb-duo)!important;font-weight:900}
+body #sc-hub-play .hub-board-frame{border:0!important;border-radius:22px!important;background:linear-gradient(180deg,#3a2f28,#2b231e)!important;box-shadow:inset 0 0 0 6px #4a3c32,0 6px 0 #0000001a!important}
+body #sc-hub-play .hub-empty-state strong{color:#fff3e2!important}
+body #sc-hub-play .hub-empty-state p{color:#d8c8b4!important}
+body #sc-hub-play .hub-actions button{border:0!important;border-radius:14px!important;background:var(--hb-party)!important;color:#fff!important;box-shadow:0 4px 0 #0c7a6f!important;font-weight:900!important}
+body #sc-hub-play .hub-actions button:disabled{background:#e6dccb!important;color:#a39684!important;box-shadow:0 4px 0 #d6c8b2!important}
+@media(max-width:700px){
+ body #sc-hub-room .hub-head{padding:16px!important;border-radius:20px!important}
+ body #sc-hub-room .hub-heading h2{font-size:34px!important}
+}
+body #sc-hub-play .hub-table-player{background:var(--hb-paper)!important;border:2px solid var(--hb-line)!important;border-radius:999px!important;color:var(--hb-ink)!important;font-weight:800}
+body #sc-hub-play .hub-table-player.is-turn{border-color:var(--hb-duo)!important;background:#fff4f1!important;color:var(--hb-ink)!important}
+body #sc-hub-play .hub-table-player.is-you{box-shadow:inset 0 0 0 1px var(--hb-party)}
+body #sc-hub-room .hub-card-name{line-height:1.25}
+</style>
 </head>
 <body>
 
@@ -11300,6 +11407,7 @@ function hubMake(tag,className,textValue){
   if(textValue!==undefined)el.textContent=String(textValue);
   return el;
 }
+const HUB_CATEGORY_LABEL={'2人対戦':'ふたりで対戦','みんなで遊ぶ':'みんなで遊ぶ','カジノ':'テーブルゲーム'};
 const HUB_ICONS={
   stickbattle:'⚔',reversi:'◑',connect4:'◉',airhockey:'◈',
   chess:'♞',shogi:'将', 'mini-shogi':'五',shichinarabe:'7',
@@ -11327,11 +11435,11 @@ function hubRender(){
   const cards=hubEl('hub-catalog');
   if(cards){
     cards.replaceChildren();
-    for(const category of ['2人対戦','みんなで遊ぶ','カジノ']){
+    for(const category of ['2人対戦','みんなで遊ぶ','カジノ']){const categoryLabel=HUB_CATEGORY_LABEL[category]||category;
       const games=HUB_CATALOG.filter(x=>x.category===category);
       const section=hubMake('section','hub-category');
       const heading=hubMake('div','hub-category-heading');
-      const title=hubMake('h4','',category);
+      const title=hubMake('h4','',categoryLabel);section.dataset.category=category;
       heading.append(title,hubMake('span','hub-category-count',String(games.length).padStart(2,'0')));
       section.appendChild(heading);
       const grid=hubMake('div','hub-cards');
