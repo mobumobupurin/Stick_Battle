@@ -13,7 +13,7 @@ case 'profile':{if(typeof d.name!=='string'||!d.name.trim()||d.name.trim().lengt
 case 'move':{if(!floors.includes(d.floor)||!Number.isFinite(d.x)||!Number.isFinite(d.y))throw Error('位置が不正');p.floor=d.floor;p.x=Math.max(3,Math.min(97,d.x));p.y=Math.max(6,Math.min(94,d.y));break}
 case 'bonus':{const t=day(now);if(p.day===t)throw Error('本日分は受取済み');p.day=t;p.cash+=BONUS;msg='ログインボーナス +500 SC';break}
 case 'deposit':case 'withdraw':{const n=integer(d.amount,1,LIMIT);let from=action==='deposit'?'cash':'bank',to=from==='cash'?'bank':'cash';if(p[from]<n)throw Error('残高不足');p[from]-=n;p[to]+=n;msg='バンク取引完了';break}
-case 'refill':if(p.cash+p.bank!==0)throw Error('総資産0のときのみ補充できます');p.cash=INITIAL;msg='無料補充 +5000 SC';break;
+case 'refill':if(p.pending||p.cash+p.bank!==0)throw Error('総資産0のときのみ補充できます');p.cash=INITIAL;msg='無料補充 +5000 SC';break;
 case 'medal':{const n=integer(d.amount,1,100);if(p.cash<n)throw Error('残高不足');let r=rng(100);let won=r<12?n*4:r<55?n:0;p.cash+=won-n;p.plays++;if(won>n)p.wins++;msg='投入 '+n+'枚 / 払出 '+won+'枚';break}
 case 'practiceRoulette':{let n=rng(37),bet=integer(d.amount);if(p.cash<bet)throw Error('残高不足');let won=roulette(n,d.choice,bet);p.cash+=won-bet;p.plays++;if(won>bet)p.wins++;msg='結果 '+n+' / 払出 '+won+' SC';break}
 default:throw Error('未対応操作')}
