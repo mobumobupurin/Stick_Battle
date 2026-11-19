@@ -4,40 +4,32 @@ import {readFileSync,existsSync} from 'node:fs';
 
 const src=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 
-test('title fight is built from native vector geometry, not encoded bitmap artwork',()=>{
- const html=src('src/index.template.html'),css=src('src/styles/ui-renewal.css');
- const art=html.split('class="title-art title-code-art"')[1]?.split('</svg>')[0];
- assert.ok(art,'inline title illustration exists in source template');
- assert.match(art,/class="title-vector"/);
- assert.match(art,/data-fighter="karate"/);
- assert.match(art,/data-fighter="swordsman"/);
- assert.match(art,/class="title-impact"/);
- assert.match(art,/class="title-sword-arc"/);
- assert.match(art,/viewBox="0 0 1440 820"/);
+test('arcade title fight is native vector geometry drawn in code, not bitmap artwork',()=>{
+ const ui=src('src/game/13-ui-and-menus.js'),css=src('src/styles/arcade.css');
+ const art=ui.split('function titleIllustration(){')[1]?.split('\n}\n')[0];
+ assert.ok(art,'title illustration function exists');
+ assert.match(art,/<svg viewBox="0 0 1600 900"/);
+ assert.match(art,/class="ax-f-left"/);
+ assert.match(art,/class="ax-f-right"/);
+ assert.match(art,/class="ax-burst"/);
+ assert.match(art,/axBlade/,'swordsman keeps a drawn blade');
  assert.doesNotMatch(art,/<image\b|data:image\/|href="https?:/);
- assert.match(css,/TITLE CLASH \/ V4/);
- assert.doesNotMatch(css,/title-clash\.svg|background[^;\n]*\.png/);
- assert.match(css,/@media\(orientation:portrait\)/);
- assert.match(css,/@media\(orientation:landscape\)/);
- assert.match(css, /prefers-reduced-motion/);
+ assert.match(ui,/document\.querySelector\('\.title-art'\)\.innerHTML=titleIllustration\(\)/);
+ assert.match(css,/@media\(max-aspect-ratio:4\/5\)/,'portrait framing keeps both fighters visible');
+ assert.match(css,/prefers-reduced-motion/);
  assert.equal(existsSync(new URL('../assets/title/title-clash.svg',import.meta.url)),false);
 });
 
-test('code-drawn fighters have blank faces and real editable text branding',()=>{
- const template=src('src/index.template.html'),menu=src('src/game/16-menu-ui.js');
- const scene=template.split('class="title-art title-code-art"')[1]?.split('</svg>')[0];
- assert.ok(scene);
- assert.doesNotMatch(scene,/data-eye=|class="eye|glowing.eye|pupil|iris/);
- assert.match(scene,/circle cx="123" cy="115" r="56"/);
- assert.match(scene,/circle cx="120" cy="112" r="55"/);
- assert.match(template,/<h1 class="logo">STICK<em>BATTLE<\/em><small>ONLINE<\/small><\/h1>/);
+test('title fighters have blank faces and the logo is real editable text',()=>{
+ const template=src('src/index.template.html'),ui=src('src/game/13-ui-and-menus.js');
+ const art=ui.split('function titleIllustration(){')[1]?.split('\n}\n')[0];
+ assert.ok(art);
+ assert.doesNotMatch(art,/data-eye=|class="eye|glowing.eye|pupil|iris/);
+ assert.match(template,/<h1 class="ax-logo" aria-label="STICK BATTLE ONLINE"><span class="ax-logo-stick">STICK<\/span><span class="ax-logo-battle">BATTLE<\/span><span class="ax-logo-online">ONLINE<\/span><\/h1>/);
  assert.match(template,/id="title-tap"/);
- assert.match(menu,/title artwork is authored as inline SVG/);
- assert.doesNotMatch(menu,/titleArtwork\.innerHTML\s*=\s*''/);
- assert.doesNotMatch(menu,/premium-light|MASTER YOUR OWN STYLE/);
+ assert.match(template,/class="title-art ax-title-art"/);
  const output=src('index.html');
- assert.match(output,/class="title-art title-code-art"/);
- assert.match(output,/TITLE CLASH \/ V4/);
+ assert.match(output,/STICK BATTLE ONLINE — ARCADE UI/);
  assert.doesNotMatch(output,/title-clash\.svg/);
 });
 

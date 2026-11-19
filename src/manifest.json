@@ -41,6 +41,7 @@
     "src/game/25-hub-more-ui.js",
     "src/game/26-hub-flow.js",
     "src/game/27-hub-ai.js",
-    "src/game/28-hub-difficulty.js"
+    "src/game/28-hub-difficulty.js",
+    "src/game/29-arcade-ui.js"
   ]
 }

@@ -8,8 +8,8 @@ test('mode cards and all linked buttons exist exactly once',()=>{
  for(const id of ['go-cpu','go-online','go-more','go-hub','go-howto','extra-training','extra-kumite','extra-tournament','extra-ranking','tour-offline','tour-network']){
   assert.equal(html.split('id="'+id+'"').length-1,1,id);
  }
- assert.ok(html.indexOf('03 / CHALLENGES')<html.indexOf('04 / GAME HUB'));
- assert.ok(html.indexOf('04 / GAME HUB')<html.indexOf('05 / BEGINNER GUIDE'));
+ const order=['go-cpu','go-online','go-more','go-hub','go-howto'].map(id=>html.indexOf('id="'+id+'"'));
+ assert.deepEqual([...order].sort((a,b)=>a-b),order,'main menu keeps CPU → online → challenge → hub → guide order');
  assert.ok(html.includes('全キャラのCPUが次々に登場'));
  assert.ok(!html.includes('最強固定'));
 });
