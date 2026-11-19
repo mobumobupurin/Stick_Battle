@@ -98,7 +98,7 @@ test('coin pusher field pushes medals off the front and loses some in the side g
  let front=0,lost=0;for(let k=0;k<300;k++){P.drop(s,8+(k*37%84));for(let f=0;f<14;f++){const r=P.step(s);front+=r.front;lost+=r.lost;}}
  assert.ok(front>150,'front '+front);assert.ok(lost>20,'lost '+lost);
  assert.ok(s.coins.every(c=>c.x>=P.R-1e-9&&c.x<=100-P.R+1e-9&&c.y>=s.face+P.R-1e-6));
- assert.equal(P.LOTTERY[P.lottery(P.lotteryTotal-1)][0],'SEVEN');assert.ok(P.POCKETS.includes('JP'));
+ assert.equal(P.LOTTERY[P.lottery(P.lotteryTotal-1)][0],'SEVEN');assert.ok(P.STAGE2.includes('JP'));assert.ok(P.STAGE1.includes('UP'));
  // FEVER walls: nothing is lost while the walls are up
  s.wall=200;let lostWall=0;for(let k=0;k<60;k++){P.drop(s,6);for(let f=0;f<3;f++)lostWall+=P.step(s).lost;}assert.equal(lostWall,0);
 });
@@ -111,4 +111,12 @@ test('card games read their pacing from WorldPace (じっくり / ふつう / �
  P.next();assert.equal(P.level,'fast');assert.ok(P.ms(1000)<=250);assert.equal(store['stick-royale-pace'],'fast');
  for(const f of ['baccarat','blackjack','videopoker'])assert.match(read('world/'+f+'.js'),/WorldPace\.button\(\)/);
  assert.match(read('world/index.html'),/pace\.js\?v=/);
+});
+
+test('coin pusher JP balls go to the JP lottery from the front and roll back from the gutters',()=>{
+ const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
+ const s=P.create(0);s.coins.push({x:50,y:100.5,ball:true});let r=P.step(s);assert.equal(r.balls,1);assert.equal(s.coins.length,0);
+ s.coins.push({x:3,y:100.5,ball:true});r=P.step(s);assert.equal(r.balls,0);assert.equal(s.coins.filter(c=>c.ball).length,1);
+ for(const T of [P.LOTTERY,P.LOTTERY_KAKUHEN])assert.equal(T.map(l=>l[0]).join(),'MISS,CHERRY,BELL,BAR,BALL,SEVEN');
+ assert.ok(P.total(P.LOTTERY_KAKUHEN)===P.total(P.LOTTERY));
 });
