@@ -1,8 +1,31 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111b27"><title>STICK WORLD | GAME HUB</title><link rel="stylesheet" href="world.css?v=resort3"></head><body>
-<header><a class="back" href="../">← GAME HUB / 本編</a><div class="brand"><small>STICK BATTLE ONLINE / AMUSEMENT</small><h1>STICK WORLD<span>.</span></h1></div><div class="wallet"><div><small>WALLET / 手持ち</small><strong id="cashDisplay">—</strong></div><div><small>BANK / 預金</small><strong id="bankDisplay">—</strong></div><span id="wallet" hidden></span></div></header>
-<main><section class="intro"><div><b id="modeLabel">練習版・端末内保存</b><p id="status" aria-live="polite">架空コイン専用。オンラインにはFirebase認証・データベース設定が必要です。</p></div><div class="auth"><input id="nickname" maxlength="20" placeholder="ニックネーム（初回のみ）" aria-label="ニックネーム"><button id="login" disabled>匿名で遊ぶ・続きから</button><button id="googleLogin" disabled>Googleでログイン・連携</button><button id="googleLink" hidden>Googleを連携して引き継ぎ</button><button id="googleSignOut" hidden>Googleログアウト</button><button id="logout" hidden>練習版に戻る</button><button id="copyUid" hidden>UIDをコピー</button><p>匿名ならメール・パスワード不要。Google連携は任意で、連携後は別端末でも同じデータを利用できます。匿名のままブラウザのデータを消すと復元できない場合があります。Google認証は認証用に利用し、ゲームのプロフィールにはメールを保存しません。</p></div></section>
-<div class="layout"><aside class="side"><div class="side-heading"><small>RESORT DIRECTORY</small><h2>フロアガイド</h2></div><nav id="floors"></nav><div class="player"><div class="profile-heading"><span class="profile-mark">◆</span><div><small>MEMBER PROFILE</small><b id="profileName">PLAYER</b></div></div><label>プレイヤー名<input id="name" maxlength="20" value="PLAYER"></label><button id="saveName">名前を保存</button><p id="record"></p><p id="online"></p></div><button id="admin" hidden>管理者パネル</button></aside>
-<section class="mapcard"><div class="heading floor-heading"><div><small id="floorKicker">AMUSEMENT RESORT</small><h2 id="floorName"></h2><p id="floorDescription"></p></div><span id="onlineCount">LOCAL</span></div><div id="map" tabindex="0" aria-label="施設マップ"></div><div class="map-footer"><div id="nearHint" aria-live="off">設備に近づいて利用できます</div><div id="floorPlayers"></div></div><div class="controls"><span>WASD / 矢印キー ・ E で入店 ・ 設備をタップして移動</span><div class="pad"><button data-dir="up" aria-label="上">▲</button><button data-dir="left" aria-label="左">◀</button><button id="interact">入る</button><button data-dir="right" aria-label="右">▶</button><button data-dir="down" aria-label="下">▼</button></div></div></section></div>
-<section id="panel" class="panel" hidden><div class="heading"><h2 id="panelTitle"></h2><button id="closePanel">閉じる ×</button></div><div id="panelBody"></div><p id="panelMsg" aria-live="polite"></p></section></main>
-<footer>STICK WORLD / BETA — 無料の架空通貨によるゲーム。練習版とオンラインの残高は別です。</footer>
-<script src="config.js" defer></script><script src="core.js" defer></script><script src="spark.js?v=admin2" defer></script><script src="resort.js?v=resort3" defer></script><script src="world.js?v=resort3" defer></script></body></html>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0a0a0f"><title>STICK CASINO | STICK BATTLE ONLINE</title><link rel="stylesheet" href="world.css?v=casino2"></head><body>
+<header class="cz-top">
+ <a class="cz-back" href="../">← STICK BATTLE</a>
+ <div class="cz-brand"><small>STICK BATTLE ONLINE</small><h1>STICK <span>CASINO</span></h1></div>
+ <div class="wallet cz-wallet"><div><small>CHIPS</small><strong id="cashDisplay">—</strong></div><div><small>BANK</small><strong id="bankDisplay">—</strong></div><span id="wallet" hidden></span></div>
+</header>
+<main class="cz-main">
+ <section class="cz-games" aria-label="ゲームを選ぶ"><div class="cz-section-head"><small>GAMES</small><h2>今夜のテーブル</h2></div><div id="gameCards" class="cz-game-cards"></div></section>
+ <div class="layout cz-layout">
+  <section class="mapcard cz-floorcard">
+   <div class="heading floor-heading"><div><small id="floorKicker">FLOOR</small><h2 id="floorName"></h2><p id="floorDescription"></p></div><span id="onlineCount">PRACTICE</span></div>
+   <nav id="floors" aria-label="フロア"></nav>
+   <div id="map" tabindex="0" aria-label="フロアマップ"></div>
+   <div class="map-footer"><div id="nearHint" aria-live="off">設備に近づくと利用できます</div><div id="floorPlayers"></div></div>
+   <div class="controls"><span>WASD / 矢印キーで移動 ・ E で入る ・ 設備をタップで移動</span><div class="pad"><button data-dir="up" aria-label="上">▲</button><button data-dir="left" aria-label="左">◀</button><button id="interact">入る</button><button data-dir="right" aria-label="右">▶</button><button data-dir="down" aria-label="下">▼</button></div></div>
+  </section>
+  <aside class="side cz-side">
+   <div class="player"><div class="profile-heading"><span class="profile-mark">♠</span><div><small>MEMBER</small><b id="profileName">PLAYER</b></div></div>
+    <label>プレイヤー名<input id="name" maxlength="20" value="PLAYER"></label><button id="saveName">名前を保存</button><p id="record"></p></div>
+   <div class="intro cz-account"><b id="modeLabel">練習版・端末内保存</b><p id="status" aria-live="polite">架空のチップで遊ぶゲームです。</p>
+    <div class="auth"><input id="nickname" maxlength="20" placeholder="ニックネーム（初回のみ）" aria-label="ニックネーム"><button id="login" disabled>オンラインで遊ぶ</button><button id="googleLogin" disabled>Googleでログイン</button><button id="googleLink" hidden>Googleを連携</button><button id="googleSignOut" hidden>Googleログアウト</button><button id="logout" hidden>練習版に戻る</button><button id="copyUid" hidden>UIDをコピー</button>
+     <p>オンラインは匿名でOK（メール不要）。Googleを連携すると別の端末でも続きから遊べます。練習版とオンラインの残高は別です。</p></div>
+    <p id="online"></p></div>
+   <button id="admin" hidden>管理者パネル</button>
+  </aside>
+ </div>
+ <div id="backdrop" hidden></div>
+ <section id="panel" class="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle" hidden><div class="heading"><h2 id="panelTitle"></h2><button id="closePanel">閉じる ×</button></div><div id="panelBody"></div><p id="panelMsg" aria-live="polite"></p></section>
+</main>
+<footer class="cz-foot">STICK CASINO — 無料の架空チップで遊ぶゲームです。現実のお金や景品とは交換できません。</footer>
+<script src="config.js" defer></script><script src="core.js?v=casino2" defer></script><script src="spark.js?v=casino2" defer></script><script src="resort.js?v=casino2" defer></script><script src="world.js?v=casino2" defer></script><script src="casino.js?v=casino2" defer></script><script src="slot.js?v=casino2" defer></script><script src="blackjack.js?v=casino2" defer></script></body></html>

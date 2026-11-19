@@ -19,7 +19,7 @@ function sparkAdapter(db, auth, C, random){
     let all=await tx(root.child('profiles'),v=>{if(!v?.[target]||!v?.[uid])throw Error('対象プレイヤーの保存データが見つかりません。一覧を更新してください');let q={...v[target]},me=target===uid?q:{...v[uid]};if(d.operation==='mint')q.cash+=n;else if(d.operation==='burn'){if(q.cash<n)throw Error('残高不足');q.cash-=n;}else if(d.operation==='transfer'){if(uid===target||me.cash<n)throw Error('譲渡先または残高を確認してください');me.cash-=n;q.cash+=n;}else throw Error('無効な操作');if(q.cash+q.bank>C.LIMIT)throw Error('残高上限');return {...v,[uid]:me,[target]:q};});let message='管理操作完了';try{await root.child('adminLog').push({actor:uid,target,operation:d.operation,amount:n,reason,at:firebase.database.ServerValue.TIMESTAMP});}catch{message+='（操作履歴の保存に失敗）';}return {data:{profile:all[uid],message}};
   }
   let outcome=null,expected=null;if(a==='settle'){let p=await snap(ref);if(!p||p.betRound<0)throw Error('未精算のベットはありません');expected=p.betRound;outcome=await ensureResult(uid,expected);}
-  let message='',medalRoll=a==='medal'?random(100):0;
+  let message='',result=null,medalRoll=a==='medal'?random(100):0;const rolls=a==='slot'?[random(100),random(100),random(100)]:[];
   let p=await tx(ref,v=>{if(!v)throw Error('プロフィールを作成してください');let p={...v};switch(a){
   case 'bonus':{let t=day();if(p.bonusDay>=t)throw Error('本日分は受取済み');p.bonusDay=t;p.cash+=500;message='ログインボーナス +500 SC';break;}
   case 'refill':if(p.betRound>=0||p.cash+p.bank!==0)throw Error('未精算なし・総資産0のときのみ');p.cash=5000;message='無料補充 +5000 SC';break;
@@ -27,9 +27,10 @@ function sparkAdapter(db, auth, C, random){
   case 'settle':{if(p.betRound!==expected)throw Error('ベットは変更済みです');let won=C.roulette(outcome.number,p.betChoice,p.betAmount),credit=Math.min(won,C.LIMIT-p.cash-p.bank);p.cash+=credit;p.plays++;if(won>p.betAmount)p.wins++;p.betRound=-1;p.betAmount=0;p.betChoice='none';message='結果 '+outcome.number+' / 払出 '+credit+' SC';break;}
   case 'medal':if(p.betRound>=0)throw Error('先にルーレットを精算してください');
   case 'profile':case 'move':case 'deposit':case 'withdraw':{let r=C.apply(p,a,d,now(),()=>medalRoll);p=r.profile;message=r.message;break;}
+  case 'slot':case 'blackjack':{if(p.betRound>=0)throw Error('先にルーレットを精算してください');let k=0;const r=C.apply(p,a,d,now(),()=>rolls[k++]);p=r.profile;message=r.message;result=r.result;break;}
   default:throw Error('無効な操作');}
   if(!Number.isSafeInteger(p.cash)||!Number.isSafeInteger(p.bank)||p.cash<0||p.bank<0||p.cash+p.bank>C.LIMIT)throw Error('残高上限');return p;});
   if(a==='move'||a==='profile')try{await presence(uid,p);}catch{}
-  return {data:{profile:p,message}};
+  return {data:{profile:p,message,result}};
  };
 }

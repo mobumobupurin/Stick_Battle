@@ -21,3 +21,5 @@ function axInitMenus(){
  });
 }
 axInitMenus();
+// STICK CASINO is a standalone game page.
+document.getElementById('go-casino')?.addEventListener('click',()=>{location.href='./world/';});
