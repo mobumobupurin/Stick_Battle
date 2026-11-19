@@ -2,9 +2,12 @@
 // STICK ROYALE coin pusher: a small deterministic 2D field (top view). Rendering lives in medalpusher.js.
 // Units: field is 100 wide, the front edge is at y=100. The pusher face moves between FACE_MIN and FACE_MAX.
 const PusherSim=(()=>{
- const R=4.2,FACE_MIN=10,FACE_MAX=27,PERIOD=150,GUTTER=12,EDGE=100,CHANCE_RATE=0.035;
- // CHANCE lottery: [label, medals added to the field, weight]
- const LOTTERY=[['MISS',0,58],['+5',5,24],['+15',15,11],['+40',40,5],['JACKPOT',150,2]];
+ const R=4.2,FACE_MIN=10,FACE_MAX=27,PERIOD=150,GUTTER=12,EDGE=100,CHANCE_RATE=0.045,WALL_FRAMES=720,JP_BASE=150,JP_RATE=0.05;
+ // CHECKER lottery (3 reels): [result, medals added to the field, weight]. BALL goes to the JP roulette, SEVEN is FEVER (+30 and the side walls rise).
+ const LOTTERY=[['MISS',0,560],['CHERRY',5,200],['BELL',10,120],['BAR',20,60],['BALL',0,40],['SEVEN',30,20]];
+ const SYMBOLS=['CHERRY','BELL','BAR','BALL','SEVEN'];
+ // JP roulette pockets (equal size). 'JP' pays the progressive jackpot.
+ const POCKETS=['JP',30,20,10,10,10];
  const lotteryTotal=LOTTERY.reduce((t,l)=>t+l[2],0);
  function lottery(r){let x=r%lotteryTotal,t=0;for(let i=0;i<LOTTERY.length;i++){t+=LOTTERY[i][2];if(x<t)return i;}return 0;}
  // a packed starting field (hex rows with a little jitter), like a machine that has been played for a while
@@ -25,8 +28,8 @@ const PusherSim=(()=>{
      a.x-=nx*o*wa;a.y-=ny*o*wa;b.x+=nx*o*wb;b.y+=ny*o*wb;}}
    for(const a of c){if(a.x<R)a.x=R;else if(a.x>100-R)a.x=100-R;}
   }
-  let front=0,lost=0;for(let i=c.length-1;i>=0;i--){const a=c[i];if(a.fresh)a.fresh--;if(a.y>EDGE){if(a.x<GUTTER||a.x>100-GUTTER)lost++;else front++;c.splice(i,1);}}
+  if(s.wall>0)s.wall--;let front=0,lost=0;for(let i=c.length-1;i>=0;i--){const a=c[i];if(a.fresh)a.fresh--;if(a.y>EDGE){if(!(s.wall>0)&&(a.x<GUTTER||a.x>100-GUTTER))lost++;else front++;c.splice(i,1);}}
   return {front,lost};}
- return {R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,LOTTERY,lotteryTotal,lottery,create,faceAt,drop,scatter,step};
+ return {R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,WALL_FRAMES,JP_BASE,JP_RATE,SYMBOLS,POCKETS,LOTTERY,lotteryTotal,lottery,create,faceAt,drop,scatter,step};
 })();
 if(typeof module!=='undefined')module.exports=PusherSim;else globalThis.PusherSim=PusherSim;

@@ -98,7 +98,9 @@ test('coin pusher field pushes medals off the front and loses some in the side g
  let front=0,lost=0;for(let k=0;k<300;k++){P.drop(s,8+(k*37%84));for(let f=0;f<14;f++){const r=P.step(s);front+=r.front;lost+=r.lost;}}
  assert.ok(front>150,'front '+front);assert.ok(lost>20,'lost '+lost);
  assert.ok(s.coins.every(c=>c.x>=P.R-1e-9&&c.x<=100-P.R+1e-9&&c.y>=s.face+P.R-1e-6));
- assert.equal(P.LOTTERY.length,5);assert.equal(P.LOTTERY[P.lottery(P.lotteryTotal-1)][0],'JACKPOT');
+ assert.equal(P.LOTTERY[P.lottery(P.lotteryTotal-1)][0],'SEVEN');assert.ok(P.POCKETS.includes('JP'));
+ // FEVER walls: nothing is lost while the walls are up
+ s.wall=200;let lostWall=0;for(let k=0;k<60;k++){P.drop(s,6);for(let f=0;f<3;f++)lostWall+=P.step(s).lost;}assert.equal(lostWall,0);
 });
 
 test('card games read their pacing from WorldPace (じっくり / ふつう / はやい)',()=>{
