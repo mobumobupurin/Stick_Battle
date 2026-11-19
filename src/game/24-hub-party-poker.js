@@ -1,8 +1,8 @@
 // GAME HUB / OLD MAID + FIVE-CARD DRAW POKER (fictional chips; no cash betting).
 const HUB_PARTY_EXTRAS=['oldmaid','poker'];
-for(const id of HUB_PARTY_EXTRAS)HUB_CATALOG.find(x=>x.id===id).ready=true;
+for(const id of HUB_PARTY_EXTRAS){const entry=HUB_CATALOG.find(x=>x.id===id);if(entry)entry.ready=true;}
 HUB_CATALOG.find(x=>x.id==='oldmaid').description='ジョーカー1枚入り53枚でババ抜き。順に隣の手札からカードを引き、同じ数字を捨てます。';
-HUB_CATALOG.find(x=>x.id==='poker').description='5カード・ドローポーカー。手札交換・役・仮想チップでのBET/CALL/FOLDに対応。';
+{const entry=HUB_CATALOG.find(x=>x.id==='poker');if(entry)entry.description='5カード・ドローポーカー。手札交換・役・仮想チップでのBET/CALL/FOLDに対応。';}
 HUB_PLAYERS_MIN.oldmaid=2;HUB_PLAYERS_MAX.oldmaid=8;
 HUB_PLAYERS_MIN.poker=2;HUB_PLAYERS_MAX.poker=6;
 function hubDeckShuffle(deck){

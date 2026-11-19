@@ -6,10 +6,9 @@ const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 
 test('GAME HUB adds chess, mini-shogi, Old Maid and 5-card poker to its existing playable games',()=>{
  const g=game();
- assert.equal(g.run('HUB_CATALOG.length'),13);
+ assert.equal(g.run('HUB_CATALOG.length'),10);
  assert.deepEqual(Array.from(g.run('HUB_CATALOG.filter(g=>g.ready).map(g=>g.id)')),[
-  'stickbattle','reversi','connect4','chess','mini-shogi','shichinarabe','oldmaid',
-  'blackjack','poker','baccarat']);
+  'stickbattle','reversi','connect4','chess','mini-shogi','shichinarabe','oldmaid']);
  for(const kind of ['chess','mini-shogi','oldmaid','poker'])
   assert.ok(g.run('hubNewGame('+JSON.stringify(kind)+',["alice","hub-cpu-1"])'));
  assert.deepEqual(Array.from(g.run('hubChooseSeats("poker",["host"])')),['host','hub-cpu-1']);
