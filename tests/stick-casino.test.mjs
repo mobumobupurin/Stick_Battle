@@ -5,18 +5,43 @@ import vm from 'node:vm';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 function core(){const ctx={};vm.createContext(ctx);vm.runInContext(read('world/core.js')+';globalThis.C=WorldCore',ctx);return ctx.C;}
 
-test('slot machine pays triples and first-two pairs, keeps about 96% return',()=>{
+test('video slot pays lines left to right with wilds, scatters trigger free games, and the win is capped',()=>{
  const C=core();
- assert.equal(C.slotPayout(['seven','seven','seven'],10),3000);
- assert.equal(C.slotPayout(['spark','spark','gem'],10),20);
- assert.equal(C.slotPayout(['gem','spark','spark'],10),0);
- const rtp=C.slotRtp();assert.ok(rtp>0.93&&rtp<0.99,'rtp '+rtp);
- let p=C.start();
- const r=C.apply(p,'slot',{amount:20},0,()=>99);
- assert.deepEqual([...r.result.reels],['spark','spark','spark']);
- assert.equal(r.profile.cash,5000-20+120);assert.equal(r.profile.plays,1);assert.equal(r.profile.wins,1);
- assert.throws(()=>C.apply(p,'slot',{amount:30},0,()=>0));
- assert.throws(()=>C.apply({...p,cash:5},'slot',{amount:10},0,()=>0));
+ const G=cols=>cols.map(c=>c.split(','));
+ // middle row: seven seven wild seven gem -> four sevens on line 0
+ let e=C.vsEvaluate(G(['bar,seven,gem','gem,seven,bar','star,wild,clover','spark,seven,clover','gem,gem,bar']),100);
+ assert.equal(e.wins.find(w=>w.line===0).count,4);
+ assert.equal(e.wins.find(w=>w.line===0).amount,C.VS_PAY.seven[1]*10);
+ e=C.vsEvaluate(G(['scatter,gem,bar','gem,bar,scatter','star,clover,spark','scatter,bar,clover','gem,spark,bar']),100);
+ assert.equal(e.free,8);assert.ok(e.wins.some(w=>w.sym==='scatter'&&w.amount===200));
+ const rng=n=>Math.floor(Math.random()*n);
+ for(let i=0;i<300;i++){const r=C.vsSpin(100,rng);assert.ok(r.total<=100*C.VS_CAP);assert.ok(r.free.length===0||[8,10,15].includes(r.free.length));}
+ const p=C.start(),r=C.apply(p,'slot',{amount:20},0,rng);
+ assert.equal(r.profile.cash,5000-20+r.result.total);assert.equal(r.profile.plays,1);
+ assert.throws(()=>C.apply(p,'slot',{amount:30},0,rng));
+ assert.throws(()=>C.apply({...p,cash:5},'slot',{amount:10},0,rng));
+});
+
+test('baccarat follows the third-card table and pays 1:1, 0.95:1 and 8:1',()=>{
+ const C=core();
+ assert.equal(C.bacValue([6,7]),5);assert.equal(C.bacValue([9,12]),0);
+ assert.equal(C.bacPayout('banker',100,'banker'),195);assert.equal(C.bacPayout('player',100,'tie'),100);assert.equal(C.bacPayout('tie',100,'tie'),900);assert.equal(C.bacPayout('tie',100,'player'),0);
+ const seq=(...v)=>{let i=0;return ()=>v[i++];};
+ // player 2+3=5 draws 4 -> 9 ; banker 3+3=6, third card 4 -> banker stands
+ const d=C.bacDeal(seq(1,2,2,2,3));assert.deepEqual([...d.player],[1,2,3]);assert.deepEqual([...d.banker],[2,2]);assert.equal(d.winner,'player');
+ const r=C.apply(C.start(),'baccarat',{amount:100,side:'player'},0,seq(1,2,2,2,3));assert.equal(r.profile.cash,5100);
+ assert.throws(()=>C.apply(C.start(),'baccarat',{amount:100,side:'both'},0,seq(1,2,2,2,3)));
+});
+
+test('video poker ranks Jacks or Better hands and validates the final hand',()=>{
+ const C=core(),H=s=>s.split(' ').map(x=>({r:'A23456789TJQK'.indexOf(x[0]),s:'shdc'.indexOf(x[1])}));
+ assert.equal(C.vpRank(H('Ts Js Qs Ks As')),'royal');assert.equal(C.vpRank(H('As 2d 3h 4s 5c')),'straight');
+ assert.equal(C.vpRank(H('Jh Jd 3h 5s 8c')),'jacks');assert.equal(C.vpRank(H('Th Td 3h 5s 8c')),null);
+ const p=C.start();
+ assert.equal(C.apply(p,'videopoker',{amount:30,hand:H('Ts Js Qs Ks As')},0,()=>0).profile.cash,5000-30+24000);
+ assert.equal(C.apply(p,'videopoker',{amount:10,hand:H('Th Td 3h 5s 8c')},0,()=>0).profile.cash,4990);
+ assert.throws(()=>C.apply(p,'videopoker',{amount:10,hand:H('As As 3h 5s 8c')},0,()=>0));
+ assert.throws(()=>C.apply(p,'videopoker',{amount:40,hand:H('Th Td 3h 5s 8c')},0,()=>0));
 });
 
 test('blackjack settles win, blackjack, push, loss and doubled hands',()=>{
@@ -37,5 +62,5 @@ test('online rules allow one bounded casino play and nothing else extra',()=>{
  assert.match(rules,/newData\.child\('cash'\)\.val\(\) - data\.child\('cash'\)\.val\(\) <= 30000/);
  assert.match(rules,/data\.child\('cash'\)\.val\(\) - newData\.child\('cash'\)\.val\(\) <= 2000/);
  const spark=read('world/spark.js');
- assert.match(spark,/case 'slot':case 'blackjack':/);
+ assert.match(spark,/case 'slot':case 'blackjack':case 'baccarat':case 'videopoker':/);
 });

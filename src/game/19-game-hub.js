@@ -9,10 +9,7 @@ const HUB_CATALOG = [
   {id:'mini-shogi',name:'5五将棋',category:'2人対戦',players:'2人',ready:false},
   {id:'shichinarabe',name:'七並べ',category:'みんなで遊ぶ',players:'3〜8人',ready:false},
   {id:'oldmaid',name:'ババ抜き',category:'みんなで遊ぶ',players:'3〜8人',ready:false},
-  {id:'mahjong',name:'麻雀',category:'みんなで遊ぶ',players:'4人',ready:false},
-  {id:'blackjack',name:'ブラックジャック',category:'カジノ',players:'2〜8人',ready:false},
-  {id:'poker',name:'ポーカー',category:'カジノ',players:'2〜8人',ready:false},
-  {id:'baccarat',name:'バカラ',category:'カジノ',players:'2〜8人',ready:false}
+  {id:'mahjong',name:'麻雀',category:'みんなで遊ぶ',players:'4人',ready:false}
 ];
 const hubEl = id => document.getElementById(id);
 const hubInBounds = (r,c) => r>=0 && r<8 && c>=0 && c<8;
@@ -152,7 +149,7 @@ function hubRender(){
   const cards=hubEl('hub-catalog');
   if(cards){
     cards.replaceChildren();
-    for(const category of ['2人対戦','みんなで遊ぶ','カジノ']){const categoryLabel=HUB_CATEGORY_LABEL[category]||category;
+    for(const category of ['2人対戦','みんなで遊ぶ']){const categoryLabel=HUB_CATEGORY_LABEL[category]||category;
       const games=HUB_CATALOG.filter(x=>x.category===category);
       const section=hubMake('section','hub-category');
       const heading=hubMake('div','hub-category-heading');

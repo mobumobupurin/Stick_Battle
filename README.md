@@ -61,9 +61,9 @@ Previous design history: [立体機動再設計](docs/EREN_FREEDOM_REWORK.md). O
 
 濃色UIと全体/狭い/広いステージ抽選：[現行デザインと抽選仕様](docs/PREMIUM_UI_RANDOM_ARENAS.md)。V44採用後は全員再読み込み・新規ルームが必要。
 
-### STICK CASINO
+### STICK ROYALE
 
-メインメニュー「06 スティックカジノ」から開く独立カジノ（`world/`、旧 STICK WORLD）。スロット・ブラックジャック・ルーレット・メダル落とし。仕様とFirebaseルールの更新手順：[STICK CASINO](docs/STICK_WORLD.md)。
+メインメニュー「06 STICK ROYALE」から開く独立カジノ（`world/`、旧 STICK WORLD）。ビデオスロット・ビデオポーカー・バカラ・ブラックジャック・ルーレット・メダル落とし。仕様：[STICK ROYALE](docs/STICK_WORLD.md)。
 
 ### Co-op raid
 

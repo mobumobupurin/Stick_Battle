@@ -116,7 +116,7 @@ test('blackjack CPU considers dealer upcard rather than a fixed hit/stand thresh
 
 test('HUB still keeps its 13-game catalog, room invitations, CPU selection and card game controls',()=>{
  const html=read('src/index.template.html');
- assert.match(html,/10 PLAYABLE \/ 13 GAMES/);
+ assert.match(html,/7 PLAYABLE \/ 10 GAMES/);
  assert.match(html,/id="hub-copy"/);
  assert.match(html,/id="hub-cpu-count"/);
  assert.match(html,/id="hub-game-start"/);

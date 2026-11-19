@@ -19,14 +19,15 @@ function cardEl(c,hidden,delay){
  e.append(tl,h('span','bj-pip',suit),br);return e;
 }
 function open(body){
- const root=h('div','bj'),table=h('div','bj-table');
+ const root=h('div','egm egm-bj bj'),table=h('div','bj-table egm-screen');const top=h('div','egm-topper');top.append(h('small',undefined,'STICK ROYALE ELECTRONIC TABLE'),h('b','egm-title','BLACKJACK'),h('span','egm-sub','BLACKJACK PAYS 3 TO 2'));
+ const mt=label=>{const m=h('div','egm-meter');const v=h('b',undefined,'0');m.append(h('small',undefined,label),v);return [m,v];};const meters=h('div','egm-meters');const [mC,vCredit]=mt('CREDIT'),[mB,vBet]=mt('BET'),[mW,vWin]=mt('WIN');meters.append(mC,mB,mW);
  const dealer=h('div','bj-side bj-dealer'),dHead=h('div','bj-head');const dLabel=h('small',undefined,'DEALER'),dTotal=h('b','bj-total','');dHead.append(dLabel,dTotal);const dCards=h('div','bj-cards');dealer.append(dHead,dCards);
  const felt=h('div','bj-felt');felt.append(h('span','bj-arc','BLACKJACK PAYS 3 TO 2'),h('span','bj-arc2','DEALER MUST STAND ON ALL 17s'));
  const center=h('div','bj-center'),msgBox=h('div','bj-msg');const mMain=h('b',undefined,'PLACE YOUR BET'),mSub=h('small',undefined,'チップを置いて DEAL');msgBox.append(mMain,mSub);
  const betSpot=h('div','bj-betspot');const betChip=h('span','bj-betchip');const betText=h('small','bj-bettext','BET');betSpot.append(betChip,betText);center.append(msgBox,betSpot);
  const player=h('div','bj-side bj-player'),pHead=h('div','bj-head');const pLabel=h('small',undefined,'YOU'),pTotal=h('b','bj-total','');pHead.append(pLabel,pTotal);const pCards=h('div','bj-cards');player.append(pCards,pHead);
  table.append(felt,dealer,center,player);
- const bar=h('div','bj-bar'),chips=h('div','bj-chips');
+ const bar=h('div','bj-bar egm-deck'),chips=h('div','bj-chips');const sound=h('button','egm-btn egm-btn-small',WorldSound.muted?'♪ OFF':'♪ ON');sound.type='button';sound.onclick=()=>{sound.textContent=WorldSound.toggle()?'♪ OFF':'♪ ON';};
  const chipBtns=CHIPS.map(v=>{const b=h('button','bj-chip bj-chip-'+v,v>=1000?(v/1000)+'K':String(v));b.type='button';b.setAttribute('aria-label',v+' SC');b.onclick=()=>addBet(v);chips.append(b);return b;});
  const clear=h('button','bj-btn ghost','クリア');clear.type='button';clear.onclick=()=>{if(st&&st.phase==='bet'){st.bet=0;sync();}};
  const deal=h('button','bj-btn primary','DEAL');deal.type='button';deal.onclick=startHand;
@@ -34,14 +35,14 @@ function open(body){
  const stand=h('button','bj-btn','STAND');stand.type='button';stand.onclick=onStand;
  const dbl=h('button','bj-btn','DOUBLE');dbl.type='button';dbl.onclick=onDouble;
  const again=h('button','bj-btn primary','もう一度');again.type='button';again.onclick=()=>{if(!st)return;st.phase='bet';st.player=[];st.dealer=[];render();sync();show('PLACE YOUR BET','同じベットでDEALできます','');};
- bar.append(chips,clear,deal,hit,stand,dbl,again);
- root.append(table,bar,h('p','bj-note','6デッキ・ディーラーは17以上でスタンド・ブラックジャックは1.5倍。1回のベットは10〜1,000 SC。'));
+ bar.append(chips,sound,clear,deal,hit,stand,dbl,again);
+ root.append(top,table,meters,bar,h('p','bj-note','6デッキ・ディーラーは17以上でスタンド・ブラックジャックは1.5倍。1回のベットは10〜1,000 SC。'));
  body.append(root);
- st={root,dCards,pCards,dTotal,pTotal,mMain,mSub,msgBox,betChip,betText,chipBtns,clear,deal,hit,stand,dbl,again,bet:st?.lastBet||0,lastBet:st?.lastBet||0,phase:'bet',player:[],dealer:[],doubled:false,reveal:false};
+ st={vCredit,vBet,vWin,lastWon:0,root,dCards,pCards,dTotal,pTotal,mMain,mSub,msgBox,betChip,betText,chipBtns,clear,deal,hit,stand,dbl,again,bet:st?.lastBet||0,lastBet:st?.lastBet||0,phase:'bet',player:[],dealer:[],doubled:false,reveal:false};
  render();sync();
 }
 function show(main,sub,kind){if(!st)return;st.mMain.textContent=main;st.mSub.textContent=sub||'';st.msgBox.dataset.kind=kind||'';}
-function addBet(v){if(!st||st.phase!=='bet')return;const limit=Math.min(WorldCore.BJ_MAX,p.cash);if(st.bet+v>limit){show('ベット上限',limit<WorldCore.BJ_MIN?'チップが足りません':'1回のベットは '+yen(WorldCore.BJ_MAX)+' SC まで','lose');st.bet=Math.max(st.bet,Math.min(limit,WorldCore.BJ_MAX));sync();return;}st.bet+=v;sync();}
+function addBet(v){if(!st||st.phase!=='bet')return;WorldSound.chip();const limit=Math.min(WorldCore.BJ_MAX,p.cash);if(st.bet+v>limit){show('ベット上限',limit<WorldCore.BJ_MIN?'チップが足りません':'1回のベットは '+yen(WorldCore.BJ_MAX)+' SC まで','lose');st.bet=Math.max(st.bet,Math.min(limit,WorldCore.BJ_MAX));sync();return;}st.bet+=v;sync();}
 function sync(){
  if(!st)return;const ph=st.phase,stake=st.doubled?st.bet*2:st.bet;
  st.betChip.textContent=st.bet?yen(stake):'';st.betChip.classList.toggle('on',st.bet>0);st.betText.textContent=st.doubled?'BET ×2':'BET';
@@ -52,9 +53,11 @@ function sync(){
  st.dbl.disabled=busy||st.player.length!==2||p.cash<st.bet*2;
  st.hit.disabled=st.stand.disabled=busy;
  if(ph!=='bet')$('cashDisplay').textContent=yen(p.cash-(ph==='done'?0:stake))+' SC';
+ st.vCredit.textContent=yen(ph==='bet'||ph==='done'?p.cash:p.cash-stake);st.vBet.textContent=yen(stake);st.vWin.textContent=yen(ph==='done'?st.lastWon:0);
 }
 function render(){
  if(!st)return;st.dCards.replaceChildren();st.pCards.replaceChildren();
+ WorldSound.card();
  st.dealer.forEach((c,i)=>st.dCards.append(cardEl(c,i===1&&!st.reveal,i*90)));
  st.player.forEach((c,i)=>st.pCards.append(cardEl(c,false,i*90)));
  st.pTotal.textContent=st.player.length?String(value(st.player)):'';
@@ -79,7 +82,7 @@ async function finish(){
  busy=true;sync();let r;
  try{r=await request('blackjack',{amount:st.bet,doubled:st.doubled,outcome});}catch(e){busy=false;walletHold=false;renderProfile();if(st){st.phase='done';sync();show('保存できませんでした',e.message,'lose');}return;}
  busy=false;walletHold=false;renderProfile();if(!st)return;
- const won=r.result?.won??0,stake=st.doubled?st.bet*2:st.bet;st.phase='done';
+ const won=r.result?.won??0,stake=st.doubled?st.bet*2:st.bet;st.phase='done';st.lastWon=won;if(won>stake)WorldSound.win(outcome==='blackjack'?4:2);else if(won<stake)WorldSound.lose();
  if(st.bet>p.cash)st.bet=Math.min(p.cash,WorldCore.BJ_MAX);
  const label={blackjack:['BLACKJACK!','+'+yen(won)+' SC（1.5倍）','win'],win:['YOU WIN','+'+yen(won)+' SC','win'],push:['PUSH','引き分け・ベットは戻ります',''],lose:[pv>21?'BUST':'DEALER WINS','−'+yen(stake)+' SC','lose']}[outcome];
  show(label[0],label[1],label[2]);sync();

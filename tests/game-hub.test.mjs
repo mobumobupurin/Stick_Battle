@@ -4,8 +4,9 @@ import {game} from './helpers/game.mjs';
 
 test('game hub lists requested modes but clearly disables unimplemented games',()=>{
   const g=game();
-  assert.equal(g.run('HUB_CATALOG.length'),13);
-  assert.deepEqual(Array.from(g.run('HUB_CATALOG.filter(x=>x.ready).map(x=>x.id)')),['stickbattle','reversi','connect4','chess','mini-shogi','shichinarabe','oldmaid','blackjack','poker','baccarat']);
+  assert.equal(g.run('HUB_CATALOG.length'),10);
+  assert.deepEqual(Array.from(g.run('HUB_CATALOG.filter(x=>x.ready).map(x=>x.id)')),['stickbattle','reversi','connect4','chess','mini-shogi','shichinarabe','oldmaid']);
+  assert.equal(g.run('HUB_CATALOG.some(x=>["blackjack","poker","baccarat"].includes(x.id))'),false,'casino games live in STICK ROYALE, not the HUB');
   assert.equal(g.run('HUB_CATALOG.find(x=>x.id==="mini-shogi").name'),'5五将棋');
 });
 
