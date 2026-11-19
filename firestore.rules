@@ -1,0 +1,7 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  // The world uses callable Functions only; client SDKs have no direct data access.
+  match /{document=**} { allow read, write: if false; }
+ }
+}
