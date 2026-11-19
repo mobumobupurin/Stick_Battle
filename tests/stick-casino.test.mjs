@@ -64,3 +64,39 @@ test('online rules allow one bounded casino play and nothing else extra',()=>{
  const spark=read('world/spark.js');
  assert.match(spark,/case 'slot':case 'blackjack':case 'baccarat':case 'videopoker':/);
 });
+
+test('lucky wheel: equal segments, BONUS spins the bonus wheel, return stays under 100%',()=>{
+ const C=core();
+ assert.equal(C.WH_WHEEL.length,48);assert.equal(C.WH_BONUS.length,12);
+ assert.ok(C.whRtp()>0.9&&C.whRtp()<0.97);
+ const seq=(...v)=>{let i=0;return ()=>v[i++];};
+ let r=C.whSpin(10,seq(0,0));assert.equal(r.mult,50);assert.ok(r.jackpot);assert.equal(r.won,500);
+ r=C.whSpin(10,seq(12));assert.equal(r.mult,5);assert.equal(r.bonusIndex,null);
+ const p=C.start(),a=C.apply(p,'wheel',{amount:100},0,seq(1));
+ assert.equal(a.profile.cash,4900);assert.equal(a.profile.plays,1);assert.equal(a.profile.wins,0);
+ assert.throws(()=>C.apply(p,'wheel',{amount:30},0,seq(1)));
+ // biggest single win fits the online per-write limit
+ assert.ok(100*Math.max(...C.WH_BONUS)<=30000);
+});
+
+test('coin pusher settles bounded batches of medals',()=>{
+ const C=core();const p=C.start();
+ let r=C.apply(p,'pusher',{spent:120,won:300},0,()=>0);
+ assert.equal(r.profile.cash,5180);assert.equal(r.profile.plays,1);assert.equal(r.profile.wins,1);
+ r=C.apply(p,'pusher',{spent:50,won:0},0,()=>0);assert.equal(r.profile.cash,4950);assert.equal(r.profile.wins,0);
+ assert.throws(()=>C.apply(p,'pusher',{spent:0,won:0},0,()=>0));
+ assert.throws(()=>C.apply(p,'pusher',{spent:C.PU_MAX_SPENT+1,won:0},0,()=>0));
+ assert.throws(()=>C.apply(p,'pusher',{spent:10,won:C.PU_MAX_WON+1},0,()=>0));
+ assert.throws(()=>C.apply({...p,cash:5},'pusher',{spent:10,won:0},0,()=>0));
+ assert.ok(C.PU_MAX_SPENT<=2000&&C.PU_MAX_WON<=30000);
+ assert.match(read('world/spark.js'),/case 'wheel':case 'pusher':/);
+});
+
+test('coin pusher field pushes medals off the front and loses some in the side gutters',()=>{
+ const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
+ const s=P.create();assert.ok(s.coins.length>=90);
+ let front=0,lost=0;for(let k=0;k<300;k++){P.drop(s,8+(k*37%84));for(let f=0;f<14;f++){const r=P.step(s);front+=r.front;lost+=r.lost;}}
+ assert.ok(front>150,'front '+front);assert.ok(lost>20,'lost '+lost);
+ assert.ok(s.coins.every(c=>c.x>=P.R-1e-9&&c.x<=100-P.R+1e-9&&c.y>=s.face+P.R-1e-6));
+ assert.equal(P.LOTTERY.length,5);assert.equal(P.LOTTERY[P.lottery(P.lotteryTotal-1)][0],'JACKPOT');
+});

@@ -63,7 +63,7 @@ Previous design history: [立体機動再設計](docs/EREN_FREEDOM_REWORK.md). O
 
 ### STICK ROYALE
 
-メインメニュー「06 STICK ROYALE」から開く独立カジノ（`world/`、旧 STICK WORLD）。ビデオスロット・ビデオポーカー・バカラ・ブラックジャック・ルーレット・メダル落とし。仕様：[STICK ROYALE](docs/STICK_WORLD.md)。
+メインメニュー「06 STICK ROYALE」から開く独立カジノ（`world/`、旧 STICK WORLD）。ビデオスロット・ビデオポーカー・バカラ・ブラックジャック・ルーレットに、メダルコーナー（コインプッシャー・ラッキーホイール・メダル落とし）。仕様：[STICK ROYALE](docs/STICK_WORLD.md)。
 
 ### Co-op raid
 
