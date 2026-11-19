@@ -1713,140 +1713,523 @@ input,select{font-family:inherit}
 :is(#sc-hub-room,#sc-hub-play) #hub-cpu-level:disabled{opacity:.55;cursor:default}
 #hub-cpu-level-info{color:#cbe4df;font-size:11px;line-height:1.6;margin:8px 0 0}
 </style>
+<style>/* =====================================================================
+   STICK BATTLE ONLINE — ARCADE UI
+   Single source of truth for every menu screen (.ax-screen).
+   Loaded last. Screens use new ax-* markup so earlier layers mostly no
+   longer match; the few id-based legacy rules are bridged with !important.
+   ===================================================================== */
+:root{
+ --ax-ink:#05060c;--ax-ink2:#0b0d18;--ax-panel:#11142a;--ax-panel2:#181c38;--ax-line:#2b3058;
+ --ax-red:#ff2a4f;--ax-red-d:#b5112f;--ax-yellow:#ffd13b;--ax-cyan:#22d8ff;--ax-green:#7cff8a;--ax-violet:#c08bff;
+ --ax-white:#fbf8ef;--ax-muted:#a6abcf;
+ --ax-display:'Arial Black','Helvetica Neue',Impact,'Hiragino Kaku Gothic StdN','Hiragino Sans','Noto Sans JP','Yu Gothic',sans-serif;
+ --ax-body:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP','Yu Gothic',system-ui,sans-serif;
+ --ax-skew:-10deg;--ax-pad:clamp(14px,3.2vw,44px);
+}
+@keyframes axBlink{0%,60%{opacity:1}61%,100%{opacity:0}}
+@keyframes axSweep{from{transform:translateX(-150%) skewX(-20deg)}to{transform:translateX(450%) skewX(-20deg)}}
+@keyframes axIn{from{opacity:0;transform:translateX(-36px)}}
+@keyframes axUp{from{opacity:0;transform:translateY(22px)}}
+@keyframes axPop{0%{opacity:0;transform:scale(.6)}70%{transform:scale(1.06)}100%{opacity:1;transform:scale(1)}}
+@keyframes axPulse{0%,100%{box-shadow:0 0 0 3px var(--ax-yellow),0 0 16px #ffd13b80}50%{box-shadow:0 0 0 3px var(--ax-yellow),0 0 34px #ffd13bd0}}
+@keyframes axTicker{to{transform:translateX(-50%)}}
+@keyframes axSpin{to{transform:rotate(360deg)}}
+@keyframes axThrob{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes axBobL{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,4px)}}
+@keyframes axBobR{0%,100%{transform:translate(0,0)}50%{transform:translate(6px,-4px)}}
+@keyframes axTwinkle{0%,100%{opacity:0;transform:scale(.4)}40%{opacity:1;transform:scale(1.2)}}
+
+/* ---------------- base screen ---------------- */
+body .screen.ax-screen{background:var(--ax-ink)!important;background-image:none!important;color:var(--ax-white);color-scheme:dark;
+ padding:clamp(16px,3vw,34px) var(--ax-pad) 0!important;gap:clamp(14px,2.2vw,24px)!important;align-items:stretch;justify-content:flex-start;font-family:var(--ax-body)}
+body .screen.ax-screen>*{position:relative;z-index:1;width:100%;max-width:1440px;margin-left:auto;margin-right:auto}
+body .screen.ax-screen>.ax-bg{position:fixed;inset:0;z-index:0;max-width:none;pointer-events:none;
+ background:
+  linear-gradient(112deg,#ff2a4f26 0 22%,transparent 22.1%),
+  linear-gradient(112deg,transparent 0 78%,#22d8ff1c 78.1%),
+  radial-gradient(circle,#ffffff0e 1px,transparent 1.6px) 0 0/16px 16px,
+  radial-gradient(ellipse at 50% -10%,#232859 0%,transparent 60%),
+  var(--ax-ink)}
+body .screen.ax-screen>.ax-bg:after{content:none}
+body .screen.ax-screen>.ax-bg-select{background:
+  linear-gradient(105deg,#ff2a4f30 0 30%,transparent 30.1%),
+  linear-gradient(105deg,transparent 0 31%,#ffd13b18 31.1% 31.6%,transparent 31.7%),
+  radial-gradient(circle,#ffffff0e 1px,transparent 1.6px) 0 0/16px 16px,
+  radial-gradient(ellipse at 75% 20%,#1a2b63 0%,transparent 60%),var(--ax-ink)}
+body .screen.ax-screen>.ax-bg-result{background:
+  repeating-conic-gradient(from 0deg at 50% 38%,#ffd13b14 0 6deg,transparent 6deg 15deg),
+  radial-gradient(ellipse at 50% 38%,#ff2a4f40,transparent 60%),var(--ax-ink)}
+body .ax-screen h2:focus,body .ax-screen .hd:focus,body .ax-screen [tabindex="-1"]:focus{outline:none!important}
+body .ax-screen ::selection{background:var(--ax-yellow);color:var(--ax-ink)}
+
+/* ---------------- headings ---------------- */
+.ax-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;animation:axIn .35s cubic-bezier(.2,.9,.3,1) both}
+.ax-step{display:inline-block;padding:6px 14px;background:var(--ax-red);color:#fff;font:900 11px/1 var(--ax-display);letter-spacing:.24em;transform:skewX(var(--ax-skew));box-shadow:4px 4px 0 var(--ax-yellow)}
+body .ax-screen .ax-title{margin:12px 0 0;padding:0;border:0;background:none;color:var(--ax-white);font:900 italic clamp(32px,5.4vw,72px)/1 var(--ax-display);letter-spacing:-.01em;
+ text-shadow:3px 3px 0 var(--ax-red),6px 6px 0 var(--ax-ink),7px 7px 0 #ffffff22;transform:skewX(-6deg);transform-origin:left bottom}
+.ax-head-compact .ax-title{font-size:clamp(26px,3.6vw,46px)}
+.ax-sub{margin:10px 0 0;color:var(--ax-muted);font-size:13px;font-weight:700;letter-spacing:.04em}
+.ax-head-side{font:900 italic clamp(18px,4.4vw,64px)/1 var(--ax-display);color:transparent;-webkit-text-stroke:1.5px #ffffff26;white-space:nowrap;letter-spacing:.01em;user-select:none}
+.ax-hint{color:#6e7398;font:900 10px/1 var(--ax-display);letter-spacing:.24em;text-align:center;padding-bottom:22px}
+.ax-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.ax-tags li{padding:5px 10px;background:#ffffff12;border:1px solid #ffffff24;color:#dfe2f7;font:800 11px/1 var(--ax-body);transform:skewX(var(--ax-skew))}
+.ax-tags-center{justify-content:center;padding-bottom:20px}
+
+/* ---------------- buttons ---------------- */
+body .ax-screen .ax-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border:0;border-radius:0;
+ font:900 15px/1 var(--ax-display);letter-spacing:.08em;cursor:pointer;transform:skewX(var(--ax-skew));transition:transform .12s,box-shadow .12s,filter .12s,background .12s}
+body .ax-screen .ax-btn:focus-visible{outline:3px solid var(--ax-cyan);outline-offset:3px}
+body .ax-screen .ax-btn-ghost{background:transparent;color:var(--ax-white);box-shadow:inset 0 0 0 2px #ffffff40}
+body .ax-screen .ax-btn-ghost:hover{background:#ffffff14;box-shadow:inset 0 0 0 2px var(--ax-yellow);color:var(--ax-yellow)}
+body .ax-screen .ax-back{background:#1b1f3d!important;color:#d6d9f2!important;box-shadow:5px 5px 0 #000}
+body .ax-screen .ax-back:hover{background:#262b55!important;color:#fff!important}
+body .ax-screen .ax-go{overflow:hidden;background:linear-gradient(180deg,#ff6a83,var(--ax-red) 48%,var(--ax-red-d))!important;color:#fff!important;text-shadow:2px 2px 0 #0007;
+ box-shadow:6px 6px 0 var(--ax-yellow),6px 6px 0 3px var(--ax-ink)}
+body .ax-screen .ax-go:before{content:'';position:absolute;top:0;bottom:0;left:0;width:36px;background:#ffffff59;animation:axSweep 2.8s ease-in-out infinite;pointer-events:none}
+body .ax-screen .ax-go:hover{transform:skewX(var(--ax-skew)) translate(-2px,-2px);box-shadow:9px 9px 0 var(--ax-yellow),9px 9px 0 3px var(--ax-ink)}
+body .ax-screen .ax-go:active,body .ax-screen .ax-back:active{transform:skewX(var(--ax-skew)) translate(3px,3px);box-shadow:2px 2px 0 var(--ax-yellow)}
+body .ax-screen .ax-go:disabled{filter:grayscale(.8);opacity:.5}
+.ax-nav{position:sticky!important;bottom:0;z-index:5!important;display:flex;gap:14px;justify-content:space-between;padding:18px 0 max(18px,env(safe-area-inset-bottom));margin-top:auto;
+ background:linear-gradient(0deg,var(--ax-ink) 55%,transparent)}
+.ax-nav .ax-btn{min-height:60px;font-size:clamp(15px,1.6vw,20px)}
+.ax-nav .ax-back{flex:0 1 240px}
+.ax-nav .ax-go{flex:1 1 auto;max-width:620px;margin-left:auto}
+.ax-nav .ax-go:after{content:'▶▶';margin-left:4px;font-size:.7em;letter-spacing:-2px;animation:axBlink 1s steps(1) infinite}
+.ax-nav .ax-fight{font-size:clamp(22px,2.6vw,32px);font-style:italic;letter-spacing:.12em}
+
+/* ---------------- TITLE ---------------- */
+body #sc-title.ax-title-screen{padding:0!important;gap:0!important;overflow:hidden;justify-content:center;align-items:stretch;background:#0a0a0f!important}
+body #sc-title .ax-title-art{position:absolute!important;inset:0!important;z-index:0!important;max-width:none!important;width:auto!important;height:auto!important;margin:0!important;opacity:1!important;transform:none!important;filter:none!important;animation:axFade 1.2s ease both}
+body #sc-title .ax-title-art svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+body #sc-title .ax-title-shade{position:absolute!important;inset:0;z-index:1;max-width:none;pointer-events:none;
+ background:linear-gradient(90deg,#0a0a0f 0%,#0a0a0fe6 22%,#0a0a0f80 42%,transparent 60%),linear-gradient(0deg,#0a0a0f 0%,transparent 22%)}
+body #sc-title .ax-title-main{position:absolute!important;z-index:3;left:clamp(28px,7vw,120px);top:50%;transform:translateY(-52%);width:auto;max-width:min(640px,60vw);margin:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.ax-title-kicker{color:#c9c2b6;font:700 12px/1 var(--ax-display);letter-spacing:.42em;margin-bottom:22px;padding-left:2px;animation:axFade .8s .1s both}
+body #sc-title .ax-logo{margin:0;display:flex;flex-direction:column;align-items:flex-start;transform:skewX(-8deg);transform-origin:left bottom;animation:axRiseSoft .9s cubic-bezier(.2,.8,.2,1) both}
+.ax-logo span{display:block;font-family:var(--ax-display);font-weight:900;font-style:italic;letter-spacing:-.02em}
+.ax-logo-stick,.ax-logo-battle{font-size:clamp(64px,9.4vw,150px);line-height:.86;color:#f4efe6;-webkit-text-stroke:0;text-shadow:none;background:none;filter:none;-webkit-text-fill-color:currentColor}
+.ax-logo-battle{color:#f4efe6;position:relative}
+.ax-logo-battle:after{content:'';position:absolute;left:.04em;right:-.12em;bottom:-.08em;height:.09em;background:var(--ax-red)}
+.ax-logo-online{margin-top:clamp(18px,2.2vw,30px);padding:0;background:none;box-shadow:none;color:#c9c2b6;font-size:clamp(14px,1.3vw,18px)!important;letter-spacing:.9em!important;line-height:1!important;font-style:normal!important;font-weight:700!important}
+.ax-title-tag{margin:clamp(22px,2.6vw,34px) 0 0;padding:0;background:none;color:#9d978d;font:500 clamp(13px,1.15vw,16px)/1.7 var(--ax-body);letter-spacing:.14em;transform:none;animation:axFade .9s .3s both}
+body #sc-title #title-tap.ax-start{position:relative!important;inset:auto!important;transform:none!important;margin:clamp(34px,4.4vw,60px) 0 0!important;width:auto!important;min-width:0!important;max-width:none!important;min-height:58px!important;padding:0 44px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:0!important;border:1px solid #f4efe6aa!important;border-radius:0!important;clip-path:none!important;
+ background:transparent!important;color:#f4efe6!important;font:700 15px/1 var(--ax-display)!important;font-style:normal!important;letter-spacing:.42em!important;box-shadow:none!important;
+ animation:axBreathe 3.2s ease-in-out infinite!important;transition:background .2s,color .2s,border-color .2s!important}
+body #sc-title #title-tap.ax-start:before,body #sc-title #title-tap.ax-start:after{content:none!important;display:none!important}
+body #sc-title #title-tap.ax-start:hover,body #sc-title #title-tap.ax-start:focus-visible{background:#f4efe6!important;color:#0a0a0f!important;border-color:#f4efe6!important;animation:none!important;outline:none!important;transform:none!important;box-shadow:none!important}
+body #sc-title #title-tap.ax-start:active{transform:translateY(1px)!important}
+body #sc-title .ax-title-foot{position:absolute!important;z-index:3;left:clamp(28px,7vw,120px);right:clamp(28px,4vw,60px);bottom:max(22px,env(safe-area-inset-bottom));width:auto;max-width:none;margin:0;display:flex;justify-content:space-between;gap:16px;color:#6f6a63;font:700 10px/1 var(--ax-display);letter-spacing:.26em}
+@keyframes axFade{from{opacity:0}}
+@keyframes axRiseSoft{from{opacity:0;transform:skewX(-8deg) translateY(16px)}}
+@keyframes axBreathe{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* ---------------- MENU (mode / challenge / tournament) ---------------- */
+.ax-menu{position:relative;display:grid;grid-template-columns:minmax(300px,520px) 1fr;grid-auto-rows:min-content;column-gap:clamp(20px,3vw,48px);row-gap:10px;flex:1;min-height:min(560px,70vh);padding-bottom:10px}
+body .ax-screen .ax-menu-item{grid-column:1;position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;min-height:clamp(66px,9vh,86px);padding:0 26px 0 22px;
+ border:0;border-radius:0;background:none;color:var(--ax-white);text-align:left;cursor:pointer;animation:axIn .4s cubic-bezier(.2,.9,.3,1) both;isolation:isolate}
+.ax-menu-item:nth-child(2){animation-delay:.05s}.ax-menu-item:nth-child(3){animation-delay:.1s}.ax-menu-item:nth-child(4){animation-delay:.15s}.ax-menu-item:nth-child(5){animation-delay:.2s}
+.ax-menu-item .ax-mi-plate{position:absolute;z-index:-1;pointer-events:none;inset:0;background:linear-gradient(100deg,#171b38,#0f1228);border-left:6px solid var(--c);transform:skewX(var(--ax-skew));transition:transform .16s cubic-bezier(.2,.9,.3,1.3),background .16s,box-shadow .16s}
+.ax-mi-no{font:900 italic 30px/1 var(--ax-display);color:var(--c);opacity:.85;min-width:46px}
+.ax-mi-label b{display:block;font:900 clamp(20px,2.2vw,28px)/1.1 var(--ax-display);letter-spacing:.02em}
+.ax-mi-label small{display:block;margin-top:5px;color:var(--ax-muted);font:900 10px/1 var(--ax-display);letter-spacing:.24em}
+.ax-mi-desc{display:none}
+.ax-mi-arrow{color:var(--c);font-size:14px;opacity:0;transform:translateX(-8px);transition:.16s}
+.ax-menu-item:hover .ax-mi-plate,.ax-menu-item:focus-visible .ax-mi-plate{transform:skewX(var(--ax-skew)) translateX(18px);background:linear-gradient(100deg,var(--c),color-mix(in srgb,var(--c) 30%,#0f1228) 85%);box-shadow:6px 6px 0 var(--ax-ink),6px 6px 0 2px #ffffff40}
+.ax-menu-item:hover,.ax-menu-item:focus-visible{outline:none;color:var(--ax-ink)}
+.ax-menu-item:hover .ax-mi-no,.ax-menu-item:focus-visible .ax-mi-no{color:var(--ax-ink);opacity:1;transform:translateX(18px)}
+.ax-menu-item:hover .ax-mi-label,.ax-menu-item:focus-visible .ax-mi-label{transform:translateX(18px)}
+.ax-menu-item:hover .ax-mi-label small,.ax-menu-item:focus-visible .ax-mi-label small{color:#05060cb0}
+.ax-menu-item:hover .ax-mi-arrow,.ax-menu-item:focus-visible .ax-mi-arrow{opacity:1;color:var(--ax-ink);transform:translateX(18px);animation:axBlink .8s steps(1) infinite}
+.ax-mi-no,.ax-mi-label{transition:transform .16s cubic-bezier(.2,.9,.3,1.3)}
+/* preview panel: one per item, shown for the active item (29-arcade-ui.js) */
+.ax-preview-stage{grid-column:2;grid-row:1 / span 12;position:relative;min-height:min(520px,64vh)}
+.ax-preview{position:absolute;inset:0;display:none;flex-direction:column;
+ background:linear-gradient(160deg,color-mix(in srgb,var(--c) 30%,#0b0d18),#0b0d18 70%);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--c) 60%,transparent);
+ clip-path:polygon(0 0,100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%);color:var(--ax-white);text-align:left;animation:axUp .22s both}
+.ax-preview.on{display:flex}
+.ax-preview-art{flex:1;min-height:0;display:block;overflow:hidden;border-bottom:3px solid var(--ax-ink)}
+.ax-preview-art svg{width:100%;height:100%;display:block}
+.ax-preview-copy{display:grid;gap:8px;padding:20px 26px 30px}
+.ax-preview-copy em{font:900 11px/1 var(--ax-display);font-style:normal;letter-spacing:.24em;color:var(--c)}
+.ax-preview-copy strong{font:900 italic clamp(24px,2.8vw,40px)/1.05 var(--ax-display);text-shadow:3px 3px 0 var(--ax-ink)}
+.ax-preview-desc{color:#d8dbf2;font-size:14px;font-weight:700;line-height:1.7;max-width:56ch}
+
+/* ---------------- FIGHTER SELECT ---------------- */
+.ax-select{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.6fr);gap:clamp(14px,2.4vw,30px);align-items:start}
+.ax-hero{position:sticky;top:0;display:grid;gap:12px}
+body #sc-chars #fighter-showcase.ax-showcase{position:relative;display:block;overflow:hidden;aspect-ratio:4/4.3;max-height:62vh;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;
+ background:linear-gradient(165deg,color-mix(in srgb,var(--fighter-color,#ff2a4f) 75%,#000) 0%,#24123c 55%,var(--ax-ink) 100%);
+ clip-path:polygon(0 0,100% 0,100% calc(100% - 40px),calc(100% - 40px) 100%,0 100%)}
+body #sc-chars #fighter-showcase.ax-showcase:before{content:attr(data-en);position:absolute;left:-3%;bottom:20%;z-index:0;display:block;font:900 italic clamp(70px,9vw,150px)/.8 var(--ax-display);
+ color:transparent;-webkit-text-stroke:2px #ffffff30;text-transform:uppercase;white-space:nowrap;transform:skewX(var(--ax-skew));letter-spacing:-.02em;opacity:1;writing-mode:horizontal-tb}
+body #sc-chars #fighter-showcase.ax-showcase:after{content:'';position:absolute;inset:0;z-index:0;background:repeating-linear-gradient(115deg,transparent 0 22px,#ffffff08 22px 44px)}
+body #sc-chars #fighter-showcase.ax-showcase>svg{position:absolute;z-index:1;left:6%;right:6%;top:4%;width:88%;height:74%;filter:drop-shadow(12px 14px 0 #0008) drop-shadow(0 0 40px color-mix(in srgb,var(--fighter-color,#fff) 55%,transparent));animation:axPop .35s both}
+body #sc-chars #fighter-showcase .fighter-code{position:absolute;z-index:2;left:18px;top:18px;padding:5px 10px;background:var(--ax-ink);color:var(--ax-yellow);font:900 11px/1 var(--ax-display);letter-spacing:.22em;transform:skewX(var(--ax-skew))}
+body #sc-chars #fighter-showcase .fighter-name{position:absolute;z-index:2;left:20px;right:20px;bottom:30px}
+body #sc-chars #fighter-showcase .fighter-name small{display:inline-block;padding:5px 11px;background:var(--ax-cyan);color:var(--ax-ink);font:900 11px/1.2 var(--ax-display);letter-spacing:.1em;transform:skewX(var(--ax-skew))}
+body #sc-chars #fighter-showcase .fighter-name b{display:block;margin-top:8px;font:900 italic clamp(38px,4.6vw,66px)/1 var(--ax-display);color:var(--ax-white);
+ text-shadow:3px 3px 0 var(--ax-ink),7px 7px 0 color-mix(in srgb,var(--fighter-color,#ff2a4f) 85%,#000),8px 8px 0 var(--ax-ink);transform:skewX(var(--ax-skew));transform-origin:left}
+.ax-hero-info{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:stretch}
+body #sc-chars #char-info.ax-stats{margin:0;padding:14px 16px;border:0;border-radius:0;background:#0b0d18e6;box-shadow:inset 0 0 0 1px var(--ax-line);display:grid;gap:9px}
+body #sc-chars #char-info .ability-line{display:grid;gap:4px;padding:0 0 8px;border-bottom:1px dashed #ffffff22}
+body #sc-chars #char-info .ability-line b{color:var(--ax-yellow);font:900 10px/1 var(--ax-display);letter-spacing:.2em}
+body #sc-chars #char-info .ability-line span{color:#e6e8f8;font-size:13px;font-weight:700}
+body #sc-chars #char-info .stat{display:grid;grid-template-columns:64px 1fr;align-items:center;gap:10px}
+body #sc-chars #char-info .stat b{font:900 11px/1 var(--ax-display);letter-spacing:.1em;color:#d8dbef}
+body #sc-chars #char-info .gauge{height:13px;border-radius:0;background:#ffffff12;transform:skewX(-20deg);overflow:hidden}
+body #sc-chars #char-info .gauge i{display:block;height:100%;border-radius:0;background:linear-gradient(90deg,var(--ax-yellow),var(--ax-red));
+ -webkit-mask:repeating-linear-gradient(90deg,#000 0 13px,transparent 13px 16px);mask:repeating-linear-gradient(90deg,#000 0 13px,transparent 13px 16px);transition:width .35s cubic-bezier(.2,.9,.3,1)}
+body #sc-chars #char-info .fighter-info-guide-hint{display:none}
+body #sc-chars #fighter-guide-open.ax-guide-btn{display:grid;align-content:center;gap:4px;min-width:138px;padding:12px 16px;border:0;border-radius:0;text-align:left;cursor:pointer;
+ background:linear-gradient(160deg,var(--ax-red),var(--ax-red-d));color:#fff;box-shadow:5px 5px 0 var(--ax-ink),5px 5px 0 2px var(--ax-yellow);transition:transform .12s}
+body #sc-chars #fighter-guide-open.ax-guide-btn:hover{transform:translate(-2px,-2px)}
+.ax-guide-btn b{font:900 14px/1.2 var(--ax-display)}
+.ax-guide-btn small{font-size:10px;font-weight:700;opacity:.85}
+.ax-guide-btn span{color:var(--ax-yellow);font-size:12px}
+.ax-roster{display:grid;gap:12px;min-width:0}
+.ax-roster-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ax-search{flex:1 1 220px;display:flex;align-items:center;gap:8px;padding:0 14px;min-height:44px;background:#0b0d18;box-shadow:inset 0 0 0 2px var(--ax-line);transform:skewX(var(--ax-skew))}
+.ax-search:focus-within{box-shadow:inset 0 0 0 2px var(--ax-cyan),0 0 0 3px #22d8ff33}
+.ax-search>*{transform:skewX(10deg)}
+body .ax-screen .ax-search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ax-white);font:700 14px var(--ax-body);outline:none;padding:0;max-width:none}
+.ax-filters{display:flex;gap:8px}
+body .ax-screen .ax-filters button{min-height:40px;padding:0 16px;border:0;border-radius:0;background:#0b0d18;color:#cdd1ea;box-shadow:inset 0 0 0 2px var(--ax-line);font:900 12px/1 var(--ax-display);letter-spacing:.06em;transform:skewX(var(--ax-skew));cursor:pointer}
+body .ax-screen .ax-filters button[aria-pressed="true"]{background:var(--ax-yellow);color:var(--ax-ink);box-shadow:4px 4px 0 var(--ax-red)}
+body #sc-chars #fighter-search-status{margin:0;color:#7e84ad;font:900 10px/1 var(--ax-display);letter-spacing:.24em}
+body .ax-screen .roster-group{display:grid;gap:10px;margin:0 0 6px}
+body .ax-screen .roster-group>header{display:flex;align-items:center;gap:12px;margin:4px 0 0;padding:0;border:0}
+body .ax-screen .roster-group>header b{padding:5px 14px;background:var(--ax-white);color:var(--ax-ink);font:900 11px/1 var(--ax-display);letter-spacing:.2em;transform:skewX(var(--ax-skew))}
+body .ax-screen .roster-group.secret-roster>header b{background:linear-gradient(90deg,var(--ax-yellow),#ff8a2a)}
+body .ax-screen .roster-group>header span{display:none}
+body .ax-screen .roster-group>header:after{content:'';flex:1;height:3px;background:repeating-linear-gradient(115deg,#ffffff2e 0 6px,transparent 6px 12px)}
+body .ax-screen .roster-cards{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(112px,1fr))!important;gap:12px 14px!important;padding:6px 12px 6px 6px}
+body .ax-screen .roster-group .ci{position:relative;display:block;min-height:0!important;aspect-ratio:1/1.08;padding:0!important;margin:0;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;
+ overflow:visible!important;isolation:isolate;cursor:pointer;transform:skewX(-8deg);transition:transform .14s cubic-bezier(.2,.9,.3,1.4),filter .14s;animation:axUp .3s both}
+body .ax-screen .roster-group .ci:before{content:''!important;display:block!important;position:absolute;inset:0;z-index:-1;opacity:1!important;border:2px solid #ffffff1c;
+ background:linear-gradient(165deg,color-mix(in srgb,var(--fighter-color,#556) 60%,#0b0d18) 0%,#14182e 64%,#0b0d18 100%)!important}
+body .ax-screen .roster-group .ci>*{transform:skewX(8deg)}
+body .ax-screen .roster-group .ci svg{display:block;width:100%!important;height:72%!important;margin:4% 0 0!important;filter:drop-shadow(4px 5px 0 #0009)!important}
+body .ax-screen .roster-group .ci small{position:absolute;left:-7px;right:7px;bottom:0;margin:0!important;padding:6px 8px 6px 12px!important;background:var(--ax-ink)!important;color:var(--ax-white)!important;
+ border-top:2px solid var(--fighter-color,#fff);font:900 12px/1.15 var(--ax-display)!important;letter-spacing:.02em!important;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body .ax-screen .roster-group .ci .fighter-number{position:absolute;left:8px;top:7px;color:#ffffffa0!important;font:900 10px/1 var(--ax-display)!important;letter-spacing:.06em;opacity:1}
+body .ax-screen .roster-group .ci:hover{transform:skewX(-8deg) translateY(-5px) scale(1.05);filter:brightness(1.15);z-index:2}
+body .ax-screen .roster-group .ci:hover:before{border-color:var(--fighter-color,#fff)}
+body .ax-screen .roster-group .ci:focus-visible{outline:none}
+body .ax-screen .roster-group .ci:focus-visible:before{border-color:var(--ax-cyan);box-shadow:0 0 0 3px var(--ax-cyan)}
+body .ax-screen .roster-group .ci.sel{transform:skewX(-8deg) translateY(-4px) scale(1.06);z-index:3}
+body .ax-screen .roster-group .ci.sel:before{border:3px solid var(--ax-yellow)!important;animation:axPulse 1.4s ease-in-out infinite;
+ background:linear-gradient(165deg,color-mix(in srgb,var(--fighter-color,#556) 85%,#fff) 0%,color-mix(in srgb,var(--fighter-color,#556) 40%,#0b0d18) 72%)!important}
+body .ax-screen .roster-group .ci.sel:after{content:'1P'!important;position:absolute;right:-8px;top:-11px;left:auto;width:auto!important;height:auto!important;padding:4px 8px!important;border-radius:0!important;
+ background:var(--ax-red)!important;color:#fff!important;font:900 italic 13px/1 var(--ax-display)!important;box-shadow:3px 3px 0 var(--ax-ink);transform:skewX(8deg)}
+body .ax-screen .roster-group .ci.sel small{background:var(--ax-yellow)!important;color:var(--ax-ink)!important;border-top-color:var(--ax-ink)}
+/* setup strip */
+.ax-setup{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;padding:14px;background:#0b0d18d9;box-shadow:inset 0 0 0 1px var(--ax-line)}
+.ax-field{display:grid;gap:6px;min-width:200px}
+.ax-field label{color:var(--ax-yellow);font:900 10px/1 var(--ax-display);letter-spacing:.22em}
+body .ax-screen .ax-field input{width:100%;max-width:none;min-height:44px;padding:0 14px;border:0;border-radius:0;background:#05060c;box-shadow:inset 0 0 0 2px var(--ax-line);color:var(--ax-white);font:900 16px var(--ax-display);letter-spacing:.06em}
+body .ax-screen .ax-field input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--ax-cyan)}
+body #sc-chars #cpu-opts.ax-cpu-opts{flex:1 1 520px;flex-direction:row!important;flex-wrap:wrap;gap:12px}
+body .ax-screen .optrow{display:grid;gap:6px;width:auto!important;margin:0!important;padding:0!important;border:0!important;background:none!important}
+body .ax-screen .optrow>span{color:var(--ax-yellow);font:900 10px/1 var(--ax-display);letter-spacing:.2em}
+body .ax-screen .seg{display:flex;flex-wrap:wrap;gap:6px;background:none!important;border:0!important;padding:0!important}
+body .ax-screen .seg button{min-height:38px;padding:0 13px!important;border:0!important;border-radius:0!important;background:#181c38!important;color:#d1d4ef!important;box-shadow:inset 0 0 0 1px #ffffff1c;
+ font:900 12px/1 var(--ax-body)!important;transform:skewX(var(--ax-skew));cursor:pointer;flex:0 0 auto}
+body .ax-screen .seg button:hover{background:#252a52!important;color:#fff!important}
+body .ax-screen .seg button.sel{background:var(--ax-yellow)!important;color:var(--ax-ink)!important;box-shadow:3px 3px 0 var(--ax-red)}
+body .ax-screen .ax-cpu-fighters{flex:1 1 100%;margin:0;padding:12px;border:0;background:#05060c;box-shadow:inset 0 0 0 1px var(--ax-line)}
+body .ax-screen .ax-cpu-fighters legend{color:var(--ax-yellow);font:900 11px var(--ax-display);letter-spacing:.18em;padding:0 6px}
+body .ax-screen .ax-cpu-fighters p{color:var(--ax-muted);font-size:12px;margin:0 0 8px}
+body .ax-screen #cpu-fighter-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+body .ax-screen .cpu-fighter-row{display:grid;gap:4px}
+body .ax-screen .cpu-fighter-row label{color:#cfd3ee;font:900 10px var(--ax-display);letter-spacing:.14em}
+body .ax-screen .cpu-fighter-row select{min-height:38px;border:0;border-radius:0;background:#181c38;color:#fff;box-shadow:inset 0 0 0 1px #ffffff22;padding:0 8px;font-weight:700}
+
+/* ---------------- STAGE SELECT ---------------- */
+.ax-stage{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.8fr);gap:clamp(14px,2.4vw,30px);align-items:start}
+.ax-stage-main{display:grid;gap:14px;min-width:0}
+body #sc-stage #menu-arena-preview.ax-arena-preview{position:relative;display:block;aspect-ratio:16/8;overflow:hidden;margin:0;padding:0;border:0;border-radius:0;background:#0b0d18;box-shadow:inset 0 0 0 3px var(--ax-ink),0 0 0 3px var(--ax-yellow);
+ clip-path:polygon(0 0,100% 0,100% calc(100% - 36px),calc(100% - 36px) 100%,0 100%)}
+body #sc-stage #menu-arena-preview>svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+body #sc-stage #menu-arena-preview>div:not(.arena-random-hero){position:absolute;left:18px;bottom:22px;display:grid;gap:6px}
+body #sc-stage #menu-arena-preview>div b{display:block;padding:6px 14px;background:var(--ax-ink);color:var(--ax-white);font:900 italic clamp(22px,2.8vw,40px)/1 var(--ax-display);transform:skewX(var(--ax-skew));box-shadow:5px 5px 0 var(--ax-red)}
+body #sc-stage #menu-arena-preview>div small{justify-self:start;padding:4px 10px;background:var(--ax-yellow);color:var(--ax-ink);font:900 10px/1 var(--ax-display);letter-spacing:.2em;transform:skewX(var(--ax-skew))}
+body #sc-stage .arena-random-hero{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;
+ background:repeating-conic-gradient(from 0deg at 50% 50%,#ffd13b1c 0 8deg,transparent 8deg 20deg),radial-gradient(circle,#2a2f66,#0b0d18)}
+body #sc-stage .arena-random-hero span{font:900 italic clamp(70px,10vw,140px)/1 var(--ax-display);color:var(--ax-yellow);text-shadow:6px 6px 0 var(--ax-red),10px 10px 0 var(--ax-ink)}
+body #sc-stage .arena-random-hero b{font:900 italic clamp(22px,2.6vw,34px) var(--ax-display)}
+body #sc-stage .arena-random-hero p,body #sc-stage .arena-random-hero small{margin:0;color:#d4d7f0;font-weight:700}
+body #sc-stage .arena-pool-list{display:none}
+body #sc-stage #stage-grid.ax-stage-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:12px!important;width:auto!important;padding:4px 10px 4px 4px}
+body #sc-stage .arena-random-options{grid-column:1/-1;display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:12px!important}
+body .ax-screen .stc{position:relative;display:block;padding:0!important;margin:0;border:0!important;border-radius:0!important;background:#0b0d18!important;color:var(--ax-white);overflow:hidden;cursor:pointer;text-align:left;
+ box-shadow:inset 0 0 0 2px #ffffff1f!important;transform:skewX(-6deg);transition:transform .14s cubic-bezier(.2,.9,.3,1.4),box-shadow .14s}
+body .ax-screen .stc>*{transform:skewX(6deg) scale(1.08)}
+body .ax-screen .stc svg{display:block;width:100%;height:auto;aspect-ratio:16/9}
+body .ax-screen .stc .stage-meta{position:absolute;left:0;right:0;bottom:0;padding:5px 10px 5px 14px;background:linear-gradient(0deg,#05060cf0,#05060c99);transform:skewX(6deg) scale(1.08);transform-origin:bottom}
+body .ax-screen .stc .stage-meta b{display:block;font:900 12px/1.2 var(--ax-display);color:#fff}
+body .ax-screen .stc .stage-meta small{display:block;color:#9ea3c9;font:800 9px/1.3 var(--ax-display);letter-spacing:.08em}
+body .ax-screen .stc:hover{transform:skewX(-6deg) translateY(-4px);box-shadow:inset 0 0 0 2px var(--ax-cyan)!important}
+body .ax-screen .stc.sel{box-shadow:inset 0 0 0 3px var(--ax-yellow),0 0 22px #ffd13b66!important;transform:skewX(-6deg) translateY(-3px)}
+body .ax-screen .stc.sel:after{content:'✓';position:absolute;right:8px;top:6px;z-index:2;display:grid;place-items:center;width:24px;height:24px;background:var(--ax-yellow);color:var(--ax-ink);font:900 14px/1 system-ui;transform:skewX(6deg)}
+body .ax-screen .stc.random-arena{min-height:92px;display:grid;place-items:center;background:repeating-linear-gradient(115deg,#181c38 0 14px,#11142a 14px 28px)!important}
+body .ax-screen .stc.random-arena .random-arena-symbol{font:900 italic 38px/1 var(--ax-display);color:var(--ax-yellow);margin-bottom:18px}
+.ax-rules{position:sticky;top:0;display:grid;gap:14px;padding:18px;background:#0b0d18e6;box-shadow:inset 0 0 0 1px var(--ax-line);clip-path:polygon(0 0,100% 0,100% 100%,22px 100%,0 calc(100% - 22px))}
+.ax-rules h3{margin:0;font:900 italic 22px/1 var(--ax-display);letter-spacing:.06em;color:var(--ax-white);text-shadow:3px 3px 0 var(--ax-red)}
+body #sc-stage #menu-match-summary{margin:0;padding:10px 12px;background:#181c38;color:#e3e6fa;font-size:12px;font-weight:700;line-height:1.6;border-left:4px solid var(--ax-yellow)}
+.ax-tip{margin:0;color:#8a90b8;font-size:11px;line-height:1.6}
+
+/* ---------------- ONLINE ENTRY ---------------- */
+.ax-versus{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(12px,2vw,26px);align-items:stretch;flex:1;max-height:440px}
+body .ax-screen .ax-door{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;min-height:300px;padding:clamp(22px,3vw,40px);border:0;border-radius:0;color:var(--ax-white);text-align:left;overflow:hidden;isolation:isolate;
+ clip-path:polygon(0 0,100% 0,100% calc(100% - 34px),calc(100% - 34px) 100%,0 100%);animation:axUp .4s both}
+.ax-door:before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle,#ffffff14 1.2px,transparent 1.8px) 0 0/14px 14px}
+.ax-door-host{cursor:pointer;background:linear-gradient(160deg,var(--ax-red) 0%,#5b0718 70%)}
+.ax-door-join{background:linear-gradient(200deg,#1191c9 0%,#07264a 70%);animation-delay:.08s!important}
+.ax-door-tag{position:absolute;top:18px;right:-10px;font:900 italic clamp(60px,9vw,130px)/.8 var(--ax-display);color:transparent;-webkit-text-stroke:2px #ffffff40;letter-spacing:-.02em}
+.ax-door strong{display:block;font:900 italic clamp(30px,3.6vw,52px)/1 var(--ax-display);text-shadow:4px 4px 0 var(--ax-ink)}
+.ax-door label{cursor:text}
+.ax-door-desc{color:#ffffffd0;font-size:14px;font-weight:700}
+.ax-door-go{align-self:flex-start;margin-top:8px;padding:12px 20px;background:var(--ax-yellow);color:var(--ax-ink);font:900 15px/1 var(--ax-display);letter-spacing:.1em;transform:skewX(var(--ax-skew));box-shadow:5px 5px 0 var(--ax-ink)}
+.ax-door-host:hover .ax-door-go,.ax-door-host:focus-visible .ax-door-go{background:#fff;animation:axThrob .6s ease-in-out infinite}
+.ax-door-host:focus-visible{outline:none;box-shadow:inset 0 0 0 4px var(--ax-yellow)}
+.ax-vs{align-self:center;font:900 italic clamp(28px,3vw,44px)/1 var(--ax-display);color:var(--ax-yellow);text-shadow:4px 4px 0 var(--ax-red),7px 7px 0 var(--ax-ink)}
+.ax-code{display:flex;gap:10px;margin-top:6px}
+body .ax-screen .ax-code input{flex:1;min-width:0;max-width:none;min-height:56px;padding:0 16px;border:0;border-radius:0;background:#05060cd9;box-shadow:inset 0 0 0 2px #ffffff40;color:var(--ax-white);
+ font:900 clamp(20px,2.4vw,30px)/1 var(--ax-display);letter-spacing:.3em;text-transform:uppercase;transform:skewX(var(--ax-skew))}
+body .ax-screen .ax-code input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--ax-yellow)}
+body .ax-screen .ax-code .ax-btn{min-height:56px}
+body #sc-online[data-online-mode="hub"] .ax-door-host{background:linear-gradient(160deg,#2bbf63,#073a1f 72%)}
+body #sc-online[data-online-mode="tournament"] .ax-door-host{background:linear-gradient(160deg,#e3a514,#4a2b02 72%)}
+body #sc-online #online-page-title span{color:var(--ax-yellow)}
+
+/* ---------------- LOBBY ---------------- */
+.ax-lobby{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ax-panel{display:grid;align-content:start;gap:12px;padding:16px 18px;background:#0b0d18e6;box-shadow:inset 0 0 0 1px var(--ax-line);clip-path:polygon(0 0,100% 0,100% 100%,18px 100%,0 calc(100% - 18px))}
+body .ax-screen .ax-panel-title,body .ax-screen .ax-panel .sh{margin:0;padding:0;border:0;background:none;color:var(--ax-white);font:900 italic 17px/1.2 var(--ax-display);letter-spacing:.04em;text-shadow:2px 2px 0 var(--ax-red)}
+.ax-invite-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+body .ax-screen #lb-qr{padding:8px;background:#fff;line-height:0}
+body .ax-screen #lb-qr img,body .ax-screen #lb-qr canvas{width:132px!important;height:132px!important}
+.ax-roomcode{display:grid;gap:6px;justify-items:start}
+.ax-roomcode small{color:var(--ax-yellow);font:900 10px var(--ax-display);letter-spacing:.24em}
+body .ax-screen #lb-code{font:900 italic clamp(30px,3.4vw,44px)/1 var(--ax-display)!important;letter-spacing:.18em!important;color:var(--ax-white);text-shadow:3px 3px 0 var(--ax-red)}
+.ax-note{margin:0;color:var(--ax-muted);font-size:12px}
+.ax-guest{font:900 18px var(--ax-display)}
+body .ax-screen .mrow{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#181c38;border-left:4px solid var(--ax-cyan);font-weight:800;font-size:13px;margin:0 0 6px}
+body .ax-screen .mrow .mk,body .ax-screen .rk .mk{display:grid;place-items:center;width:34px;height:34px;border-radius:0;color:#fff;font:900 14px var(--ax-display);transform:skewX(var(--ax-skew));box-shadow:2px 2px 0 #000;flex:none}
+body .ax-screen .tag{display:inline-block;padding:2px 7px;border-radius:0;background:var(--ax-yellow);color:var(--ax-ink);font:900 10px/1.4 var(--ax-display);transform:skewX(var(--ax-skew))}
+body .ax-screen .wait{padding:10px 14px;background:#181c38;color:var(--ax-yellow);font-weight:900;text-align:center;animation:axBlink 1.6s steps(1) infinite}
+body .ax-screen .ax-grid-small .roster-cards{grid-template-columns:repeat(auto-fill,minmax(86px,1fr))!important}
+body .ax-screen #lb-chardesc{color:var(--ax-muted);font-size:12px}
+body .ax-screen .stage-grid#lb-stage{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))!important;gap:10px!important;width:auto!important;margin-bottom:10px}
+body .ax-screen #lb-set .optrow{margin-top:10px!important}
+.ax-lobby-actions{display:grid;gap:10px;justify-items:center;padding-bottom:20px}
+body .ax-screen #lb-start{position:relative;overflow:hidden;width:min(620px,100%);min-height:70px;padding:0 30px;border:0!important;border-radius:0!important;
+ background:linear-gradient(180deg,#ff6a83,var(--ax-red) 48%,var(--ax-red-d))!important;color:#fff!important;font:900 italic clamp(20px,2.4vw,30px)/1 var(--ax-display)!important;letter-spacing:.08em;
+ transform:skewX(var(--ax-skew));box-shadow:7px 7px 0 var(--ax-yellow),7px 7px 0 3px var(--ax-ink)!important;cursor:pointer;text-shadow:2px 2px 0 #0007}
+body .ax-screen #lb-start:hover{transform:skewX(var(--ax-skew)) translate(-2px,-2px)}
+body .ax-screen #lb-to-hub{justify-self:center;width:auto;max-width:620px;margin:0 auto}
+body .ax-screen #lb-to-hub small{opacity:.7;font-size:11px}
+
+/* ---------------- RESULT ---------------- */
+.ax-result-banner{text-align:center;animation:axPop .5s cubic-bezier(.2,1.4,.4,1) both}
+.ax-result-banner>span{display:inline-block;padding:6px 16px;background:var(--ax-ink);color:var(--ax-yellow);border:2px solid var(--ax-yellow);font:900 12px/1 var(--ax-display);letter-spacing:.3em;transform:skewX(var(--ax-skew))}
+body #sc-result .ax-result-banner .ax-title{margin-top:12px;font-size:clamp(54px,9vw,130px);color:var(--ax-yellow);transform:skewX(var(--ax-skew)) rotate(-3deg);transform-origin:center;
+ -webkit-text-stroke:3px var(--ax-ink);paint-order:stroke fill;text-shadow:6px 6px 0 var(--ax-red),11px 11px 0 var(--ax-ink)}
+.ax-result{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.2fr);gap:clamp(14px,2.6vw,34px);align-items:center;max-width:1100px!important}
+.ax-winner{position:relative;display:grid;justify-items:center;gap:6px}
+body #sc-result #winner-art{width:100%;max-width:340px;margin:0}
+body #sc-result #winner-art .winner-art{position:relative;aspect-ratio:1;display:grid;place-items:center;background:radial-gradient(circle,#ffd13b55,transparent 65%);border:0;border-radius:0}
+body #sc-result #winner-art svg{width:86%;height:86%;filter:drop-shadow(10px 12px 0 #000a);animation:axPop .5s .15s both}
+body #sc-result #res-win{margin:0;padding:8px 22px;background:var(--ax-red);color:#fff;font:900 italic clamp(20px,2.6vw,34px)/1.1 var(--ax-display);text-align:center;transform:skewX(var(--ax-skew));box-shadow:6px 6px 0 var(--ax-ink),6px 6px 0 3px var(--ax-yellow)}
+body #sc-result #res-list{display:grid;gap:8px;margin:0}
+body .ax-screen .rk{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:12px;padding:10px 14px;margin:0;border:0;border-radius:0;background:#11142ae6;box-shadow:inset 0 0 0 1px var(--ax-line);font-weight:900;font-size:14px;animation:axIn .35s both}
+body .ax-screen .rk:nth-child(1){background:linear-gradient(100deg,#5c4510,#11142a 70%);box-shadow:inset 0 0 0 2px var(--ax-yellow)}
+body .ax-screen .rk:nth-child(2){animation-delay:.06s}body .ax-screen .rk:nth-child(3){animation-delay:.12s}body .ax-screen .rk:nth-child(4){animation-delay:.18s}
+body .ax-screen .rk .no{font:900 italic 28px/1 var(--ax-display);color:var(--ax-yellow);min-width:30px;text-align:center}
+body .ax-screen .rk .result-stats{margin-top:4px;color:var(--ax-muted);font-size:11px;font-weight:700}
+body #sc-result #res-rank{justify-self:center;width:auto;max-width:420px;margin:0 auto}
+body #sc-result .ax-nav{display:flex;justify-content:center;flex-wrap:wrap;position:relative!important;background:none;padding-top:4px}
+body #sc-result #res-nav2{padding-bottom:max(22px,env(safe-area-inset-bottom))}
+body #sc-result .ax-nav .ax-btn{flex:0 1 260px}
+body #sc-result #res-again{flex-basis:420px;font-size:22px}
+
+/* ---------------- legacy screens (raid, bracket, ranking, champion, how-to) ---------------- */
+body .ax-legacy>.hd,body .ax-legacy .raid-heading h2{margin:0;padding:0;border:0;background:none;color:var(--ax-white);font:900 italic clamp(28px,4.4vw,58px)/1.05 var(--ax-display);letter-spacing:-.01em;text-shadow:3px 3px 0 var(--ax-red),6px 6px 0 var(--ax-ink);transform:skewX(-6deg);transform-origin:left}
+body .ax-legacy>.hd small{display:block;margin-top:10px;color:var(--ax-muted);font:700 12px/1.5 var(--ax-body);letter-spacing:.08em;text-shadow:none;font-style:normal}
+body .ax-legacy .nav{position:sticky;bottom:0;z-index:5;display:flex;gap:14px;padding:16px 0 max(16px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--ax-ink) 55%,transparent);border:0}
+body .ax-legacy .nav button{min-height:56px;border:0!important;border-radius:0!important;font:900 16px/1 var(--ax-display)!important;letter-spacing:.06em;transform:skewX(var(--ax-skew))}
+body .ax-legacy .nav .back{background:#1b1f3d!important;color:#d6d9f2!important;box-shadow:5px 5px 0 #000}
+body .ax-legacy .nav .next,body .ax-legacy .startbig{background:linear-gradient(180deg,#ff6a83,var(--ax-red) 48%,var(--ax-red-d))!important;color:#fff!important;box-shadow:6px 6px 0 var(--ax-yellow),6px 6px 0 3px var(--ax-ink)!important;border-radius:0!important;transform:skewX(var(--ax-skew))}
+body .ax-legacy .mode-explain{color:var(--ax-muted)}
+body .ax-legacy .card{border-radius:0!important;background:#0b0d18e6!important;box-shadow:inset 0 0 0 1px var(--ax-line)!important;border:0!important}
+body .ax-legacy #champion-name{color:var(--ax-yellow)!important;font-family:var(--ax-display)!important;font-style:italic;text-shadow:5px 5px 0 var(--ax-red),9px 9px 0 var(--ax-ink)}
+
+/* hub screens keep their own layout; only the backdrop is unified */
+body .screen.ax-hubscreen{padding:clamp(14px,2.4vw,28px) clamp(12px,2.6vw,32px) 24px!important}
+
+/* ---------------- responsive ---------------- */
+@media(max-width:900px){
+ .ax-menu{grid-template-columns:1fr;min-height:0}
+ .ax-preview-stage{display:none}
+ body .ax-screen .ax-menu-item{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;row-gap:2px;min-height:0;padding:14px 18px 14px 16px}
+ .ax-mi-desc{display:block;grid-column:2/4;color:var(--ax-muted);font-size:12px;font-weight:700;line-height:1.5;transition:transform .16s}
+ .ax-menu-item:hover .ax-mi-desc,.ax-menu-item:focus-visible .ax-mi-desc{color:#05060cc0;transform:translateX(18px)}
+ .ax-mi-arrow{opacity:.7;transform:none}
+ .ax-select,.ax-stage{grid-template-columns:1fr}
+ .ax-hero{position:relative;grid-template-columns:1fr}
+ body #sc-chars #fighter-showcase.ax-showcase{aspect-ratio:16/8.5;max-height:none}
+ body #sc-chars #fighter-showcase.ax-showcase>svg{left:auto;right:2%;top:4%;width:52%;height:92%}
+ body #sc-chars #fighter-showcase .fighter-name{right:48%;bottom:22px}
+ .ax-rules{position:relative}
+ .ax-versus{grid-template-columns:1fr;max-height:none}
+ .ax-vs{justify-self:center}
+ .ax-lobby,.ax-result{grid-template-columns:1fr}
+ .ax-head-side{display:none}
+}
+@media(max-width:600px){
+ body .screen.ax-screen{padding:14px 12px 0!important}
+ .ax-head{align-items:flex-start}
+ body .ax-screen .ax-title{font-size:clamp(28px,8.4vw,40px)}
+ .ax-head .ax-btn{min-height:40px;padding:0 14px;font-size:12px}
+ .ax-mi-no{font-size:22px;min-width:30px}
+ .ax-mi-label b{font-size:19px}
+ .ax-hero-info{grid-template-columns:1fr}
+ body #sc-chars #fighter-guide-open.ax-guide-btn{grid-template-columns:1fr auto;align-items:center}
+ body #sc-chars #fighter-guide-open.ax-guide-btn small{display:none}
+ body .ax-screen .roster-cards{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px 11px!important;padding:6px 8px 6px 6px}
+ body .ax-screen .roster-group .ci small{font-size:10px!important;padding:5px 6px 5px 10px!important}
+ body #sc-stage #stage-grid.ax-stage-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ body #sc-stage .arena-random-options{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .ax-nav{gap:10px}
+ .ax-nav .ax-btn{min-height:54px}
+ .ax-nav .ax-back{flex:0 0 32%}
+ body .ax-screen .ax-door{min-height:220px}
+ .ax-code{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){body .ax-screen *,body .ax-screen *:before,body .ax-screen *:after{animation:none!important;transition:none!important}}
+
+/* ---- refinements ---- */
+.ax-head-compact .ax-title{font-size:clamp(24px,3.2vw,42px);white-space:nowrap}
+body #sc-chars #fighter-showcase.ax-showcase{aspect-ratio:4/3.5;max-height:52vh}
+body #sc-chars #char-info.ax-stats{border-radius:0!important;background:#0b0d18e6!important;border:0!important}
+body .ax-screen .stc>*{transform:skewX(6deg)}
+body .ax-screen .stc .stage-meta{transform:skewX(6deg);padding-left:18px}
+body .ax-screen .stc.random-arena{display:flex!important;align-items:center;gap:12px;min-height:66px;padding:10px 18px!important}
+body .ax-screen .stc.random-arena .random-arena-symbol{margin:0;font-size:34px}
+body .ax-screen .stc.random-arena .stage-meta{position:static;padding:0;background:none}
+body .ax-screen .stc.random-arena .stage-meta b{font-size:13px}
+body .ax-screen .ax-menu-item:focus-visible{outline:none!important}
+.ax-head-side{overflow:hidden;min-width:0}
+body .ax-screen #stage-grid .stc.random-arena,body .ax-screen #lb-stage .stc.random-arena{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:12px;min-height:64px!important;padding:10px 18px!important}
+body .ax-screen #stage-grid .random-arena .stage-meta,body .ax-screen #lb-stage .random-arena .stage-meta{position:static;padding:0!important;background:none}
+body .ax-screen #stage-grid .random-arena b,body .ax-screen #lb-stage .random-arena b{font-size:13px!important;line-height:1.3!important}
+body .ax-screen #stage-grid .random-arena small,body .ax-screen #lb-stage .random-arena small{font-size:9px!important;margin-top:3px;color:#9ea3c9}
+body .ax-screen .random-arena-symbol{font:900 italic 34px/1 var(--ax-display)!important;color:var(--ax-yellow)!important}
+body #sc-result .rk,body #sc-result .rk *{color:var(--ax-white)}
+body #sc-result .rk .no{color:var(--ax-yellow)!important}
+body #sc-result .rk .result-stats{color:var(--ax-muted)!important}
+body #sc-result .ax-nav{margin-top:0}
+body #sc-result .ax-nav .ax-go{margin-left:0;max-width:none}
+body #sc-result #res-nav1{margin-top:auto}
+body #sc-result #winner-art{max-width:400px}
+body .ax-screen .ax-head .ax-btn{white-space:nowrap;flex:none}
+.ax-mi-no{grid-row:1}.ax-mi-label{grid-row:1}.ax-mi-arrow{grid-row:1;grid-column:3}
+@media(max-width:600px){
+ body .ax-screen .ax-title{font-size:clamp(24px,7.4vw,36px);white-space:nowrap}
+ body #sc-stage .arena-random-options{grid-template-columns:1fr!important;gap:8px!important}
+ body .ax-screen #stage-grid .stc.random-arena{min-height:48px!important;padding:6px 14px!important}
+ body .ax-screen .random-arena-symbol{font-size:24px!important}
+}
+
+/* ---------------- move guide dialog ---------------- */
+body #fighter-guide-dialog{border:0!important;border-radius:0!important;padding:0!important;background:transparent!important;box-shadow:none!important}
+body #fighter-guide-dialog::backdrop{background:#05060cd9;backdrop-filter:blur(3px)}
+body #fighter-guide-dialog .fighter-guide-shell{border:0!important;border-radius:0!important;background:linear-gradient(170deg,#1a1d3c,#0b0d18 40%)!important;box-shadow:0 0 0 3px var(--ax-yellow),12px 12px 0 var(--ax-red)!important;
+ clip-path:polygon(0 0,100% 0,100% calc(100% - 30px),calc(100% - 30px) 100%,0 100%);font-family:var(--ax-body);color:var(--ax-white)}
+body #fighter-guide-dialog .fighter-guide-header{background:linear-gradient(100deg,var(--ax-red),#5b0718 80%)!important;border:0!important}
+body #fighter-guide-dialog .fighter-guide-eyebrow{color:var(--ax-yellow)!important;font:900 10px/1 var(--ax-display)!important;letter-spacing:.24em}
+body #fighter-guide-dialog #fighter-guide-name{font:900 italic clamp(22px,3vw,34px)/1.1 var(--ax-display)!important;color:#fff!important;text-shadow:3px 3px 0 var(--ax-ink)}
+body #fighter-guide-dialog #fighter-guide-role{color:#ffe7ec!important}
+body #fighter-guide-dialog .fighter-guide-x{border:0!important;border-radius:0!important;background:var(--ax-ink)!important;color:#fff!important;box-shadow:inset 0 0 0 2px #ffffff60!important;transform:skewX(var(--ax-skew))}
+body #fighter-guide-dialog .fighter-guide-intro,body #fighter-guide-dialog .fighter-guide-lead{border-radius:0!important;background:#181c38!important;border-left:4px solid var(--ax-yellow)!important;color:#e3e6fa!important}
+body #fighter-guide-dialog .fighter-guide-move{border:0!important;border-radius:0!important;background:#11142a!important;box-shadow:inset 0 0 0 1px var(--ax-line)!important;transform:skewX(-4deg)}
+body #fighter-guide-dialog .fighter-guide-move>*{transform:skewX(4deg)}
+body #fighter-guide-dialog .fighter-guide-key{border-radius:0!important;background:var(--ax-yellow)!important;color:var(--ax-ink)!important;font:900 11px/1.3 var(--ax-display)!important;transform:skewX(var(--ax-skew))}
+body #fighter-guide-dialog .fighter-guide-move-name{font:900 15px/1.3 var(--ax-display)!important;color:#fff!important}
+body #fighter-guide-dialog .fighter-guide-move-desc{color:#c9cdea!important}
+body #fighter-guide-dialog .fighter-guide-traits{border-radius:0!important;background:#11142a!important;border:0!important;box-shadow:inset 0 0 0 1px var(--ax-line)}
+body #fighter-guide-dialog .fighter-guide-footer{border:0!important;background:#05060c!important}
+body #fighter-guide-dialog #fighter-guide-done{border:0!important;border-radius:0!important;background:linear-gradient(180deg,#ff6a83,var(--ax-red) 48%,var(--ax-red-d))!important;color:#fff!important;font:900 14px/1 var(--ax-display)!important;letter-spacing:.06em;transform:skewX(var(--ax-skew));box-shadow:5px 5px 0 var(--ax-yellow)!important}
+
+/* ---- calm motion: no flashing, sweeping or blinking ---- */
+body .ax-screen .ax-go:before{content:none!important;animation:none!important}
+.ax-nav .ax-go:after{animation:none!important;opacity:.85}
+.ax-menu-item:hover .ax-mi-arrow,.ax-menu-item:focus-visible .ax-mi-arrow{animation:none!important}
+body .ax-screen .roster-group .ci.sel:before{animation:none!important;box-shadow:0 0 0 3px var(--ax-yellow),0 0 18px #ffd13b55}
+body .ax-screen .wait{animation:none!important}
+.ax-door-host:hover .ax-door-go,.ax-door-host:focus-visible .ax-door-go{animation:none!important}
+body .ax-screen #lb-start:before{content:none}
+@media(max-width:700px){
+ body #sc-title .ax-title-shade{background:linear-gradient(180deg,#0a0a0f 0%,#0a0a0fd9 34%,#0a0a0f40 56%,transparent 70%),linear-gradient(0deg,#0a0a0f 0%,transparent 26%)}
+ body #sc-title .ax-title-main{left:24px;right:24px;top:max(56px,9vh);transform:none;max-width:none}
+ .ax-logo-stick,.ax-logo-battle{font-size:clamp(58px,17vw,84px)}
+ .ax-logo-online{letter-spacing:.7em!important}
+ body #sc-title #title-tap.ax-start{position:fixed!important;left:24px!important;right:24px!important;bottom:calc(58px + env(safe-area-inset-bottom))!important;margin:0!important;min-height:56px!important}
+ body #sc-title .ax-title-foot{left:24px;right:24px;font-size:9px}
+ body #sc-title .ax-title-foot span:last-child{display:none}
+}
+@media(max-aspect-ratio:4/5){
+ body #sc-title .ax-title-art svg{inset:auto;left:-82.5vw;top:auto;bottom:17vh;width:200vw;height:112.5vw}
+}
+@media(max-height:560px) and (orientation:landscape){
+ .ax-logo-stick,.ax-logo-battle{font-size:64px}
+ .ax-title-kicker{margin-bottom:12px}
+ .ax-title-tag{display:none}
+ body #sc-title #title-tap.ax-start{margin-top:22px!important}
+}
+/* calmer preview frames to match the title */
+.ax-preview{background:#0d0e15!important;box-shadow:inset 0 0 0 1px #ffffff1f!important}
+.ax-preview-art{border-bottom:1px solid #ffffff1a!important}
+/* softer menu backdrop */
+body .screen.ax-screen>.ax-bg{background:linear-gradient(112deg,#ff2a4f14 0 22%,transparent 22.1%),linear-gradient(112deg,transparent 0 78%,#22d8ff0f 78.1%),radial-gradient(ellipse at 50% -10%,#1b1f42 0%,transparent 60%),#07080d!important}
+</style>
 </head>
 <body>
 
-<div id="sc-title" class="screen" style="display:flex">
- <div class="title-art title-code-art" aria-hidden="true">
- <svg class="title-vector" viewBox="0 0 1440 820" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-   <linearGradient id="title-sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101c30"/><stop offset=".52" stop-color="#0b111e"/><stop offset="1" stop-color="#17111d"/></linearGradient>
-   <linearGradient id="title-red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffba86"/><stop offset=".36" stop-color="#fb5749"/><stop offset="1" stop-color="#8a2038"/></linearGradient>
-   <linearGradient id="title-blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eefaff"/><stop offset=".34" stop-color="#8adafb"/><stop offset="1" stop-color="#315aab"/></linearGradient>
-   <linearGradient id="title-gi" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0d7"/><stop offset=".65" stop-color="#b9ccdb"/><stop offset="1" stop-color="#667c97"/></linearGradient>
-   <linearGradient id="title-steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eff6ff"/><stop offset=".5" stop-color="#a2b9d0"/><stop offset="1" stop-color="#3f617d"/></linearGradient>
-   <radialGradient id="title-blast"><stop stop-color="#fffef4" stop-opacity=".98"/><stop offset=".14" stop-color="#ffda98" stop-opacity=".8"/><stop offset=".36" stop-color="#ed8190" stop-opacity=".35"/><stop offset="1" stop-color="#ef5379" stop-opacity="0"/></radialGradient>
-   <radialGradient id="title-orange-halo"><stop stop-color="#e9524a" stop-opacity=".40"/><stop offset="1" stop-color="#da3b43" stop-opacity="0"/></radialGradient>
-   <radialGradient id="title-blue-halo"><stop stop-color="#6bbbe9" stop-opacity=".36"/><stop offset="1" stop-color="#468ddf" stop-opacity="0"/></radialGradient>
-   <filter id="title-soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="17"/></filter>
-   <filter id="title-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-   <pattern id="title-dot" width="21" height="21" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#adc4df" opacity=".15"/></pattern>
-  </defs>
-  <rect width="1440" height="820" fill="url(#title-sky)"/>
-  <rect width="1440" height="820" fill="url(#title-dot)" opacity=".45"/>
-  <ellipse cx="315" cy="535" rx="420" ry="350" fill="url(#title-orange-halo)"/>
-  <ellipse cx="1100" cy="520" rx="470" ry="370" fill="url(#title-blue-halo)"/>
-  <g opacity=".27" stroke="#5c6f85" fill="none" stroke-width="3">
-   <path d="M-50 708L287 467L596 698M1448 701L1144 459L824 709"/>
-   <path d="M0 764L480 573M1440 764L961 574"/>
-   <path d="M0 790H1440M0 754H1440M0 725H1440"/>
-  </g>
-  <g opacity=".32" fill="#08101a" stroke="#556c82" stroke-width="2">
-   <path d="M1180 500V245H1398V505Z"/><path d="M1205 238L1288 182L1375 240Z"/><path d="M1237 462V315H1349V461Z" fill="#122137"/>
-   <path d="M1314 229V164M1242 229V168M1180 286H1398"/>
-   <path d="M-12 492V314H140V500Z"/><path d="M-14 303L71 239L161 307Z"/>
-  </g>
-  <g class="title-speed-lines" fill="none" stroke-linecap="round">
-   <path d="M-45 460L502 508M-25 555L526 551M-14 624L594 583" stroke="#f65c62" stroke-width="4" opacity=".37"/>
-   <path d="M1470 401L928 477M1491 532L889 523M1470 669L884 589" stroke="#8cdbff" stroke-width="4" opacity=".36"/>
-   <path d="M0 352L428 472M1440 291L1006 469" stroke="#fff5ec" stroke-width="1.5" opacity=".32"/>
-  </g>
-  <path d="M-40 738C330 608 447 666 754 636S1181 687 1490 715L1490 830H-40Z" fill="#0a111e" opacity=".91"/>
-  <path d="M-20 736C300 624 477 684 738 643S1190 680 1460 727" fill="none" stroke="#8799aa" opacity=".3" stroke-width="5"/>
-  <!-- These SVG stick-fighters deliberately use the playable karate/swordsman costumes:
-       blank round faces, white gi + red headband, navy sword coat + red sash. -->
-  <g class="title-martial" data-fighter="karate" transform="translate(170 274) rotate(-8 135 227)">
-   <g class="title-karate-motion" stroke="#ef514b" fill="none" stroke-linecap="round" opacity=".65">
-    <path d="M16 236Q-74 170-178 160M7 276Q-94 251-176 260M49 342Q-80 372-147 424" stroke-width="14"/>
-    <path d="M-6 182L-144 124M-12 309L-196 340" stroke-width="4"/>
-   </g>
-   <path d="M113 234Q56 275 46 359L-14 412" fill="none" stroke="#050c17" stroke-width="42" stroke-linecap="round"/>
-   <path d="M147 240Q192 293 204 384L255 398" fill="none" stroke="#08111e" stroke-width="43" stroke-linecap="round"/>
-   <path d="M113 239Q60 281 43 350" fill="none" stroke="#8ca8bd" stroke-width="16" stroke-linecap="round"/>
-   <path d="M149 250Q186 295 196 370" fill="none" stroke="#506a80" stroke-width="15" stroke-linecap="round"/>
-   <path d="M86 172L170 171L186 276L115 292L59 242Z" fill="url(#title-gi)" stroke="#0b1626" stroke-width="10" stroke-linejoin="round"/>
-   <path d="M96 176L124 234L144 174M78 202L140 270M172 196L122 278" fill="none" stroke="#485f76" stroke-width="5" opacity=".7"/>
-   <path d="M65 246Q118 266 174 255" stroke="#d53b45" stroke-width="20" fill="none"/>
-   <path d="M134 253Q178 291 189 317L121 278Z" fill="#c33e44"/>
-   <path d="M112 172Q54 159 6 199L-25 244" fill="none" stroke="#0a1120" stroke-width="37" stroke-linecap="round"/>
-   <path d="M112 171Q54 168 16 207" fill="none" stroke="#8d9fb0" stroke-width="16" stroke-linecap="round"/>
-   <path d="M147 177Q191 154 225 185L321 189" stroke="#08111d" stroke-width="49" stroke-linecap="round" fill="none"/>
-   <path d="M146 177Q196 161 226 186L318 188" stroke="#7898af" stroke-width="18" stroke-linecap="round" fill="none"/>
-   <path d="M260 166L307 165Q354 170 371 189Q354 218 300 224L260 212Z" fill="#141c29" stroke="#0b111a" stroke-width="6"/>
-   <path d="M265 170L311 167L324 222L273 219Z" fill="#e6dfd1" opacity=".92"/>
-   <path d="M275 181L319 179M275 193L321 192M280 208L324 207" stroke="#818b96" stroke-width="5"/>
-   <path d="M368 183L388 193L370 209" fill="none" stroke="#ffe6b4" stroke-width="6"/>
-   <circle cx="123" cy="115" r="56" fill="#0d1726" stroke="#9bb8ce" stroke-width="5"/>
-   <path d="M70 100Q116 84 176 99L170 119Q107 112 71 124Z" fill="url(#title-red)" stroke="#9b2c3b" stroke-width="3"/>
-   <path d="M72 109Q22 86-34 62L-124 9Q-44 38-5 66Q-54 24-104-17L-14 18Q45 44 83 103Z" fill="#e74951" stroke="#7b1c2e" stroke-width="3"/>
-   <path d="M97 84Q136 79 171 96" stroke="#ffc49b" stroke-width="3" fill="none" opacity=".64"/>
-  </g>
-  <g class="title-sworder" data-fighter="swordsman" transform="translate(1308 260) scale(-1.47 1.47)">
-   <g class="title-sword-motion" fill="none" stroke-linecap="round">
-    <path d="M-42 145L-182 73M-26 204L-176 192M-18 290L-200 337" stroke="#7ac4f9" stroke-width="7" opacity=".45"/>
-   </g>
-   <path d="M101 231Q48 294 33 367L-17 405" fill="none" stroke="#07111e" stroke-width="41" stroke-linecap="round"/>
-   <path d="M151 243Q205 276 211 377L273 401" fill="none" stroke="#081422" stroke-width="42" stroke-linecap="round"/>
-   <path d="M101 233Q49 293 36 364" fill="none" stroke="#556a83" stroke-width="14" stroke-linecap="round"/>
-   <path d="M148 243Q198 291 205 378" fill="none" stroke="#405877" stroke-width="14" stroke-linecap="round"/>
-   <path d="M93 177L158 170L177 284L119 299L76 254Z" fill="#142339" stroke="#7d8fa4" stroke-width="5"/>
-   <path d="M92 181L105 179L113 278L84 270Z" fill="#9c384a"/>
-   <path d="M116 174L155 178L161 270L130 286Z" fill="#344b64"/>
-   <path d="M75 247Q122 272 176 250" fill="none" stroke="#dfc79d" stroke-width="13"/>
-   <path d="M111 282Q55 326-2 344L48 274Z" fill="#1b2d49"/>
-   <path d="M143 288Q189 333 220 362L178 269Z" fill="#253d5c"/>
-   <path d="M95 179Q40 176 14 226" fill="none" stroke="#0a1423" stroke-width="33" stroke-linecap="round"/>
-   <path d="M94 179Q42 181 20 222" fill="none" stroke="#738ba4" stroke-width="13" stroke-linecap="round"/>
-   <path d="M155 176Q208 159 249 193L301 194" fill="none" stroke="#091421" stroke-width="35" stroke-linecap="round"/>
-   <path d="M156 176Q203 165 252 191L300 193" fill="none" stroke="#697f97" stroke-width="13" stroke-linecap="round"/>
-   <path d="M292 191L322 190" stroke="#a58d5e" stroke-width="15" stroke-linecap="round"/>
-   <path d="M299 176L299 209" stroke="#e9d7a4" stroke-width="9" stroke-linecap="round"/>
-   <path d="M311 186L410 151L453 134L420 169L315 197Z" fill="url(#title-steel)" stroke="#0d1c2f" stroke-width="5"/>
-   <path d="M315 187L424 149" stroke="#f9fdff" stroke-width="4" stroke-linecap="round"/>
-   <path d="M63 109Q10 115-24 63L-98 33Q-15 56 24 68L-43 4Q40 40 78 93Z" fill="#8b3144" stroke="#341626" stroke-width="3"/>
-   <circle cx="120" cy="112" r="55" fill="#141e2e" stroke="#a5b8d0" stroke-width="5"/>
-   <path d="M68 130L171 128L179 141L67 144Z" fill="#b6bfc6" opacity=".78"/>
-   <path d="M66 139Q24 157-31 152L-84 167Q-26 174 68 154Z" fill="#c53e4f"/>
-  </g>
-  <g class="title-sword-arc" filter="url(#title-glow)" fill="none" stroke-linecap="round">
-   <path d="M1210 227Q1066 240 953 326Q783 447 696 526Q830 672 1194 681" stroke="#337bda" stroke-width="40" opacity=".21"/>
-   <path d="M1210 227Q1032 240 926 354Q777 468 698 526Q840 654 1202 665" stroke="url(#title-blue)" stroke-width="13" opacity=".95"/>
-   <path d="M1185 239Q997 260 912 370Q776 481 701 530Q889 661 1190 648" stroke="#effcff" stroke-width="3" opacity=".88"/>
-  </g>
-  <g class="title-impact" transform="translate(727 530)">
-   <circle r="165" fill="url(#title-blast)" class="title-blast"/>
-   <g stroke-linecap="round">
-    <path d="M-6-122L-3-21M45-157L14-24M99-109L29-18M151-48L36-7M151 35L35 13M104 103L18 31M22 148L5 39M-76 137L-18 26M-154 85L-26 20M-166-17L-35-4M-125-104L-20-16" stroke="#ffe6bd" stroke-width="4" opacity=".8"/>
-    <path d="M-190-85L-47-13M160-123L40-18M-185 49L-42 13M160 113L43 26" stroke="#fff" stroke-width="2" opacity=".6"/>
-   </g>
-   <path d="M-30-20L-8-46L11-16L43-30L18-1L50 21L12 21L2 56L-14 27L-55 40L-32 4L-53-23Z" fill="#fff1d7" stroke="#ffcbab" stroke-width="2"/>
-   <g fill="#fae6d4"><path d="M-112-42L-85-69L-91-27Z"/><path d="M100-70L125-53L91-42Z"/><path d="M-84 67L-99 97L-61 88Z"/><path d="M62 83L95 111L69 62Z"/></g>
-  </g>
-  <g opacity=".75" fill="#e8ebf4"><circle cx="547" cy="440" r="2"/><circle cx="981" cy="480" r="3"/><circle cx="683" cy="638" r="3"/><circle cx="883" cy="388" r="2"/></g>
-  <g opacity=".7" fill="#f48b77"><path d="M355 646l21-34 9 45z"/><path d="M485 747l8-36 25 24z"/><path d="M672 707l-11-42 29 19z"/></g>
-  <g opacity=".7" fill="#bfefff"><path d="M1066 725l-25-34 35 6z"/><path d="M1000 620l15-30 10 32z"/><path d="M1215 632l25-39-4 37z"/></g>
- </svg>
-</div><div class="title-content"><div class="title-kicker">STICK BATTLE / THE ARENA AWAITS</div>
- <h1 class="logo">STICK<em>BATTLE</em><small>ONLINE</small></h1><p class="title-desc">個性で選べ。技で魅せろ。<br>次の一戦を、忘れられない一戦に。</p>
- <button class="tap" id="title-tap">はじめる <span aria-hidden="true">↗</span></button></div><div class="version-label"><span id="menu-facts">FIGHTERS / ARENAS / ONLINE</span></div>
-</div>
-<div id="sc-mode" class="screen mode-rework-screen">
- <div class="mode-rework-head">
-  <div><span class="mode-overline">STICK BATTLE / SELECT YOUR MODE</span><h2>次の戦いを、<span>選ぶ。</span></h2><p>すぐに対戦する？ それとも、新しい技を試す？</p></div>
-  <button id="menu-title-back" class="menu-home">← タイトル</button>
+<div id="sc-title" class="screen ax-screen ax-title-screen" style="display:flex">
+ <div class="title-art ax-title-art" aria-hidden="true"></div>
+ <div class="ax-title-shade" aria-hidden="true"></div>
+ <div class="ax-title-main">
+  <span class="ax-title-kicker">PLATFORM FIGHTER</span>
+  <h1 class="ax-logo" aria-label="STICK BATTLE ONLINE"><span class="ax-logo-stick">STICK</span><span class="ax-logo-battle">BATTLE</span><span class="ax-logo-online">ONLINE</span></h1>
+  <p class="ax-title-tag">ひとつのリングで、最強を決めろ。</p>
+  <button class="ax-start" id="title-tap" type="button">PRESS START</button>
  </div>
- <div class="mode-grid mode-rework-grid">
-  <button class="big mode-card" id="go-cpu" data-ghost="01"><span class="mode-no">01 / SINGLE PLAYER</span><span class="mode-symbol" aria-hidden="true">Ⅰ</span><span class="mode-card-content"><span class="mode-card-kicker">LOCAL BATTLE</span><b>CPU対戦</b><span class="mode-card-desc">1〜7体のライバルに挑め。チーム戦も自由自在。</span><span class="mode-card-foot">ひとりで遊ぶ <span aria-hidden="true">↗</span></span></span></button>
-  <button class="big mode-card" id="go-online" data-ghost="02"><span class="mode-no">02 / MULTIPLAYER</span><span class="mode-symbol" aria-hidden="true">◎</span><span class="mode-card-content"><span class="mode-card-kicker">ONLINE BATTLE</span><b>オンライン対戦</b><span class="mode-card-desc">友達とリアルタイム対戦。部屋コードで簡単に参加。</span><span class="mode-card-foot">友達と対戦 <span aria-hidden="true">↗</span></span></span></button>
-  <button class="big mode-card" id="go-more" data-ghost="03"><span class="mode-no">03 / CHALLENGES</span><span class="mode-symbol" aria-hidden="true">Ⅲ</span><span class="mode-card-content"><span class="mode-card-kicker">EXTRA MODES</span><b>ほかの遊び</b><span class="mode-card-desc">組み手・トーナメント・トレーニング。戦い方は無限大。</span><span class="mode-card-foot">モードを選ぶ <span aria-hidden="true">↗</span></span></span></button>
-  <button class="big mode-card" id="go-hub" data-ghost="04"><span class="mode-no">04 / GAME HUB</span><span class="mode-symbol" aria-hidden="true">♟</span><span class="mode-card-content"><span class="mode-card-kicker">ONLINE MINI GAMES</span><b>ゲームHUB</b><span class="mode-card-desc">同じ部屋で友達と遊べる。まずはリバーシとコネクトフォーから。</span><span class="mode-card-foot">ゲームHUBへ <span aria-hidden="true">↗</span></span></span></button>
-   <button class="big mode-card mode-card-guide" id="go-howto" data-ghost="05"><span class="mode-no">05 / BEGINNER GUIDE</span><span class="mode-symbol" aria-hidden="true">?</span><span class="mode-card-content"><span class="mode-card-kicker">HOW TO PLAY</span><b>ルール・操作方法</b><span class="mode-card-desc">初めてでも大丈夫。技の出し方から勝ち方まで、ここで確認。</span></span><span class="mode-guide-arrow" aria-hidden="true">↗</span></button>
- </div>
- <button class="raid-entry" id="go-raid" hidden aria-hidden="true" tabindex="-1" style="display:none"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。 <i aria-hidden="true">↗</i></small></button>
- <p class="mode-rework-footer">自分だけのスタイルを、ここから。</p>
+ <div class="ax-title-foot"><span id="menu-facts">FIGHTERS / ARENAS / ONLINE</span><span>STICK BATTLE ONLINE</span></div>
 </div>
 
-<div id="sc-raid" class="screen raid-screen">
+<div id="sc-mode" class="screen ax-screen">
+ <div class="ax-bg" aria-hidden="true"></div>
+ <header class="ax-head">
+  <div><span class="ax-step">MAIN MENU</span><h2 class="ax-title">モードセレクト</h2><p class="ax-sub">どれで遊ぶ？</p></div>
+  <button id="menu-title-back" class="ax-btn ax-btn-ghost" type="button">◀ タイトル</button>
+ </header>
+ <div class="ax-menu">
+  <button class="ax-menu-item" id="go-cpu" style="--c:#ff2a4f"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">01</span><span class="ax-mi-label"><b>CPU対戦</b><small>VERSUS CPU</small></span><span class="ax-mi-desc">最大7体のCPUと大乱闘。チーム戦も、強さも、相手キャラも自由に決められる。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="go-online" style="--c:#22d8ff"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">02</span><span class="ax-mi-label"><b>オンライン対戦</b><small>ONLINE VERSUS</small></span><span class="ax-mi-desc">部屋を作ってURLかQRで招待。スマホとPCが混ざっても、最大8人でリアルタイムに戦える。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="go-more" style="--c:#ffd13b"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">03</span><span class="ax-mi-label"><b>チャレンジ</b><small>CHALLENGE MODES</small></span><span class="ax-mi-desc">トレーニングで技を研究。組み手で何人抜けるか挑戦。トーナメントで優勝を狙え。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="go-hub" style="--c:#7cff8a"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">04</span><span class="ax-mi-label"><b>ゲームHUB</b><small>PARTY GAMES</small></span><span class="ax-mi-desc">同じ部屋のメンバーで、リバーシ・コネクトフォー・ババ抜き・ポーカーなどを遊べる。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="go-howto" style="--c:#c08bff"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">05</span><span class="ax-mi-label"><b>あそびかた</b><small>HOW TO PLAY</small></span><span class="ax-mi-desc">移動・攻撃・必殺技・カウンター。勝ち方まで、はじめての人はここから。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <div class="ax-preview-stage"><div class="ax-preview" data-for="go-cpu" style="--c:#ff2a4f" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg1" cx="214" cy="170" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#ff5a4e" stop-opacity=".28"/><stop offset="1" stop-color="#ff5a4e" stop-opacity="0"/></radialGradient><filter id="pr1" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg1)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(150 176) scale(1.35 1.35)" opacity="1"><g filter="url(#pr1)" opacity=".7"><path d="M0-40L-6 18" fill="none" stroke="#ff5a4e" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L-34 52" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L52 0" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-30-42" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L30-34L40-52" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#ff5a4e"/></g><path d="M0-40L-6 18" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L-34 52" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L52 0" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-30-42" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L30-34L40-52" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#ff5a4e"/><path d="M0-40L-6 18" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L-34 52" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L52 0" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-30-42" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L30-34L40-52" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(268 176) scale(-1.35 1.35)" opacity="1"><g filter="url(#pr1)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#9aa0b4"/></g><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#9aa0b4"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><circle cx="214" cy="176" r="18" fill="#fff" opacity=".18" filter="url(#pr1)"/><circle cx="214" cy="176" r="3" fill="#fff"/><path d="M214 162V190M200 176H228" stroke="#fff" stroke-width="1.2" opacity=".8"/><text x="268" y="74" font-size="11" font-weight="700" fill="#9aa0b4" text-anchor="middle" letter-spacing="4" font-family="Arial Black,sans-serif">CPU</text></svg></span><span class="ax-preview-copy"><em>SINGLE PLAYER</em><strong>ひとりで乱闘</strong><span class="ax-preview-desc">最大7体のCPUと大乱闘。チーム戦も、強さも、相手キャラも自由に決められる。</span><ul class="ax-tags"><li>CPU 1〜7体</li><li>チーム戦</li><li>強さ4段階</li></ul></span></div><div class="ax-preview" data-for="go-online" style="--c:#22d8ff" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg2" cx="200" cy="150" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#8fdcff" stop-opacity=".28"/><stop offset="1" stop-color="#8fdcff" stop-opacity="0"/></radialGradient><filter id="pr2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg2)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(80 182) scale(1.05 1.05)" opacity="1"><g filter="url(#pr2)" opacity=".7"><path d="M0-40L2 20" fill="none" stroke="#ff5a4e" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#ff5a4e"/></g><path d="M0-40L2 20" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#ff5a4e"/><path d="M0-40L2 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(160 182) scale(1.05 1.05)" opacity="1"><g filter="url(#pr2)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#e8c27a" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#e8c27a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#e8c27a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#e8c27a" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#e8c27a" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#e8c27a"/></g><path d="M0-40L4 20" fill="none" stroke="#e8c27a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#e8c27a" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#e8c27a" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#e8c27a" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#e8c27a" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#e8c27a"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(240 182) scale(-1.05 1.05)" opacity="1"><g filter="url(#pr2)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#8fdcff" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#8fdcff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#8fdcff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#8fdcff"/></g><path d="M0-40L4 20" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#8fdcff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#8fdcff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#8fdcff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#8fdcff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#8fdcff"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(320 182) scale(-1.05 1.05)" opacity="1"><g filter="url(#pr2)" opacity=".7"><path d="M0-40L2 20" fill="none" stroke="#8fe3a4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#8fe3a4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#8fe3a4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#8fe3a4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#8fe3a4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#8fe3a4"/></g><path d="M0-40L2 20" fill="none" stroke="#8fe3a4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#8fe3a4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#8fe3a4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#8fe3a4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#8fe3a4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#8fe3a4"/><path d="M0-40L2 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g></svg></span><span class="ax-preview-copy"><em>MULTIPLAYER</em><strong>友達とガチ対戦</strong><span class="ax-preview-desc">部屋を作ってURLかQRで招待。スマホとPCが混ざっても、最大8人でリアルタイムに戦える。</span><ul class="ax-tags"><li>最大8人</li><li>6文字コード</li><li>スマホ・PC</li></ul></span></div><div class="ax-preview" data-for="go-more" style="--c:#ffd13b" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg3" cx="200" cy="120" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#e8c27a" stop-opacity=".28"/><stop offset="1" stop-color="#e8c27a" stop-opacity="0"/></radialGradient><filter id="pr3" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg3)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(200 128)" fill="none" stroke-linejoin="round"><g filter="url(#pr3)" opacity=".7" stroke="#e8c27a" stroke-width="7"><path d="M-54-70H54V-26Q54 28 0 42Q-54 28-54-26Z"/><path d="M-54-56H-84Q-88-8-44 4M54-56H84Q88-8 44 4"/><path d="M-12 42V64H12V42M-42 64H42V82H-42Z"/></g><g stroke="#e8c27a" stroke-width="3"><path d="M-54-70H54V-26Q54 28 0 42Q-54 28-54-26Z" fill="#0b0c12"/><path d="M-54-56H-84Q-88-8-44 4M54-56H84Q88-8 44 4"/><path d="M-12 42V64H12V42M-42 64H42V82H-42Z" fill="#0b0c12"/></g></g></svg></span><span class="ax-preview-copy"><em>EXTRA MODES</em><strong>腕を磨け、頂点を目指せ</strong><span class="ax-preview-desc">トレーニングで技を研究。組み手で何人抜けるか挑戦。トーナメントで優勝を狙え。</span><ul class="ax-tags"><li>トレーニング</li><li>組み手</li><li>トーナメント</li></ul></span></div><div class="ax-preview" data-for="go-hub" style="--c:#7cff8a" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg4" cx="200" cy="130" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#8fe3a4" stop-opacity=".28"/><stop offset="1" stop-color="#8fe3a4" stop-opacity="0"/></radialGradient><filter id="pr4" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg4)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g fill="#0b0c12" stroke="#8fe3a4" stroke-width="2.5"><g transform="translate(70 70) rotate(-12)"><rect width="86" height="120" rx="8"/><text x="43" y="74" font-size="40" fill="#ff5a4e" stroke="none" text-anchor="middle">♥</text></g><g transform="translate(150 58) rotate(5)"><rect width="86" height="120" rx="8"/><text x="43" y="76" font-size="40" fill="#e9e3d8" stroke="none" text-anchor="middle">♠</text></g><g transform="translate(262 78)"><rect width="104" height="104"/><circle cx="16" cy="16" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="40" cy="16" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="64" cy="16" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="88" cy="16" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="16" cy="40" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="40" cy="40" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="64" cy="40" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="88" cy="40" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="16" cy="64" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="40" cy="64" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="64" cy="64" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="88" cy="64" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="16" cy="88" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="40" cy="88" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="64" cy="88" r="7.5" fill="#e9e3d8" stroke="#8fe3a4" stroke-width="1.2"/><circle cx="88" cy="88" r="7.5" fill="#0b0c12" stroke="#8fe3a4" stroke-width="1.2"/></g></g></svg></span><span class="ax-preview-copy"><em>ONLINE PARTY</em><strong>みんなで遊べるミニゲーム集</strong><span class="ax-preview-desc">同じ部屋のメンバーで、リバーシ・コネクトフォー・ババ抜き・ポーカーなどを遊べる。</span><ul class="ax-tags"><li>リバーシ</li><li>トランプ</li><li>ボードゲーム</li></ul></span></div><div class="ax-preview" data-for="go-howto" style="--c:#c08bff" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg5" cx="200" cy="130" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#c3a6ff" stop-opacity=".28"/><stop offset="1" stop-color="#c3a6ff" stop-opacity="0"/></radialGradient><filter id="pr5" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg5)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(200 140)" fill="none" stroke-linejoin="round"><path d="M-120-28Q-120-64-84-64H84Q120-64 120-28L138 46Q143 78 113 78Q93 78 79 56H-79Q-93 78-113 78Q-143 78-138 46Z" fill="#0b0c12" stroke="#c3a6ff" stroke-width="3"/><path d="M-84-22v36M-102-4h36" stroke="#e9e3d8" stroke-width="7" stroke-linecap="round"/><g stroke="#c3a6ff" stroke-width="2.5" fill="#0b0c12"><circle cx="66" cy="-24" r="12"/><circle cx="92" cy="0" r="12"/><circle cx="40" cy="0" r="12"/><circle cx="66" cy="24" r="12"/></g></g></svg></span><span class="ax-preview-copy"><em>BEGINNER GUIDE</em><strong>30秒でわかる操作とルール</strong><span class="ax-preview-desc">移動・攻撃・必殺技・カウンター。勝ち方まで、はじめての人はここから。</span><ul class="ax-tags"><li>操作方法</li><li>ルール</li><li>必殺技</li></ul></span></div></div>
+ </div>
+ <button class="raid-entry" id="go-raid" hidden aria-hidden="true" tabindex="-1" style="display:none"><span>NEW / CO-OP RAID · 1–4 PLAYERS</span><b>協力ボスバトル</b><small>DIO ―― 仲間と挑む、最高難度の総力戦。</small></button>
+ <p class="ax-hint">▲▼ / マウスで選んで決定</p>
+</div>
+
+<div id="sc-raid" class="screen raid-screen ax-screen ax-legacy">
+ <div class="ax-bg" aria-hidden="true"></div>
  <div class="raid-heading"><span>CO-OP / VS THE STRONGEST NPC</span><h2>最強のDIOを、<br><em>みんなで倒せ。</em></h2><p>最大4人。普段の操作で、桁違いの強敵に挑む。</p></div>
  <div class="raid-dossier">
   <div class="raid-boss-art" id="raid-boss-art" aria-hidden="true"></div>
@@ -1859,83 +2242,109 @@ input,select{font-family:inherit}
  </div><div class="nav"><button class="back" id="raid-back">← モード選択</button></div>
 </div>
 
-<div id="sc-extra" class="screen mode-rework-screen">
- <div class="mode-rework-head"><div><span class="mode-overline">BEYOND THE BATTLE / EXTRA MODES</span><h2>もうひとつの<span>戦場。</span></h2><p>練習・連戦・優勝。それぞれの目標を追いかけよう。</p></div></div>
- <div class="extra-choice mode-rework-extra">
-  <button class="big mode-card" id="extra-training" data-ghost="01"><span class="mode-no">01 / PRACTICE</span><span class="mode-symbol" aria-hidden="true">◎</span><span class="mode-card-content"><span class="mode-card-kicker">TRAIN YOUR SKILL</span><b>トレーニング</b><span class="mode-card-desc">技を試して、自分だけのコンボを研究。</span><span class="mode-stripe"><span>自由に練習</span><span>ゲージ調整</span></span><span class="mode-card-foot">練習を始める ↗</span></span></button>
-  <button class="big mode-card" id="extra-kumite" data-ghost="02"><span class="mode-no">02 / SURVIVAL</span><span class="mode-symbol" aria-hidden="true">∞</span><span class="mode-card-content"><span class="mode-card-kicker">ENDLESS CHALLENGE</span><b>組み手</b><span class="mode-card-desc">全キャラのCPUが次々に登場。何人抜けるか挑戦！</span><span class="mode-stripe"><span>全キャラ登場</span><span>勝ち抜き記録</span></span><span class="mode-card-foot">連戦に挑む ↗</span></span></button>
-  <button class="big mode-card" id="extra-tournament" data-ghost="03"><span class="mode-no">03 / TOURNAMENT</span><span class="mode-symbol" aria-hidden="true">Ⅴ</span><span class="mode-card-content"><span class="mode-card-kicker">ROAD TO CHAMPION</span><b>トーナメント</b><span class="mode-card-desc">勝ち上がれ。頂点に立つのはたった1人。</span><span class="mode-stripe"><span>勝ち上がり戦</span><span>オンライン対応</span></span><span class="mode-card-foot">優勝を目指す ↗</span></span></button>
+<div id="sc-extra" class="screen ax-screen">
+ <div class="ax-bg" aria-hidden="true"></div>
+ <header class="ax-head">
+  <div><span class="ax-step">CHALLENGE MODES</span><h2 class="ax-title">チャレンジ</h2><p class="ax-sub">練習・連戦・優勝。目標を選べ。</p></div>
+  <button id="extra-back" class="ax-btn ax-btn-ghost" type="button">◀ モード選択</button>
+ </header>
+ <div class="ax-menu">
+  <button class="ax-menu-item" id="extra-training" style="--c:#22d8ff"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">01</span><span class="ax-mi-label"><b>トレーニング</b><small>TRAINING</small></span><span class="ax-mi-desc">ダメージ・位置のリセット、ゲージMAX、CPUの停止を切り替えながら自由に練習できる。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="extra-kumite" style="--c:#ff2a4f"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">02</span><span class="ax-mi-label"><b>組み手</b><small>SURVIVAL</small></span><span class="ax-mi-desc">全キャラのCPUが次々に登場する勝ち抜き戦。記録はオンラインランキングに残せる。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="extra-tournament" style="--c:#ffd13b"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">03</span><span class="ax-mi-label"><b>トーナメント</b><small>TOURNAMENT</small></span><span class="ax-mi-desc">8人のトーナメントを勝ち上がれ。友達とのオンライン大会にも対応。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="extra-ranking" style="--c:#c08bff"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">04</span><span class="ax-mi-label"><b>ランキング</b><small>SURVIVAL RANKING</small></span><span class="ax-mi-desc">みんなの勝ち抜き記録。使用キャラとステージも一緒に表示される。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <div class="ax-preview-stage"><div class="ax-preview" data-for="extra-training" style="--c:#22d8ff" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg6" cx="220" cy="150" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#8fdcff" stop-opacity=".28"/><stop offset="1" stop-color="#8fdcff" stop-opacity="0"/></radialGradient><filter id="pr6" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg6)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(150 180) scale(1.4 1.4)" opacity="1"><g filter="url(#pr6)" opacity=".7"><path d="M0-40L2 20" fill="none" stroke="#8fdcff" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#8fdcff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#8fdcff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#8fdcff"/></g><path d="M0-40L2 20" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#8fdcff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#8fdcff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#8fdcff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#8fdcff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#8fdcff"/><path d="M0-40L2 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-22 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L24 58" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-8" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L56-32" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(268 150)"><rect x="-24" y="-70" width="48" height="116" rx="24" fill="#0b0c12" stroke="#e8c27a" stroke-width="3"/><path d="M0 46V84M-34 84H34" stroke="#e8c27a" stroke-width="3"/></g><circle cx="236" cy="140" r="18" fill="#fff" opacity=".18" filter="url(#pr6)"/><circle cx="236" cy="140" r="3" fill="#fff"/><path d="M236 126V154M222 140H250" stroke="#fff" stroke-width="1.2" opacity=".8"/></svg></span><span class="ax-preview-copy"><em>PRACTICE</em><strong>技とコンボを研究</strong><span class="ax-preview-desc">ダメージ・位置のリセット、ゲージMAX、CPUの停止を切り替えながら自由に練習できる。</span><ul class="ax-tags"><li>リセット</li><li>ゲージMAX</li><li>CPU停止</li></ul></span></div><div class="ax-preview" data-for="extra-kumite" style="--c:#ff2a4f" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg7" cx="160" cy="150" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#ff5a4e" stop-opacity=".28"/><stop offset="1" stop-color="#ff5a4e" stop-opacity="0"/></radialGradient><filter id="pr7" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg7)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(370 186) scale(-0.6 0.6)" opacity="0.25"><g filter="url(#pr7)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#9aa0b4"/></g><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#9aa0b4"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(326 186) scale(-0.6799999999999999 0.6799999999999999)" opacity="0.4"><g filter="url(#pr7)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#9aa0b4"/></g><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#9aa0b4"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(282 186) scale(-0.76 0.76)" opacity="0.55"><g filter="url(#pr7)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#9aa0b4"/></g><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#9aa0b4"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(238 186) scale(-0.84 0.84)" opacity="0.7"><g filter="url(#pr7)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#9aa0b4"/></g><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#9aa0b4"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(194 186) scale(-0.92 0.92)" opacity="0.85"><g filter="url(#pr7)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#9aa0b4"/></g><path d="M0-40L4 20" fill="none" stroke="#9aa0b4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#9aa0b4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#9aa0b4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#9aa0b4"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(88 180) scale(1.25 1.25)" opacity="1"><g filter="url(#pr7)" opacity=".7"><path d="M0-40L-6 18" fill="none" stroke="#ff5a4e" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L-34 52" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L52 0" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-30-42" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L30-34L40-52" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#ff5a4e"/></g><path d="M0-40L-6 18" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L-34 52" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L52 0" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-30-42" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L30-34L40-52" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#ff5a4e"/><path d="M0-40L-6 18" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L-34 52" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 18L52 0" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-30-42" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L30-34L40-52" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g></svg></span><span class="ax-preview-copy"><em>ENDLESS CHALLENGE</em><strong>何人抜けるか</strong><span class="ax-preview-desc">全キャラのCPUが次々に登場する勝ち抜き戦。記録はオンラインランキングに残せる。</span><ul class="ax-tags"><li>勝ち抜き</li><li>全キャラ登場</li><li>ランキング</li></ul></span></div><div class="ax-preview" data-for="extra-tournament" style="--c:#ffd13b" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg8" cx="300" cy="140" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#e8c27a" stop-opacity=".28"/><stop offset="1" stop-color="#e8c27a" stop-opacity="0"/></radialGradient><filter id="pr8" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg8)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g fill="none" stroke="#e8c27a" stroke-width="2.5" opacity=".9"><path d="M40 60H90V100H140M40 140H90V100M40 170H90V210H140M40 250H90V210M140 100H190V155H240M140 210H190V155"/></g><g transform="translate(308 150)" fill="#0b0c12" stroke="#e8c27a" stroke-width="3"><path d="M-40-50H40V-16Q40 24 0 34Q-40 24-40-16Z"/><path d="M-10 34V50H10V34M-30 50H30V64H-30Z"/></g></svg></span><span class="ax-preview-copy"><em>ROAD TO CHAMPION</em><strong>頂点に立つのは1人だけ</strong><span class="ax-preview-desc">8人のトーナメントを勝ち上がれ。友達とのオンライン大会にも対応。</span><ul class="ax-tags"><li>8人トーナメント</li><li>ソロ</li><li>オンライン</li></ul></span></div><div class="ax-preview" data-for="extra-ranking" style="--c:#c08bff" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg9" cx="200" cy="130" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#c3a6ff" stop-opacity=".28"/><stop offset="1" stop-color="#c3a6ff" stop-opacity="0"/></radialGradient><filter id="pr9" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg9)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g fill="#0b0c12" stroke="#c3a6ff" stroke-width="3"><rect x="90" y="120" width="70" height="94"/><rect x="165" y="80" width="70" height="134"/><rect x="240" y="140" width="70" height="74"/></g><g font-family="Arial Black,sans-serif" font-size="28" font-weight="900" fill="#e9e3d8" text-anchor="middle"><text x="125" y="170">2</text><text x="200" y="130">1</text><text x="275" y="185">3</text></g></svg></span><span class="ax-preview-copy"><em>LEADERBOARD</em><strong>組み手の記録を見る</strong><span class="ax-preview-desc">みんなの勝ち抜き記録。使用キャラとステージも一緒に表示される。</span><ul class="ax-tags"><li>オンライン</li><li>勝ち抜き数</li></ul></span></div></div>
  </div>
- <button class="mode-ranking-shortcut" id="extra-ranking"><span class="mode-rank-icon" aria-hidden="true">Ⅰ</span><span><b>組み手ランキング</b><small>みんなの勝ち抜き記録を見る</small></span><span class="mode-shortcut-arrow" aria-hidden="true">↗</span></button>
- <div class="nav"><button class="back" id="extra-back">← モード選択にもどる</button></div>
 </div>
-<div id="sc-tour-choice" class="screen mode-rework-screen">
- <div class="mode-rework-head"><div><span class="mode-overline">TOURNAMENT / ROAD TO THE TOP</span><h2>頂点まで、<span>勝ち上がれ。</span></h2><p>勝者だけが次の試合へ。優勝までの道のりをトーナメント表で追える。</p></div></div>
- <div class="tour-config mode-rework-tour">
-  <button class="big mode-card" id="tour-offline" data-ghost="01"><span class="mode-no">01 / SOLO TOURNAMENT</span><span class="mode-symbol" aria-hidden="true">Ⅰ</span><span class="mode-card-content"><span class="mode-card-kicker">SINGLE PLAYER</span><b>1人で遊ぶ</b><span class="mode-card-desc">8人で頂点を争う。ほかのCPU同士は自動で対戦。</span><span class="mode-card-foot">ソロで挑む ↗</span></span></button>
-  <button class="big mode-card" id="tour-network" data-ghost="02"><span class="mode-no">02 / ONLINE TOURNAMENT</span><span class="mode-symbol" aria-hidden="true">◎</span><span class="mode-card-content"><span class="mode-card-kicker">MULTIPLAYER</span><b>オンラインで遊ぶ</b><span class="mode-card-desc">友達と部屋を作って参加。勝ち抜き戦で最強を決めよう。</span><span class="mode-card-foot">部屋を作る・参加する ↗</span></span></button>
+
+<div id="sc-tour-choice" class="screen ax-screen">
+ <div class="ax-bg" aria-hidden="true"></div>
+ <header class="ax-head">
+  <div><span class="ax-step">TOURNAMENT</span><h2 class="ax-title">トーナメント</h2><p class="ax-sub">勝った者だけが次へ進む。</p></div>
+  <button id="tour-choice-back" class="ax-btn ax-btn-ghost" type="button">◀ チャレンジ</button>
+ </header>
+ <div class="ax-menu">
+  <button class="ax-menu-item" id="tour-offline" style="--c:#ff2a4f"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">01</span><span class="ax-mi-label"><b>ソロ大会</b><small>SOLO TOURNAMENT</small></span><span class="ax-mi-desc">自分以外の試合はCPU同士で自動進行。トーナメント表で勝ち上がりを追える。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <button class="ax-menu-item" id="tour-network" style="--c:#22d8ff"><span class="ax-mi-plate" aria-hidden="true"></span><span class="ax-mi-no">02</span><span class="ax-mi-label"><b>オンライン大会</b><small>ONLINE TOURNAMENT</small></span><span class="ax-mi-desc">部屋を作って友達を集め、勝ち抜き戦で優勝者を決めよう。</span><span class="ax-mi-arrow" aria-hidden="true">▶</span></button>
+  <div class="ax-preview-stage"><div class="ax-preview" data-for="tour-offline" style="--c:#ff2a4f" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg10" cx="200" cy="140" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#ff5a4e" stop-opacity=".28"/><stop offset="1" stop-color="#ff5a4e" stop-opacity="0"/></radialGradient><filter id="pr10" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg10)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(200 184) scale(1.6 1.6)" opacity="1"><g filter="url(#pr10)" opacity=".7"><path d="M0-40L2 20" fill="none" stroke="#ff5a4e" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-20 60" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L22 60" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-58" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L26-58" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#ff5a4e"/></g><path d="M0-40L2 20" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-20 60" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L22 60" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-58" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L26-58" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#ff5a4e"/><path d="M0-40L2 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-20 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L22 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-58" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L26-58" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g></svg></span><span class="ax-preview-copy"><em>SINGLE PLAYER</em><strong>CPU7人と頂点を争う</strong><span class="ax-preview-desc">自分以外の試合はCPU同士で自動進行。トーナメント表で勝ち上がりを追える。</span><ul class="ax-tags"><li>8人</li><li>自動進行</li></ul></span></div><div class="ax-preview" data-for="tour-network" style="--c:#22d8ff" aria-hidden="true"><span class="ax-preview-art"><svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg11" cx="200" cy="150" r="230" gradientUnits="userSpaceOnUse"><stop stop-color="#8fdcff" stop-opacity=".28"/><stop offset="1" stop-color="#8fdcff" stop-opacity="0"/></radialGradient><filter id="pr11" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs><rect width="400" height="260" fill="#0a0a0f"/><rect width="400" height="260" fill="url(#pg11)"/><rect x="20" y="214" width="360" height="1" fill="#ffffff30"/><g transform="translate(80 182) scale(1.05 1.05)" opacity="1"><g filter="url(#pr11)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#ff5a4e" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#ff5a4e" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#ff5a4e"/></g><path d="M0-40L4 20" fill="none" stroke="#ff5a4e" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#ff5a4e" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#ff5a4e" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#ff5a4e"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(160 182) scale(1.05 1.05)" opacity="1"><g filter="url(#pr11)" opacity=".7"><path d="M0-40L2 20" fill="none" stroke="#e8c27a" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-20 60" fill="none" stroke="#e8c27a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L22 60" fill="none" stroke="#e8c27a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-58" fill="none" stroke="#e8c27a" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L26-58" fill="none" stroke="#e8c27a" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#e8c27a"/></g><path d="M0-40L2 20" fill="none" stroke="#e8c27a" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-20 60" fill="none" stroke="#e8c27a" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L22 60" fill="none" stroke="#e8c27a" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-58" fill="none" stroke="#e8c27a" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L26-58" fill="none" stroke="#e8c27a" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#e8c27a"/><path d="M0-40L2 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L-20 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 20L22 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L-26-58" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M0-30L26-58" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(240 182) scale(-1.05 1.05)" opacity="1"><g filter="url(#pr11)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#8fdcff" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#8fdcff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#8fdcff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#8fdcff"/></g><path d="M0-40L4 20" fill="none" stroke="#8fdcff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#8fdcff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#8fdcff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#8fdcff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#8fdcff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#8fdcff"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g><g transform="translate(320 182) scale(-1.05 1.05)" opacity="1"><g filter="url(#pr11)" opacity=".7"><path d="M0-40L4 20" fill="none" stroke="#8fe3a4" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#8fe3a4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#8fe3a4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#8fe3a4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#8fe3a4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="18.0" fill="#8fe3a4"/></g><path d="M0-40L4 20" fill="none" stroke="#8fe3a4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#8fe3a4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#8fe3a4" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#8fe3a4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#8fe3a4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="16.5" fill="#8fe3a4"/><path d="M0-40L4 20" fill="none" stroke="#0b0c12" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L-18 62" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20L26 60" fill="none" stroke="#0b0c12" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L-22-6L-30 14" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2-30L28-12L46-26" fill="none" stroke="#0b0c12" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="-60" r="15.0" fill="#0b0c12"/></g></svg></span><span class="ax-preview-copy"><em>MULTIPLAYER</em><strong>友達と最強を決める</strong><span class="ax-preview-desc">部屋を作って友達を集め、勝ち抜き戦で優勝者を決めよう。</span><ul class="ax-tags"><li>部屋を作る</li><li>招待URL</li></ul></span></div></div>
  </div>
- <div class="nav"><button class="back" id="tour-choice-back">← ほかの遊びにもどる</button></div>
 </div>
-<div id="sc-tour-bracket" class="screen">
+
+<div id="sc-tour-bracket" class="screen ax-screen ax-legacy">
+ <div class="ax-bg" aria-hidden="true"></div>
  <div class="hd">TOURNAMENT BRACKET<small>参加キャラと対戦表を確認</small></div>
  <p class="mode-explain">下から上へ勝ち上がるトーナメント表。勝者の進む道と次の試合を確認しよう。</p>
  <div id="tour-preview" class="tour-board"></div>
  <div class="nav"><button class="back" id="tour-preview-back">もどる</button><button class="next" id="tour-preview-start">対戦開始！</button></div>
 </div>
-<div id="sc-kumite-ranking" class="screen">
+<div id="sc-kumite-ranking" class="screen ax-screen ax-legacy">
+ <div class="ax-bg" aria-hidden="true"></div>
  <div class="hd">SURVIVAL RANKING<small>組み手・オンラインランキング</small></div>
  <p class="mode-explain">組み手の勝ち抜き記録を表示します。登録名・使用キャラ・マップ・勝ち抜き数は公開されます。</p>
  <div id="rank-status" role="status"></div>
  <div id="rank-table"></div>
  <div class="nav"><button class="back" id="rank-back">もどる</button><button class="next" id="rank-refresh">更新する</button></div>
 </div>
-<div id="sc-champion" class="screen">
+<div id="sc-champion" class="screen ax-screen ax-legacy">
+ <div class="ax-bg" aria-hidden="true"></div>
  <div class="hd">TOURNAMENT FINISHED<small>トーナメント最終結果</small></div>
  <div id="champion-name" style="font-size:clamp(30px,6vw,62px);font-weight:1000;color:#ffdb7b;text-align:center"></div>
  <div id="champion-board" class="tour-board"></div>
  <button class="startbig" id="champion-next">メニューにもどる</button>
 </div>
 
-<div id="sc-online" class="screen hub-entry-screen" data-online-mode="normal">
-  <div class="hub-entry-hero">
-    <span class="hub-entry-eyebrow" id="online-eyebrow">STICK BATTLE / ONLINE</span>
-    <h2 id="online-page-title">オンライン対戦<span class="hub-entry-period">.</span></h2>
-    <p id="online-context">部屋を作って友達を招待。6文字のルームコードでも参加できます。</p>
-    <div class="hub-entry-highlights"><span><i aria-hidden="true">●</i> 招待URLで集合</span><span><i aria-hidden="true">●</i> 6文字のルームコード</span><span><i aria-hidden="true">●</i> スマホ・PC対応</span></div>
+<div id="sc-online" class="screen ax-screen" data-online-mode="normal">
+ <div class="ax-bg" aria-hidden="true"></div>
+ <header class="ax-head">
+  <div><span class="ax-step" id="online-eyebrow">STICK BATTLE / ONLINE</span><h2 class="ax-title" id="online-page-title">オンライン対戦</h2><p class="ax-sub" id="online-context">部屋を作って友達を招待。6文字のルームコードでも参加できます。</p></div>
+  <button class="ax-btn ax-btn-ghost" id="online-back" type="button">◀ もどる</button>
+ </header>
+ <div class="ax-versus">
+  <button class="ax-door ax-door-host" type="button" id="online-create">
+   <span class="ax-door-tag">HOST</span><strong>部屋を作る</strong><span class="ax-door-desc">ルームを作って、URLやQRで友達を招待</span><span class="ax-door-go">CREATE ROOM ▶</span>
+  </button>
+  <div class="ax-vs" aria-hidden="true">OR</div>
+  <div class="ax-door ax-door-join">
+   <span class="ax-door-tag">JOIN</span><label for="room-code-input"><strong>部屋に参加</strong></label><span class="ax-door-desc">友達から届いた6文字のコードを入力</span>
+   <div class="ax-code"><input id="room-code-input" type="text" inputmode="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-label="6文字の部屋コード"><button class="ax-btn ax-go" id="online-join" type="button">参加 ▶</button></div>
   </div>
-  <div class="hub-entry-choices">
-    <button class="hub-entry-create" type="button" id="online-create">
-      <span class="hub-entry-action-icon" aria-hidden="true">＋</span>
-      <span class="hub-entry-action-text"><small>01 / CREATE A ROOM</small><strong>部屋を作る</strong><span>友達を招待して、すぐに遊ぼう</span></span>
-      <span class="hub-entry-arrow" aria-hidden="true">↗</span>
-    </button>
-    <div class="hub-entry-join">
-      <div class="hub-entry-action-icon hub-entry-join-icon" aria-hidden="true">⌘</div>
-      <div class="hub-entry-join-body"><span class="hub-entry-mini">02 / JOIN A ROOM</span><label class="hub-entry-join-label" for="room-code-input">部屋に参加する</label><p>友達から届いた6文字のコードを入力</p>
-        <div class="room-code-row">
-          <input id="room-code-input" type="text" inputmode="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-label="6文字の部屋コード">
-          <button class="joinbtn" id="online-join" type="button">参加 →</button>
-        </div>
-      </div>
-    </div>
-  </div>
-    <div class="nav"><button class="back" id="online-back">← モード選択へ</button></div>
+ </div>
+ <ul class="ax-tags ax-tags-center"><li>招待URL・QRで集合</li><li>6文字のルームコード</li><li>スマホとPCで一緒に遊べる</li></ul>
 </div>
 
-<div id="sc-chars" class="screen" style="z-index:8">
- <div class="hd"><span class="menu-eyebrow">01 / FIGHTER SELECT</span>主役を、選ぼう。<small>ファイターを選択し、技と特性を確認。あなたのスタイルを、戦場へ。</small></div>
- <div class="fighter-layout"><div class="fighter-left"><div class="fighter-preview" id="fighter-showcase"></div>
- <button type="button" id="fighter-guide-open" class="fighter-guide-open" aria-haspopup="dialog" aria-controls="fighter-guide-dialog">
-  <span class="fighter-guide-open-top">MOVE GUIDE <span class="fighter-guide-open-ico" aria-hidden="true">↗</span></span>
-  <strong>技・キャラクター解説</strong>
-  <small>攻撃・必殺技・覚醒・戦い方を確認</small>
- </button>
- <div id="char-info" class="card"></div></div>
- <div class="fighter-right"><div class="fighter-tools"><label class="fighter-search" for="fighter-search"><span aria-hidden="true">⌕</span><input id="fighter-search" type="search" placeholder="名前で検索 / Search" autocomplete="off"></label><div class="fighter-filters" role="group" aria-label="キャラクターの種類"><button type="button" data-roster-filter="all" aria-pressed="true">すべて</button><button type="button" data-roster-filter="normal" aria-pressed="false">通常</button><button type="button" data-roster-filter="special" aria-pressed="false">スペシャル</button></div><p id="fighter-search-status" role="status" aria-live="polite"></p></div><div id="char-grid" class="cgrid"></div>
- <div class="namebox"><label for="player-name">PLAYER NAME</label><input id="player-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
- <div id="cpu-opts" style="display:flex;flex-direction:column"><div class="optrow"><span>CPUの数</span><div class="seg" id="seg-cpun"></div></div><div class="optrow"><span>ランダムの対象</span><div class="seg" id="seg-cpupool"></div></div><div class="optrow"><span>CPUの強さ</span><div class="seg" id="seg-cpulv"></div></div></div><fieldset id="cpu-fighters" class="cpu-fighters" hidden><legend>対戦するCPU</legend><p>キャラを指定するか、ランダムを選べます。</p><div id="cpu-fighter-slots"></div></fieldset></div></div>
- <div class="nav"><button class="back" id="chars-back">もどる</button><button class="next" id="chars-next">ステージへ →</button></div>
+<div id="sc-chars" class="screen ax-screen" style="z-index:8">
+ <div class="ax-bg ax-bg-select" aria-hidden="true"></div>
+ <header class="ax-head ax-head-compact">
+  <div><span class="ax-step">STEP 1 / 2</span><h2 class="ax-title">キャラクターセレクト</h2></div>
+  <div class="ax-head-side" aria-hidden="true">SELECT YOUR FIGHTER</div>
+ </header>
+ <div class="ax-select">
+  <section class="ax-hero" aria-label="選択中のファイター">
+   <div class="ax-showcase" id="fighter-showcase"></div>
+   <div class="ax-hero-info">
+    <div id="char-info" class="ax-stats"></div>
+    <button type="button" id="fighter-guide-open" class="ax-guide-btn" aria-haspopup="dialog" aria-controls="fighter-guide-dialog"><b>技・キャラ解説</b><small>必殺技・覚醒・戦い方</small><span aria-hidden="true">▶</span></button>
+   </div>
+  </section>
+  <section class="ax-roster" aria-label="ファイター一覧">
+   <div class="ax-roster-tools">
+    <label class="ax-search" for="fighter-search"><span aria-hidden="true">⌕</span><input id="fighter-search" type="search" placeholder="名前で検索" autocomplete="off"></label>
+    <div class="ax-filters" role="group" aria-label="キャラクターの種類"><button type="button" data-roster-filter="all" aria-pressed="true">ALL</button><button type="button" data-roster-filter="normal" aria-pressed="false">通常</button><button type="button" data-roster-filter="special" aria-pressed="false">スペシャル</button></div>
+    <p id="fighter-search-status" role="status" aria-live="polite"></p>
+   </div>
+   <div id="char-grid" class="ax-grid"></div>
+  </section>
+ </div>
+ <section class="ax-setup" aria-label="対戦の準備">
+  <div class="ax-field"><label for="player-name">PLAYER NAME</label><input id="player-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
+  <div id="cpu-opts" class="ax-cpu-opts" style="display:flex">
+   <div class="optrow"><span>CPUの数</span><div class="seg" id="seg-cpun"></div></div>
+   <div class="optrow"><span>CPUの対象</span><div class="seg" id="seg-cpupool"></div></div>
+   <div class="optrow"><span>CPUの強さ</span><div class="seg" id="seg-cpulv"></div></div>
+  </div>
+  <fieldset id="cpu-fighters" class="ax-cpu-fighters" hidden><legend>対戦するCPU</legend><p>キャラを指定するか、ランダムを選べます。</p><div id="cpu-fighter-slots"></div></fieldset>
+ </section>
+ <nav class="ax-nav"><button class="ax-btn ax-back" id="chars-back" type="button">◀ もどる</button><button class="ax-btn ax-go" id="chars-next" type="button">ステージへ</button></nav>
 </div>
 
 <dialog id="fighter-guide-dialog" class="fighter-guide-dialog" aria-labelledby="fighter-guide-name">
@@ -1952,43 +2361,62 @@ input,select{font-family:inherit}
   <footer class="fighter-guide-footer"><span>※ ゲージ・変身状態により使える技が変わります</span><button id="fighter-guide-done" type="button">キャラ選択に戻る</button></footer>
  </div>
 </dialog>
-<div id="sc-stage" class="screen">
-  <div class="hd"><span class="menu-eyebrow">02 / ARENA & RULES</span>舞台を、決めよう。<small>地形を選んでルールを調整。準備ができたらバトルへ。</small></div><div class="arena-layout"><section class="arena-picker" aria-label="ステージ選択"><div id="menu-arena-preview" class="arena-preview"></div>
-  <div class="stage-grid" id="stage-grid" style="width:min(560px,100%)"></div>
-  </section><aside class="arena-rules"><h2>今回のバトル</h2><p id="menu-match-summary"></p><div class="optrow" style="width:min(560px,100%)"><span>対戦形式</span><div class="seg" id="seg-team-mode"></div></div>
-  <div class="optrow" id="team-side-row" style="width:min(560px,100%);display:none"><span>自分のチーム</span><div class="seg" id="seg-team-side"></div></div>
-  <div class="optrow" style="width:min(560px,100%)"><span>武器</span><div class="seg" id="seg-wpn"></div></div>
-  <div class="optrow" style="width:min(560px,100%)"><span>残機</span><div class="seg" id="seg-stock"></div></div>
-  </aside></div><p class="stage-help-tip">残機＝場外へ飛ばされても復活できる回数。迷ったら設定はそのままでOK！</p><div class="nav"><button class="back" id="stage-back">もどる</button><button class="next" id="stage-next">バトル開始！</button></div>
+<div id="sc-stage" class="screen ax-screen">
+ <div class="ax-bg ax-bg-select" aria-hidden="true"></div>
+ <header class="ax-head ax-head-compact">
+  <div><span class="ax-step">STEP 2 / 2</span><h2 class="ax-title">ステージセレクト</h2></div>
+  <div class="ax-head-side" aria-hidden="true">CHOOSE YOUR ARENA</div>
+ </header>
+ <div class="ax-stage">
+  <section class="ax-stage-main" aria-label="ステージ選択">
+   <div id="menu-arena-preview" class="ax-arena-preview"></div>
+   <div class="ax-stage-grid" id="stage-grid"></div>
+  </section>
+  <aside class="ax-rules" aria-label="ルール">
+   <h3>MATCH RULES</h3>
+   <p id="menu-match-summary"></p>
+   <div class="optrow"><span>対戦形式</span><div class="seg" id="seg-team-mode"></div></div>
+   <div class="optrow" id="team-side-row" style="display:none"><span>自分のチーム</span><div class="seg" id="seg-team-side"></div></div>
+   <div class="optrow"><span>武器</span><div class="seg" id="seg-wpn"></div></div>
+   <div class="optrow"><span>残機</span><div class="seg" id="seg-stock"></div></div>
+   <p class="stage-help-tip ax-tip">残機＝場外に飛ばされても復活できる回数。迷ったらそのままでOK！</p>
+  </aside>
+ </div>
+ <nav class="ax-nav"><button class="ax-btn ax-back" id="stage-back" type="button">◀ もどる</button><button class="ax-btn ax-go ax-fight" id="stage-next" type="button">FIGHT!</button></nav>
 </div>
 
-<div id="sc-lobby" class="screen">
-  <div class="hd">ONLINE ROOM</div>
-  <div class="card" style="text-align:center">
-    <div class="sh" id="lb-step1">① 友達を呼ぶ</div>
-    <div id="lb-hostinv" style="display:none">
-      <div id="lb-qr"></div>
-      <div style="font-weight:700">スマホのカメラでQRを読み取ると参加できます</div>
-      <div>部屋コード <b id="lb-code" style="font-size:22px;letter-spacing:3px"></b></div>
-      <button class="chip" id="lb-copy" style="padding:4px 12px;margin-top:4px">参加URLをコピー</button>
-    </div>
-    <div id="lb-guestinv" style="display:none;font-weight:900">ルーム <span id="lb-code2"></span> に参加中！</div>
-  </div>
-  <div class="card">
-    <div class="sh">② あなたのキャラ（タップで変更）</div>
-    <div id="lb-chars" class="cgrid"></div>
-    <div id="lb-chardesc" style="margin-top:6px"></div>
-    <div id="lb-team-pick" class="optrow" style="display:none;margin-top:12px;width:100%"><span>チーム</span><div class="seg"><button id="lb-team-red">RED</button><button id="lb-team-blue">BLUE</button></div></div>
-  </div>
-  <div class="namebox"><label for="lb-name">あなたの名前</label><input id="lb-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
-  <div class="card" id="lb-mem"></div>
-  <div class="card" id="lb-set"></div><button id="lb-to-hub" type="button" class="hub-switch-to-games" style="display:none">ゲームHUBへ切り替える <small>この部屋のメンバーのまま遊べます</small></button><div id="lb-tourney-board" class="tour-board" style="display:none"></div>
-  <button class="startbig" id="lb-start">バトル開始！</button>
-  <div id="lb-wait" class="wait" style="display:none"></div>
-  <div class="nav"><button class="back" id="lb-leave">退出する</button></div>
+<div id="sc-lobby" class="screen ax-screen">
+ <div class="ax-bg" aria-hidden="true"></div>
+ <header class="ax-head ax-head-compact">
+  <div><span class="ax-step">ONLINE ROOM</span><h2 class="ax-title">ロビー</h2></div>
+  <button class="ax-btn ax-btn-ghost" id="lb-leave" type="button">退出する</button>
+ </header>
+ <div class="ax-lobby">
+  <section class="ax-panel ax-invite">
+   <h3 class="ax-panel-title" id="lb-step1">① 友達を呼ぶ</h3>
+   <div id="lb-hostinv" style="display:none">
+    <div class="ax-invite-row"><div id="lb-qr"></div><div class="ax-roomcode"><small>ROOM CODE</small><b id="lb-code"></b><button class="ax-btn ax-btn-ghost" id="lb-copy" type="button">参加URLをコピー</button></div></div>
+    <p class="ax-note">スマホのカメラでQRを読み取ると参加できます</p>
+   </div>
+   <div id="lb-guestinv" class="ax-guest" style="display:none">ルーム <span id="lb-code2"></span> に参加中！</div>
+  </section>
+  <section class="ax-panel ax-members"><div id="lb-mem"></div></section>
+  <section class="ax-panel ax-mychar">
+   <h3 class="ax-panel-title">② あなたのキャラ</h3>
+   <div id="lb-chars" class="ax-grid ax-grid-small"></div>
+   <div id="lb-chardesc"></div>
+   <div id="lb-team-pick" class="optrow" style="display:none"><span>チーム</span><div class="seg"><button id="lb-team-red">RED</button><button id="lb-team-blue">BLUE</button></div></div>
+   <div class="ax-field"><label for="lb-name">あなたの名前</label><input id="lb-name" maxlength="12" autocomplete="off" placeholder="PLAYER"></div>
+  </section>
+  <section class="ax-panel ax-roomset"><div id="lb-set"></div></section>
+ </div>
+ <button id="lb-to-hub" type="button" class="hub-switch-to-games ax-btn ax-btn-ghost" style="display:none">ゲームHUBへ切り替える <small>この部屋のメンバーのまま遊べます</small></button>
+ <div id="lb-tourney-board" class="tour-board" style="display:none"></div>
+ <div class="ax-lobby-actions"><button class="startbig" id="lb-start">バトル開始！</button><div id="lb-wait" class="wait" style="display:none"></div></div>
 </div>
 
-<div id="sc-hub-room" class="screen" aria-label="ゲームHUBのオンラインルーム">
+<div id="sc-hub-room" class="screen ax-screen ax-hubscreen" aria-label="ゲームHUBのオンラインルーム">
+ <div class="ax-bg" aria-hidden="true"></div>
   <div class="hub-head">
     <div class="hub-heading">
       <span class="hub-kicker"><span class="hub-signal" aria-hidden="true"></span> CONNECTED PLAYGROUND <span class="hub-kicker-divider">/</span> ONLINE ROOM</span>
@@ -2045,7 +2473,8 @@ input,select{font-family:inherit}
   </div>
   <div class="nav hub-bottom-nav"><button class="back" id="hub-leave" type="button">← ゲームHUBから退出</button></div>
 </div>
-<div id="sc-hub-play" class="screen hub-play-screen" aria-label="ゲームHUBのプレイ画面">
+<div id="sc-hub-play" class="screen hub-play-screen ax-screen ax-hubscreen" aria-label="ゲームHUBのプレイ画面">
+ <div class="ax-bg" aria-hidden="true"></div>
   <div class="hub-play-header">
     <div class="hub-play-brand"><span class="hub-section-kicker">GAME HUB / NOW PLAYING</span><b id="hub-play-name">ゲームを開始しよう</b></div>
     <div class="hub-play-room"><span>ROOM</span><strong id="hub-play-code">------</strong></div>
@@ -2072,16 +2501,21 @@ input,select{font-family:inherit}
   </main>
 </div>
 
-<div id="sc-result" class="screen">
-  <div class="hd">BATTLE RESULT<small>THE FIGHT IS OVER.</small></div><div id="winner-art"></div>
-  <div id="res-win"></div>
-  <div id="res-list"></div><div id="tour-result" class="tour-board"></div><div id="kumite-submit-state"></div><button id="kumite-submit-retry" type="button" style="display:none;background:#2a6956;color:#fff;padding:11px 18px;border-radius:5px;font-weight:900">記録の保存を再試行</button><button id="res-rank">Ⅰ 組み手ランキングを見る</button>
-  <div id="res-wait" class="wait" style="display:none">ホストの操作を待っています…</div>
-  <div class="nav" id="res-nav1"><button class="next" id="res-again">もう一度</button></div>
-  <div class="nav" id="res-nav2"><button class="next" id="res-pick">キャラを変える</button><button class="back" id="res-chars">キャラ選択へ</button><button class="back" id="res-title">タイトルへ</button></div>
+<div id="sc-result" class="screen ax-screen">
+ <div class="ax-bg ax-bg-result" aria-hidden="true"></div>
+ <div class="ax-result-banner"><span>BATTLE RESULT</span><h2 class="ax-title">GAME SET!</h2></div>
+ <div class="ax-result">
+  <div class="ax-winner"><div id="winner-art"></div><div id="res-win"></div></div>
+  <div id="res-list"></div>
+ </div>
+ <div id="tour-result" class="tour-board"></div><div id="kumite-submit-state"></div><button id="kumite-submit-retry" class="ax-btn ax-btn-ghost" type="button" style="display:none">記録の保存を再試行</button><button id="res-rank" class="ax-btn ax-btn-ghost" type="button">組み手ランキングを見る</button>
+ <div id="res-wait" class="wait" style="display:none">ホストの操作を待っています…</div>
+ <div class="ax-nav" id="res-nav1"><button class="ax-btn ax-go" id="res-again" type="button">もう一度</button></div>
+ <div class="ax-nav" id="res-nav2"><button class="ax-btn ax-go" id="res-pick" type="button">キャラを変える</button><button class="ax-btn ax-back" id="res-chars" type="button">キャラ選択へ</button><button class="ax-btn ax-back" id="res-title" type="button">タイトルへ</button></div>
 </div>
 
-<div id="sc-howto" class="screen" style="z-index:8">
+<div id="sc-howto" class="screen ax-screen ax-legacy" style="z-index:8">
+ <div class="ax-bg" aria-hidden="true"></div>
   <div class="hd">HOW TO PLAY<small>基本だけ分かれば、すぐ戦える。</small></div>
   <main class="howto-layout" aria-label="はじめての遊び方">
     <section class="howto-hero" aria-labelledby="howto-goal">
@@ -7920,7 +8354,56 @@ function drawHUD(){const rosterFighters=fighters.filter(f=>!f.shadowClone);
   setTxt(document.getElementById('match-stage'),stage.name+latency+fps);
  }
 }
-function titleIllustration(){return `<svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="heroRed" x2="1" y2="1"><stop stop-color="#ff6550"/><stop offset="1" stop-color="#b42a31"/></linearGradient><linearGradient id="heroIce" x2="1" y2="1"><stop stop-color="#a7fff1"/><stop offset="1" stop-color="#3eacb1"/></linearGradient></defs><path d="M840-80h420L810 980H390z" fill="#ff493f09"/><path d="M1060-80h5L600 980h-5z" fill="#ff493f50"/><circle cx="1090" cy="400" r="290" fill="none" stroke="#98b3c014" stroke-width="1"/><circle cx="1090" cy="400" r="265" fill="none" stroke="#98b3c012" stroke-width="35"/><g transform="translate(1020 540) rotate(-12)"><ellipse cx="10" cy="230" rx="210" ry="20" fill="#0005"/><g stroke="#080d19" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"><path d="M0-110L20 48-100 190M20 48l140 130M-4-76l-110 20-62-80M0-80l118-48 56-56" fill="none"/></g><g stroke="url(#heroRed)" stroke-width="23" stroke-linecap="round" stroke-linejoin="round"><path d="M0-110L20 48-100 190M20 48l140 130M-4-76l-110 20-62-80M0-80l118-48 56-56" fill="none"/></g><path d="M-25-110h45L48 16H-17z" fill="#172537"/><path d="M-18-104L0-28l14-76" fill="#f0dfb2"/><circle cx="-10" cy="-156" r="42" fill="url(#heroRed)" stroke="#0c1420" stroke-width="6"/><path d="M-48-166h76M-48-166l-45 30" stroke="#f4dcc1" stroke-width="9"/><circle cx="172" cy="-190" r="25" fill="#ff8b68"/></g><g transform="translate(1200 240) scale(.8) rotate(18)"><g stroke="#78dfce" stroke-width="19" stroke-linecap="round"><path d="M0-34v100l-70 83M0 66l75 67M0-22l-60 38M0-22l58 25 39-32" fill="none"/></g><path d="M-25-40h50l17 115H-39z" fill="#232d40"/><path d="M-17-33l14 77M18-33L3 44" stroke="#b34d5b" stroke-width="3"/><circle cx="0" cy="-70" r="30" fill="url(#heroIce)"/><path d="M-30-78q20-43 58 0" fill="#102635"/><path d="M100-33L-160-185" stroke="#baffec" stroke-width="5"/></g><path d="M540 520L1430 50" stroke="#88ffe02a" stroke-width="60"/><path d="M540 520L1430 50" stroke="#baffe5a0" stroke-width="2"/><path d="M760 790L1430 470" stroke="#ff82642a" stroke-width="30"/></svg>`;}
+function titleIllustration(){
+ // Key art: two silhouetted fighters with rim light meeting in a single strike. Static, low-saturation.
+ const body=(parts,hx,hy,hr,rim)=>{const P=(w,c,extra='')=>parts.map(([d,lw])=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${lw+w}" stroke-linecap="round" stroke-linejoin="round"${extra}/>`).join('');
+  const H=(w,c,extra='')=>`<circle cx="${hx}" cy="${hy}" r="${hr+w/2}" fill="${c}"${extra}/>`;
+  return `<g filter="url(#axRim)" opacity=".7">${P(10,rim)}${H(10,rim)}</g>${P(5,rim)}${H(5,rim)}${P(0,'#0b0c12')}${H(0,'#0b0c12')}`;};
+ const dust=[[620,610,1.6],[700,540,1.1],[760,700,2],[880,250,1.2],[1010,190,1.5],[1180,620,1.3],[1250,560,1],[1420,470,1.6],[1500,330,1.1],[1540,620,1.8],[960,690,1.2],[1080,300,.9]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#f3e6d2" opacity=".35"/>`).join('');
+ const RED='#ff5a4e',ICE='#8fdcff';
+ return `<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <radialGradient id="axWarm" cx="1120" cy="430" r="720" gradientUnits="userSpaceOnUse"><stop stop-color="#3a1d22"/><stop offset=".45" stop-color="#1a1118"/><stop offset="1" stop-color="#0a0a0f" stop-opacity="0"/></radialGradient>
+  <radialGradient id="axCool" cx="1420" cy="200" r="560" gradientUnits="userSpaceOnUse"><stop stop-color="#14283a" stop-opacity=".9"/><stop offset="1" stop-color="#0a0a0f" stop-opacity="0"/></radialGradient>
+  <radialGradient id="axHit" cx="1118" cy="428" r="150" gradientUnits="userSpaceOnUse"><stop stop-color="#fff8ec"/><stop offset=".18" stop-color="#ffd9b0" stop-opacity=".8"/><stop offset=".5" stop-color="#ff7a5a" stop-opacity=".22"/><stop offset="1" stop-color="#ff7a5a" stop-opacity="0"/></radialGradient>
+  <linearGradient id="axFloor" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".45" stop-color="#f6e7d4" stop-opacity=".5"/><stop offset=".8" stop-color="#cfe9ff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="axSlash" x1="1300" y1="160" x2="1050" y2="540" gradientUnits="userSpaceOnUse"><stop stop-color="#cfefff" stop-opacity="0"/><stop offset=".55" stop-color="#e9f8ff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="axBlade" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4fbff"/><stop offset="1" stop-color="#9cb6c8"/></linearGradient>
+  <linearGradient id="axBeam" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <filter id="axRim" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"/></filter>
+  <filter id="axSoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="22"/></filter>
+ </defs>
+ <rect width="1600" height="900" fill="#0a0a0f"/>
+ <rect width="1600" height="900" fill="url(#axWarm)"/>
+ <rect width="1600" height="900" fill="url(#axCool)"/>
+ <path d="M1020 0L1120 0L980 900L800 900Z" fill="url(#axBeam)"/>
+ <path d="M1270 0L1330 0L1260 900L1150 900Z" fill="url(#axBeam)"/>
+ <rect x="0" y="662" width="1600" height="238" fill="#07070b" opacity=".7"/>
+ <rect x="380" y="660" width="1220" height="2" fill="url(#axFloor)"/>
+ <ellipse cx="850" cy="664" rx="120" ry="10" fill="#000" opacity=".6" filter="url(#axRim)"/>
+ <ellipse cx="1345" cy="664" rx="150" ry="10" fill="#000" opacity=".6" filter="url(#axRim)"/>
+ ${dust}
+ <circle class="ax-burst" cx="1118" cy="428" r="150" fill="url(#axHit)"/>
+ <path d="M1300 160Q1220 330 1052 538" fill="none" stroke="url(#axSlash)" stroke-width="5" stroke-linecap="round"/>
+ <path d="M1310 190Q1238 345 1080 535" fill="none" stroke="url(#axSlash)" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+
+ <g class="ax-f-left">
+  <path d="M868 290Q820 268 778 284Q810 292 822 300Q790 306 770 330Q818 318 864 306Z" fill="${RED}"/>
+  ${body([['M872 500L800 580L848 660',24],['M872 500L992 468L1106 430',24],['M922 345L862 382L806 336',20],['M922 345L976 392L1016 350',20],['M922 345L872 500',30]],902,298,40,RED)}
+  <path d="M864 290L940 296" stroke="${RED}" stroke-width="9" stroke-linecap="round"/>
+ </g>
+
+ <g class="ax-f-right">
+  <path d="M1312 330Q1380 420 1452 560Q1400 540 1372 600Q1350 520 1336 470Z" fill="#0b0c12" stroke="${ICE}" stroke-width="2.5" stroke-linejoin="round"/>
+  ${body([['M1344 482L1290 570L1238 660',24],['M1344 482L1410 562L1452 660',24],['M1310 326L1370 372L1402 332',20],['M1310 326L1344 482',30],['M1310 326L1252 298L1206 258',20]],1330,280,40,ICE)}
+  <path d="M1207 260L1124 424" stroke="#000" stroke-width="12" stroke-linecap="round" opacity=".55"/>
+  <path d="M1207 260L1124 424" stroke="url(#axBlade)" stroke-width="7" stroke-linecap="round"/>
+  <path d="M1196 250L1222 268" stroke="#c8a76a" stroke-width="9" stroke-linecap="round"/>
+ </g>
+ <circle cx="1118" cy="428" r="5" fill="#fff"/>
+ <path d="M1118 400V456M1090 428H1146" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+ </svg>`;
+}
 document.querySelector('.title-art').innerHTML=titleIllustration();
 function paintMatchIntro(){
  push();noStroke();
@@ -12870,6 +13353,29 @@ hubCpuChoice=function(state){
  if(state.kind==='baccarat')return 'banker';
  return hubDifficultyOriginal(state);
 };
+// ========================================================
+// Arcade UI helpers: menu preview panels + ▲▼ navigation
+// ========================================================
+function axInitMenus(){
+ document.querySelectorAll('.ax-menu').forEach(menu=>{
+  const items=[...menu.querySelectorAll('.ax-menu-item')];
+  const set=id=>menu.querySelectorAll('.ax-preview').forEach(p=>p.classList.toggle('on',p.dataset.for===id));
+  items.forEach((b,i)=>{
+   b.addEventListener('pointerenter',()=>set(b.id));
+   b.addEventListener('focus',()=>set(b.id));
+   b.addEventListener('keydown',e=>{
+    if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
+    e.preventDefault();
+    const visible=items.filter(x=>!x.hidden&&x.offsetParent!==null);
+    const k=visible.indexOf(b),next=visible[(k+(e.key==='ArrowDown'?1:-1)+visible.length)%visible.length];
+    next?.focus();
+   });
+  });
+  menu.addEventListener('pointerleave',()=>{if(!menu.contains(document.activeElement))set(items[0]?.id);});
+  set(items[0]?.id);
+ });
+}
+axInitMenus();
 </script>
 </body>
 </html>

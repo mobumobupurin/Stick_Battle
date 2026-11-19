@@ -756,7 +756,56 @@ function drawHUD(){const rosterFighters=fighters.filter(f=>!f.shadowClone);
   setTxt(document.getElementById('match-stage'),stage.name+latency+fps);
  }
 }
-function titleIllustration(){return `<svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="heroRed" x2="1" y2="1"><stop stop-color="#ff6550"/><stop offset="1" stop-color="#b42a31"/></linearGradient><linearGradient id="heroIce" x2="1" y2="1"><stop stop-color="#a7fff1"/><stop offset="1" stop-color="#3eacb1"/></linearGradient></defs><path d="M840-80h420L810 980H390z" fill="#ff493f09"/><path d="M1060-80h5L600 980h-5z" fill="#ff493f50"/><circle cx="1090" cy="400" r="290" fill="none" stroke="#98b3c014" stroke-width="1"/><circle cx="1090" cy="400" r="265" fill="none" stroke="#98b3c012" stroke-width="35"/><g transform="translate(1020 540) rotate(-12)"><ellipse cx="10" cy="230" rx="210" ry="20" fill="#0005"/><g stroke="#080d19" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"><path d="M0-110L20 48-100 190M20 48l140 130M-4-76l-110 20-62-80M0-80l118-48 56-56" fill="none"/></g><g stroke="url(#heroRed)" stroke-width="23" stroke-linecap="round" stroke-linejoin="round"><path d="M0-110L20 48-100 190M20 48l140 130M-4-76l-110 20-62-80M0-80l118-48 56-56" fill="none"/></g><path d="M-25-110h45L48 16H-17z" fill="#172537"/><path d="M-18-104L0-28l14-76" fill="#f0dfb2"/><circle cx="-10" cy="-156" r="42" fill="url(#heroRed)" stroke="#0c1420" stroke-width="6"/><path d="M-48-166h76M-48-166l-45 30" stroke="#f4dcc1" stroke-width="9"/><circle cx="172" cy="-190" r="25" fill="#ff8b68"/></g><g transform="translate(1200 240) scale(.8) rotate(18)"><g stroke="#78dfce" stroke-width="19" stroke-linecap="round"><path d="M0-34v100l-70 83M0 66l75 67M0-22l-60 38M0-22l58 25 39-32" fill="none"/></g><path d="M-25-40h50l17 115H-39z" fill="#232d40"/><path d="M-17-33l14 77M18-33L3 44" stroke="#b34d5b" stroke-width="3"/><circle cx="0" cy="-70" r="30" fill="url(#heroIce)"/><path d="M-30-78q20-43 58 0" fill="#102635"/><path d="M100-33L-160-185" stroke="#baffec" stroke-width="5"/></g><path d="M540 520L1430 50" stroke="#88ffe02a" stroke-width="60"/><path d="M540 520L1430 50" stroke="#baffe5a0" stroke-width="2"/><path d="M760 790L1430 470" stroke="#ff82642a" stroke-width="30"/></svg>`;}
+function titleIllustration(){
+ // Key art: two silhouetted fighters with rim light meeting in a single strike. Static, low-saturation.
+ const body=(parts,hx,hy,hr,rim)=>{const P=(w,c,extra='')=>parts.map(([d,lw])=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${lw+w}" stroke-linecap="round" stroke-linejoin="round"${extra}/>`).join('');
+  const H=(w,c,extra='')=>`<circle cx="${hx}" cy="${hy}" r="${hr+w/2}" fill="${c}"${extra}/>`;
+  return `<g filter="url(#axRim)" opacity=".7">${P(10,rim)}${H(10,rim)}</g>${P(5,rim)}${H(5,rim)}${P(0,'#0b0c12')}${H(0,'#0b0c12')}`;};
+ const dust=[[620,610,1.6],[700,540,1.1],[760,700,2],[880,250,1.2],[1010,190,1.5],[1180,620,1.3],[1250,560,1],[1420,470,1.6],[1500,330,1.1],[1540,620,1.8],[960,690,1.2],[1080,300,.9]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#f3e6d2" opacity=".35"/>`).join('');
+ const RED='#ff5a4e',ICE='#8fdcff';
+ return `<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <radialGradient id="axWarm" cx="1120" cy="430" r="720" gradientUnits="userSpaceOnUse"><stop stop-color="#3a1d22"/><stop offset=".45" stop-color="#1a1118"/><stop offset="1" stop-color="#0a0a0f" stop-opacity="0"/></radialGradient>
+  <radialGradient id="axCool" cx="1420" cy="200" r="560" gradientUnits="userSpaceOnUse"><stop stop-color="#14283a" stop-opacity=".9"/><stop offset="1" stop-color="#0a0a0f" stop-opacity="0"/></radialGradient>
+  <radialGradient id="axHit" cx="1118" cy="428" r="150" gradientUnits="userSpaceOnUse"><stop stop-color="#fff8ec"/><stop offset=".18" stop-color="#ffd9b0" stop-opacity=".8"/><stop offset=".5" stop-color="#ff7a5a" stop-opacity=".22"/><stop offset="1" stop-color="#ff7a5a" stop-opacity="0"/></radialGradient>
+  <linearGradient id="axFloor" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".45" stop-color="#f6e7d4" stop-opacity=".5"/><stop offset=".8" stop-color="#cfe9ff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="axSlash" x1="1300" y1="160" x2="1050" y2="540" gradientUnits="userSpaceOnUse"><stop stop-color="#cfefff" stop-opacity="0"/><stop offset=".55" stop-color="#e9f8ff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="axBlade" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4fbff"/><stop offset="1" stop-color="#9cb6c8"/></linearGradient>
+  <linearGradient id="axBeam" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <filter id="axRim" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"/></filter>
+  <filter id="axSoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="22"/></filter>
+ </defs>
+ <rect width="1600" height="900" fill="#0a0a0f"/>
+ <rect width="1600" height="900" fill="url(#axWarm)"/>
+ <rect width="1600" height="900" fill="url(#axCool)"/>
+ <path d="M1020 0L1120 0L980 900L800 900Z" fill="url(#axBeam)"/>
+ <path d="M1270 0L1330 0L1260 900L1150 900Z" fill="url(#axBeam)"/>
+ <rect x="0" y="662" width="1600" height="238" fill="#07070b" opacity=".7"/>
+ <rect x="380" y="660" width="1220" height="2" fill="url(#axFloor)"/>
+ <ellipse cx="850" cy="664" rx="120" ry="10" fill="#000" opacity=".6" filter="url(#axRim)"/>
+ <ellipse cx="1345" cy="664" rx="150" ry="10" fill="#000" opacity=".6" filter="url(#axRim)"/>
+ ${dust}
+ <circle class="ax-burst" cx="1118" cy="428" r="150" fill="url(#axHit)"/>
+ <path d="M1300 160Q1220 330 1052 538" fill="none" stroke="url(#axSlash)" stroke-width="5" stroke-linecap="round"/>
+ <path d="M1310 190Q1238 345 1080 535" fill="none" stroke="url(#axSlash)" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+
+ <g class="ax-f-left">
+  <path d="M868 290Q820 268 778 284Q810 292 822 300Q790 306 770 330Q818 318 864 306Z" fill="${RED}"/>
+  ${body([['M872 500L800 580L848 660',24],['M872 500L992 468L1106 430',24],['M922 345L862 382L806 336',20],['M922 345L976 392L1016 350',20],['M922 345L872 500',30]],902,298,40,RED)}
+  <path d="M864 290L940 296" stroke="${RED}" stroke-width="9" stroke-linecap="round"/>
+ </g>
+
+ <g class="ax-f-right">
+  <path d="M1312 330Q1380 420 1452 560Q1400 540 1372 600Q1350 520 1336 470Z" fill="#0b0c12" stroke="${ICE}" stroke-width="2.5" stroke-linejoin="round"/>
+  ${body([['M1344 482L1290 570L1238 660',24],['M1344 482L1410 562L1452 660',24],['M1310 326L1370 372L1402 332',20],['M1310 326L1344 482',30],['M1310 326L1252 298L1206 258',20]],1330,280,40,ICE)}
+  <path d="M1207 260L1124 424" stroke="#000" stroke-width="12" stroke-linecap="round" opacity=".55"/>
+  <path d="M1207 260L1124 424" stroke="url(#axBlade)" stroke-width="7" stroke-linecap="round"/>
+  <path d="M1196 250L1222 268" stroke="#c8a76a" stroke-width="9" stroke-linecap="round"/>
+ </g>
+ <circle cx="1118" cy="428" r="5" fill="#fff"/>
+ <path d="M1118 400V456M1090 428H1146" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+ </svg>`;
+}
 document.querySelector('.title-art').innerHTML=titleIllustration();
 function paintMatchIntro(){
  push();noStroke();
