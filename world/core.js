@@ -78,6 +78,15 @@ function vpValidHand(hand){if(!Array.isArray(hand)||hand.length!==5)return false
 // ---- STICK CASINO: blackjack (the hand is played in the browser; the outcome is settled here) ----
 const BJ_OUTCOMES={lose:0,push:1,win:2,blackjack:2.5},BJ_MIN=10,BJ_MAX=1000;
 function bjSettle(bet,doubled,outcome){integer(bet,BJ_MIN,BJ_MAX);if(!Object.hasOwn(BJ_OUTCOMES,outcome))throw Error('結果が不正です');if(outcome==='blackjack'&&doubled)throw Error('結果が不正です');const stake=doubled?bet*2:bet;return {stake,won:Math.floor(stake*BJ_OUTCOMES[outcome])};}
+// ---- STICK ROYALE medal corner: lucky wheel (48 equal segments; BONUS spins a 12-segment bonus wheel with the JACKPOT) ----
+const WH_BONUS_SEG=-1;
+const WH_WHEEL=[-1,0,0,2,1,0,3,0,0,2,1,0,5,0,0,1,0,0,2,0,1,0,0,0,-1,1,0,2,0,0,3,1,0,0,0,1,2,0,0,0,1,0,3,0,0,1,0,0];
+const WH_BONUS=[50,2,3,2,2,5,2,2,3,2,2,2];
+const WH_BETS=[10,20,50,100];
+function whSpin(bet,rng){const index=rng(WH_WHEEL.length);let mult=WH_WHEEL[index],bonusIndex=null;if(mult===WH_BONUS_SEG){bonusIndex=rng(WH_BONUS.length);mult=WH_BONUS[bonusIndex];}return {index,bonusIndex,mult,won:bet*mult,jackpot:bonusIndex!==null&&WH_BONUS[bonusIndex]===50};}
+function whRtp(){const b=WH_BONUS.reduce((t,m)=>t+m,0)/WH_BONUS.length;return WH_WHEEL.reduce((t,m)=>t+(m===WH_BONUS_SEG?b:m),0)/WH_WHEEL.length;}
+// ---- STICK ROYALE medal corner: coin pusher (the field runs in the browser; play is settled here in batches) ----
+const PU_MAX_SPENT=300,PU_MAX_WON=3000;
 function apply(p,action,d,now,rng){p={...p};let msg='',result=null;switch(action){
 case 'profile':{if(typeof d.name!=='string'||!d.name.trim()||d.name.trim().length>20)throw Error('名前は1〜20文字');p.name=d.name.trim();break}
 case 'move':{if(!floors.includes(d.floor)||!Number.isFinite(d.x)||!Number.isFinite(d.y))throw Error('位置が不正');p.floor=d.floor;p.x=Math.max(3,Math.min(97,d.x));p.y=Math.max(6,Math.min(94,d.y));break}
@@ -89,8 +98,10 @@ case 'slot':{const bet=integer(d.amount,10,100);if(!VS_BETS.includes(bet))throw 
 case 'baccarat':{const bet=integer(d.amount,BAC_MIN,BAC_MAX);if(!['player','banker','tie'].includes(d.side))throw Error('賭け先が不正です');if(p.cash<bet)throw Error('残高不足');const r=bacDeal(rng);const won=bacPayout(d.side,bet,r.winner);p.cash+=won-bet;p.plays++;if(won>bet)p.wins++;msg='BACCARAT '+r.winner+' / 払出 '+won+' SC';result={...r,won,side:d.side};break}
 case 'videopoker':{const bet=integer(d.amount,10,30);if(!VP_BETS.includes(bet))throw Error('ベットは 10 / 20 / 30 SC');if(!vpValidHand(d.hand))throw Error('手札が不正です');if(p.cash<bet)throw Error('残高不足');const rank=vpRank(d.hand);const won=rank?bet*VP_PAY[rank]:0;p.cash+=won-bet;p.plays++;if(won>bet)p.wins++;msg='POKER '+(rank?VP_NAMES[rank]:'—')+' / 払出 '+won+' SC';result={rank,won};break}
 case 'blackjack':{const r=bjSettle(d.amount,!!d.doubled,d.outcome);if(p.cash<r.stake)throw Error('残高不足');p.cash+=r.won-r.stake;p.plays++;if(r.won>r.stake)p.wins++;msg='BLACKJACK / 払出 '+r.won+' SC';result=r;break}
+case 'wheel':{const bet=integer(d.amount,10,100);if(!WH_BETS.includes(bet))throw Error('ベットは 10 / 20 / 50 / 100 SC');if(p.cash<bet)throw Error('残高不足');const r=whSpin(bet,rng);p.cash+=r.won-bet;p.plays++;if(r.won>bet)p.wins++;msg='LUCKY WHEEL ×'+r.mult+' / 払出 '+r.won+' SC';result=r;break}
+case 'pusher':{const spent=integer(d.spent,0,PU_MAX_SPENT),won=integer(d.won,0,PU_MAX_WON);if(spent+won<1)throw Error('精算するメダルがありません');if(p.cash<spent)throw Error('残高不足');p.cash+=won-spent;p.plays++;if(won>spent)p.wins++;msg='PUSHER 投入 '+spent+'枚 / 払出 '+won+'枚';result={spent,won};break}
 case 'practiceRoulette':{let n=rng(37),bet=integer(d.amount);if(p.cash<bet)throw Error('残高不足');let won=roulette(n,d.choice,bet);p.cash+=won-bet;p.plays++;if(won>bet)p.wins++;msg='結果 '+n+' / 払出 '+won+' SC';break}
 default:throw Error('未対応操作')}
 if(!Number.isSafeInteger(p.cash)||!Number.isSafeInteger(p.bank)||p.cash<0||p.bank<0||p.cash+p.bank>LIMIT)throw Error('残高上限');return {profile:p,message:msg,result};}
-const WorldCore={LIMIT,INITIAL,BONUS,floors,red,integer,start,day,round,roulette,apply,VS_SYMBOLS,VS_WEIGHTS,VS_PAY,VS_SCATTER_PAY,VS_FREE,VS_FREE_MULT,VS_CAP,VS_BETS,VS_LINES,VS_PAYLINES,vsPick,vsGrid,vsEvaluate,vsSpin,BAC_MIN,BAC_MAX,BAC_PAY,bacValue,bacDeal,bacPayout,VP_BETS,VP_PAY,VP_NAMES,vpRank,vpValidHand,BJ_OUTCOMES,BJ_MIN,BJ_MAX,bjSettle};
+const WorldCore={LIMIT,INITIAL,BONUS,floors,red,integer,start,day,round,roulette,apply,VS_SYMBOLS,VS_WEIGHTS,VS_PAY,VS_SCATTER_PAY,VS_FREE,VS_FREE_MULT,VS_CAP,VS_BETS,VS_LINES,VS_PAYLINES,vsPick,vsGrid,vsEvaluate,vsSpin,BAC_MIN,BAC_MAX,BAC_PAY,bacValue,bacDeal,bacPayout,VP_BETS,VP_PAY,VP_NAMES,vpRank,vpValidHand,BJ_OUTCOMES,BJ_MIN,BJ_MAX,bjSettle,WH_BONUS_SEG,WH_WHEEL,WH_BONUS,WH_BETS,whSpin,whRtp,PU_MAX_SPENT,PU_MAX_WON};
 if(typeof module!=='undefined')module.exports=WorldCore;else globalThis.WorldCore=WorldCore;

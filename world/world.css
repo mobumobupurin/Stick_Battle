@@ -548,3 +548,158 @@ body{background:
  .bc-road i{width:13px;height:13px;font-size:7px}
  .panel[data-kind="baccarat"],.panel[data-kind="slot"],.panel[data-kind="videopoker"],.panel[data-kind="blackjack"]{padding:8px;overflow-x:hidden}
 }
+
+/* =====================================================================
+   STICK ROYALE lobby v2 — calm "real casino" atmosphere, less clutter
+   ===================================================================== */
+body{background:radial-gradient(ellipse at 50% 0%,#2a0f16 0%,transparent 60%),linear-gradient(180deg,#120709,#0b0708 40%)!important;color:var(--text)}
+body.drawer-open{overflow:hidden}
+/* top bar */
+.ry-bar{position:sticky;top:0;z-index:30;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:12px clamp(14px,3vw,36px);background:linear-gradient(180deg,#0b0708f2,#0b0708d9);border-bottom:1px solid #3a2a1c;backdrop-filter:blur(8px)}
+.ry-back{justify-self:start;color:#b8a990;font:700 11px/1 var(--display);letter-spacing:.16em;padding:8px 0}
+.ry-back:hover{color:var(--gold2)}
+.ry-logo{display:flex;align-items:baseline;gap:8px;font-family:var(--display);font-weight:900;font-style:italic;letter-spacing:.02em;transform:skewX(-8deg)}
+.ry-logo b{font-size:clamp(18px,2.2vw,26px);color:#f4efe6}
+.ry-logo span{font-size:clamp(18px,2.2vw,26px);color:var(--gold);position:relative}
+.ry-logo span:after{content:'';position:absolute;left:0;right:-.1em;bottom:-.12em;height:2px;background:var(--gold)}
+.ry-bar-right{justify-self:end;display:flex;align-items:center;gap:10px}
+.ry-chips{display:flex;align-items:center;gap:8px;padding:7px 14px 7px 8px;border:1px solid #6a4f28;border-radius:30px;background:linear-gradient(180deg,#1f150d,#120c08)}
+.ry-chips strong{font:900 15px/1 var(--display);color:var(--gold2);font-variant-numeric:tabular-nums;letter-spacing:.02em;text-shadow:none}
+.ry-chip-icon{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#b3202f 0 46%,#f4efe6 47% 54%,#b3202f 55% 62%,transparent 63%),repeating-conic-gradient(#b3202f 0 22.5deg,#f4efe6 22.5deg 45deg)}
+.ry-member-btn{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:30px;border:1px solid #3a2a1c;background:#140c0e;font-size:12px}
+.ry-member-btn .profile-mark{width:28px;height:28px;border-radius:50%;font-size:14px;display:grid;place-items:center;border:1px solid #6a4f28;color:var(--gold)}
+.ry-member-btn #profileName{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 12px/1 var(--display);color:var(--text)}
+/* hero */
+.ry-hero{position:relative;min-height:clamp(300px,46vh,460px);display:flex;align-items:center;overflow:hidden;border-bottom:1px solid #3a2a1c}
+.ry-hero-art{position:absolute;inset:0}
+.ry-hero-art svg{width:100%;height:100%;display:block}
+.ry-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0b0708f0 0%,#0b0708c0 30%,#0b070840 56%,transparent 75%),linear-gradient(0deg,#0b0708 0%,transparent 30%);pointer-events:none}
+.ry-hero-copy{position:relative;z-index:1;max-width:560px;padding:0 clamp(18px,6vw,90px);display:grid;gap:14px;animation:ryFade .8s ease both}
+@keyframes ryFade{from{opacity:0;transform:translateY(10px)}}
+.ry-hero-copy small{color:#b8a990;letter-spacing:.36em}
+.ry-hero-copy h1{font:900 clamp(30px,4.4vw,58px)/1.05 var(--display);letter-spacing:-.01em;color:#f4efe6}
+.ry-hero-copy h1 em{display:block;font-style:italic;color:var(--gold);transform:skewX(-8deg);transform-origin:left}
+.ry-hero-copy p{color:#cfc4b2;font-size:14px;line-height:1.8}
+.ry-hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:4px}
+.ry-gold-btn{padding:14px 24px;border:0;border-radius:30px;background:linear-gradient(180deg,#f3dca4,#d9b56a 55%,#a9853f);color:#1a1208;font:900 14px/1 var(--display);letter-spacing:.06em;box-shadow:0 6px 18px #d9b56a33}
+.ry-gold-btn:hover,.ry-gold-btn:focus-visible{color:#1a1208;filter:brightness(1.07);outline:none}
+.ry-hero-bank{color:#9d8f7a;font:700 11px/1 var(--display);letter-spacing:.16em}
+.ry-hero-bank b{color:#f4efe6;margin-left:6px;letter-spacing:.02em}
+/* tabs */
+.ry-tabs{position:sticky;top:61px;z-index:20;display:flex;justify-content:center;gap:clamp(8px,3vw,40px);padding:0 16px;background:#0b0708f2;border-bottom:1px solid #2a1e16;backdrop-filter:blur(8px)}
+.ry-tabs button{display:grid;justify-items:center;gap:4px;padding:16px 10px 13px;border:0;border-bottom:2px solid transparent;background:none;color:#8a7d6a;font:900 13px/1 var(--display);letter-spacing:.2em}
+.ry-tabs button small{font:500 10px/1 var(--body);letter-spacing:.04em;color:inherit;opacity:.8}
+.ry-tabs button[aria-pressed="true"]{color:var(--gold2);border-bottom-color:var(--gold)}
+.ry-tabs button:hover{color:var(--text);border-color:transparent}
+.ry-tabs button[aria-pressed="true"]:hover{border-bottom-color:var(--gold)}
+.ry-main{max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,40px) clamp(14px,3vw,32px) 60px}
+/* game zones */
+.ry-games{display:grid;gap:clamp(26px,4vw,44px)}
+.ry-zone-head{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #2a1e16}
+.ry-zone-head small{color:var(--gold);letter-spacing:.3em}
+.ry-zone-head h2{font:900 15px/1 var(--display);color:#cfc4b2;letter-spacing:.08em}
+.ry-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,22px)}
+.ry-card{display:grid;grid-template-rows:auto 1fr auto;padding:0;text-align:left;border:1px solid #2e2218;border-radius:14px;overflow:hidden;background:#120c0c;transition:transform .2s,border-color .2s,box-shadow .2s}
+.ry-card:hover,.ry-card:focus-visible{transform:translateY(-4px);border-color:#8a6a34;box-shadow:0 18px 40px #000a,0 0 0 1px #d9b56a44;color:var(--text);outline:none}
+.ry-card-art{display:block;aspect-ratio:400/260;overflow:hidden;border-bottom:1px solid #2e2218}
+.ry-card-art svg{width:100%;height:100%;display:block;transition:transform .5s}
+.ry-card:hover .ry-card-art svg{transform:scale(1.04)}
+.ry-card-body{display:grid;gap:5px;padding:16px 18px 6px}
+.ry-card-body small{color:var(--gold);letter-spacing:.22em;font-size:9px}
+.ry-card-body b{font:900 19px/1.2 var(--display);color:#f4efe6}
+.ry-card-desc{color:#9d8f7a;font-size:12px;line-height:1.5}
+.ry-card-foot{display:flex;justify-content:space-between;align-items:center;padding:12px 18px 16px}
+.ry-card-foot span{color:#7a6d5c;font:700 10px/1 var(--display);letter-spacing:.14em}
+.ry-card-foot em{font:900 11px/1 var(--display);font-style:normal;letter-spacing:.2em;color:#1a1208;background:linear-gradient(180deg,#f3dca4,#d9b56a 55%,#a9853f);padding:8px 16px;border-radius:20px}
+/* floor + cashier */
+.ry-floor .cz-floorcard{background:#120c0c;border-color:#2e2218;border-radius:14px}
+.ry-cashier-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.ry-desk{display:grid;gap:8px;align-content:start;padding:24px;text-align:left;border:1px solid #2e2218;border-radius:14px;background:linear-gradient(160deg,#1a1210,#110b0b)}
+button.ry-desk:hover,button.ry-desk:focus-visible{border-color:#8a6a34;color:var(--text)}
+.ry-desk small{color:var(--gold);letter-spacing:.26em}
+.ry-desk b{font:900 18px/1.3 var(--display);color:#f4efe6}
+.ry-desk span{color:#9d8f7a;font-size:12px;line-height:1.6}
+.ry-record b{font-size:30px;color:var(--gold2)}
+/* drawer */
+.ry-shade{position:fixed;inset:0;z-index:60;background:#05030480;backdrop-filter:blur(3px)}
+.ry-drawer{position:fixed;z-index:61;top:0;right:0;bottom:0;width:min(380px,92vw);overflow:auto;display:grid;align-content:start;gap:14px;padding:18px;background:#120c0c;border-left:1px solid #3a2a1c;box-shadow:-20px 0 50px #000a;animation:drawerIn .22s ease}
+@keyframes drawerIn{from{transform:translateX(30px);opacity:0}}
+.ry-drawer-head{display:flex;justify-content:space-between;align-items:center}
+.ry-drawer-head button{width:40px;height:40px;padding:0;border-radius:50%;font-size:20px}
+.ry-drawer .player,.ry-drawer .cz-account{padding:16px;border:1px solid #2e2218;border-radius:12px;background:#0d0909}
+.ry-drawer-row{display:flex;gap:8px}.ry-drawer-row button{flex:1}
+.ry-drawer-note{font-size:11px;color:#6f6455;line-height:1.6}
+/* responsive */
+@media(max-width:900px){.ry-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ry-cashier-grid{grid-template-columns:1fr}}
+@media(max-width:620px){
+ .ry-bar{grid-template-columns:auto 1fr auto;padding:10px 12px}
+ .ry-back span{display:none}.ry-back{font-size:20px;padding:0 6px}
+ .ry-logo{justify-self:start}.ry-logo b,.ry-logo span{font-size:17px}
+ .ry-member-btn #profileName{display:none}.ry-member-btn{padding:4px}
+ .ry-chips{padding:5px 10px 5px 5px}.ry-chips strong{font-size:13px}
+ .ry-hero{min-height:360px;align-items:flex-end;padding-bottom:26px}
+ .ry-hero:after{background:linear-gradient(0deg,#0b0708 0%,#0b0708d0 38%,#0b070830 70%,transparent 100%)}
+ .ry-hero-copy p{font-size:13px}
+ .ry-tabs{top:55px;gap:4px}.ry-tabs button{flex:1;padding:13px 4px 11px;font-size:12px;letter-spacing:.12em}
+ .ry-cards{grid-template-columns:1fr}
+ .ry-card{grid-template-columns:42% 1fr;grid-template-rows:auto auto}
+ .ry-card-art{grid-row:1/3;aspect-ratio:auto;height:100%;border-bottom:0;border-right:1px solid #2e2218}
+ .ry-card-body{padding:12px 12px 2px}.ry-card-body b{font-size:16px}.ry-card-desc{font-size:11px}
+ .ry-card-foot{padding:8px 12px 12px}
+}
+.ry-hero-copy h1 em{white-space:nowrap}
+#map:focus-visible{outline:2px solid #d9b56a88;outline-offset:3px}
+#map:focus:not(:focus-visible){outline:none}
+
+/* ---------- MEDAL CORNER: lucky wheel & coin pusher ---------- */
+.panel[data-kind="wheel"],.panel[data-kind="pusher"]{width:min(1000px,calc(100vw - 16px));max-height:calc(100dvh - 16px);padding:12px 14px;background:#0b0910;border-color:#3a3046}
+.panel[data-kind="wheel"] .heading,.panel[data-kind="pusher"] .heading{margin-bottom:8px}
+.ry-cards[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr));max-width:calc((100% - 2*clamp(12px,2vw,22px))*2/3 + clamp(12px,2vw,22px))}
+.egm-wheel{--c:#ffb21e}
+.lw-screen{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-items:center;padding:14px;background:radial-gradient(circle at 35% 50%,#3a1a08,#120806 70%)}
+.lw-svg{width:100%;max-height:min(56vh,460px);display:block;margin:auto}
+.lw-rot{transform-origin:0 0;will-change:transform}
+.lw-bulb{fill:#fff4d6;opacity:.75}
+.egm-wheel.lw-hit .lw-bulb{fill:#ffd36b;opacity:1;filter:drop-shadow(0 0 4px #ffb21e)}
+.egm-wheel.lw-jackpot .egm-screen{box-shadow:inset 0 0 60px #ffb21e88,0 0 0 2px #ffd36b}
+.lw-side{display:grid;gap:12px;color:#efe2c8}
+.lw-odds{display:grid;gap:6px;padding:12px;border:1px solid #d9b56a55;border-radius:10px;background:#0008}
+.lw-odds>b{font:700 13px Georgia,serif;letter-spacing:.12em;color:#d9b56a}
+.lw-odd{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;font-size:14px}
+.lw-odd i{width:16px;height:16px;border-radius:4px;border:1px solid #d9b56a88}
+.lw-odd em{font-style:normal;font-weight:900}.lw-odd small{color:#bfae90}
+.lw-note{margin:0;font-size:13px;line-height:1.6;color:#d8c8a8}
+.lw-bets{display:flex;gap:6px;flex:1 1 auto;justify-content:center}
+.lw-bet{min-width:64px}
+.lw-bet.on{background:linear-gradient(180deg,#ffd36b,#c8902e);color:#2a1600;border-color:#fff1c4}
+.egm-wheel .egm-spin{background:radial-gradient(circle at 50% 30%,#ffd98a,#f0a020 55%,#a35f08);border-color:#fff1c4;box-shadow:0 6px 0 #5a3204,0 0 24px #ffb21e88}
+.egm-pusher{--c:#3db8ff}
+.pu-screen{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;align-items:start;padding:12px;background:#050b12}
+.pu-canvas{width:100%;max-height:min(62vh,600px);aspect-ratio:480/600;object-fit:contain;display:block;margin:auto;border-radius:8px;touch-action:none;cursor:crosshair}
+.pu-side{display:grid;gap:12px;color:#d8e6f0}
+.pu-how{padding:12px;border:1px solid #3db8ff44;border-radius:10px;background:#0a1826}
+.pu-how b{font:700 13px Georgia,serif;letter-spacing:.12em;color:#d9b56a}
+.pu-how p{margin:8px 0 0;font-size:13px;line-height:1.65}
+.pu-table{display:grid;gap:6px;padding:12px;border:1px solid #d9b56a55;border-radius:10px;background:#0008}
+.pu-table span{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.pu-table em{font-style:normal;font-weight:900;letter-spacing:.08em;color:#fff4d6}.pu-table b{color:#ffd36b}
+.pu-deck .pu-aim{min-width:64px;font-size:18px}
+.egm-pusher .egm-spin{background:radial-gradient(circle at 50% 30%,#9fe6ff,#2a9be0 55%,#0b4f8a);border-color:#d8f4ff;box-shadow:0 6px 0 #062a4a,0 0 24px #3db8ff88}
+.egm-pusher.pu-jackpot .egm-screen{box-shadow:inset 0 0 60px #ffd36b88,0 0 0 2px #ffd36b}
+@media(max-width:760px){
+ .lw-screen,.pu-screen{grid-template-columns:1fr;padding:8px;gap:8px}
+ .lw-svg{max-height:52vh}
+ .pu-canvas{max-height:56vh}
+ .lw-side .lw-note,.pu-how{display:none}
+ .lw-odds{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 10px;padding:8px}.lw-odds>b{grid-column:1/-1}
+ .lw-odd{font-size:12px;grid-template-columns:12px 1fr auto;gap:5px}.lw-odd i{width:12px;height:12px}
+ .pu-table{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;padding:8px}.pu-table span{font-size:12px}
+ .lw-bets{flex:1 1 100%}.lw-bet{flex:1 1 0;min-width:0}
+ .pu-deck{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:8px}
+ .pu-deck .pu-aim,.pu-deck .egm-spin{min-width:0;min-height:58px}
+ .pu-deck .egm-btn-small{grid-row:2;min-height:40px}
+ .pu-deck .pu-cash{grid-column:2/4}
+ .lw-odd small{white-space:nowrap;font-size:11px}
+ .ry-cards[data-n="2"]{max-width:none}
+}
+@media(max-width:640px){.ry-cards[data-n="2"]{grid-template-columns:1fr}}
