@@ -1,4 +1,4 @@
-# STICK ROYALE（旧 STICK WORLD / STICK CASINO）— Spark beta
+# STICK CASINO（旧 STICK WORLD / STICK CASINO）— Spark beta
 GitHub Pages /Stick_Battle/world/.
 
 ## Console setup (free Spark plan)
@@ -31,8 +31,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - 抽選と結果はブラウザ側で行うため、不正対策には限界がある（従来どおり）。架空チップ専用。
 
 
-## STICK ROYALE（2026-11-20 リニューアル）
-名前を「STICK ROYALE — GAMING CASINO」に変更。本物のカジノの電子ゲーム機（EGM）をイメージした筐体UIに統一：上部のネオン看板、CREDIT / BET / WIN の電光メーター、光るボタン、Web Audio で合成した効果音（♪ボタンで消音、ブラウザごとに記憶）。
+## STICK CASINO（2026-11-20 リニューアル）
+名前を「STICK CASINO — GAMING CASINO」に変更。本物のカジノの電子ゲーム機（EGM）をイメージした筐体UIに統一：上部のネオン看板、CREDIT / BET / WIN の電光メーター、光るボタン、Web Audio で合成した効果音（♪ボタンで消音、ブラウザごとに記憶）。
 
 - **STICK FORTUNE**（`world/slot.js`）：5リール×3段・10ライン。WILD（BONUS以外の代わり）、BONUS 3個以上でフリーゲーム8/10/15回（当たり2倍）。BONUSが2つ見えると残りのリールが光ってゆっくり止まる演出、当たりラインの表示、15倍以上で BIG/SUPER/MEGA WIN とコインの演出、AUTO（25回）。理論還元率 約94%、1回の払い出しはベットの300倍まで。抽選はすべて core.js の `slot` で行い、フリーゲームも同じ1回の精算に含む。
 - **JACKS OR BETTER**（`world/videopoker.js`）：9/6ジャックス・オア・ベター。ベット 10/20/30。HOLDしてDRAW。最終手札を core.js の `videopoker` が役判定して精算（カードの重複などは拒否）。
@@ -40,12 +40,12 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - **BLACKJACK**・**ROULETTE**・**MEDAL DROP** は従来どおり（BJは筐体デザインに変更）。
 - フロア：2F スロット＆ポーカー／3F テーブルゲーム（BJ・バカラ）。
 - オンライン保存は既存の「カジノ1プレイ分」ルール（増加30,000以下・減少2,000以下）の範囲に収まるため、**Firebaseルールの変更は不要**。
-- ゲームHUBからブラックジャック・ポーカー・バカラを外した（カジノ系はすべて STICK ROYALE に集約）。
+- ゲームHUBからブラックジャック・ポーカー・バカラを外した（カジノ系はすべて STICK CASINO に集約）。
 
 ### ロビー v2（2026-11-20）
 ごちゃつきを減らし、本場のカジノの空気を優先したロビーに変更（`world/lobby.js`）。
 - 上部は細いバー（戻る・ロゴ・チップ・メンバー）だけ。名前・ログイン・効果音・管理者ボタンは右上の「メンバー」から開く引き出しへ。
-- 入ってすぐにカジノ内観のイラスト（シャンデリア、スロットの列、ルーレット台とカードテーブル）と「Welcome to STICK ROYALE」、本日のボーナスボタン。
+- 入ってすぐにカジノ内観のイラスト（シャンデリア、スロットの列、ルーレット台とカードテーブル）と「Welcome to STICK CASINO」、本日のボーナスボタン。
 - 「GAMES / FLOOR / CASHIER」のタブで表示を切り替え（最後に開いたタブを記憶）。GAMES はマシン・メダルコーナー・テーブルのエリアに、イラスト付きカードで並べる。フロアマップは FLOOR タブのときだけキー操作を受け付ける。
 
 ### メダルコーナー（2026-11-20）

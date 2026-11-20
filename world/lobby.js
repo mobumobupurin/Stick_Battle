@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — lobby: hero interior art, GAMES / FLOOR / CASHIER tabs, member drawer, illustrated game cards. */
+/* STICK CASINO — lobby: hero interior art, GAMES / FLOOR / CASHIER tabs, member drawer, illustrated game cards. */
 (()=>{
 const NS='http://www.w3.org/2000/svg';
 const $=id=>document.getElementById(id);

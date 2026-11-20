@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — "STICK FORTUNE" 5-reel / 10-line video slot.
+/* STICK CASINO — "STICK FORTUNE" 5-reel / 10-line video slot.
    Outcomes, payouts and saving come from core.js ('slot' action). This file is presentation only. */
 const WorldSlot=(()=>{
 const NS='http://www.w3.org/2000/svg';
@@ -29,7 +29,7 @@ function cellAt(c,r){const strip=st.reels[c].strip,n=strip.children.length;retur
 function meter(label,cls){const m=h('div','egm-meter '+cls);const v=h('b',undefined,'0');m.append(h('small',undefined,label),v);return [m,v];}
 function open(body){
  const C=WorldCore,root=h('div','egm egm-slot');
- const top=h('div','egm-topper');top.append(h('small',undefined,'STICK ROYALE VIDEO SLOTS'),h('b','egm-title','STICK FORTUNE'),h('span','egm-sub','MAX WIN ×'+C.VS_CAP+' ・ FREE GAMES ALL WINS ×'+C.VS_FREE_MULT));
+ const top=h('div','egm-topper');top.append(h('small',undefined,'STICK CASINO VIDEO SLOTS'),h('b','egm-title','STICK FORTUNE'),h('span','egm-sub','MAX WIN ×'+C.VS_CAP+' ・ FREE GAMES ALL WINS ×'+C.VS_FREE_MULT));
  const screen=h('div','egm-screen vs-screen');
  const linesL=h('div','vs-linetabs'),linesR=h('div','vs-linetabs r');
  const order=[3,1,6,9,0,7,8,2,5,4];

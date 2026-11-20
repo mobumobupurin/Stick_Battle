@@ -317,7 +317,7 @@ nav#floors button{min-width:0}
 .bj-dealer{order:1}.bj-center{order:2}.bj-player{order:3}
 
 /* =====================================================================
-   STICK ROYALE — gaming floor + electronic gaming machine (EGM) chrome
+   STICK CASINO — gaming floor + electronic gaming machine (EGM) chrome
    ===================================================================== */
 :root{--neon:#ff3d8b;--neon2:#36e0ff;--led:#ffcf3f;--led-red:#ff4a4a;--cab:#15121c}
 body{background:
@@ -550,7 +550,7 @@ body{background:
 }
 
 /* =====================================================================
-   STICK ROYALE lobby v2 — calm "real casino" atmosphere, less clutter
+   STICK CASINO lobby v2 — calm "real casino" atmosphere, less clutter
    ===================================================================== */
 body{background:radial-gradient(ellipse at 50% 0%,#2a0f16 0%,transparent 60%),linear-gradient(180deg,#120709,#0b0708 40%)!important;color:var(--text)}
 body.drawer-open{overflow:hidden}

@@ -78,14 +78,14 @@ function vpValidHand(hand){if(!Array.isArray(hand)||hand.length!==5)return false
 // ---- STICK CASINO: blackjack (the hand is played in the browser; the outcome is settled here) ----
 const BJ_OUTCOMES={lose:0,push:1,win:2,blackjack:2.5},BJ_MIN=10,BJ_MAX=1000;
 function bjSettle(bet,doubled,outcome){integer(bet,BJ_MIN,BJ_MAX);if(!Object.hasOwn(BJ_OUTCOMES,outcome))throw Error('結果が不正です');if(outcome==='blackjack'&&doubled)throw Error('結果が不正です');const stake=doubled?bet*2:bet;return {stake,won:Math.floor(stake*BJ_OUTCOMES[outcome])};}
-// ---- STICK ROYALE medal corner: lucky wheel (48 equal segments; BONUS spins a 12-segment bonus wheel with the JACKPOT) ----
+// ---- STICK CASINO medal corner: lucky wheel (48 equal segments; BONUS spins a 12-segment bonus wheel with the JACKPOT) ----
 const WH_BONUS_SEG=-1;
 const WH_WHEEL=[-1,0,0,2,1,0,3,0,0,2,1,0,5,0,0,1,0,0,2,0,1,0,0,0,-1,1,0,2,0,0,3,1,0,0,0,1,2,0,0,0,1,0,3,0,0,1,0,0];
 const WH_BONUS=[50,2,3,2,2,5,2,2,3,2,2,2];
 const WH_BETS=[10,20,50,100];
 function whSpin(bet,rng){const index=rng(WH_WHEEL.length);let mult=WH_WHEEL[index],bonusIndex=null;if(mult===WH_BONUS_SEG){bonusIndex=rng(WH_BONUS.length);mult=WH_BONUS[bonusIndex];}return {index,bonusIndex,mult,won:bet*mult,jackpot:bonusIndex!==null&&WH_BONUS[bonusIndex]===50};}
 function whRtp(){const b=WH_BONUS.reduce((t,m)=>t+m,0)/WH_BONUS.length;return WH_WHEEL.reduce((t,m)=>t+(m===WH_BONUS_SEG?b:m),0)/WH_WHEEL.length;}
-// ---- STICK ROYALE medal corner: coin pusher (the field runs in the browser; play is settled here in batches) ----
+// ---- STICK CASINO medal corner: coin pusher (the field runs in the browser; play is settled here in batches) ----
 const PU_MAX_SPENT=300,PU_MAX_WON=3000;
 function apply(p,action,d,now,rng){p={...p};let msg='',result=null;switch(action){
 case 'profile':{if(typeof d.name!=='string'||!d.name.trim()||d.name.trim().length>20)throw Error('名前は1〜20文字');p.name=d.name.trim();break}

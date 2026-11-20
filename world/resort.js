@@ -14,7 +14,7 @@ rect(0,0,1000,58,t.wall);rect(0,0,25,600,t.wall);rect(975,0,25,600,t.wall);rect(
 line(26,58,974,58,t.accent,2);line(26,573,974,573,t.accent,2);
 for(let x of [65,935]){rect(x-13,78,26,40,'#16232d',t.accent,4);ellipse(x,90,7,7,t.accent);rect(x-12,506,24,40,'#16232d',t.accent,4);ellipse(x,517,6,6,t.accent);}
 rect(390,66,220,505,'#00000024',t.accent,12);rect(405,70,190,499,'#ffffff09');line(420,70,420,563,'#ffffff20');line(580,70,580,563,'#ffffff20');
-rect(435,0,130,58,'#101c25',t.accent,3);label(500,33,'STICK ROYALE',14);
+rect(435,0,130,58,'#101c25',t.accent,3);label(500,33,'STICK CASINO',14);
 rect(435,563,130,24,'#101c25',t.accent,3);label(500,579,'ENTRANCE',10);
 function plant(x,y){ellipse(x,y+10,20,9,'#0005');rect(x-13,y,26,22,'#977f64','#c4aa81',5);for(let k=0;k<5;k++)ellipse(x+(k-2)*8,y-8+Math.abs(k-2)*3,8,15,k%2?'#497a60':'#609b72');}
 function bench(x,y,w){rect(x,y,w,34,'#0004','none',8);rect(x,y-6,w,29,'#6a5148',t.accent,7);line(x+12,y+7,x+w-12,y+7,'#98796c',2);}
