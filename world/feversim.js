@@ -8,8 +8,11 @@ const FeverSim=(()=>{
  const W=100,H=150,BALL_R=3.2,G=0.05,KICK=2.35,MAX_V=3.6,BLOCK_Y=138,BLOCKS=6,BLOCK_HP=2,SHIELD_FRAMES=480,GATE_WIN=40,MAX_FRAMES=60*150;
  const BUMPERS=[{x:22,y:56,r:7,pay:2},{x:78,y:56,r:7,pay:2},{x:50,y:80,r:8,pay:4},{x:24,y:102,r:6.5,pay:2},{x:76,y:102,r:6.5,pay:2},{x:50,y:118,r:5.5,pay:2}];
  const HOLE={x:50,y:46,r:6.8};
- // JP CHANCE dish: pockets in a rotating inner ring
- const DISH_R=40,POCKET_R=15,POCKETS=['JP',50,'BLOCK',100,30,'BLOCK',50,200,30,'BLOCK',50,30];
+ // JP CHANCE: two rolling-ball dishes (croons). The ball circles a bowl, bounces off pins and drops into a hole only when it is slow enough
+ // to fall in — a fast ball skims over holes. Stage 1: UP goes on to stage 2, which holds the JP. Everything is simulated.
+ const DISHES=[{R:40,holeR:22,holes:['UP',30,'BLOCK',50,'UP',30,100,'UP'],pinR:31,pins:8,ringW:.006,pull:.032,friction:.9968,sink:.95},
+  {R:34,holeR:18,holes:['JP',100,200,100,300,100],pinR:26,pins:6,ringW:-.009,pull:.028,friction:.9979,sink:.85}];
+ const DISH_R=40,POCKETS=DISHES[1].holes;
  function create(rnd){rnd=rnd||Math.random;const s={t:0,win:0,gateFrom:0,gateOpen:false,shield:SHIELD_FRAMES,blocks:Array(BLOCKS).fill(BLOCK_HP),ball:null,over:false,jpc:null,cool:[],events:[]};launch(s,rnd);return s;}
  function launch(s,rnd){rnd=rnd||Math.random;s.ball={x:8+rnd()*6,y:10,vx:1.2+rnd()*1.1,vy:-.2-rnd()*.6};}
  function speedClamp(b){const v=Math.hypot(b.vx,b.vy);if(v>MAX_V){b.vx*=MAX_V/v;b.vy*=MAX_V/v;}}
@@ -17,6 +20,7 @@ const FeverSim=(()=>{
  function step(s,rnd){
   rnd=rnd||Math.random;s.t++;s.events.length=0;
   if(s.over)return s;
+  if(s.t>MAX_FRAMES+900&&!s.jpc){s.over=true;s.events.push({type:'out'});return s;}
   if(s.jpc){stepDish(s,rnd);return s;}
   if(s.shield>0)s.shield--;
   const b=s.ball,sub=2;
@@ -34,25 +38,39 @@ const FeverSim=(()=>{
      if(s.shield>0)s.events.push({type:'shield'});else{s.blocks[i]--;s.events.push({type:'block',i,hp:s.blocks[i]});}}}
    if(b.y>H){s.over=true;s.events.push({type:'out'});return s;}
   }
-  if(!s.gateOpen&&s.win-s.gateFrom>=GATE_WIN){s.gateOpen=true;s.events.push({type:'gate'});}
-  if(s.t>MAX_FRAMES&&s.t%60===0){const i=s.blocks.findIndex(x=>x>0);if(i>=0)s.blocks[i]=0;}
+  if(!s.gateOpen&&s.t<MAX_FRAMES&&s.win-s.gateFrom>=GATE_WIN){s.gateOpen=true;s.events.push({type:'gate'});}
+  if(s.t>MAX_FRAMES){if(s.gateOpen)s.gateOpen=false;if(s.t%60===0){const i=s.blocks.findIndex(x=>x>0);if(i>=0)s.blocks[i]=0;}}
   return s;
  }
- function startDish(s,rnd){s.jpc={a:rnd()*Math.PI*2,r:DISH_R-3,w:.13+rnd()*.05,vr:0,ring:rnd()*Math.PI*2,t:0,pocket:null,done:0};}
- // the ball rolls round the rim, slows down, spirals in and drops into whichever pocket is under it
- function stepDish(s,rnd){const j=s.jpc;j.t++;
-  if(j.pocket!==null){j.done++;if(j.done===1)s.events.push({type:'pocket',pocket:j.pocket,value:POCKETS[j.pocket]});
-   if(j.done>=90){const v=POCKETS[j.pocket];if(v==='BLOCK'){for(let i=0;i<BLOCKS;i++)s.blocks[i]=BLOCK_HP;}
+ function startDish(s,rnd,stage=0){const D=DISHES[stage],a=rnd()*Math.PI*2,v=2.3+rnd()*.5;
+  s.jpc={stage,x:Math.cos(a)*(D.R-3),y:Math.sin(a)*(D.R-3),vx:-Math.sin(a)*v,vy:Math.cos(a)*v,ring:rnd()*Math.PI*2,t:0,pocket:null,done:0,skimT:0};}
+ const holePos=(D,j,i)=>{const a=j.ring+i*Math.PI*2/D.holes.length;return [Math.cos(a)*D.holeR,Math.sin(a)*D.holeR];};
+ const pinPos=(D,i)=>{const a=i*Math.PI*2/D.pins+Math.PI/D.pins;return [Math.cos(a)*D.pinR,Math.sin(a)*D.pinR];};
+ function stepDish(s,rnd){const j=s.jpc,D=DISHES[j.stage];j.t++;
+  if(j.pocket!==null){j.done++;const v=D.holes[j.pocket];if(j.done===1)s.events.push({type:'pocket',stage:j.stage,pocket:j.pocket,value:v});
+   if(j.done>=80){if(v==='UP'){startDish(s,rnd,1);s.events.push({type:'up'});return;}
+    if(v==='BLOCK'&&s.t<MAX_FRAMES){for(let i=0;i<BLOCKS;i++)s.blocks[i]=BLOCK_HP;}
     s.jpc=null;launch(s,rnd);s.shield=Math.max(s.shield,90);s.events.push({type:'return'});}return;}
-  j.ring-=.012;j.a+=j.w;j.w*=.9935;
-  // small pins on the dish nudge the ball
-  if(rnd()<.03){j.w*=.9+rnd()*.18;j.vr+=(rnd()-.5)*.25;}
-  const fall=Math.max(0,.075-j.w)*1.6;j.vr=j.vr*.9-fall;j.r=Math.min(DISH_R-3,j.r+j.vr);
-  if(j.r<=POCKET_R+1){const n=POCKETS.length,rel=((j.a-j.ring)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);j.pocket=Math.floor(rel/(Math.PI*2/n))%n;j.r=POCKET_R-2;}
+  j.ring+=D.ringW;
+  for(let k=0;k<2;k++){
+   const r=Math.hypot(j.x,j.y)||.001,ux=j.x/r,uy=j.y/r;
+   // the bowl slopes down to the hole ring (a dome in the middle pushes outward), so a slow ball ends up circling the holes
+   const f=-D.pull*Math.max(-1,Math.min(1,(r-D.holeR)/5));j.vx+=ux*f/2;j.vy+=uy*f/2;
+   j.vx*=Math.pow(D.friction,.5);j.vy*=Math.pow(D.friction,.5);
+   j.x+=j.vx/2;j.y+=j.vy/2;
+   const r2=Math.hypot(j.x,j.y);if(r2>D.R-BALL_R){const nx=j.x/r2,ny=j.y/r2;j.x=nx*(D.R-BALL_R);j.y=ny*(D.R-BALL_R);const vn=j.vx*nx+j.vy*ny;if(vn>0){j.vx-=1.75*vn*nx;j.vy-=1.75*vn*ny;}}
+   for(let i=0;i<D.pins;i++){const [px,py]=pinPos(D,i),dx=j.x-px,dy=j.y-py,d=Math.hypot(dx,dy),M=BALL_R+1.6;if(d<M&&d>0){const nx=dx/d,ny=dy/d;j.x=px+nx*M;j.y=py+ny*M;const vn=j.vx*nx+j.vy*ny;if(vn<0){j.vx-=1.8*vn*nx;j.vy-=1.8*vn*ny;}const a=(rnd()-.5)*.3,c=Math.cos(a),sn=Math.sin(a),vx=j.vx;j.vx=vx*c-j.vy*sn;j.vy=vx*sn+j.vy*c;s.events.push({type:'pin'});}}
+  }
+  const sp=Math.hypot(j.vx,j.vy);if(j.skimT>0)j.skimT--;
+  for(let i=0;i<D.holes.length;i++){const [hx,hy]=holePos(D,j,i),d=Math.hypot(j.x-hx,j.y-hy);
+   if(d<3.6&&sp<D.sink){j.pocket=i;j.x=hx;j.y=hy;j.vx=j.vy=0;return;}
+   if(d<4.5&&j.skimT===0){j.skimT=20;s.events.push({type:'skim',stage:j.stage,value:D.holes[i]});}}
+  // a ball that has almost stopped is carried by the turning ring until a hole reaches it
+  if(sp<.08){j.vx+=(rnd()-.5)*.06;j.vy+=(rnd()-.5)*.06;}
  }
  // run a whole stage headless; jpValue() returns the JP amount and is called on each JP
  function simulate(rnd,jpValue){const s=create(rnd);let pay=0,jps=0,jpcs=0,jpPaid=0;while(!s.over&&s.t<MAX_FRAMES*2){step(s,rnd);for(const e of s.events){if(e.type==='jpc')jpcs++;if(e.type==='pocket'){if(e.value==='JP'){jps++;const v=jpValue?jpValue():1000;jpPaid+=v;}else if(typeof e.value==='number')pay+=e.value;}}}
   return {win:s.win,pay,jps,jpcs,jpPaid,total:s.win+pay+jpPaid,frames:s.t};}
- return {W,H,BALL_R,BLOCK_Y,BLOCKS,BLOCK_HP,SHIELD_FRAMES,GATE_WIN,BUMPERS,HOLE,DISH_R,POCKET_R,POCKETS,create,launch,step,simulate};
+ return {W,H,BALL_R,BLOCK_Y,BLOCKS,BLOCK_HP,SHIELD_FRAMES,GATE_WIN,BUMPERS,HOLE,DISHES,DISH_R,POCKETS,holePos,pinPos,create,launch,step,simulate};
 })();
 if(typeof module!=='undefined')module.exports=FeverSim;else globalThis.FeverSim=FeverSim;
