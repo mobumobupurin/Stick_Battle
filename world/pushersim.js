@@ -1,5 +1,5 @@
 'use strict';
-// STICK ROYALE coin pusher: a small 2D field (top view) plus the lottery tables. Rendering lives in medalpusher.js.
+// STICK CASINO coin pusher: a small 2D field (top view) plus the lottery tables. Rendering lives in medalpusher.js.
 // Units: field is 100 wide, the front edge is at y=100. The pusher face moves between FACE_MIN and FACE_MAX.
 const PusherSim=(()=>{
  const R=4.2,BALL_R=6.4,FACE_MIN=10,FACE_MAX=27,PERIOD=150,GUTTER=12,EDGE=100;

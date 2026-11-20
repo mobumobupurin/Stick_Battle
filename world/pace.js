@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — game speed for the card games (baccarat / blackjack / video poker). Remembered per browser. */
+/* STICK CASINO — game speed for the card games (baccarat / blackjack / video poker). Remembered per browser. */
 const WorldPace=(()=>{
  const LEVELS=[['slow','じっくり',1],['normal','ふつう',.55],['fast','はやい',.2]];
  let level='slow';try{const v=localStorage.getItem('stick-royale-pace');if(LEVELS.some(l=>l[0]===v))level=v;}catch{}

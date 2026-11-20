@@ -19,7 +19,7 @@ function cardEl(c,hidden,delay){
  e.append(tl,h('span','bj-pip',suit),br);return e;
 }
 function open(body){
- const root=h('div','egm egm-bj bj'),table=h('div','bj-table egm-screen');const top=h('div','egm-topper');top.append(h('small',undefined,'STICK ROYALE ELECTRONIC TABLE'),h('b','egm-title','BLACKJACK'),h('span','egm-sub','BLACKJACK PAYS 3 TO 2'));
+ const root=h('div','egm egm-bj bj'),table=h('div','bj-table egm-screen');const top=h('div','egm-topper');top.append(h('small',undefined,'STICK CASINO ELECTRONIC TABLE'),h('b','egm-title','BLACKJACK'),h('span','egm-sub','BLACKJACK PAYS 3 TO 2'));
  const mt=label=>{const m=h('div','egm-meter');const v=h('b',undefined,'0');m.append(h('small',undefined,label),v);return [m,v];};const meters=h('div','egm-meters');const [mC,vCredit]=mt('CREDIT'),[mB,vBet]=mt('BET'),[mW,vWin]=mt('WIN');meters.append(mC,mB,mW);
  const dealer=h('div','bj-side bj-dealer'),dHead=h('div','bj-head');const dLabel=h('small',undefined,'DEALER'),dTotal=h('b','bj-total','');dHead.append(dLabel,dTotal);const dCards=h('div','bj-cards');dealer.append(dHead,dCards);
  const felt=h('div','bj-felt');felt.append(h('span','bj-arc','BLACKJACK PAYS 3 TO 2'),h('span','bj-arc2','DEALER MUST STAND ON ALL 17s'));

@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — "FORTUNE PUSHER" (medal corner). 1 medal = 1 SC.
+/* STICK CASINO — "FORTUNE PUSHER" (medal corner). 1 medal = 1 SC.
    Flow: medals → CHECKER → 3-reel slot (stock 9) → cherry/bell/BAR medal rain, JP BALL onto the field, 777 = FEVER GAME + 確変.
    A JP ball pushed off the front goes to the 2-stage JP lottery (stage 2 holds the progressive JACKPOT).
    The field and the JP live in this browser; medals in/out are settled in batches by core.js ('pusher'). */
@@ -59,7 +59,7 @@ const SYM_NAME={CHERRY:'チェリー',BELL:'ベル',BAR:'BAR',BALL:'JPボール'
 /* ---------- UI ---------- */
 function open(body){
  const root=h('div','egm egm-pusher');
- const top=h('div','egm-topper');top.append(h('small',undefined,'STICK ROYALE MEDAL CORNER'),h('b','egm-title','FORTUNE PUSHER'),h('span','egm-sub','777でFEVER！ JPボールを落としてJACKPOT'));
+ const top=h('div','egm-topper');top.append(h('small',undefined,'STICK CASINO MEDAL CORNER'),h('b','egm-title','FORTUNE PUSHER'),h('span','egm-sub','777でFEVER！ JPボールを落としてJACKPOT'));
  const screen=h('div','egm-screen pu-screen');const cv=h('canvas','pu-canvas');cv.width=W;cv.height=H;cv.setAttribute('aria-label','コインプッシャー。タップした位置にメダルを落とします');cv.setAttribute('role','img');
  const side=h('div','pu-side');
  const how=h('div','pu-how');how.append(h('b',undefined,'あそびかた'),

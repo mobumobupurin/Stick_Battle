@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — LUCKY WHEEL (medal corner). 48 equal segments; BONUS spins a second wheel with the JACKPOT.
+/* STICK CASINO — LUCKY WHEEL (medal corner). 48 equal segments; BONUS spins a second wheel with the JACKPOT.
    The result comes from core.js ('wheel'); this file only animates it. */
 const WorldWheel=(()=>{
 const NS='http://www.w3.org/2000/svg';
@@ -32,7 +32,7 @@ function stage(){
 }
 function open(body){
  const C=WorldCore,root=h('div','egm egm-wheel');
- const top=h('div','egm-topper');top.append(h('small',undefined,'STICK ROYALE MEDAL CORNER'),h('b','egm-title','LUCKY WHEEL'),h('span','egm-sub','BONUS → JACKPOT ×50'));
+ const top=h('div','egm-topper');top.append(h('small',undefined,'STICK CASINO MEDAL CORNER'),h('b','egm-title','LUCKY WHEEL'),h('span','egm-sub','BONUS → JACKPOT ×50'));
  const screen=h('div','egm-screen lw-screen');const svg=stage();
  const side=h('div','lw-side');
  const odds=h('div','lw-odds');odds.append(h('b',undefined,'48マスの内訳'));

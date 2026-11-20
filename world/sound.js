@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — synthesized casino sounds (Web Audio, no files). Muted state is remembered per browser. */
+/* STICK CASINO — synthesized casino sounds (Web Audio, no files). Muted state is remembered per browser. */
 const WorldSound=(()=>{
  let ctx=null,master=null,muted=false;
  try{muted=localStorage.getItem('stick-royale-muted')==='1';}catch{}

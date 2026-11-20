@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — video poker (Jacks or Better 9/6). The hand is dealt here; the final hand is paid by core.js ('videopoker'). */
+/* STICK CASINO — video poker (Jacks or Better 9/6). The hand is dealt here; the final hand is paid by core.js ('videopoker'). */
 const WorldPoker=(()=>{
 const SUITS=['♠','♥','♦','♣'],RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const ROWS=['royal','straightflush','four','fullhouse','flush','straight','three','twopair','jacks'];
@@ -10,7 +10,7 @@ function shuffled(){const d=[];for(let s=0;s<4;s++)for(let r=0;r<13;r++)d.push({
 function meter(label){const m=h('div','egm-meter');const v=h('b',undefined,'0');m.append(h('small',undefined,label),v);return [m,v];}
 function open(body){
  const C=WorldCore,root=h('div','egm egm-poker');
- const top=h('div','egm-topper');top.append(h('small',undefined,'STICK ROYALE VIDEO POKER'),h('b','egm-title','JACKS OR BETTER'),h('span','egm-sub','ROYAL FLUSH ×800'));
+ const top=h('div','egm-topper');top.append(h('small',undefined,'STICK CASINO VIDEO POKER'),h('b','egm-title','JACKS OR BETTER'),h('span','egm-sub','ROYAL FLUSH ×800'));
  const screen=h('div','egm-screen vp-screen');
  const table=h('table','vp-pays');const rowsEl={};
  const thead=h('tr');thead.append(h('th',undefined,''));C.VP_BETS.forEach(b=>thead.append(h('th',undefined,yen(b))));table.append(thead);

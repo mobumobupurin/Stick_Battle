@@ -1,5 +1,5 @@
 'use strict';
-/* STICK ROYALE — electronic baccarat. Cards and payouts come from core.js ('baccarat' action). */
+/* STICK CASINO — electronic baccarat. Cards and payouts come from core.js ('baccarat' action). */
 const WorldBaccarat=(()=>{
 const SUITS=['♠','♥','♦','♣'],RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'],CHIPS=[10,50,100,500],HKEY='stick-royale-baccarat-road';
 const SIDES={player:{label:'PLAYER',jp:'プレイヤー',pay:'1 : 1'},tie:{label:'TIE',jp:'タイ',pay:'8 : 1'},banker:{label:'BANKER',jp:'バンカー',pay:'0.95 : 1'}};
@@ -11,7 +11,7 @@ function cardEl(rank){const suit=Math.floor(Math.random()*4),red=suit===1||suit=
 function meter(label){const m=h('div','egm-meter');const v=h('b',undefined,'0');m.append(h('small',undefined,label),v);return [m,v];}
 function open(body){
  const root=h('div','egm egm-baccarat');
- const top=h('div','egm-topper');top.append(h('small',undefined,'STICK ROYALE ELECTRONIC TABLE'),h('b','egm-title','BACCARAT'),h('span','egm-sub','PLAYER 1:1 ・ BANKER 0.95:1 ・ TIE 8:1'));
+ const top=h('div','egm-topper');top.append(h('small',undefined,'STICK CASINO ELECTRONIC TABLE'),h('b','egm-title','BACCARAT'),h('span','egm-sub','PLAYER 1:1 ・ BANKER 0.95:1 ・ TIE 8:1'));
  const screen=h('div','egm-screen bc-screen');
  const table=h('div','bc-table');
  const hands={};
