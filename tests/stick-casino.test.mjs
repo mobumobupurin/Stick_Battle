@@ -120,3 +120,15 @@ test('coin pusher JP balls go to the JP lottery from the front and roll back fro
  for(const T of [P.LOTTERY,P.LOTTERY_KAKUHEN])assert.equal(T.map(l=>l[0]).join(),'MISS,1,2,3,4,5,6,BALL,SEVEN');
  assert.ok(P.total(P.LOTTERY_KAKUHEN)===P.total(P.LOTTERY));
 });
+
+test('FEVER STAGE: physics decides bumper WIN, OUT blocks end the game, JP CHANCE returns to the stage',()=>{
+ const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/feversim.js')+';globalThis.F=FeverSim',ctx);const F=ctx.F;
+ let total=0,games=400,jpcs=0,maxFrames=0;
+ for(let i=0;i<games;i++){const r=F.simulate(Math.random,()=>500);total+=r.total;jpcs+=r.jpcs;maxFrames=Math.max(maxFrames,r.frames);assert.ok(r.win>=0&&r.frames>0);}
+ assert.ok(total/games>40&&total/games<600,'avg '+total/games);assert.ok(jpcs>0);assert.ok(maxFrames<60*300);
+ // a ball entering the open hole starts the dish; the dish ends in a pocket and play resumes
+ const s=F.create(Math.random);s.gateOpen=true;s.shield=0;s.ball={x:F.HOLE.x,y:F.HOLE.y,vx:0,vy:0};F.step(s,Math.random);assert.ok(s.jpc);
+ let g=0,pocket=null,returned=false;while(g++<4000&&!returned){F.step(s,Math.random);for(const e of s.events){if(e.type==='pocket')pocket=e.value;if(e.type==='return')returned=true;}}
+ assert.ok(pocket!==null&&returned&&!s.over);
+ assert.match(read('world/index.html'),/feversim\.js\?v=/);
+});
