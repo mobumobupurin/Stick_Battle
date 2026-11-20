@@ -117,6 +117,6 @@ test('coin pusher JP balls go to the JP lottery from the front and roll back fro
  const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
  const s=P.create(0);s.coins.push({x:50,y:100.5,ball:true});let r=P.step(s);assert.equal(r.balls,1);assert.equal(s.coins.length,0);
  s.coins.push({x:3,y:100.5,ball:true});r=P.step(s);assert.equal(r.balls,0);assert.equal(s.coins.filter(c=>c.ball).length,1);
- for(const T of [P.LOTTERY,P.LOTTERY_KAKUHEN])assert.equal(T.map(l=>l[0]).join(),'MISS,CHERRY,BELL,BAR,BALL,SEVEN');
+ for(const T of [P.LOTTERY,P.LOTTERY_KAKUHEN])assert.equal(T.map(l=>l[0]).join(),'MISS,1,2,3,4,5,6,BALL,SEVEN');
  assert.ok(P.total(P.LOTTERY_KAKUHEN)===P.total(P.LOTTERY));
 });

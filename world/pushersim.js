@@ -3,13 +3,15 @@
 // Units: field is 100 wide, the front edge is at y=100. The pusher face moves between FACE_MIN and FACE_MAX.
 const PusherSim=(()=>{
  const R=4.2,BALL_R=6.4,FACE_MIN=10,FACE_MAX=27,PERIOD=150,GUTTER=12,EDGE=100;
- const CHANCE_RATE=0.046,WALL_FRAMES=900,JP_BASE=150,JP_RATE=0.02,KAKUHEN_SPINS=10;
+ const CHANCE_RATE=0.04,WALL_FRAMES=900,JP_BASE=150,JP_RATE=0.02,KAKUHEN_SPINS=10;
  const FEVER_ROUNDS=5,FEVER_PAYS=[8,10,12,15,20];
  // CHECKER slot (3 reels): [result, medals rained onto the field, weight]. BALL puts a JP ball on the field; SEVEN starts FEVER.
- const LOTTERY=[['MISS',0,520],['CHERRY',3,200],['BELL',6,120],['BAR',12,60],['BALL',0,80],['SEVEN',0,20]];
+ // Number slot 1–7 + BALL: [result, medals rained, weight, 確変 spins granted]. Odd numbers also start 確変; 777 is FEVER.
+ const LOTTERY=[['MISS',0,570,0],['1',4,60,2],['2',4,80,0],['3',6,50,2],['4',6,70,0],['5',10,30,2],['6',10,40,0],['BALL',0,80,0],['SEVEN',0,20,0]];
  // after a FEVER the slot runs in 確変 (better odds) for KAKUHEN_SPINS spins
- const LOTTERY_KAKUHEN=[['MISS',0,260],['CHERRY',3,300],['BELL',6,200],['BAR',12,120],['BALL',0,90],['SEVEN',0,30]];
- const SYMBOLS=['CHERRY','BELL','BAR','BALL','SEVEN'];
+ const LOTTERY_KAKUHEN=[['MISS',0,440,0],['1',4,80,2],['2',4,90,0],['3',6,70,2],['4',6,80,0],['5',10,50,2],['6',10,50,0],['BALL',0,100,0],['SEVEN',0,40,0]];
+ // reel faces: the digits 1–7 and the JP ball
+ const SYMBOLS=['1','2','3','4','5','6','SEVEN','BALL'];
  // JP ball lottery: stage 1 (12 equal pockets) — medals, BALL (the ball goes back onto the field) or UP to stage 2 (6 pockets) with the JP
  const STAGE1=[20,10,'UP',5,10,'BALL',5,'UP',10,5,'UP',5];
  const STAGE2=['JP',60,20,40,20,20];
