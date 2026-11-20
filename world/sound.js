@@ -21,6 +21,12 @@ const WorldSound=(()=>{
   bonus(){[0,1,2,3,4,5,4,5].forEach((k,i)=>tone(notes[k],.14,{type:'square',vol:.15,at:i*.09}));},
   card(){noise(.08,{vol:.16,hp:1800});},
   chip(){tone(2400,.03,{type:'triangle',vol:.12});tone(1900,.04,{type:'triangle',vol:.1,at:.03});},
+  // medal-corner extras
+  reach(){for(let i=0;i<10;i++)tone(440+i*60,.09,{type:'sawtooth',vol:.07,at:i*.07});},
+  heartbeat(){tone(70,.12,{type:'sine',vol:.35});tone(62,.14,{type:'sine',vol:.3,at:.16});},
+  fanfare(){const seq=[[0,.12],[0,.12],[0,.12],[3,.36],[1,.18],[3,.18],[4,.5]];let t=0;seq.forEach(([k,d])=>{tone(notes[k],d,{type:'square',vol:.15,at:t});tone(notes[k]/2,d,{type:'triangle',vol:.12,at:t});t+=d*.9;});},
+  coinRush(n=12){for(let i=0;i<n;i++){tone(1600+Math.random()*900,.05,{type:'square',vol:.06,at:i*.045});}},
+  boom(){noise(.7,{vol:.25,hp:120});tone(90,.6,{type:'sine',vol:.4,slide:.4});},
   lose(){tone(330,.18,{type:'triangle',vol:.1});tone(247,.26,{type:'triangle',vol:.1,at:.16});}
  };
  return api;

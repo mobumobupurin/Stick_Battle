@@ -2,7 +2,7 @@
 /* Decorative resort art; coordinates stay compatible with saved profiles. */
 const WorldResort=(()=>{
 const NS='http://www.w3.org/2000/svg';
-const themes={lobby:{accent:'#d9b56a',floor:'#1b1714',wall:'#0e0c0b',title:'ENTRANCE',jp:'エントランス',desc:'キャッシャー・ボーナスデスク・出口',icon:'◆'},arena:{accent:'#d9b56a',floor:'#1a1420',wall:'#0e0b12',title:'SLOTS & POKER',jp:'スロット＆ポーカー',desc:'ビデオスロット・ビデオポーカー',icon:'7'},medal:{accent:'#d9b56a',floor:'#0f1a24',wall:'#080f16',title:'MEDAL CORNER',jp:'メダルコーナー',desc:'コインプッシャー・ラッキーホイール・メダル落とし',icon:'●'},casino:{accent:'#d9b56a',floor:'#21121a',wall:'#120a0e',title:'TABLE GAMES',jp:'テーブルゲーム',desc:'ブラックジャック・バカラ・ルーレット',icon:'♠'}};
+const themes={lobby:{accent:'#d9b56a',floor:'#1b1714',wall:'#0e0c0b',title:'ENTRANCE',jp:'エントランス',desc:'キャッシャー・ボーナスデスク・出口',icon:'◆'},arena:{accent:'#d9b56a',floor:'#1a1420',wall:'#0e0b12',title:'SLOTS & POKER',jp:'スロット＆ポーカー',desc:'ビデオスロット・ビデオポーカー',icon:'7'},medal:{accent:'#d9b56a',floor:'#0f1a24',wall:'#080f16',title:'MEDAL CORNER',jp:'メダルコーナー',desc:'コインプッシャー・ラッキーホイール',icon:'●'},casino:{accent:'#d9b56a',floor:'#21121a',wall:'#120a0e',title:'TABLE GAMES',jp:'テーブルゲーム',desc:'ブラックジャック・バカラ・ルーレット',icon:'♠'}};
 function node(tag,attrs={},parent){const a=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))a.setAttribute(k,String(v));if(parent)parent.append(a);return a;}
 function art(floor){const t=themes[floor],s=node('svg',{viewBox:'0 0 1000 600',preserveAspectRatio:'none','aria-hidden':'true',class:'resort-art'}),g=node('g',{},s);
 const rect=(x,y,w,h,fill,stroke='none',r=0)=>node('rect',{x,y,width:w,height:h,fill,stroke,'stroke-width':2,rx:r},g);
