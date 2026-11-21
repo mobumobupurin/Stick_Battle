@@ -141,3 +141,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 
 ### FORTUNE PUSHER — bigger START hole
 - START judgement radius 2.4 → 3.8 (drawn hole 4.4 → 5). Entries rise ~40%; continuous play is limited by the reel time anyway, so the slot MISS weight was raised (944→1150, 確変 888→1094) to keep RTP around 91–93% in the queue-capped sim.
+
+### FORTUNE PUSHER — 保留 2周目 / 3周目
+- When the 8 holds are full, further START entries go round the lamps again: 2周目 turns holds ×2 from the left, 3周目 turns them ×4. Only when all 8 are ×4 does an entry become STOCK MAX.
+- A hold's multiplier applies when it wins: number wins ×m, 777 makes every FEVER GAME round pay ×m, JP BALL drops m balls. The LCD shows "×m CHANCE" while that hold spins.
+- Slot MISS weight raised to 1450 (確変 1394) so RTP stays ~93% in the queue-capped sim (mean multiplier ~1.6 in continuous play).
