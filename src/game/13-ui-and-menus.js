@@ -276,7 +276,7 @@ function buildMenus() {
   };
 }
 // Presentation and accessibility settings: no physics or combat parameters are modified.
-const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'direction',lowFlash:false};
+const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'direction',lowFlash:false,padSwap:false};
 try { const saved=JSON.parse(localStorage.getItem('sbo.preferences')||'{}'); for(const k of Object.keys(prefs))if(typeof saved[k]===typeof prefs[k])prefs[k]=saved[k];prefs.volume=Math.max(0,Math.min(1,prefs.volume)); } catch(_) {}
 // Older installs saved 'swipe'; migrate them to directional B on upgrade.
 if(prefs.specialInput!=='classic')prefs.specialInput='direction';
@@ -578,7 +578,7 @@ const settingsDialog=document.getElementById('settings-dialog');let settingsPaus
 document.getElementById('b-settings').onclick=()=>{resetTouch();settingsPaused=scene==='battle'&&!online;if(settingsPaused)scene='pause';settingsDialog.showModal();};
 settingsDialog.addEventListener('close',()=>{resetTouch();if(settingsPaused){scene='battle';simAcc=0;}settingsPaused=false;});
 document.getElementById('settings-close').onclick=()=>settingsDialog.close();
-for(const key of ['volume','music','shake','left','lowFlash']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
+for(const key of ['volume','music','shake','left','lowFlash','padSwap']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
 const specialInputSelect=document.getElementById('pref-special-input');
 if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'direction';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'direction';applyPrefs();});}
 applyPrefs();
