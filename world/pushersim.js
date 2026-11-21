@@ -58,6 +58,31 @@ const PusherSim=(()=>{
    for(const a of c){if(a.x<R)a.x=R;else if(a.x>100-R)a.x=100-R;}
   }
   const fall=[];for(let i=c.length-1;i>=0;i--){if(c[i].y>face+0.6){fall.push(c[i].x);c.splice(i,1);}}return fall;}
- return {R,BALL_R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,WALL_FRAMES,JP_BASE,JP_MAX,JP_RATE,KAKUHEN_SPINS,FEVER_ROUNDS,FEVER_PAYS,SYMBOLS,LOTTERY,LOTTERY_KAKUHEN,STAGE1,STAGE2,lotteryTotal,lottery,pick,total,create,faceAt,drop,scatter,addBall,step,stepUpper};
+
+ /* ---------- payout apron: the slanted front panel the medals slide down after falling off the field ----------
+   Local coords: u = field x (panel spans GUTTER..100-GUTTER), v = distance down the slope from the front edge.
+   START is a real hole: a medal whose centre passes over it drops in. While a CHANCE checker is off, the
+   flipper on that side swings and steers / flicks medals toward the middle. */
+ const APRON={L:31.6,U0:18,U1:82,HOLE:{u:50,v:21,r:2.4,cup:6.5,pull:.05},PINS:[],
+  FLIP:[{u:20,v:8,len:13},{u:80,v:8,len:13}],FLIP_W:1.3,G:.05,PIN_E:.3,PERIOD:40,REST:1.75,UP:.55,DOWN:1.5,SPEED:.16};
+ function createApron(){return {coins:[],ang:[APRON.REST,APRON.REST],om:[0,0],t:0};}
+ function feedApron(a,x,rnd){const r=rnd||Math.random;if(a.coins.length>=60)return false;a.coins.push({u:Math.max(APRON.U0+R,Math.min(APRON.U1-R,x)),v:0,vu:(r()-.5)*.25,vv:.35+r()*.25,id:a.t*64+a.coins.length});return true;}
+ // flipper angle measured from +u, v down; the right flipper is mirrored
+ function flipSeg(a,i){const f=APRON.FLIP[i],th=a.ang[i],dir=i?-1:1;return [f.u,f.v,f.u+dir*Math.cos(th)*f.len,f.v+Math.sin(th)*f.len];}
+ function stepApron(a,active){a.t++;const A=APRON,ev={hits:0,sunk:[],out:0};
+  for(let i=0;i<2;i++){const tgt=active[i]?((a.t+i*A.PERIOD/2)%A.PERIOD<A.PERIOD/2?A.UP:A.DOWN):A.REST,d=Math.max(-A.SPEED,Math.min(A.SPEED,tgt-a.ang[i]));a.om[i]=d;a.ang[i]+=d;}
+  const cs=a.coins,Hh=A.HOLE;
+  for(const c of cs){c.vv+=A.G;{const dx=Hh.u-c.u,dy=Hh.v-c.v,d=Math.hypot(dx,dy);if(d<Hh.cup&&d>1e-6){const k=Hh.pull*(1-d/Hh.cup)/d;c.vu+=dx*k*2;c.vv+=dy*k*2;c.vu*=.97;c.vv*=.97;}}c.vu*=.985;c.vv*=.995;c.u+=c.vu;c.v+=c.vv;
+   if(c.u<A.U0+R){c.u=A.U0+R;c.vu=Math.abs(c.vu)*.4;}if(c.u>A.U1-R){c.u=A.U1-R;c.vu=-Math.abs(c.vu)*.4;}
+   for(const [pu,pv,pr] of A.PINS){const dx=c.u-pu,dy=c.v-pv,d=Math.hypot(dx,dy),m=R+pr;if(d<m&&d>1e-6){const nx=dx/d,ny=dy/d;c.u=pu+nx*m;c.v=pv+ny*m;const vn=c.vu*nx+c.vv*ny;if(vn<0){c.vu-=(1+A.PIN_E)*vn*nx;c.vv-=(1+A.PIN_E)*vn*ny;}}}
+   for(let i=0;i<2;i++){const [x0,y0,x1,y1]=flipSeg(a,i),sx=x1-x0,sy=y1-y0,l2=sx*sx+sy*sy,t=Math.max(0,Math.min(1,((c.u-x0)*sx+(c.v-y0)*sy)/l2)),px=x0+sx*t,py=y0+sy*t,dx=c.u-px,dy=c.v-py,d=Math.hypot(dx,dy),m=R+A.FLIP_W;
+    if(d<m){const nx=d>1e-6?dx/d:0,ny=d>1e-6?dy/d:-1;c.u=px+nx*m;c.v=py+ny*m;
+     // surface velocity of the flipper at the contact point (mirrored on the right)
+     const w=a.om[i]*(i?-1:1),fu=-w*(py-y0),fv=w*(px-x0);let ru=c.vu-fu,rv=c.vv-fv;const vn=ru*nx+rv*ny;if(vn<0){ru-=1.35*vn*nx;rv-=1.35*vn*ny;}c.vu=ru+fu;c.vv=rv+fv;}}}
+  // medals push each other apart a little
+  for(let i=0;i<cs.length;i++)for(let j=i+1;j<cs.length;j++){const p=cs[i],q=cs[j],dx=q.u-p.u,dy=q.v-p.v,d=Math.hypot(dx,dy);if(d<2*R&&d>1e-6){const nx=dx/d,ny=dy/d,o=(2*R-d)/2;p.u-=nx*o;p.v-=ny*o;q.u+=nx*o;q.v+=ny*o;const vn=(q.vu-p.vu)*nx+(q.vv-p.vv)*ny;if(vn<0){const k=vn*.65;p.vu+=k*nx;p.vv+=k*ny;q.vu-=k*nx;q.vv-=k*ny;}}}
+  for(let i=cs.length-1;i>=0;i--){const c=cs[i];if(Math.hypot(c.u-A.HOLE.u,c.v-A.HOLE.v)<A.HOLE.r){ev.hits++;ev.sunk.push({u:c.u,v:c.v});cs.splice(i,1);}else if(c.v>A.L+R){ev.out++;cs.splice(i,1);}}
+  return ev;}
+ return {APRON,createApron,feedApron,flipSeg,stepApron,R,BALL_R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,WALL_FRAMES,JP_BASE,JP_MAX,JP_RATE,KAKUHEN_SPINS,FEVER_ROUNDS,FEVER_PAYS,SYMBOLS,LOTTERY,LOTTERY_KAKUHEN,STAGE1,STAGE2,lotteryTotal,lottery,pick,total,create,faceAt,drop,scatter,addBall,step,stepUpper};
 })();
 if(typeof module!=='undefined')module.exports=PusherSim;else globalThis.PusherSim=PusherSim;

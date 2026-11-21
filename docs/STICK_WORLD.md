@@ -127,3 +127,9 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - Its projection matrix reproduces the pinhole camera `CAM` in medalpusher.js exactly, so every 2D overlay drawn with `P()` (LCD, CHANCE lamps, START panel, flippers, texts, effects) lines up with the 3D field.
 - The WebGL canvas sits behind the 2D canvas in `.pu-stage` (same grid cell, same CSS size); the 2D canvas stays transparent where the field is. No per-frame readback.
 - Physics, payouts and RTP are unchanged. Without WebGL2 (or with `?gl=0`) the old 2D sprite renderer is used.
+
+### FORTUNE PUSHER — physical payout apron (START hole + flippers)
+- Medals that fall off the middle of the front edge now slide down a slanted 3D panel (`PusherSim.APRON` / `stepApron`). START is a real hole: the lottery starts only when a medal's centre passes over it (a shallow cup pulls near misses a little; "おしい！" pops when one skims the rim).
+- The flippers are real moving paddles in the physics. At rest they lie along the side walls; while that side's CHANCE checker is off they flap between pointing at the hole and pointing down, steering and flicking medals toward START.
+- The old shortcut (decide by x at the edge, then fly a 2D sprite into START) is gone, so what you see is what is judged.
+- Tuned so the lottery rate stays as before (≈0.105 spins per dropped medal in the headless sim), RTP ≈ 92%.
