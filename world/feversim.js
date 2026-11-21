@@ -1,12 +1,12 @@
 'use strict';
-/* STICK CASINO — FEVER STAGE physics (original design).
+/* STICK CASINO — FEVER GAME (formerly FEVER STAGE) physics (original design).
    A JP ball dropped off the pusher field starts the FEVER STAGE: the ball bounces between bumpers (each hit pays WIN medals)
    above a row of OUT blocks. A block breaks when the ball lands on it; the game lasts as long as the ball survives.
    Every 100 WIN opens the JPC hole; a ball that enters it plays the JP CHANCE dish (a rolling-ball croon), then returns to the stage.
    Results come from the simulation itself — nothing is decided in advance. Units: stage 100 x 150, y grows downward, 60 steps/s. */
 const FeverSim=(()=>{
- const W=100,H=150,BALL_R=3.2,G=0.05,KICK=2.35,MAX_V=3.6,BLOCK_Y=138,BLOCKS=6,BLOCK_HP=2,SHIELD_FRAMES=480,GATE_WIN=40,MAX_FRAMES=60*150;
- const BUMPERS=[{x:22,y:56,r:7,pay:2},{x:78,y:56,r:7,pay:2},{x:50,y:80,r:8,pay:4},{x:24,y:102,r:6.5,pay:2},{x:76,y:102,r:6.5,pay:2},{x:50,y:118,r:5.5,pay:2}];
+ const W=100,H=150,BALL_R=3.2,G=0.05,KICK=2.35,MAX_V=3.6,BLOCK_Y=138,BLOCKS=6,BLOCK_HP=2,SHIELD_FRAMES=480,GATE_WIN=50,MAX_FRAMES=60*150;
+ const BUMPERS=[{x:22,y:56,r:7,pay:1},{x:78,y:56,r:7,pay:1},{x:50,y:80,r:8,pay:2},{x:24,y:102,r:6.5,pay:1},{x:76,y:102,r:6.5,pay:1},{x:50,y:118,r:5.5,pay:1}];
  const HOLE={x:50,y:46,r:6.8};
  // JP CHANCE: two rolling-ball dishes (croons). The ball circles a bowl, bounces off pins and drops into a hole only when it is slow enough
  // to fall in — a fast ball skims over holes. Stage 1: UP goes on to stage 2, which holds the JP. Everything is simulated.
@@ -32,7 +32,7 @@ const FeverSim=(()=>{
      // the bumper kicks the ball away; a tiny wobble keeps every game different
      const v=Math.max(Math.hypot(b.vx,b.vy)*.92,KICK),a=Math.atan2(b.vy,b.vx)+(rnd()-.5)*.16;b.vx=Math.cos(a)*v;b.vy=Math.sin(a)*v;speedClamp(b);
      if(!(s.t-(s.cool[i]||-99)<=6)){s.cool[i]=s.t;s.win+=m.pay;s.events.push({type:'hit',i,pay:m.pay});}}});
-   if(s.gateOpen&&Math.hypot(b.x-HOLE.x,b.y-HOLE.y)<HOLE.r-.5){s.gateOpen=false;s.gateFrom=s.win;startDish(s,rnd);s.events.push({type:'jpc'});return s;}
+   if(s.gateOpen&&Math.hypot(b.x-HOLE.x,b.y-HOLE.y)<HOLE.r-.5){startDish(s,rnd);s.events.push({type:'jpc'});return s;}
    if(b.y+BALL_R>=BLOCK_Y&&b.vy>0){const i=Math.min(BLOCKS-1,Math.max(0,Math.floor(b.x/(W/BLOCKS))));
     if(s.shield>0||s.blocks[i]){b.y=BLOCK_Y-BALL_R;b.vy=-Math.max(Math.abs(b.vy)*.9,2.4+rnd()*.5);b.vx+=(rnd()-.5)*.9;speedClamp(b);
      if(s.shield>0)s.events.push({type:'shield'});else{s.blocks[i]--;s.events.push({type:'block',i,hp:s.blocks[i]});}}}

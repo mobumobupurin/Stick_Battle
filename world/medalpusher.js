@@ -1,7 +1,7 @@
 'use strict';
 /* STICK CASINO — "FORTUNE PUSHER" (medal corner). 1 medal = 1 SC. An original machine design.
    Flow: medals → moving CHECKER gate → hold (8, result drawn on entry) → number slot (1–7 + JP ball) → medal rain; odd numbers give 確変; JP balls go onto the field;
-   777 = FEVER GAME + 確変. A JP ball pushed off the front goes to the 2-stage JP lottery (stage 2 holds the progressive JACKPOT).
+   777 = 777 RUSH + 確変. A JP ball pushed off the front goes to the 2-stage JP lottery (stage 2 holds the progressive JACKPOT).
    The field is drawn with a small perspective camera (pseudo-3D). The field and the JP live in this browser;
    medals in/out are settled in batches by core.js ('pusher'). */
 const WorldPusher=(()=>{
@@ -89,11 +89,11 @@ function open(body){
  const side=h('div','pu-side');
  const how=h('div','pu-how');how.append(h('b',undefined,'あそびかた'),
   h('p',undefined,'タップした位置（または ◀▶ と DROP）にメダルを投入。メダルはスロープを転がって上段ステージへ。プッシャーが下がるたびに上段のメダルが押し出されて下段に落ち、下段の手前から落ちたメダルが払い出し。左右の端は OUT。'),
-  h('p',undefined,'下段の手前から落ちたメダルは正面の坂を滑り落ちる。坂の真ん中の START の穴にメダルが落ちたらスロット抽選（保留は最大8）。上段のふちの CHANCE チェッカーをメダルが通ると、その側のフリッパーがパタパタ動いてメダルを START の方へ寄せてくれる。レバーで CHANCE チェッカーの上をねらおう。'),h('p',undefined,'保留が8個たまってからさらに START に入ると「2周目」：保留ランプが左から順に ×2 になる。全部 ×2 になったら「3周目」で ×4。その保留で当たると配当が2倍・4倍（777 は FEVER の配当、JPボールは個数が増える）。'),h('p',undefined,'777 は FEVER GAME。奇数そろいで確変突入。確変中は当たりやすく、当たるたびに確変ボーナス +10枚。偶数がそろうまで続く（偶数でも再抽選で奇数に昇格することがある）。5・7・10・15・20・25連で 連数×10枚 の継続ボーナス。'),
-  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+10〜+50枚、BALL＝ボール追加）。手前に落ちたボールは全部ソケットが光り、3つで FEVER STAGE。左右の壁の横穴からはメダルがときどき逃げる。'));
+  h('p',undefined,'下段の手前から落ちたメダルは正面の坂を滑り落ちる。坂の真ん中の START の穴にメダルが落ちたらスロット抽選（保留は最大8）。上段のふちの CHANCE チェッカーをメダルが通ると、その側のフリッパーがパタパタ動いてメダルを START の方へ寄せてくれる。レバーで CHANCE チェッカーの上をねらおう。'),h('p',undefined,'保留が8個たまってからさらに START に入ると「2周目」：保留ランプが左から順に ×2 になる。全部 ×2 になったら「3周目」で ×4。その保留で当たると配当が2倍・4倍（777 は FEVER の配当、JPボールは個数が増える）。'),h('p',undefined,'777 は 777 RUSH（5ラウンド＋壁UP）。奇数そろいで確変突入。確変中は当たりやすく、当たるたびに確変ボーナス +10枚。偶数がそろうまで続く（偶数でも再抽選で奇数に昇格することがある）。5・7・10・15・20・25連で 連数×10枚 の継続ボーナス。'),
+  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+10〜+50枚、BALL＝ボール追加）。手前に落ちたボールは全部ソケットが光り、3つで FEVER GAME。FEVER GAME はバンパーで WIN を貯め、WIN 50 で真ん中の JP CHANCE の穴が開く（一度開いたらゲームが終わるまで開きっぱなし）。JP CHANCE の2段目で JP に入れば JACKPOT（最大5000枚）。左右の壁の横穴からはメダルがときどき逃げる。'));
  const table=h('div','pu-table');
  const row=(syms,text,cls)=>{const r=h('span',cls);const icons=h('i','pu-syms');for(const s of syms){const c=document.createElement('canvas');c.width=c.height=44;drawSym(c.getContext('2d'),s,22,22,34);icons.append(c);}r.append(icons,h('b',undefined,text));table.append(r);};
- row(['SEVEN','SEVEN','SEVEN'],'FEVER＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
+ row(['SEVEN','SEVEN','SEVEN'],'777 RUSH＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
  side.append(how,table);
  const stage=h('div','pu-stage');stage.append(cv);screen.append(stage,side);
  const msgBar=h('div','egm-msg','画面をタップ（または DROP）でメダル投入');
@@ -223,11 +223,11 @@ const ROULS={
  bb:{name:'BALL BONUS',col:'#ff9aa8',segs:['10','20','BALL','10','30','10','20','BALL','10','50','10','20','BALL','10','30','20']}};
 const ROUL_T=170;
 const roulColor=v=>v==='FEVER'?'#ff4a6a':v==='BALL'||v==='B2'?'#ff9ae8':v==='JP'?'#b48cff':+v>=50?'#ffd36b':+v>=10?'#4ade80':'#5ab0ff';
-const roulLabel=v=>v==='FEVER'?'FEVER STAGE':v==='BALL'?'BALL+1':v==='B2'?'BALL+2':v==='JP'?'JP+10':'+'+v+'枚';
+const roulLabel=v=>v==='FEVER'?'FEVER GAME':v==='BALL'?'BALL+1':v==='B2'?'BALL+2':v==='JP'?'JP+10':'+'+v+'枚';
 const roulShort=v=>v==='FEVER'?'FEVER':v==='BALL'?'BALL':v==='B2'?'BALL×2':v==='JP'?'JP+10':v;
 function startRoul(){const kind=st.roulQ.shift(),R=ROULS[kind],i=rnd(R.segs.length),turns=4+rnd(2);st.roul={kind,t:0,i,from:(st.roulA||0)%(Math.PI*2),to:turns*Math.PI*2+(-(i+.5)/R.segs.length*Math.PI*2),last:-1};WorldSound.spin();say(R.name+' ルーレット！','win');}
 function roulPrize(kind,v,live){ // apply one result (live=false: settling on close, returns medals)
- if(v==='FEVER'){st.balls++;if(live){st.winFx={t:0,big:true};WorldSound.fanfare();st.shake=24;say('FEVER STAGE 確定！！','win');}return 0;}
+ if(v==='FEVER'){st.balls++;if(live){st.winFx={t:0,big:true};WorldSound.fanfare();st.shake=24;say('FEVER GAME 確定！！','win');}return 0;}
  if(v==='BALL'||v==='B2'){const n=v==='B2'?2:1;for(let b=0;b<n;b++){if(live)setTimeout(()=>{if(st)portFlight(true);},b*450);else S.addBall(st.sim);}if(live){WorldSound.fanfare();say('JPボール '+n+' 個追加！ 盤面に落ちてくる！','win');}return 0;}
  if(v==='JP'){st.jp=Math.min(S.JP_MAX,st.jp+10);if(live){WorldSound.bonus();pop('JACKPOT +10',{chance:true,at:[W/2,40]});burst(W/2,34,40,'#b48cff');}return 0;}
  if(live){WorldSound.win(+v>=50?4:+v>=10?3:2);say(ROULS[kind].name+' +'+v+'枚','win');}return +v;}
@@ -301,7 +301,7 @@ function stepWinSeq(){const q=st.winSeq;q.t++;const [ph,t]=seqPhase(q);
  if(ph==='cb'){if(t===1){WorldSound.fanfare();st.shake=14;}const a=(q.base+q.kb)*q.m;q.shown=Math.round(a+q.cb*Math.min(1,t/30));if(t%3===0&&t<32)WorldSound.tick();}
  if(q.t>=q.len){st.winSeq=null;resolveWin(q);}}
 function resolveWin(q){const r=q.r,m=q.m,mx=m>1?' ×'+m:'';const was=st.kak;st.kak=q.nk;
- if(r.name==='SEVEN'){st.feverMult=m;st.feverLeft=S.FEVER_ROUNDS;st.feverTotal=0;st.sim.wall=S.WALL_FRAMES;st.shake=24;WorldSound.fanfare();say('★ 777 FEVER GAME 突入！！ 壁UP＆確変 '+st.kak+'連 ★','win');startCut('fever',{m});if(q.kb*m+q.cb)award(q.kb*m+q.cb,'確変ボーナス');}
+ if(r.name==='SEVEN'){st.feverMult=m;st.feverLeft=S.FEVER_ROUNDS;st.feverTotal=0;st.sim.wall=S.WALL_FRAMES;st.shake=24;WorldSound.fanfare();say('★ 777 RUSH 突入！！ 壁UP＆確変 '+st.kak+'連 ★','win');startCut('fever',{m});if(q.kb*m+q.cb)award(q.kb*m+q.cb,'確変ボーナス');}
  else if(r.name==='BALL'){for(let b=0;b<m;b++)setTimeout(()=>{if(st)portFlight(true);},b*450);WorldSound.bonus();say('JPボール'+(m>1?' ×'+m+' 個':'')+'投入！ 手前に落とせ！','win');banner('JP BALL'+mx,m>1?'JPボール '+m+' 個投入！':'フィールドに投入！','#ff6a80');if(q.kb)award(q.kb*m,'確変ボーナス');}
  else{award(q.total,(q.inK?'確変 WIN':'WIN')+mx);WorldSound.win(q.total>=60?4:3);pop('+'+q.total,{fever:q.odd});}
  if(q.num||r.name==='SEVEN'){
@@ -348,14 +348,14 @@ function drawCut(g){const c=st.cut,t=c.t,d=c.data,cx=W/2,cy=330;
   if(t<62){for(let i=0;i<3;i++){const t0=14+i*14;if(t<t0)continue;const k=Math.min(1,(t-t0)/8),x=cx+(i-1)*84,sz=64*(2-k);g.globalAlpha=fadeOut;g.drawImage(st.ballImg,x-sz/2,cy-sz/2,sz,sz);}
    if(t>48){const k=(t-48)/14;g.globalAlpha=k*fadeOut;g.fillStyle='#fff';g.fillRect(0,0,W,H);}}
   else{rays('#ffd36b',.14);const k=Math.min(1,(t-62)/20),sz=110*(1.6-.6*k);g.globalAlpha=fadeOut;g.drawImage(st.ballImg,cx-sz/2,cy-sz/2-10,sz,sz);
-   slam('FEVER',cy-96,46,'#ffd36b',66,'#ffb21e');slam('STAGE',cy+96,46,'#ffd36b',76,'#ffb21e');
+   slam('FEVER',cy-96,46,'#ffd36b',66,'#ffb21e');slam('GAME',cy+96,46,'#ffd36b',76,'#ffb21e');
    if(t>100){g.font='900 15px Arial,sans-serif';g.fillStyle='#fff';g.fillText('バンパーに当てて TOTAL を増やせ！',cx,cy+140);}
    if(t>=130&&t<150)slam('READY',cy+190,30,'#7ff0ff',130);if(t>=150)slam('GO!!',cy+190,40,'#ff4a6a',150,'#ff4a6a');}}
  if(c.kind==='fever'){
   rays(t>62?'#ffd36b':'#ff4a5a',t>62?.16:.08);
   for(let i=0;i<3;i++){const stop=24+i*16,x=cx+(i-1)*96,y=cy-30;g.save();g.translate(x,y);g.fillStyle='#fff8e8';g.strokeStyle='#ffd36b';g.lineWidth=4;g.beginPath();g.roundRect?g.roundRect(-42,-56,84,112,12):g.rect(-42,-56,84,112);g.fill();g.stroke();
    if(t<stop){drawSym(g,S.SYMBOLS[(st.frame+i*3)%6],0,(st.frame*9%40)-20,60);}else{const bz=t<stop+8?1+(stop+8-t)/16:1+.06*Math.sin(st.frame*.3);drawSym(g,'SEVEN',0,0,66*bz);}g.restore();}
-  slam('FEVER GAME',cy+70,40,'#ffd36b',62,'#ffb21e');
+  slam('777 RUSH',cy+70,40,'#ffd36b',62,'#ffb21e');
   if(t>80){g.font='900 18px Arial,sans-serif';g.fillStyle='#fff';g.fillText('5 ROUNDS'+(d.m>1?'   配当 ×'+d.m:''),cx,cy+108);}
   if(t>=120){const k=Math.min(1,(t-120)/16);g.fillStyle='#ffd36b';g.shadowColor='#ffb21e';g.shadowBlur=20;g.fillRect(30,H-k*260,16,k*260);g.fillRect(W-46,H-k*260,16,k*260);g.shadowBlur=0;slam('WALL UP',cy+150,26,'#7ff0ff',124);
    g.font='900 12px Arial,sans-serif';g.fillStyle='#fff';if(t>134)g.fillText('左右の OUT がふさがる＋確変',cx,cy+178);}}
@@ -365,26 +365,26 @@ function drawCut(g){const c=st.cut,t=c.t,d=c.data,cx=W/2,cy=330;
    g.font='900 '+(t>=160?50:44)+'px "Courier New",monospace';g.lineWidth=7;g.strokeStyle='#000';const v=yen(d.shown||0)+' 枚';g.strokeText(v,cx,cy+30);g.fillStyle='#fff1a0';g.shadowColor='#ffb21e';g.shadowBlur=t>=160?30:12;g.fillText(v,cx,cy+30);g.shadowBlur=0;
    if(t>=160){g.font='900 14px Arial,sans-serif';g.fillStyle='#fff';g.fillText('TOTAL に加算  →  '+yen(d.total)+' 枚',cx,cy+74);}}}
  if(c.kind==='result'){
-  rays('#ffd36b',t>=140?.16:.07);slam('FEVER STAGE',cy-110,32,'#ffd36b',4);slam('RESULT',cy-74,26,'#fff',12);
+  rays('#ffd36b',t>=140?.16:.07);slam('FEVER GAME',cy-110,32,'#ffd36b',4);slam('RESULT',cy-74,26,'#fff',12);
   if(d.jp){g.font='900 16px Arial,sans-serif';g.fillStyle='#ff9aa8';if(t>30)g.fillText('JACKPOT ×'+d.jp,cx,cy-30);}
   if(t>40){g.font='900 '+(t>=140?62:52)+'px "Arial Black",Impact,sans-serif';g.lineWidth=8;g.strokeStyle='#000';const v=yen(d.shown||0);g.strokeText(v,cx,cy+40);g.fillStyle='#fff1a0';g.shadowColor='#ffb21e';g.shadowBlur=t>=140?30:8;g.fillText(v,cx,cy+40);g.shadowBlur=0;g.font='900 18px Arial,sans-serif';g.fillStyle='#ffd36b';g.fillText('枚',cx,cy+72);}
   if(t>=150){g.font='900 13px Arial,sans-serif';g.fillStyle='#fff';g.fillText('払い出し開始！',cx,cy+110);}}
  g.restore();}
-/* ---------- FEVER GAME ---------- */
+/* ---------- 777 RUSH ---------- */
 function startFeverRound(){
  const round=S.FEVER_ROUNDS-st.feverLeft+1,pay=S.FEVER_PAYS[rnd(S.FEVER_PAYS.length)]*(st.feverMult||1);st.feverLeft--;
- st.fever={round,pay,t:0,cur:st.shown.slice()};WorldSound.spin();say('FEVER GAME  ROUND '+round+' / '+S.FEVER_ROUNDS,'win');
+ st.fever={round,pay,t:0,cur:st.shown.slice()};WorldSound.spin();say('777 RUSH  ROUND '+round+' / '+S.FEVER_ROUNDS,'win');
 }
 function finishFeverRound(){
- const f=st.fever;st.fever=null;award(f.pay,'FEVER ROUND '+f.round);st.feverTotal+=f.pay;st.shown=['SEVEN','SEVEN','SEVEN'];burst(W/2,150,40);WorldSound.coinRush(16);WorldSound.win(4);pop('+'+f.pay,{fever:true});
+ const f=st.fever;st.fever=null;award(f.pay,'RUSH ROUND '+f.round);st.feverTotal+=f.pay;st.shown=['SEVEN','SEVEN','SEVEN'];burst(W/2,150,40);WorldSound.coinRush(16);WorldSound.win(4);pop('+'+f.pay,{fever:true});
  if(st.feverLeft<=0){setTimeout(()=>{if(!st)return;WorldSound.bigWin();say('FEVER 合計 +'+st.feverTotal+'枚！ 確変 '+st.kak+'回 つづく！','win');pop('TOTAL +'+st.feverTotal,{big:true});},500);}
 }
 /* ---------- JP lottery (2 stages) ---------- */
-/* ---------- FEVER STAGE (physics bonus game, see feversim.js) ---------- */
+/* ---------- FEVER GAME (physics bonus game, see feversim.js) ---------- */
 const FS=FeverSim;
 function startJP(){
  st.balls--;st.jpl=FS.create(Math.random);st.jpl.total=0;st.jpl.jpCount=0;st.jpl.glow=Array(FS.BUMPERS.length).fill(0);st.jpl.trail=[];st.jpl.intro=20;
- st.shake=10;say('FEVER STAGE 突入！ バンパーに当てて WIN を増やせ','win');
+ st.shake=10;say('FEVER GAME 突入！ バンパーに当てて WIN を増やせ','win');
 }
 function stepJP(){
  const j=st.jpl;if(j.intro>0){j.intro--;return;}
@@ -405,8 +405,8 @@ function stepJP(){
   else if(e.type==='skim'){if(e.value==='JP'){WorldSound.heartbeat();pop('JP!?',{small:true,at:[W/2,300]});}else if(e.value==='UP')WorldSound.tease();}
   else if(e.type==='pin'){const now=performance.now();if(now-(st.lastPin||0)>70){WorldSound.tick();st.lastPin=now;}}
   else if(e.type==='up'){say('JP STAGE！ JP の穴に入れ…！','win');}
-  else if(e.type==='return'){say('FEVER STAGE 続行！ TOTAL '+yen(j.total),'win');}
-  else if(e.type==='out'){const tot=j.total,jp=j.jpCount;st.jpl=null;startCut('result',{tot,jp},()=>{st.flash=60;award(tot,jp?'JACKPOT':'FEVER STAGE');});say('FEVER STAGE 終了  合計 '+yen(tot)+' 枚'+(j.jpCount?'（JP×'+j.jpCount+'）':''),'win');return;}
+  else if(e.type==='return'){say('FEVER GAME 続行！ TOTAL '+yen(j.total),'win');}
+  else if(e.type==='out'){const tot=j.total,jp=j.jpCount;st.jpl=null;startCut('result',{tot,jp},()=>{st.flash=60;award(tot,jp?'JACKPOT':'FEVER GAME');});say('FEVER GAME 終了  合計 '+yen(tot)+' 枚'+(j.jpCount?'（JP×'+j.jpCount+'）':''),'win');return;}
  }
  if(j.popups)for(let i=j.popups.length-1;i>=0;i--)if(++j.popups[i].t>30)j.popups.splice(i,1);
 }
@@ -505,7 +505,7 @@ function drawLCD(g){
  if(hot){g.save();rr(g,L+8,T0+8,Wd-16,Ht-16,12);g.clip();g.translate(W/2,T0+Ht/2);g.rotate(st.frame*(heat>=4?.04:heat>=3?.022:.01));for(let i=0;i<12;i++){g.rotate(Math.PI/6);g.fillStyle=heat>=4?`hsla(${(st.frame*5+i*30)%360},100%,60%,.16)`:fever?'#ffb21e22':'#ff3a5a22';g.beginPath();g.moveTo(0,0);g.lineTo(300,-40);g.lineTo(300,40);g.closePath();g.fill();}g.restore();}
  for(let i=0;i<26;i++){const x=L+18+i*((Wd-36)/25);for(const y of [T0+15,T0+Ht-15]){g.beginPath();g.arc(x,y,2.8,0,Math.PI*2);g.fillStyle=live?((i+(st.frame>>(heat>=3||st.winFx?1:2)))%4===0?'#ffffff':(heat>=4||st.winFx&&st.winFx.rainbow?rainbow(i*14):st.winFx?'#ffd36b':expc)||(fever?'#ffb21e':kak?'#ff7ae0':'#7ff0ff')):'#2a3a4a';g.fill();}}
  g.fillStyle=fever?'#ffd36b':kak?'#ffb0f0':'#9fd8ff';g.font='italic 900 15px "Arial Black",sans-serif';
- g.fillText(fever?'FEVER GAME  '+(st.fever?st.fever.round:S.FEVER_ROUNDS-st.feverLeft)+' / '+S.FEVER_ROUNDS:kak?'確変中  '+st.kak+' 連':'NUMBER SLOT',W/2,T0+36);
+ g.fillText(fever?'777 RUSH  '+(st.fever?st.fever.round:S.FEVER_ROUNDS-st.feverLeft)+' / '+S.FEVER_ROUNDS:kak?'確変中  '+st.kak+' 連':'NUMBER SLOT',W/2,T0+36);
  const cur=st.fever?st.fever.cur:st.reel?st.reel.cur:st.shown;
  for(let i=0;i<3;i++){const x=W/2-126+i*86,y=T0+46,w=80,hh=112;
   const r=st.reel,tease=r&&r.reach&&r.rtype!=='zen'&&i===2&&r.t>r.stops[1]&&r.t<r.stops[2];
@@ -704,7 +704,7 @@ function drawJP(g){
  const k=Math.min(1,(70-(j.intro||0))/20+.0001);g.globalAlpha=Math.min(1,k*1.3);
  g.fillStyle='#02050ae8';g.fillRect(0,top-6,W,H-top+6);
  // HUD: WIN and JPC progress
- g.fillStyle='#ffd36b';g.font='italic 900 13px "Arial Black",sans-serif';g.textAlign='left';g.fillText('FEVER STAGE',ox,top+14);g.textAlign='right';g.fillStyle='#fff4d6';g.font='900 12px Arial,sans-serif';g.fillText(j.jpCount?'JP ×'+j.jpCount:'',ox+FS.W*sc,top+14);g.textAlign='center';
+ g.fillStyle='#ffd36b';g.font='italic 900 13px "Arial Black",sans-serif';g.textAlign='left';g.fillText('FEVER GAME',ox,top+14);g.textAlign='right';g.fillStyle='#fff4d6';g.font='900 12px Arial,sans-serif';g.fillText(j.jpCount?'JP ×'+j.jpCount:'',ox+FS.W*sc,top+14);g.textAlign='center';
  g.font='italic 900 30px "Arial Black",Impact,sans-serif';g.lineWidth=6;g.strokeStyle='#000';const wt='TOTAL '+yen(j.total);g.strokeText(wt,W/2,top+40);g.fillStyle='#fff1a0';g.fillText(wt,W/2,top+40);
  const prog=j.gateOpen?1:Math.min(1,(j.win-j.gateFrom)/FS.GATE_WIN);g.fillStyle='#1a2430';g.fillRect(ox,top+46,FS.W*sc,6);g.fillStyle=j.gateOpen?'#ff4a6a':'#7ff0ff';g.fillRect(ox,top+46,FS.W*sc*prog,6);
  // frame

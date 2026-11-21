@@ -187,3 +187,9 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
   - JACKPOT (in the FEVER STAGE, which pauses): heartbeat ring, JACKPOT slam, the amount rolls up under a coin rain, "TOTAL に加算".
   - FEVER STAGE end: RESULT screen counting the TOTAL up (JACKPOT ×n), then the payout starts.
 - Payouts of 100+ pour the first 50 at once, then keep trickling while the counter ticks up.
+
+### FORTUNE PUSHER — FEVER GAME (renamed) balance: easy to reach, JP hard, JP huge
+- Renames: the ball bonus game (was FEVER STAGE) is now **FEVER GAME**; the 777 five-round bonus (was FEVER GAME) is now **777 RUSH**.
+- FEVER GAME: bumper pays halved (1/1/2/1/1/1), the JP CHANCE hole opens at WIN 50 and, once open, stays open for the rest of the game (also after coming back from JP CHANCE). Per game: EV ≈ 80–90, P(JP CHANCE) ≈ 14%, P(JACKPOT) ≈ 1.5%.
+- JACKPOT max 2000 → 5000 (still starts at 500).
+- More balls → about twice as many FEVER GAMEs: slot BALL 20→45 (確変 40→90), MISS 1800 (確変 1707). Sim RTP ≈ 0.9 (JACKPOT makes it swing).
