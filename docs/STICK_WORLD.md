@@ -133,3 +133,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - The flippers are real moving paddles in the physics. At rest they lie along the side walls; while that side's CHANCE checker is off they flap between pointing at the hole and pointing down, steering and flicking medals toward START.
 - The old shortcut (decide by x at the edge, then fly a 2D sprite into START) is gone, so what you see is what is judged.
 - Tuned so the lottery rate stays as before (≈0.105 spins per dropped medal in the headless sim), RTP ≈ 92%.
+
+### FORTUNE PUSHER — FEVER STAGE pays at the end
+- Bumper wins, JP CHANCE pockets and JACKPOTs during the FEVER STAGE are only added to TOTAL; nothing pours out mid-stage.
+- The HUD always shows TOTAL (everything won in this stage, JP included). When the ball is lost, the whole TOTAL is paid out in one payout presentation.
+- Closing the game mid-stage still credits the TOTAL so far plus the rest of the stage.
