@@ -218,3 +218,9 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - BALL BONUS roulette: rays and light pillars, the pointer flaps at every segment, the wheel swells and the heartbeat speeds up just before it stops, a white flash and coins spray on the result.
 - Ball boost now scales with the number of JP balls around (field + flying + rolling + won in holds): 0 → ×6, 1 → ×4, 2 → ×2.2, 3 → ×1.4.
 - 確変突入 / 確変継続 cut-ins (the continuation one flips the chain number N−1 → N, gold on 継続ボーナス milestones). MISS 2120 (確変 2032).
+
+### FORTUNE PUSHER — JP CHANCE show, LCD-only freeze, FEVER GAME bumpers back to 2
+- 確変突入 cut-in shows only "確変 突入!!".
+- FEVER GAME bumpers pay 2/2/4/2/2/2 again; the JP CHANCE hole opens at WIN 80 so it still opens in about 1 game in 4 (EV per game ≈ 210). To compensate: slot BALL 40→25 (確変 50), MISS 2350 (確変 2277).
+- JP CHANCE: entry cut-in (heartbeat ring → flash → "JP CHANCE" with the three stage lamps lighting), rays and sweeping spotlights behind the dish, a glowing ball trail, a white shockwave on UP. Tease: when the ball creeps slowly past a JP hole (or an UP hole on the 1st dish) time slows to ½–⅓, the dish darkens around the ball, a red pulse beats round it and the JP holes flare, with heartbeats. The outcome is unchanged (only the speed of showing it).
+- Freeze: only the LCD monitor goes dead (black glass with scanlines, cabinet lamps off, BGM silent), then turns back on like a CRT — a white line, a golden burst with a ★ — and the spin goes rainbow.
