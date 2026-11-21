@@ -2,15 +2,15 @@
 // STICK CASINO coin pusher: a small 2D field (top view) plus the lottery tables. Rendering lives in medalpusher.js.
 // Units: field is 100 wide, the front edge is at y=100. The pusher face moves between FACE_MIN and FACE_MAX.
 const PusherSim=(()=>{
- const SIDE_HOLES=[[48,56]],SIDE_GAP=.2,SIDE_P=.0048,BALL_W=.015,BALL_ZONE=[0,100],KAK_BONUS=10,RELOT=[25,30],CHAIN_BONUS=[5,7,10,15,20,25];
+ const SIDE_HOLES=[[48,56]],SIDE_GAP=.2,SIDE_P=.0048,BALL_W=.015,BALL_ZONE=[0,100],KAK_BONUS=10,RELOT=[25,55],CHAIN_BONUS=[5,7,10,15,20,25];
  const R=4.2,BALL_R=6.4,FACE_MIN=10,FACE_MAX=27,PERIOD=150,GUTTER=18,EDGE=100;
  const CHANCE_RATE=0.028,WALL_FRAMES=900,JP_BASE=500,JP_MAX=5000,JP_RATE=0.05,KAKUHEN_SPINS=10;
  const FEVER_ROUNDS=5,FEVER_PAYS=[30,30,40,50,100];
  // CHECKER slot (3 reels): [result, medals rained onto the field, weight]. BALL puts a JP ball on the field; SEVEN starts FEVER.
  // Number slot 1–7 + BALL: [result, medals rained, weight, 確変 spins granted]. Odd numbers also start 確変; 777 is FEVER.
- const LOTTERY=[['MISS',0,1900,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,40,0],['SEVEN',0,3,0]];
+ const LOTTERY=[['MISS',0,1950,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,40,0],['SEVEN',0,3,0]];
  // after a FEVER the slot runs in 確変 (better odds) for KAKUHEN_SPINS spins
- const LOTTERY_KAKUHEN=[['MISS',0,1812,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,80,0],['SEVEN',0,6,0]];
+ const LOTTERY_KAKUHEN=[['MISS',0,1862,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,80,0],['SEVEN',0,6,0]];
  // reel faces: the digits 1–7 and the JP ball
  const SYMBOLS=['1','2','3','4','5','6','SEVEN','BALL'];
  // JP ball lottery: stage 1 (12 equal pockets) — medals, BALL (the ball goes back onto the field) or UP to stage 2 (6 pockets) with the JP
