@@ -199,3 +199,11 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - Three progressive jackpots on the topper: BLUE (500→2500), RED (500→3000), GOLD (1000→6000); every medal in adds to all three. The JACKPOT cut-in shows the colour and name. Saves migrate the old single JP into RED.
 - Per FEVER GAME: P(BLUE) ≈ 1.2%, P(RED) ≈ 1.3%, P(GOLD) ≈ 0.4%; EV ≈ 100. MISS 1900 (確変 1807) to compensate.
 - Update (after checking Spin Fever player reports: about 1 in 5 JP once on the dish): the JP CHANCE hole now opens at WIN 40 → P(JP CHANCE) ≈ 25% per FEVER GAME, JP per JP CHANCE ≈ 22% (BLUE 2.5%, RED 2%, GOLD ≈ 1% per game), EV ≈ 150. Slot BALL 45→40 (確変 80), 確変 MISS 1812.
+
+### FORTUNE PUSHER — re-lottery, freeze, JP CHANCE OPEN mood, 全消し
+- Re-lottery: an even win in 確変 goes to promotion 55% of the time (25% normally); 12% (6%) of promotions become 777 → 777 RUSH. Even wins can also get a re-lottery that stays even (the tease; 55% in 確変 / 25%). It is a ~2 s sequence: heartbeat, "再抽選" frame, reels spin and slow down, then 昇格 with boom/flash (777 = rainbow + fanfare) or a quiet stop.
+- Hold multipliers (×2/×4) also multiply the 継続ボーナス; 777 RUSH rounds and 確変ボーナス were already multiplied.
+- Freeze (パチンコの暗転フリーズ): the screen goes black and silent for ~1.6 s, then explodes into rainbow. Only ever on a win (777 32%, 777 promotion 45%, BALL 6%, others 2.5%).
+- FEVER GAME: thicker JP CHANCE gauge with quarter ticks and "JP CHANCE まで あと N", a ring filling round the locked hole; when it opens: shockwave, the field turns red with rotating rays and chasing lamps, the hole glows with a spinning ring and a bouncing arrow, BGM switches to the JP CHANCE track.
+- 全消し: breaking all six OUT blocks while the ball is alive gives +30 WIN and brings every block back (plus a short shield).
+- MISS 1950 (確変 1862) to offset the longer 確変 chains.
