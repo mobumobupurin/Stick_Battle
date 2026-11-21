@@ -212,3 +212,9 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - When there is no JP ball anywhere (field, flying in, rolling down the apron, or a BALL already waiting in the holds / on the reels), new slot plans use a BALL weight ×6, so balls come back quickly.
 - FEVER GAME: if the ball is lost through the only broken OUT block, it revives 20% of the time (REVIVE_P) with a cut-in (OUT… → heartbeat ring → flash → 復活!! / REVIVAL) and a short shield.
 - MISS 2050 (確変 1962) to offset the extra balls.
+
+### FORTUNE PUSHER — bigger re-lottery / roulette shows, ball boost by count, 確変 cut-ins
+- Re-lottery now takes over the screen: the field darkens, rotating rays and rising light pillars, a pulsing "再抽選" with "奇数で 確変継続/突入！", a heartbeat ring that tightens as the reels slow; on promotion a white flash, "昇格!!" slam with the new symbols (777 in rainbow) and a coin rain; a miss lands quietly with "そのまま…".
+- BALL BONUS roulette: rays and light pillars, the pointer flaps at every segment, the wheel swells and the heartbeat speeds up just before it stops, a white flash and coins spray on the result.
+- Ball boost now scales with the number of JP balls around (field + flying + rolling + won in holds): 0 → ×6, 1 → ×4, 2 → ×2.2, 3 → ×1.4.
+- 確変突入 / 確変継続 cut-ins (the continuation one flips the chain number N−1 → N, gold on 継続ボーナス milestones). MISS 2120 (確変 2032).
