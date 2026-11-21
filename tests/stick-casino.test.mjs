@@ -145,3 +145,17 @@ test('coin pusher 3D layer: WebGL renderer loads before the game and falls back 
  assert.equal(ctx.P3.create(480,740,{C:[0,0,0],f:[0,1,0],r:[1,0,0],up:[0,0,1],k:1,ox:0,oy:0}),null);
  const src=read('world/medalpusher.js');assert.match(src,/typeof Pusher3D/);assert.match(src,/gl=0/);
 });
+test('coin pusher apron: START is a real hole the medal has to pass over, flippers steer medals toward it',()=>{
+ const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
+ const run=(x,act,rnd)=>{const a=P.createApron();P.feedApron(a,x,rnd||(()=>.5));let hit=0;for(let t=0;t<400&&a.coins.length;t++)hit+=P.stepApron(a,act).hits;return hit;};
+ assert.equal(run(50,[false,false]),1);                       // straight down the middle drops in
+ assert.equal(run(30,[false,false]),0);                       // off to the side slides past
+ assert.equal(run(70,[false,false]),0);
+ // a medal that drops in was over the hole
+ const a=P.createApron();let last=null;P.feedApron(a,51.5,()=>.5);for(let t=0;t<400&&a.coins.length;t++){const ev=P.stepApron(a,[false,false]);if(ev.sunk.length)last=ev.sunk[0];}
+ assert.ok(last&&Math.hypot(last.u-P.APRON.HOLE.u,last.v-P.APRON.HOLE.v)<P.APRON.HOLE.r);
+ let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+ const rate=act=>{const ap=P.createApron();let fed=0,hits=0;for(let t=0;t<36000;t++){if(t%12===0){P.feedApron(ap,18+rnd()*64,rnd);fed++;}hits+=P.stepApron(ap,act).hits;}return hits/fed;};
+ const off=rate([false,false]),on=rate([true,true]);
+ assert.ok(off>0.04&&off<0.12,'off '+off);assert.ok(on>off*1.2&&on<0.2,'on '+on);
+});
