@@ -7,9 +7,9 @@ const PusherSim=(()=>{
  const FEVER_ROUNDS=5,FEVER_PAYS=[30,30,40,50,100];
  // CHECKER slot (3 reels): [result, medals rained onto the field, weight]. BALL puts a JP ball on the field; SEVEN starts FEVER.
  // Number slot 1–7 + BALL: [result, medals rained, weight, 確変 spins granted]. Odd numbers also start 確変; 777 is FEVER.
- const LOTTERY=[['MISS',0,930,0],['1',30,10,2],['2',20,15,0],['3',30,6,2],['4',20,12,0],['5',30,4,2],['6',20,9,0],['BALL',0,10,0],['SEVEN',0,4,0]];
+ const LOTTERY=[['MISS',0,944,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,8,0],['SEVEN',0,3,0]];
  // after a FEVER the slot runs in 確変 (better odds) for KAKUHEN_SPINS spins
- const LOTTERY_KAKUHEN=[['MISS',0,860,0],['1',30,20,2],['2',20,30,0],['3',30,12,2],['4',20,24,0],['5',30,8,2],['6',20,18,0],['BALL',0,20,0],['SEVEN',0,8,0]];
+ const LOTTERY_KAKUHEN=[['MISS',0,888,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,16,0],['SEVEN',0,6,0]];
  // reel faces: the digits 1–7 and the JP ball
  const SYMBOLS=['1','2','3','4','5','6','SEVEN','BALL'];
  // JP ball lottery: stage 1 (12 equal pockets) — medals, BALL (the ball goes back onto the field) or UP to stage 2 (6 pockets) with the JP
@@ -44,7 +44,7 @@ const PusherSim=(()=>{
   if(s.wall>0)s.wall--;let front=0,lost=0,balls=0;
   for(let i=c.length-1;i>=0;i--){const a=c[i];if(a.fresh)a.fresh--;if(a.y>EDGE){const side=a.x<GUTTER||a.x>100-GUTTER;
     if(a.ball){c.splice(i,1);if(side&&!(s.wall>0))c.push({x:30+Math.random()*40,y:s.face+BALL_R+1,ball:true,fresh:18});else balls++;continue;}
-    if(!(s.wall>0)&&side)lost++;else front++;c.splice(i,1);}}
+    if(!(s.wall>0)&&side)lost++;else{front++;if(s.frontXs)s.frontXs.push(a.x);}c.splice(i,1);}}
   return {front,lost,balls};}
  // Upper stage (the pusher's top surface). Medals ride with the pusher; when it pulls back, the fixed back edge holds them,
  // so they shuffle forward and drop off the front edge onto the lower field. back = y of that fixed edge.
