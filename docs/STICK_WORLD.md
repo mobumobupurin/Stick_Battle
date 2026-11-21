@@ -138,3 +138,6 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - Bumper wins, JP CHANCE pockets and JACKPOTs during the FEVER STAGE are only added to TOTAL; nothing pours out mid-stage.
 - The HUD always shows TOTAL (everything won in this stage, JP included). When the ball is lost, the whole TOTAL is paid out in one payout presentation.
 - Closing the game mid-stage still credits the TOTAL so far plus the rest of the stage.
+
+### FORTUNE PUSHER — bigger START hole
+- START judgement radius 2.4 → 3.8 (drawn hole 4.4 → 5). Entries rise ~40%; continuous play is limited by the reel time anyway, so the slot MISS weight was raised (944→1150, 確変 888→1094) to keep RTP around 91–93% in the queue-capped sim.

@@ -7,9 +7,9 @@ const PusherSim=(()=>{
  const FEVER_ROUNDS=5,FEVER_PAYS=[30,30,40,50,100];
  // CHECKER slot (3 reels): [result, medals rained onto the field, weight]. BALL puts a JP ball on the field; SEVEN starts FEVER.
  // Number slot 1–7 + BALL: [result, medals rained, weight, 確変 spins granted]. Odd numbers also start 確変; 777 is FEVER.
- const LOTTERY=[['MISS',0,944,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,8,0],['SEVEN',0,3,0]];
+ const LOTTERY=[['MISS',0,1150,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,8,0],['SEVEN',0,3,0]];
  // after a FEVER the slot runs in 確変 (better odds) for KAKUHEN_SPINS spins
- const LOTTERY_KAKUHEN=[['MISS',0,888,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,16,0],['SEVEN',0,6,0]];
+ const LOTTERY_KAKUHEN=[['MISS',0,1094,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,16,0],['SEVEN',0,6,0]];
  // reel faces: the digits 1–7 and the JP ball
  const SYMBOLS=['1','2','3','4','5','6','SEVEN','BALL'];
  // JP ball lottery: stage 1 (12 equal pockets) — medals, BALL (the ball goes back onto the field) or UP to stage 2 (6 pockets) with the JP
@@ -63,7 +63,7 @@ const PusherSim=(()=>{
    Local coords: u = field x (panel spans GUTTER..100-GUTTER), v = distance down the slope from the front edge.
    START is a real hole: a medal whose centre passes over it drops in. While a CHANCE checker is off, the
    flipper on that side swings and steers / flicks medals toward the middle. */
- const APRON={L:31.6,U0:18,U1:82,HOLE:{u:50,v:21,r:2.4,cup:6.5,pull:.05},PINS:[],
+ const APRON={L:31.6,U0:18,U1:82,HOLE:{u:50,v:21,r:3.8,cup:6.5,pull:.05},PINS:[],
   FLIP:[{u:20,v:8,len:13},{u:80,v:8,len:13}],FLIP_W:1.3,G:.05,PIN_E:.3,PERIOD:40,REST:1.75,UP:.55,DOWN:1.5,SPEED:.16};
  function createApron(){return {coins:[],ang:[APRON.REST,APRON.REST],om:[0,0],t:0};}
  function feedApron(a,x,rnd){const r=rnd||Math.random;if(a.coins.length>=60)return false;a.coins.push({u:Math.max(APRON.U0+R,Math.min(APRON.U1-R,x)),v:0,vu:(r()-.5)*.25,vv:.35+r()*.25,id:a.t*64+a.coins.length});return true;}
