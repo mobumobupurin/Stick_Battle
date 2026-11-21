@@ -90,7 +90,7 @@ function open(body){
  const how=h('div','pu-how');how.append(h('b',undefined,'あそびかた'),
   h('p',undefined,'タップした位置（または ◀▶ と DROP）にメダルを投入。メダルはスロープを転がって上段ステージへ。プッシャーが下がるたびに上段のメダルが押し出されて下段に落ち、下段の手前から落ちたメダルが払い出し。左右の端は OUT。'),
   h('p',undefined,'下段の手前から落ちたメダルは正面の坂を滑り落ちる。坂の真ん中の START の穴にメダルが落ちたらスロット抽選（保留は最大8）。上段のふちの CHANCE チェッカーをメダルが通ると、その側のフリッパーがパタパタ動いてメダルを START の方へ寄せてくれる。レバーで CHANCE チェッカーの上をねらおう。'),h('p',undefined,'保留が8個たまってからさらに START に入ると「2周目」：保留ランプが左から順に ×2 になる。全部 ×2 になったら「3周目」で ×4。その保留で当たると配当が2倍・4倍（777 は FEVER の配当、JPボールは個数が増える）。'),h('p',undefined,'777 は 777 RUSH（5ラウンド＋壁UP）。奇数そろいで確変突入。確変中は当たりやすく、当たるたびに確変ボーナス +10枚。偶数がそろうまで続く（偶数でも再抽選で奇数に昇格することがある）。5・7・10・15・20・25連で 連数×10枚 の継続ボーナス。'),
-  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+10〜+50枚、BALL＝ボール追加）。手前に落ちたボールは全部ソケットが光り、3つで FEVER GAME。FEVER GAME はバンパーで WIN を貯め、WIN 40 で真ん中の JP CHANCE の穴が開く（一度開いたらゲームが終わるまで開きっぱなし）。JP CHANCE の2段目で JP に入れば JACKPOT（最大5000枚）。左右の壁の横穴からはメダルがときどき逃げる。'));
+  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+10〜+50枚、BALL＝ボール追加）。手前に落ちたボールは全部ソケットが光り、3つで FEVER GAME。FEVER GAME はバンパーで WIN を貯め、WIN 80 で真ん中の JP CHANCE の穴が開く（一度開いたらゲームが終わるまで開きっぱなし）。JP CHANCE の2段目で JP に入れば JACKPOT（最大5000枚）。左右の壁の横穴からはメダルがときどき逃げる。'));
  const table=h('div','pu-table');
  const row=(syms,text,cls)=>{const r=h('span',cls);const icons=h('i','pu-syms');for(const s of syms){const c=document.createElement('canvas');c.width=c.height=44;drawSym(c.getContext('2d'),s,22,22,34);icons.append(c);}r.append(icons,h('b',undefined,text));table.append(r);};
  row(['SEVEN','SEVEN','SEVEN'],'777 RUSH＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
@@ -329,7 +329,7 @@ function resolveWin(q){const r=q.r,m=q.m,mx=m>1?' ×'+m:'';const was=st.kak;st.k
  else if(q.name==='BALL'){for(let b=0;b<m;b++)setTimeout(()=>{if(st)portFlight(true);},b*450);WorldSound.bonus();say('JPボール'+(m>1?' ×'+m+' 個':'')+'投入！ 手前に落とせ！','win');banner('JP BALL'+mx,m>1?'JPボール '+m+' 個投入！':'フィールドに投入！','#ff6a80');if(q.kb)award(q.kb*m,'確変ボーナス');}
  else{award(q.total,(q.inK?'確変 WIN':'WIN')+mx);WorldSound.win(q.total>=60?4:3);pop('+'+q.total,{fever:q.odd});}
  if(q.num||q.name==='SEVEN'){
-  if(q.odd&&!q.inK){if(st.cut)banner('確変突入','偶数がそろうまで続く！','#ff7ae0',true);else startCut('kin',{});say(q.sym+' そろい！ 確変突入！','win');}
+  if(q.odd&&!q.inK){if(st.cut)banner('確変突入','','#ff7ae0',true);else startCut('kin',{});say(q.sym+' そろい！ 確変突入！','win');}
   else if(q.odd&&q.inK){if(st.cut)banner('確変継続',st.kak+'連','#ff7ae0',true);else startCut('kcont',{n:st.kak,milestone:S.CHAIN_BONUS.includes(st.kak)});say('確変継続 '+st.kak+'連！','win');}
   else if(!q.odd&&q.inK){banner('確変終了',was+'連','#9fb6c8');say('確変終了（'+was+'連）','');}
   else say(q.sym+' そろい！ +'+q.total+'枚','win');}
@@ -380,12 +380,13 @@ function drawWinSeq(g,x,y,w,hh){const q=st.winSeq,[ph,t]=seqPhase(q);if(ph==='al
  if(ph==='mult'&&t>=10&&t<16){g.globalAlpha=(16-t)/6;g.fillStyle='#fff';g.fillRect(x,y,w,hh);g.globalAlpha=1;}
  g.restore();}
 /* ---------- cut-ins: a short build-up before the big moments so nothing starts out of nowhere ---------- */
-const CUT_LEN={stage:180,fever:170,jackpot:230,result:190,revive:150,kin:130,kcont:120};
+const CUT_LEN={stage:180,fever:170,jackpot:230,result:190,revive:150,kin:110,kcont:120,jpcin:140};
 function startCut(kind,data,done){st.cut={kind,t:0,len:CUT_LEN[kind],data:data||{},done};st.shake=Math.max(st.shake,10);}
 function stepCut(){const c=st.cut,t=++c.t,d=c.data;
  if(c.kind==='stage'){if(t===1)WorldSound.heartbeat();if(t===14||t===28||t===42){WorldSound.bumper(t/14);st.shake=10;burst(W/2+(t/14-2)*80,330,30,'#ff6a80');}if(t===60){WorldSound.boom();st.shake=24;burst(W/2,330,120,'#ffd36b');}if(t===150)WorldSound.reach();if(t===168){WorldSound.fanfare();st.shake=16;}}
  if(c.kind==='fever'){if(t===1)WorldSound.spin();if(t===24||t===40||t===56){WorldSound.reelStop((t-24)/16);st.shake=8;}if(t===62){WorldSound.boom();st.shake=26;burst(W/2,330,140,'#ffd36b');WorldSound.fanfare();}if(t===120){WorldSound.bonus();st.shake=14;}}
  if(c.kind==='jackpot'){if(t===1){WorldSound.heartbeat();}if(t===40){WorldSound.boom();st.shake=60;burst(W/2,330,180,'#ff6a80');burst(W/2,330,140);WorldSound.fanfare();}if(t>60&&t<160){d.shown=Math.round(d.n*Math.min(1,(t-60)/95));if(t%3===0)WorldSound.tick();}if(t===160){d.shown=d.n;WorldSound.bigWin();st.shake=30;}if(t>40&&t%2===0)st.shower.push({x:Math.random()*W,y:-20,vy:4+Math.random()*4,vx:(Math.random()-.5)*1.4,s:16+Math.random()*12});}
+ if(c.kind==='jpcin'){if(t===1)WorldSound.heartbeat();if(t===20)WorldSound.heartbeat();if(t===40){WorldSound.boom();WorldSound.fanfare();st.shake=30;burst(W/2,330,150,'#ffd36b');burst(W/2,330,100,'#ff4a6a');}if(t===110)WorldSound.reach();}
  if(c.kind==='kin'){if(t===1)WorldSound.boom();if(t===8){WorldSound.fanfare();st.shake=24;burst(W/2,330,120,'#ff7ae0');}}
  if(c.kind==='kcont'){if(t===1){WorldSound.bonus();st.shake=16;}if(t===40){WorldSound.boom();st.shake=22;burst(W/2,340,d.milestone?140:90,d.milestone?'#ffd36b':'#ff7ae0');if(d.milestone)WorldSound.fanfare();}}
  if(c.kind==='revive'){if(t===1){WorldSound.lose();}if(t===30)WorldSound.heartbeat();if(t===56)WorldSound.heartbeat();if(t===80){WorldSound.boom();WorldSound.fanfare();st.shake=36;burst(W/2,330,150,'#7ff0ff');burst(W/2,330,100,'#ffffff');}}
@@ -416,8 +417,12 @@ function drawCut(g){const c=st.cut,t=c.t,d=c.data,cx=W/2,cy=330;
   else{const J=JPS[d.kind||'RED'];rays(st.frame%8<4?J.col:'#ffffff',.18);slam((d.kind||'')+' JP',cy-118,40,J.col,40,J.glow);slam('JACKPOT',cy-70,58,'#ffd36b',46,J.glow);
    g.font='900 '+(t>=160?50:44)+'px "Courier New",monospace';g.lineWidth=7;g.strokeStyle='#000';const v=yen(d.shown||0)+' 枚';g.strokeText(v,cx,cy+30);g.fillStyle='#fff1a0';g.shadowColor='#ffb21e';g.shadowBlur=t>=160?30:12;g.fillText(v,cx,cy+30);g.shadowBlur=0;
    if(t>=160){g.font='900 14px Arial,sans-serif';g.fillStyle='#fff';g.fillText('TOTAL に加算  →  '+yen(d.total)+' 枚',cx,cy+74);}}}
+  if(c.kind==='jpcin'){if(t<40){const hb=Math.abs(Math.sin(t*.25));g.strokeStyle='#ffd36b';g.lineWidth=4;g.shadowColor='#ffd36b';g.shadowBlur=30;g.beginPath();g.ellipse(cx,cy,40+hb*90,(40+hb*90)*.82,0,0,Math.PI*2);g.stroke();g.shadowBlur=0;}
+  else{rays(st.frame%6<3?'#ff4a6a':'#ffd36b',.2);if(t<50){g.globalAlpha=(50-t)/10;g.fillStyle='#fff';g.fillRect(0,0,W,H);g.globalAlpha=1;}
+   for(let i=0;i<3;i++){const x=cx+(i-1)*120,on=t>60+i*12;g.fillStyle=on?['#ffd36b','#ff5a6a','#fff1a0'][i]:'#333';g.beginPath();g.ellipse(x,cy+120,26,20,0,0,Math.PI*2);g.fill();g.font='900 11px Arial,sans-serif';g.fillStyle='#000';g.fillText(['1st','2nd','GOLD'][i],x,cy+124);}
+   slam('JP',cy-90,70,'#ffd36b',40,'#ff4a6a');slam('CHANCE',cy-10,52,'#ffffff',48,'#ffd36b');}}
   if(c.kind==='kin'){rays('#ff7ae0',.18);slam('確変',cy-50,64,'#ff9ae8',2,'#ff4ac8');slam('突入!!',cy+30,50,'#ffffff',10,'#ff7ae0');
-  if(t>30){g.font='900 15px Arial,sans-serif';g.fillStyle='#fff';g.fillText('当たりやすい！ 当たるたびに +10枚',cx,cy+80);g.fillText('偶数がそろうまで続く',cx,cy+102);}}
+}
  if(c.kind==='kcont'){rays(d.milestone?'#ffd36b':'#ff7ae0',.16);slam('確変継続',cy-80,46,'#ff9ae8',2,'#ff4ac8');
   const k=Math.min(1,Math.max(0,(t-30)/10)),num=t<40?d.n-1:d.n,sc=t>=40?2-k*.0-Math.min(1,(t-40)/8):1;g.save();g.translate(cx,cy+20);g.scale(Math.max(1,sc),Math.max(1,sc));g.font='italic 900 84px "Arial Black",Impact,sans-serif';g.lineWidth=10;g.strokeStyle='#000';g.strokeText(num,-30,20);g.fillStyle=d.milestone?'#ffd36b':'#fff';g.shadowColor=d.milestone?'#ffb21e':'#ff7ae0';g.shadowBlur=t>=40?30:10;g.fillText(num,-30,20);g.font='italic 900 40px "Arial Black",Impact,sans-serif';g.strokeText('連',52,20);g.fillText('連',52,20);g.restore();
   if(d.milestone&&t>48){g.font='900 18px Arial,sans-serif';g.fillStyle='#ffd36b';g.fillText(d.n+'連 継続ボーナス獲得！',cx,cy+90);}}
@@ -450,7 +455,13 @@ function startJP(){
 }
 function stepJP(){
  const j=st.jpl;if(j.intro>0){j.intro--;return;}
- FS.step(j,Math.random);
+ // JP CHANCE tease: when the ball creeps slowly past a JP hole, time slows down
+ let tease=0;if(j.jpc&&j.jpc.pocket===null){const d=j.jpc,D=FS.DISHES[d.stage],sp=Math.hypot(d.vx,d.vy);D.holes.forEach((v,i)=>{if(!FS.isJP(v)&&!(d.stage===0&&v==='UP'))return;const [hx,hy]=FS.holePos(D,d,i),dist=Math.hypot(d.x-hx,d.y-hy);const k=Math.max(0,1-dist/11)*Math.max(0,1-sp/1.6);if(k>tease)tease=k;});}
+ j.tease=(j.tease||0)*.85+tease*.15;
+ if(j.tease>.25&&st.frame%18===0)WorldSound.heartbeat();
+ if(j.jpc){(j.dtrail=j.dtrail||[]).push([j.jpc.x,j.jpc.y]);if(j.dtrail.length>14)j.dtrail.shift();}else j.dtrail=null;
+ const slow=j.tease>.6?3:j.tease>.35?2:1;
+ if(slow===1||st.frame%slow===0)FS.step(j,Math.random);else{j.events=[];}
  for(let i=0;i<j.glow.length;i++)if(j.glow[i]>0)j.glow[i]--;
  if(j.ball&&!j.jpc){j.trail.push([j.ball.x,j.ball.y]);if(j.trail.length>10)j.trail.shift();}
  for(const e of j.events){
@@ -460,7 +471,7 @@ function stepJP(){
   else if(e.type==='block'){WorldSound.crack();if(e.hp===0)say('OUTブロックが割れた… 残り '+j.blocks.filter(x=>x>0).length,'lose');}
   else if(e.type==='shield')WorldSound.shield();
   else if(e.type==='gate'){WorldSound.reach();WorldSound.boom();st.shake=22;j.openFx=50;banner('JP CHANCE OPEN','真ん中の穴はゲーム終了まで開きっぱなし！','#ff6a80',true);say('JP CHANCE の穴が開いた！','win');}
-  else if(e.type==='jpc'){WorldSound.boom();st.shake=16;banner('JP CHANCE','1st STAGE','#ff4a6a',true);say('JP CHANCE！！ UP に入れば JP STAGE へ…','win');}
+  else if(e.type==='jpc'){startCut('jpcin',{});say('JP CHANCE！！ UP に入れば JP STAGE へ…','win');}
   else if(e.type==='pocket'){const v=e.value;
    if(FS.isJP(v)){const n=Math.floor(st.jps[v]);st.jps[v]=JPS[v].base;j.jpCount++;(j.jpKinds=j.jpKinds||[]).push(v);j.total+=n;startCut('jackpot',{n,total:j.total,kind:v});st.root.classList.add('pu-jackpot');setTimeout(()=>{if(st)st.root.classList.remove('pu-jackpot');},4000);}
    else if(v==='BLOCK'){WorldSound.bonus();banner('BLOCK 回復','OUTブロックが全部もどった！','#7ff0ff');say('OUTブロック全回復！ まだまだ続く','win');}
@@ -468,7 +479,7 @@ function stepJP(){
    else{j.total+=v;banner('+'+yen(v),'TOTAL '+yen(j.total),'#ffd36b');pop('+'+v,{at:[W/2,330]});WorldSound.win(v>=100?4:3);}}
   else if(e.type==='skim'){if(FS.isJP(e.value)){WorldSound.heartbeat();pop('JP!?',{small:true,at:[W/2,300]});}else if(e.value==='UP')WorldSound.tease();}
   else if(e.type==='pin'){const now=performance.now();if(now-(st.lastPin||0)>70){WorldSound.tick();st.lastPin=now;}}
-  else if(e.type==='up'){say(e.stage>=2?'GOLD JP STAGE！ GOLD に入れ…！！':'JP STAGE！ BLUE か RED に入れ…！','win');}
+  else if(e.type==='up'){j.upFx=40;st.shake=Math.max(st.shake,20);WorldSound.boom();say(e.stage>=2?'GOLD JP STAGE！ GOLD に入れ…！！':'JP STAGE！ BLUE か RED に入れ…！','win');}
   else if(e.type==='return'){say('FEVER GAME 続行！ TOTAL '+yen(j.total),'win');}
   else if(e.type==='out'){const tot=j.total,jp=j.jpCount;st.jpl=null;startCut('result',{tot,jp},()=>{st.flash=60;award(tot,jp?'JACKPOT':'FEVER GAME');});say('FEVER GAME 終了  合計 '+yen(tot)+' 枚'+(j.jpCount?'（JP×'+j.jpCount+'）':''),'win');return;}
  }
@@ -600,6 +611,7 @@ function drawLCD(g){
  if(st.sevens>0){g.save();rr(g,L+8,T0+8,Wd-16,Ht-16,12);g.clip();for(let i=0;i<7;i++){const t=90-st.sevens,y=T0-40+((t*6+i*53)%(Ht+80)),x=L+40+i*((Wd-80)/6);drawSym(g,'SEVEN',x,y,30+(i%3)*8);}g.restore();}
  if(st.banner)drawBanner(g,L+8,T0+8,Wd-16,Ht-16);
  drawHolds(g);
+ if(st.freeze)drawFreeze(g,L,T0,Wd,Ht);
  // heat frame: a glowing border in the heat colour that breathes faster as it gets hotter
  if(heat||st.winFx){const sp=heat>=4?.45:heat>=3?.3:.15,pl=.5+.5*Math.sin(st.frame*sp);g.save();g.lineWidth=heat>=3?7:5;g.strokeStyle=st.winFx?(st.winFx.rainbow?rainbow():'#ffd36b'):heatCol(heat);g.shadowColor=g.strokeStyle;g.shadowBlur=14+20*pl;rr(g,L+3,T0+3,Wd-6,Ht-6,16);g.stroke();g.restore();}
  if(st.heatFx>0){g.save();rr(g,L+8,T0+8,Wd-16,Ht-16,12);g.clip();g.globalAlpha=st.heatFx/18*.55;g.fillStyle=heat>=4?'#ffffff':heatCol(heat)||'#ffffff';g.fillRect(L,T0,Wd,Ht);g.restore();}
@@ -614,6 +626,18 @@ function drawLCD(g){
  if(st.winSeq)drawWinSeq(g,L+8,T0+8,Wd-16,Ht-16);
  if(st.payout)drawPayout(g,L+8,T0+8,Wd-16,Ht-16);
 }
+// freeze: the LCD monitor alone goes dead (power-cut look), then switches back on like an old CRT with a golden burst
+function drawFreeze(g,x,y,w,hh){const f=st.freeze,t=f.t,cx=x+w/2,cy=y+hh/2;
+ g.save();rr(g,x+4,y+4,w-8,hh-8,14);g.clip();g.fillStyle='#000';g.fillRect(x,y,w,hh);
+ if(t<6){g.fillStyle='#fff';g.globalAlpha=(6-t)/6*.6;g.fillRect(x,y,w,hh);g.globalAlpha=1;}
+ // faint scanlines on the dead glass
+ g.fillStyle='#ffffff06';for(let yy=y;yy<y+hh;yy+=3)g.fillRect(x,yy,w,1);
+ const on=f.len-24;
+ if(t>=on){const k=(t-on)/24;
+  if(k<.45){const lh=2+k/.45*4;g.fillStyle='#fff';g.shadowColor='#fff';g.shadowBlur=20;g.fillRect(cx-w/2*(k/.45),cy-lh/2,w*(k/.45),lh);g.shadowBlur=0;}
+  else{const k2=(k-.45)/.55;g.fillStyle='#fff';g.fillRect(x,cy-hh/2*k2,w,hh*k2);const gg=g.createRadialGradient(cx,cy,10,cx,cy,w/1.5);gg.addColorStop(0,'#fff8d0');gg.addColorStop(1,'#ffb21e');g.globalAlpha=k2;g.fillStyle=gg;g.fillRect(x,y,w,hh);g.globalAlpha=1;
+   g.font='italic 900 '+(40+k2*20)+'px "Arial Black",Impact,sans-serif';g.lineWidth=7;g.strokeStyle='#5a2a00';g.strokeText('★',cx,cy+22);g.fillStyle='#fff';g.fillText('★',cx,cy+22);}}
+ g.restore();}
 function drawWinFx(g){
  const f=st.winFx;if(!f)return;const t=f.t;
  if(t<10){g.globalAlpha=(1-t/10)*(f.big?.75:.45);g.fillStyle='#fff';g.fillRect(-10,-10,W+20,H+20);g.globalAlpha=1;}
@@ -744,7 +768,7 @@ function drawField(g){
  if(!gl){const e0=P(0,100,0),e1=P(100,100,0);g.strokeStyle='#ffd36b';g.lineWidth=3;g.beginPath();g.moveTo(...e0);g.lineTo(...e1);g.stroke();
  if(sim.wall>0)for(const x of [S.GUTTER,100-S.GUTTER])quad(g,[[x,84,0],[x,100,0],[x,100,7],[x,84,7]],'#ffd36bcc','#fff4d6');}
  for(const x of [0,100]){if(!gl)quad(g,[[x,BACK_Y,0],[x,100,0],[x,100,WALL_H],[x,BACK_Y,WALL_H]],'#9fd8ff14','#9fd8ff55');
-  for(let i=0;i<12;i++){const y=BACK_Y+(100-BACK_Y)*i/11,q=P(x,y,WALL_H);g.beginPath();g.arc(q[0],q[1],3.2,0,Math.PI*2);{const hh=st.reel?st.reel.heat||0:0;g.fillStyle=live||hh?((i+(st.frame>>(hh>=3||st.winFx?1:2)))%3===0?'#fff':hh>=4||st.winFx&&st.winFx.rainbow?rainbow(i*30):st.winFx||st.winSeq?'#ffd36b':hh?HEAT_COLORS[hh]:fever?'#ffb21e':kak?'#ff7ae0':'#7ff0ff'):'#24384a';}g.fill();}}
+  for(let i=0;i<12;i++){const y=BACK_Y+(100-BACK_Y)*i/11,q=P(x,y,WALL_H);g.beginPath();g.arc(q[0],q[1],3.2,0,Math.PI*2);{const hh=st.reel?st.reel.heat||0:0;g.fillStyle=st.freeze?'#111':live||hh?((i+(st.frame>>(hh>=3||st.winFx?1:2)))%3===0?'#fff':hh>=4||st.winFx&&st.winFx.rainbow?rainbow(i*30):st.winFx||st.winSeq?'#ffd36b':hh?HEAT_COLORS[hh]:fever?'#ffb21e':kak?'#ff7ae0':'#7ff0ff'):'#24384a';}g.fill();}}
  // tray below the payout apron
  {const bl=apronP(-4,AP.L),br=apronP(104,AP.L),tl=gl?bl:P(-2,101,-4),tr=gl?br:P(102,101,-4);gr=g.createLinearGradient(0,tl[1],0,H);gr.addColorStop(0,'#2a1a08');gr.addColorStop(1,'#0a0604');g.fillStyle=gr;
   g.beginPath();g.moveTo(...tl);g.lineTo(...tr);g.lineTo(tr[0]+(gl?0:6),H);g.lineTo(tl[0]-(gl?0:6),H);g.closePath();g.fill();}
@@ -811,7 +835,10 @@ function drawJP(g){
  g.globalAlpha=1;
 }
 function drawDish(g,j,cx,cy,R){
- const d=j.jpc,D=FS.DISHES[d.stage],k=R/D.R,X=v=>cx+v*k,Y=v=>cy+v*k*.82,stage2=d.stage>=1;
+ const d=j.jpc,D=FS.DISHES[d.stage],k=R/D.R,X=v=>cx+v*k,Y=v=>cy+v*k*.82,stage2=d.stage>=1,gold=d.stage>=2,tc=gold?'#ffd36b':stage2?'#ff4a6a':'#ffd36b';
+ // rays and sweeping spotlights behind the dish
+ g.save();g.translate(cx,cy);g.rotate(st.frame*(.02+(j.tease||0)*.06));for(let i=0;i<16;i++){g.rotate(Math.PI/8);g.fillStyle=gold?`hsla(${(st.frame*4+i*22)%360},100%,60%,.12)`:i%2?tc+'1e':'#ffffff0e';g.beginPath();g.moveTo(0,0);g.lineTo(420,-38);g.lineTo(420,38);g.closePath();g.fill();}g.restore();
+ for(let i=0;i<2;i++){const a=Math.sin(st.frame*.03+i*Math.PI)*.6,x0=cx+(i?1:-1)*R*1.6;const sg=g.createLinearGradient(x0,cy-R*2,cx+Math.sin(a)*R,cy);sg.addColorStop(0,'#ffffff00');sg.addColorStop(1,tc+'33');g.fillStyle=sg;g.beginPath();g.moveTo(x0-8,cy-R*2.2);g.lineTo(x0+8,cy-R*2.2);g.lineTo(cx+Math.sin(a)*R+40,cy+R*.6);g.lineTo(cx+Math.sin(a)*R-40,cy+R*.6);g.closePath();g.fill();}
  // bowl with a rim (slightly tilted for depth)
  for(let t=10;t>0;t-=2){g.fillStyle=t>2?'#3a1420':stage2?'#ff4a6a':'#ffd36b';g.beginPath();g.ellipse(cx,cy+t,R+10,(R+10)*.82,0,0,Math.PI*2);g.fill();}
  const gr=g.createRadialGradient(cx,cy,R*.1,cx,cy,R);gr.addColorStop(0,stage2?'#5a0a1a':'#0a2a4a');gr.addColorStop(.7,stage2?'#2a0610':'#061a30');gr.addColorStop(1,'#000');
@@ -828,10 +855,17 @@ function drawDish(g,j,cx,cy,R){
   const lx=X(hx*1.42),ly=Y(hy*1.42);g.fillStyle=isJ?JC.col:isU?'#e0c8ff':v==='BLOCK'?'#bff8ff':'#ffd36b';g.font=`900 ${isJ?11:11}px "Arial Black",Arial,sans-serif`;g.fillText(isJ?v:isU?'UP':v==='BLOCK'?'BLOCK':'+'+v,lx,ly+4);});
  // pins
  for(let i=0;i<D.pins;i++){const [px,py]=FS.pinPos(D,i);g.fillStyle='#e0e8f0';g.beginPath();g.arc(X(px),Y(py),2.6,0,Math.PI*2);g.fill();}
+ // glowing trail
+ if(j.dtrail)j.dtrail.forEach(([tx,ty],i)=>{g.globalAlpha=i/j.dtrail.length*.5;g.fillStyle=tc;g.beginPath();g.arc(X(tx),Y(ty),FS.BALL_R*k*(i/j.dtrail.length),0,Math.PI*2);g.fill();});g.globalAlpha=1;
  // ball with shadow
- const bx=X(d.x),by=Y(d.y),s2=FS.BALL_R*2*k*1.2;g.fillStyle='#0008';g.beginPath();g.ellipse(bx+2,by+4,s2*.45,s2*.2,0,0,Math.PI*2);g.fill();
+ const bx=X(d.x),by=Y(d.y),s2=FS.BALL_R*2*k*1.2;
+ // tease: everything but the ball and the JP holes sinks into the dark, a red pulse beats
+ if((j.tease||0)>.15){const tz=Math.min(1,j.tease);const vg=g.createRadialGradient(bx,by,R*.25,bx,by,R*1.6);vg.addColorStop(0,'#00000000');vg.addColorStop(1,'rgba(0,0,0,'+(.75*tz)+')');g.fillStyle=vg;g.fillRect(cx-R*2.2,cy-R*2.2,R*4.4,R*4.4);
+  const hb=Math.abs(Math.sin(st.frame*(.15+tz*.2)));g.strokeStyle='#ff3a5a';g.globalAlpha=tz;g.lineWidth=3;g.shadowColor='#ff3a5a';g.shadowBlur=24;g.beginPath();g.ellipse(bx,by,s2*(1.2+hb),s2*(1.2+hb)*.82,0,0,Math.PI*2);g.stroke();g.shadowBlur=0;g.globalAlpha=1;
+  D.holes.forEach((v,i)=>{if(!FS.isJP(v))return;const [hx,hy]=FS.holePos(D,d,i),hr=4.3*k;g.save();g.shadowColor=JPS[v].glow;g.shadowBlur=30;g.strokeStyle=JPS[v].col;g.lineWidth=4;g.beginPath();g.ellipse(X(hx),Y(hy),hr+3+hb*3,(hr+3+hb*3)*.82,0,0,Math.PI*2);g.stroke();g.restore();});}
+ if(j.upFx>0){j.upFx--;const kk=1-j.upFx/40;g.globalAlpha=(1-kk)*.8;g.fillStyle='#fff';g.fillRect(cx-R*2.4,cy-R*2.4,R*4.8,R*4.8);g.globalAlpha=1;g.strokeStyle=tc;g.lineWidth=6*(1-kk);g.beginPath();g.ellipse(cx,cy,R*(1+kk*1.5),R*(1+kk*1.5)*.82,0,0,Math.PI*2);g.stroke();}g.fillStyle='#0008';g.beginPath();g.ellipse(bx+2,by+4,s2*.45,s2*.2,0,0,Math.PI*2);g.fill();
  const sink=d.pocket!==null?Math.min(1,d.done/20):0;g.globalAlpha=1-sink*.6;g.drawImage(st.ballImg,bx-s2/2*(1-sink*.4),by-s2*.8*(1-sink*.4),s2*(1-sink*.4),s2*(1-sink*.4));g.globalAlpha=1;
- g.fillStyle=stage2?'#ff8aa0':'#9fd8ff';g.font='italic 900 17px "Arial Black",sans-serif';g.fillText(stage2?'JP STAGE':'JP CHANCE  1st STAGE',cx,cy-R*.82-18);
+ g.fillStyle=stage2?'#ff8aa0':'#9fd8ff';g.font='italic 900 17px "Arial Black",sans-serif';g.fillText(gold?'GOLD JP STAGE':stage2?'JP STAGE':'JP CHANCE  1st STAGE',cx,cy-R*.82-18);
  g.fillStyle='#fff4d6';g.font='900 14px "Courier New",monospace';g.fillText(d.stage===0?'UP で JP STAGE へ':d.stage===1?'BLUE '+yen(Math.floor(st.jps.BLUE))+'  /  RED '+yen(Math.floor(st.jps.RED)):'GOLD JP '+yen(Math.floor(st.jps.GOLD))+' 枚',cx,cy+R*.82+28);
 }
 function draw(){
@@ -846,7 +880,6 @@ function draw(){
  drawWinFx(g);
  if(st.winSeq)drawRelotFx(g);
  if(st.cut)drawCut(g);
- if(st.freeze){const f=st.freeze;g.fillStyle='#000';g.globalAlpha=f.t<4?f.t/4:1;g.fillRect(-10,-10,W+20,H+20);g.globalAlpha=1;if(f.t>f.len-10&&f.t%2===0){g.fillStyle='#fff';g.globalAlpha=.25;g.fillRect(-10,-10,W+20,H+20);g.globalAlpha=1;}}
  if(st.roul)drawRoul(g);
  for(const c of st.shower)g.drawImage(st.coin,c.x-c.s/2,c.y-c.s*.33,c.s,c.s*.66);
  for(const s of st.sparks){g.globalAlpha=Math.max(0,1-s.t/s.life);g.fillStyle=s.c;g.fillRect(s.x-2,s.y-2,4,4);}g.globalAlpha=1;
