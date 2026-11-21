@@ -207,3 +207,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - FEVER GAME: thicker JP CHANCE gauge with quarter ticks and "JP CHANCE まで あと N", a ring filling round the locked hole; when it opens: shockwave, the field turns red with rotating rays and chasing lamps, the hole glows with a spinning ring and a bouncing arrow, BGM switches to the JP CHANCE track.
 - 全消し: breaking all six OUT blocks while the ball is alive gives +30 WIN and brings every block back (plus a short shield).
 - MISS 1950 (確変 1862) to offset the longer 確変 chains.
+
+### FORTUNE PUSHER — ball refill boost, single-block revival
+- When there is no JP ball anywhere (field, flying in, rolling down the apron, or a BALL already waiting in the holds / on the reels), new slot plans use a BALL weight ×6, so balls come back quickly.
+- FEVER GAME: if the ball is lost through the only broken OUT block, it revives 20% of the time (REVIVE_P) with a cut-in (OUT… → heartbeat ring → flash → 復活!! / REVIVAL) and a short shield.
+- MISS 2050 (確変 1962) to offset the extra balls.
