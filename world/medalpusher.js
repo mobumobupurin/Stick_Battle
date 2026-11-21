@@ -90,7 +90,7 @@ function open(body){
  const how=h('div','pu-how');how.append(h('b',undefined,'あそびかた'),
   h('p',undefined,'タップした位置（または ◀▶ と DROP）にメダルを投入。メダルはスロープを転がって上段ステージへ。プッシャーが下がるたびに上段のメダルが押し出されて下段に落ち、下段の手前から落ちたメダルが払い出し。左右の端は OUT。'),
   h('p',undefined,'下段の手前から落ちたメダルは正面の坂を滑り落ちる。坂の真ん中の START の穴にメダルが落ちたらスロット抽選（保留は最大8）。上段のふちの CHANCE チェッカーをメダルが通ると、その側のフリッパーがパタパタ動いてメダルを START の方へ寄せてくれる。レバーで CHANCE チェッカーの上をねらおう。'),h('p',undefined,'保留が8個たまってからさらに START に入ると「2周目」：保留ランプが左から順に ×2 になる。全部 ×2 になったら「3周目」で ×4。その保留で当たると配当が2倍・4倍（777 は FEVER の配当、JPボールは個数が増える）。'),h('p',undefined,'777 は FEVER GAME。奇数そろいで確変突入。確変中は当たりやすく、当たるたびに確変ボーナス +10枚。偶数がそろうまで続く（偶数でも再抽選で奇数に昇格することがある）。5・7・10・15・20・25連で 連数×10枚 の継続ボーナス。'),
-  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+10〜+50枚、BALL＝ボール追加）。手前のふちの赤いゾーン（真ん中）から落ちたボールはソケットが光り、3つで FEVER STAGE。左右の壁の横穴からはメダルがときどき逃げる。'));
+  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+10〜+50枚、BALL＝ボール追加）。手前に落ちたボールは全部ソケットが光り、3つで FEVER STAGE。左右の壁の横穴からはメダルがときどき逃げる。'));
  const table=h('div','pu-table');
  const row=(syms,text,cls)=>{const r=h('span',cls);const icons=h('i','pu-syms');for(const s of syms){const c=document.createElement('canvas');c.width=c.height=44;drawSym(c.getContext('2d'),s,22,22,34);icons.append(c);}r.append(icons,h('b',undefined,text));table.append(r);};
  row(['SEVEN','SEVEN','SEVEN'],'FEVER＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
@@ -113,7 +113,7 @@ function open(body){
  if(!saved)sim.coins.push({x:50,y:40,ball:true});
  const upper={coins:saved?.upper||(()=>{const c=[];for(let y=STAGE_BACK+S.R+.3;y<S.FACE_MIN-S.R;y+=2*S.R*.9)for(let x=S.R+(c.length%2)*2;x<100-S.R;x+=2*S.R+.6)if(Math.random()<.7)c.push({x,y});return c;})()};
  if(saved)pending=saved.pending;
- st={lever,upper,root,cv,g:cv.getContext('2d'),coin:coinSprite(),ballImg:ballSprite(),sim,msgBar,vCredit,vIn,vOut,drop,cash,aim:50,falling:[],embers:[],heatFx:0,sockFx:0,winFx:null,multFx:null,roul:null,roulQ:[],ballStock:saved?.ballStock||0,apron:S.createApron(),apSink:[],outs:[],pops:[],sparks:[],sinks:[],shower:[],queue:[],gate:{x:50},cc:[{lit:true,t:0},{lit:true,t:0}],flights:[],dots:[],shift:0,reel:null,fever:null,feverLeft:0,feverTotal:0,jpl:null,balls:0,rain:0,jp:saved?.jp??S.JP_BASE,kak:saved?.kak||0,
+ st={lever,upper,root,cv,g:cv.getContext('2d'),coin:coinSprite(),ballImg:ballSprite(),sim,msgBar,vCredit,vIn,vOut,drop,cash,aim:50,falling:[],ballFalls:[],embers:[],heatFx:0,sockFx:0,winFx:null,multFx:null,roul:null,roulQ:[],ballStock:saved?.ballStock||0,apron:S.createApron(),apSink:[],outs:[],pops:[],sparks:[],sinks:[],shower:[],queue:[],gate:{x:50},cc:[{lit:true,t:0},{lit:true,t:0}],flights:[],dots:[],shift:0,reel:null,fever:null,feverLeft:0,feverTotal:0,jpl:null,balls:0,rain:0,jp:saved?.jp??S.JP_BASE,kak:saved?.kak||0,
   shown:['SEVEN','BALL','3'],sessionIn:0,sessionOut:0,hold:null,last:performance.now(),acc:0,lastAct:performance.now(),lastSave:0,lastTick:0,raf:0,timer:0,flash:0,frame:0,shake:0,outBurst:0,banner:null,sevens:0};
  walletHold=true;paintCredit();
  const aimFromEvent=e=>{const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W;const a=P(0,RAIL_Y,26),b=P(100,RAIL_Y,26);st.aim=Math.max(8,Math.min(92,(x-a[0])/(b[0]-a[0])*100));};
@@ -382,6 +382,10 @@ function frame(now){
 function tick(){
  st.frame++;if(st.flash>0)st.flash--;if(st.shake>0)st.shake--;if(st.outBurst>0)st.outBurst--;if(st.heatFx>0)st.heatFx--;if(st.sockFx>0)st.sockFx--;
  if(st.winFx&&++st.winFx.t>150)st.winFx=null;
+ for(let i=st.ballFalls.length-1;i>=0;i--){const b=st.ballFalls[i];
+  if(b.h>0||b.vh>0){b.vh-=.35;b.h+=b.vh;if(b.h<=0){b.h=0;if(b.vh<-1.2){b.vh=-b.vh*.35;WorldSound.tick();}else b.vh=0;}}
+  b.vv+=b.h>0?0:.02;b.v+=b.vv;b.spin+=b.vv/S.BALL_R;
+  if(b.v>AP.L+S.BALL_R){st.ballFalls.splice(i,1);const q=apronP(b.u,AP.L);burst(q[0],q[1],24,'#ff6a80');WorldSound.bumper(2);st.shake=Math.max(st.shake,6);}}
  if(st.winSeq)stepWinSeq();
  {const h=st.reel?st.reel.heat||0:0;if(h>=3){for(let k=0;k<(h>=4?3:2);k++)st.embers.push({x:24+Math.random()*(W-48),y:228,vy:-1-Math.random()*2.2,vx:(Math.random()-.5)*.6,t:0,life:50+Math.random()*30,c:h>=4?rainbow(Math.random()*360):Math.random()<.5?'#ff4a2a':'#ffb21e'});}
   for(let i=st.embers.length-1;i>=0;i--){const e=st.embers[i];e.t++;e.x+=e.vx+Math.sin((e.t+i)*.15)*.4;e.y+=e.vy;if(e.t>e.life)st.embers.splice(i,1);}}
@@ -403,7 +407,7 @@ function tick(){
  if(st.payout){const pp=st.payout;pp.t++;if(pp.given>=pp.total){pp.done=(pp.done||0)+1;if(pp.done===1){WorldSound.win(pp.total>=300?5:pp.total>=100?4:3);if(pp.total>=100)WorldSound.bigWin();}if(pp.done>70)st.payout=null;}}
  if(st.roul)stepRoul();
  const idle=!st.reel&&!st.fever&&!st.jpl&&!st.payout&&!st.winSeq&&!st.roul;
- if(idle){if(st.roulQ.length)startRoul();else if(st.balls>0)startJP();else if(st.feverLeft>0)startFeverRound();else if(st.queue.length){startReel(st.queue.shift());}}
+ if(idle){if(st.roulQ.length){if(!st.ballFalls.length)startRoul();}else if(st.balls>0)startJP();else if(st.feverLeft>0)startFeverRound();else if(st.queue.length){startReel(st.queue.shift());}}
  if(st.reel)stepReel();
  if(st.banner&&++st.banner.t>(st.banner.big?120:80))st.banner=null;
  if(st.sevens>0)st.sevens--;
@@ -417,12 +421,13 @@ function tick(){
  for(const c of st.upper.coins)if(c.fresh)c.fresh--;
  for(const c of st.cc)if(!c.lit&&--c.t<=0)c.lit=true;
  if(!st.sim.ballXs)st.sim.ballXs=[];
- for(const bx of st.sim.ballXs.splice(0)){const inZ=bx>=S.BALL_ZONE[0]&&bx<=S.BALL_ZONE[1];st.roulQ.push('bb');burst(W/2,P(bx,100)[1],30,'#ff6a80');
-  if(inZ)addSocket();else{pop('ゾーン外…',{small:true,at:[P(bx,100)[0],P(bx,100)[1]-14]});WorldSound.tick();}}
+ for(const bx of st.sim.ballXs.splice(0)){st.roulQ.push('bb');burst(P(bx,100)[0],P(bx,100)[1],30,'#ff6a80');addSocket();}
  if(r.front||r.lost||r.balls){const alive=new Set(st.sim.coins);for(const c of before)if(!alive.has(c)){if(c.side){const q=P(c.x<50?-.5:100.5,c.y,1);burst(q[0],q[1],6,'#556070');continue;}const out=!c.ball&&!wall&&(c.x<S.GUTTER||c.x>100-S.GUTTER);const o={x:c.x,y:100,z:0,vz:0,vy:.5,out,ball:c.ball,spin:Math.random()*6};
    // medals off the front roll down the payout slope; the round START checker sits in the middle, with a flipper each side
    // medals off the middle of the front edge slide down the payout apron (they are already paid)
    if(!out&&!c.ball&&S.feedApron(st.apron,c.x))continue;
+   // a JP ball drops onto the payout apron and rolls down into the tray
+   if(c.ball){st.ballFalls.push({u:Math.max(AP.U0+S.BALL_R,Math.min(AP.U1-S.BALL_R,c.x)),v:0,h:S.BALL_R*1.6,vh:.8,vv:.12,spin:0});continue;}
    st.outs.push(o);}
   if(r.front){pending.won+=r.front;st.sessionOut+=r.front;st.lastAct=performance.now();st.outBurst=Math.min(40,st.outBurst+r.front*6);sync();const now=performance.now();if(now-st.lastTick>55){WorldSound.tick();st.lastTick=now;}if(pending.won>=MAX_WON()-80)settle();}}
  for(let i=st.outs.length-1;i>=0;i--){const o=st.outs[i];
@@ -562,15 +567,16 @@ function buildScene(){
   if(f.ball)balls.push([x,y,Math.max(0,z-S.BALL_R)+S.BALL_R,S.BALL_R,S.BALL_R,S.BALL_R,f.t*.2,f.t*.1,0,...BALL_C]);else coins.push(coinItem(x,y,z,f.t*.35,f.t*.2,col));}
  const shadows=[];const sh=(x,y,z,r)=>shadows.push([x+.8,y+1,z+.06,r,r,.01,0,0,0,0,0,0]);
  for(const c of coins){if(c[8])continue;const fz=c[1]<STAGE_BACK?rampZ(c[1]):c[1]<face?PUSHER_H+.05:0;if(c[2]-fz<20)sh(c[0],c[1],fz,S.R*(1.25+(c[2]-fz)*.03));}
- for(const b of balls)if(b[1]>face)sh(b[0],b[1],0,S.BALL_R*1.3);
+ for(const b of balls)if(b[1]>face&&!b[8])sh(b[0],b[1],0,S.BALL_R*1.3);
  // payout apron: medals sliding on the slanted panel, the ones dropping into START, and the flippers
  const flips=[];
  for(const c of st.apron.coins){const p=apronPos(c.u,c.v,.75);coins.push([...p,S.R,S.R,1.4,0,c.id||0,AP_TILT,...col]);}
  for(const k of st.apSink){const q=k.t/18,p=apronPos(k.u+(AP.HOLE.u-k.u)*Math.min(1,q*2),k.v+(AP.HOLE.v-k.v)*Math.min(1,q*2),.75-q*.6),sc=S.R*(1-q*.7);coins.push([...p,sc,sc,1.4,0,0,AP_TILT,col[0]*(1-q*.7),col[1]*(1-q*.7),col[2]*(1-q*.7)]);}
  for(let i=0;i<2;i++){const f=AP.FLIP[i],th=st.apron.ang[i],dir=i?-1:1,on=!st.cc[i].lit;flips.push([...apronPos(f.u,f.v,0),f.len,AP.FLIP_W*2,2.6,0,Math.atan2(Math.sin(th),dir*Math.cos(th)),AP_TILT,...(on?[1,.62,.9]:[.86,.9,.95])]);
   coins.push([...apronPos(f.u,f.v,2.9),2.1,2.1,.9,0,0,AP_TILT,1,.78,.3]);}
+ for(const b of st.ballFalls){const p=apronPos(b.u,b.v,S.BALL_R+b.h);balls.push([...p,S.BALL_R,S.BALL_R,S.BALL_R,b.spin,0,AP_TILT,...BALL_C]);}
  const apron={flips,panel:[...apronPos(0,0,-1.2),100,AP.L,1.2,0,0,AP_TILT,.2,.07,.32],info:[AP.U0,AP.U1-AP.U0,AP.L,AP.HOLE.u,AP.HOLE.v,AP.HOLE.cup,HOLE_VIS,st.gateFlash>0?1:0]};
- return {t:st.frame,coins,balls,shadows,face,apron,sideHoles:S.SIDE_HOLES,ballZone:S.BALL_ZONE,fever:!!(st.fever||st.feverLeft>0),kak,wall:sim.wall>0,backY:BACK_Y,stageBack:STAGE_BACK,rampTop:RAMP_TOP,rampZ0:rampZ(STAGE_BACK),rampZ1:rampZ(RAMP_TOP),pusherH:PUSHER_H,wallH:WALL_H,gutter:S.GUTTER};
+ return {t:st.frame,coins,balls,shadows,face,apron,sideHoles:S.SIDE_HOLES,fever:!!(st.fever||st.feverLeft>0),kak,wall:sim.wall>0,backY:BACK_Y,stageBack:STAGE_BACK,rampTop:RAMP_TOP,rampZ0:rampZ(STAGE_BACK),rampZ1:rampZ(RAMP_TOP),pusherH:PUSHER_H,wallH:WALL_H,gutter:S.GUTTER};
 }
 function ensureGL(){if(st.gl!==undefined)return st.gl;let r=null;try{if(typeof Pusher3D!=="undefined"&&!/[?&]gl=0/.test(location.search))r=Pusher3D.create(W,H,CAM);}catch(e){console.warn(e);r=null;}return st.gl=r;}
 function drawField(g){
@@ -638,7 +644,8 @@ function drawField(g){
   const c4=[apronP(AP.U0,0),apronP(AP.U1,0),apronP(AP.U1,AP.L),apronP(AP.U0,AP.L)];g.fillStyle='#2a0c40';g.beginPath();c4.forEach((q,i)=>i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]));g.closePath();g.fill();g.strokeStyle='#d9b56a';g.lineWidth=2;g.stroke();
   const [hx,hy]=startPos(),sc=Math.abs(apronP(51,AP.HOLE.v)[0]-hx);g.fillStyle='#d9a83a';g.beginPath();g.ellipse(hx,hy,AP.HOLE.cup*sc,AP.HOLE.cup*sc*.9,0,0,Math.PI*2);g.fill();g.fillStyle='#000';g.beginPath();g.ellipse(hx,hy,HOLE_VIS*sc,HOLE_VIS*sc*.9,0,0,Math.PI*2);g.fill();
   for(let i=0;i<2;i++){const [x0,y0,x1,y1]=S.flipSeg(st.apron,i),a0=apronP(x0,y0,1),a1=apronP(x1,y1,1);g.strokeStyle=st.cc[i].lit?'#b8c4d0':'#ffb0e8';g.lineWidth=7;g.lineCap='round';g.beginPath();g.moveTo(...a0);g.lineTo(...a1);g.stroke();g.lineCap='butt';}
-  for(const c of st.apron.coins){const q=apronP(c.u,c.v,.7),w=S.R*2*sc;g.drawImage(st.coin,q[0]-w/2,q[1]-w*.48,w,w*.96);}}
+  for(const c of st.apron.coins){const q=apronP(c.u,c.v,.7),w=S.R*2*sc;g.drawImage(st.coin,q[0]-w/2,q[1]-w*.48,w,w*.96);}
+  for(const b of st.ballFalls){const q=apronP(b.u,b.v,S.BALL_R+b.h),w=S.BALL_R*2*sc;g.drawImage(st.ballImg,q[0]-w/2,q[1]-w/2,w,w);}}
  // labels over the apron
  {const [cx,cy]=startPos(),sc=Math.abs(apronP(51,AP.HOLE.v)[0]-cx),lit=st.gateFlash>0;if(st.gateFlash>0)st.gateFlash--;
   g.fillStyle=lit?'#ffffff':'#ffd36b';g.font='italic 900 13px "Arial Black",sans-serif';g.lineWidth=4;g.strokeStyle='#2a0a10';const ty=cy-AP.HOLE.cup*sc-8;g.strokeText('START',cx,ty);g.fillText('START',cx,ty);
