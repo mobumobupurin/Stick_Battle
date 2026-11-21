@@ -121,3 +121,9 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - 上段のふちに **CHANCE チェッカー**×2（ピンクのランプ）。メダルが通るとランプが消え、その側の **フリッパー**が6秒間パタパタ動き、START に入る範囲が広がる。
 - 回転シャッターのチャッカーは廃止。保留満タン時の +2枚 も廃止。スロットは「たくさん回って、たまに当たる」設定（入賞は投入1枚あたり約0.1回）。還元率は約92%。
 - **正面パネル化（2026-11-21）**：オーナー提供の実機写真に合わせ、START をフィールド手前の縁の下の**正面パネル中央の大きな丸い窓**に、左右に**長い白いフリッパー**を配置（見た目はオリジナル）。真ん中から落ちたメダルはそのまま START へ、左右（x 24〜40／60〜76）に落ちたメダルはフリッパーの上に落ち、フリッパーが動いているとき 25% で START にはじき入れられる（弧を描いて飛ぶ）。入賞率は投入1枚あたり約0.1回、還元率は約94%。
+
+### FORTUNE PUSHER — WebGL 3D field
+- `world/pusher3d.js` (Pusher3D) is a small hand-written WebGL2 renderer (no libraries). It draws the floor, pusher block, ramp, walls, medals (cylinders with an embossed rim), JP balls (spheres) and soft contact shadows with metallic lighting.
+- Its projection matrix reproduces the pinhole camera `CAM` in medalpusher.js exactly, so every 2D overlay drawn with `P()` (LCD, CHANCE lamps, START panel, flippers, texts, effects) lines up with the 3D field.
+- The WebGL canvas sits behind the 2D canvas in `.pu-stage` (same grid cell, same CSS size); the 2D canvas stays transparent where the field is. No per-frame readback.
+- Physics, payouts and RTP are unchanged. Without WebGL2 (or with `?gl=0`) the old 2D sprite renderer is used.

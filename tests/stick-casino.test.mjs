@@ -139,3 +139,9 @@ test('coin pusher upper stage: medals ride the pusher, get held by the back edge
  for(let k=0;k<800;k++){u.coins.push({x:10+(k*31%80),y:-12+P.R+.5});for(let f=0;f<12;f++){const f0=s.face;P.step(s);fell+=P.stepUpper(u,s.face,s.face-f0,-12).length;}}
  assert.ok(fell>600,'fell '+fell);assert.ok(u.coins.length<80);assert.ok(u.coins.every(c=>c.y>=-12+P.R-1e-6&&c.y<=s.face+0.6+1e-6));
 });
+test('coin pusher 3D layer: WebGL renderer loads before the game and falls back to 2D without WebGL',()=>{
+ const html=read('world/index.html');assert.ok(html.indexOf('pusher3d.js')>0&&html.indexOf('pusher3d.js')<html.indexOf('medalpusher.js'));
+ const ctx={document:{createElement:()=>({getContext:()=>null})},console};vm.createContext(ctx);vm.runInContext(read('world/pusher3d.js')+';this.P3=Pusher3D;',ctx);
+ assert.equal(ctx.P3.create(480,740,{C:[0,0,0],f:[0,1,0],r:[1,0,0],up:[0,0,1],k:1,ox:0,oy:0}),null);
+ const src=read('world/medalpusher.js');assert.match(src,/typeof Pusher3D/);assert.match(src,/gl=0/);
+});
