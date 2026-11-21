@@ -224,3 +224,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - FEVER GAME bumpers pay 2/2/4/2/2/2 again; the JP CHANCE hole opens at WIN 80 so it still opens in about 1 game in 4 (EV per game ≈ 210). To compensate: slot BALL 40→25 (確変 50), MISS 2350 (確変 2277).
 - JP CHANCE: entry cut-in (heartbeat ring → flash → "JP CHANCE" with the three stage lamps lighting), rays and sweeping spotlights behind the dish, a glowing ball trail, a white shockwave on UP. Tease: when the ball creeps slowly past a JP hole (or an UP hole on the 1st dish) time slows to ½–⅓, the dish darkens around the ball, a red pulse beats round it and the JP holes flare, with heartbeats. The outcome is unchanged (only the speed of showing it).
 - Freeze: only the LCD monitor goes dead (black glass with scanlines, cabinet lamps off, BGM silent), then turns back on like a CRT — a white line, a golden burst with a ★ — and the spin goes rainbow.
+
+### FORTUNE PUSHER — JP CHANCE opens by hit count
+- Every bumper pays 2. The JP CHANCE hole opens after 50 bumper hits (= 100 medals), counted in hits instead of WIN.
+- The countdown sits right on the locked hole: "JP まで あと / N / 回", popping on every hit and flashing in the last 10; the top bar also reads "JP CHANCE まで あと N 回".
+- The opening shield (SAFE) is 20 s (was 8 s) so 50 hits stays reachable: P(JP CHANCE) ≈ 20% per game, EV ≈ 210 (unchanged).
