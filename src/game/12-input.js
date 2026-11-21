@@ -119,6 +119,9 @@ function currentGamepad() {
   return null;
 }
 
+// per-controller custom button map saved from 設定 →「コントローラーのボタン設定」
+let padMaps={};try{padMaps=JSON.parse(localStorage.getItem('sbo.padmaps')||'{}')||{};}catch(_){padMaps={};}
+function savePadMaps(){try{localStorage.setItem('sbo.padmaps',JSON.stringify(padMaps));}catch(_){}}
 function padLayout(g){
   const id=String(g&&g.id||'').toLowerCase();
   const nintendo=/nintendo|pro controller|joy-?con|057e/.test(id);
@@ -140,11 +143,13 @@ function readHuman() {
   const gy = gp && gp.axes.length > 1 ? gp.axes[1] : 0;
 
   // A=通常攻撃 / B=特殊 / X・Y・L・ZL=ジャンプ / R・ZR=カウンター（ガード・回避）
+  const custom = gp && padMaps[gp.id];
   const lay = gp ? padLayout(gp) : {a:0,b:1,x:2,y:3};
-  const gpJump = gpButton(gp, lay.x) || gpButton(gp, lay.y) || gpButton(gp, 4) || gpButton(gp, 6);
-  const gpAttack = gpButton(gp, lay.a);
-  const gpSpecial = gpButton(gp, lay.b);
-  const gpCounter = gpButton(gp, 5) || gpButton(gp, 7);
+  const any = list => list.some(i => gpButton(gp, i));
+  const gpJump = custom ? any(custom.jump||[]) : (gpButton(gp, lay.x) || gpButton(gp, lay.y) || gpButton(gp, 4) || gpButton(gp, 6));
+  const gpAttack = custom ? any([custom.attack]) : gpButton(gp, lay.a);
+  const gpSpecial = custom ? any([custom.special]) : gpButton(gp, lay.b);
+  const gpCounter = custom ? any(custom.guard||[]) : (gpButton(gp, 5) || gpButton(gp, 7));
 
   const gpLeft  = gx < -GP_DEAD || gpButton(gp, 14);
   const gpRight = gx >  GP_DEAD || gpButton(gp, 15);

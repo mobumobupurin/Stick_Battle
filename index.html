@@ -2737,6 +2737,8 @@ body #sc-hub-room .hub-card-name{line-height:1.25}
 <label class="setting-row">画面の揺れ<input id="pref-shake" type="checkbox"></label>
 <label class="setting-row">左右の操作を入れ替え<input id="pref-left" type="checkbox"></label>
 <label class="setting-row">コントローラーの A/B を入れ替え<input id="pref-padSwap" type="checkbox"></label>
+<div class="setting-row" style="gap:6px;flex-wrap:wrap">コントローラーのボタン設定<span style="display:flex;gap:6px"><button type="button" id="pad-remap-start" style="padding:6px 10px">設定する</button><button type="button" id="pad-remap-reset" style="padding:6px 10px">リセット</button></span></div>
+<p id="pad-remap-msg" style="margin:4px 0 10px;font-size:13px;color:#ffd36b;min-height:1.2em" aria-live="polite"></p>
 <p>iPhoneのSafariのアドレスバーが気になる場合は、共有メニュー → ホーム画面に追加 →「Webアプリとして開く」をオンにすると、ブラウザのツールバーがない表示で起動できます。ゲームプレイは横画面推奨です。</p>
 <p>スマホの基本操作：左スティックを倒しながら右のB（特殊）を押すと、上B・横B・下Bが使えます。スティックを倒さずBを押すと通常の特殊技。Bの長押しも可能です。設定から従来の個別ボタン式にも変更できます。</p>\n<p>移動エリアは触れた場所が中心になります。上＋Bで上必殺技を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
 <button id="settings-close">閉じる</button></dialog>
@@ -7641,6 +7643,9 @@ function currentGamepad() {
   return null;
 }
 
+// per-controller custom button map saved from 設定 →「コントローラーのボタン設定」
+let padMaps={};try{padMaps=JSON.parse(localStorage.getItem('sbo.padmaps')||'{}')||{};}catch(_){padMaps={};}
+function savePadMaps(){try{localStorage.setItem('sbo.padmaps',JSON.stringify(padMaps));}catch(_){}}
 function padLayout(g){
   const id=String(g&&g.id||'').toLowerCase();
   const nintendo=/nintendo|pro controller|joy-?con|057e/.test(id);
@@ -7662,11 +7667,13 @@ function readHuman() {
   const gy = gp && gp.axes.length > 1 ? gp.axes[1] : 0;
 
   // A=通常攻撃 / B=特殊 / X・Y・L・ZL=ジャンプ / R・ZR=カウンター（ガード・回避）
+  const custom = gp && padMaps[gp.id];
   const lay = gp ? padLayout(gp) : {a:0,b:1,x:2,y:3};
-  const gpJump = gpButton(gp, lay.x) || gpButton(gp, lay.y) || gpButton(gp, 4) || gpButton(gp, 6);
-  const gpAttack = gpButton(gp, lay.a);
-  const gpSpecial = gpButton(gp, lay.b);
-  const gpCounter = gpButton(gp, 5) || gpButton(gp, 7);
+  const any = list => list.some(i => gpButton(gp, i));
+  const gpJump = custom ? any(custom.jump||[]) : (gpButton(gp, lay.x) || gpButton(gp, lay.y) || gpButton(gp, 4) || gpButton(gp, 6));
+  const gpAttack = custom ? any([custom.attack]) : gpButton(gp, lay.a);
+  const gpSpecial = custom ? any([custom.special]) : gpButton(gp, lay.b);
+  const gpCounter = custom ? any(custom.guard||[]) : (gpButton(gp, 5) || gpButton(gp, 7));
 
   const gpLeft  = gx < -GP_DEAD || gpButton(gp, 14);
   const gpRight = gx >  GP_DEAD || gpButton(gp, 15);
@@ -8300,6 +8307,27 @@ document.getElementById('b-settings').onclick=()=>{resetTouch();settingsPaused=s
 settingsDialog.addEventListener('close',()=>{resetTouch();if(settingsPaused){scene='battle';simAcc=0;}settingsPaused=false;});
 document.getElementById('settings-close').onclick=()=>settingsDialog.close();
 for(const key of ['volume','music','shake','left','lowFlash','padSwap']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
+// ---- controller button setup: press the button for each action in turn (works for any pad, e.g. a sideways Joy-Con)
+{const startBtn=document.getElementById('pad-remap-start'),resetBtn=document.getElementById('pad-remap-reset'),msg=document.getElementById('pad-remap-msg');
+ const STEPS=[['attack','通常攻撃'],['special','特殊技'],['jump','ジャンプ'],['guard','カウンター（ガード・回避）'],['jump2','もう1つのジャンプ（なければ「スキップ」）']];
+ let job=null;
+ const pressedSet=g=>new Set((g&&g.buttons?Array.from(g.buttons):[]).map((b,i)=>b&&b.pressed?i:-1).filter(i=>i>=0));
+ const finish=(text)=>{if(job){cancelAnimationFrame(job.raf);job=null;}startBtn.textContent='設定する';if(msg)msg.textContent=text||'';};
+ if(startBtn)startBtn.onclick=()=>{
+  if(job){if(job.step===4){const m=job.map;m.jump=[m.jump];padMaps[job.id]={attack:m.attack,special:m.special,jump:m.jump,guard:[m.guard]};savePadMaps();finish('保存しました：'+job.name);}else finish('キャンセルしました');return;}
+  const g=currentGamepad();if(!g){if(msg)msg.textContent='コントローラーのボタンを何か押してから、もう一度「設定する」を押してね';return;}
+  job={id:g.id,name:g.id.replace(/\s*\(.*$/,''),step:0,map:{},held:pressedSet(g),raf:0};startBtn.textContent='キャンセル';
+  const ask=()=>{if(msg)msg.textContent='「'+STEPS[job.step][1]+'」にしたいボタンを押してね';if(job.step===4)startBtn.textContent='スキップ';};ask();
+  const loop=()=>{if(!job)return;const pads=navigator.getGamepads?navigator.getGamepads():[];const g2=Array.from(pads).find(p=>p&&p.id===job.id);
+   if(g2){const now=pressedSet(g2);let hit=-1;for(const i of now)if(!job.held.has(i)){hit=i;break;}job.held=now;
+    if(hit>=0){const key=STEPS[job.step][0],used=Object.values(job.map).flat();
+     if(used.includes(hit)){if(msg)msg.textContent='そのボタンはもう使っています。別のボタンを押してね';}
+     else{if(key==='jump2'){job.map.jump=[job.map.jump,hit];}else job.map[key]=hit;job.step++;
+      if(job.step>=STEPS.length){const m=job.map;padMaps[job.id]={attack:m.attack,special:m.special,jump:Array.isArray(m.jump)?m.jump:[m.jump],guard:[m.guard]};savePadMaps();finish('保存しました：'+job.name);return;}ask();}}}
+   job.raf=requestAnimationFrame(loop);};
+  job.raf=requestAnimationFrame(loop);};
+ if(resetBtn)resetBtn.onclick=()=>{finish();const g=currentGamepad();if(g&&padMaps[g.id]){delete padMaps[g.id];savePadMaps();if(msg)msg.textContent='標準の配置に戻しました';}else{padMaps={};savePadMaps();if(msg)msg.textContent='すべてのボタン設定をリセットしました';}};
+ settingsDialog.addEventListener('close',()=>finish());}
 const specialInputSelect=document.getElementById('pref-special-input');
 if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'direction';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'direction';applyPrefs();});}
 applyPrefs();

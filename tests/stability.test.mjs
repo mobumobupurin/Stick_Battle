@@ -99,6 +99,12 @@ test('keyboard, touch and gamepad edge inputs clear on blur/cancellation',()=>{
  g.run('neutralHuman(true);');g.run('prefs.padSwap=true');g.ctx.navigator.getGamepads=pad('Xbox Wireless Controller',0);g.run('readHuman();');assert.equal(g.run('hin.s&&!hin.a'),true);g.run('prefs.padSwap=false');
  g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Pro Controller',5);g.run('readHuman();');assert.equal(g.run('raw.c'),true);
  g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Pro Controller',4);g.run('readHuman();');assert.equal(g.run('raw.j'),true);
+ // a custom map (e.g. a sideways Joy-Con) overrides the guessed layout
+ g.run("padMaps['Joy-Con (R)']={attack:3,special:0,jump:[2,15],guard:[9]}");
+ g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Joy-Con (R)',3);g.run('readHuman();');assert.equal(g.run('hin.a&&!hin.s'),true);
+ g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Joy-Con (R)',0);g.run('readHuman();');assert.equal(g.run('hin.s&&!hin.a'),true);
+ g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Joy-Con (R)',9);g.run('readHuman();');assert.equal(g.run('raw.c'),true);
+ g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Joy-Con (R)',5);g.run('readHuman();');assert.equal(g.run('raw.c||raw.j||hin.a||hin.s'),false);
 });
 
 test('Naruto short special preserves rasenshuriken and hold summons once per press and allows a second clone',()=>{
