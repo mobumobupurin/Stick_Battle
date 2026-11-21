@@ -169,3 +169,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 
 ### FORTUNE PUSHER — single visible canvas (Safari fix)
 - iPad Safari showed only the WebGL layer (the 2D overlay canvas stayed blank). The WebGL field is now rendered off-screen and copied into the one visible 2D canvas each frame (`drawImage`), and one shared WebGL context is reused across openings instead of creating a new one every time.
+
+### FORTUNE PUSHER — stronger ball bonus, 3 balls → FEVER STAGE directly
+- BALL BONUS roulette: +10 ×7, +20 ×4, +30 ×2, +50 ×1, BALL ×3 (no JP-up segment). 3 lit sockets start the FEVER STAGE straight away (no FEVER CHANCE roulette).
+- JACKPOT starts at 500. The "あと少し" ring over balls near the edge is gone. The win count-up shows "WIN / 20枚" without the exclamation mark.
+- Rebalanced: slot BALL 70→30 (確変 140→60), BALL_W .015 (heavier), socket zone x 35–65, MISS 1550 (確変 1472). Sim RTP ≈ 0.88–0.92, ~2 balls on the field.

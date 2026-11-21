@@ -90,7 +90,7 @@ function open(body){
  const how=h('div','pu-how');how.append(h('b',undefined,'あそびかた'),
   h('p',undefined,'タップした位置（または ◀▶ と DROP）にメダルを投入。メダルはスロープを転がって上段ステージへ。プッシャーが下がるたびに上段のメダルが押し出されて下段に落ち、下段の手前から落ちたメダルが払い出し。左右の端は OUT。'),
   h('p',undefined,'下段の手前から落ちたメダルは正面の坂を滑り落ちる。坂の真ん中の START の穴にメダルが落ちたらスロット抽選（保留は最大8）。上段のふちの CHANCE チェッカーをメダルが通ると、その側のフリッパーがパタパタ動いてメダルを START の方へ寄せてくれる。レバーで CHANCE チェッカーの上をねらおう。'),h('p',undefined,'保留が8個たまってからさらに START に入ると「2周目」：保留ランプが左から順に ×2 になる。全部 ×2 になったら「3周目」で ×4。その保留で当たると配当が2倍・4倍（777 は FEVER の配当、JPボールは個数が増える）。'),h('p',undefined,'777 は FEVER GAME。奇数そろいで確変突入。確変中は当たりやすく、当たるたびに確変ボーナス +10枚。偶数がそろうまで続く（偶数でも再抽選で奇数に昇格することがある）。5・7・10・15・20・25連で 連数×10枚 の継続ボーナス。'),
-  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+3〜+10枚、JP+10、BALL＝ボール追加）。手前のふちの赤いゾーン（真ん中）から落ちたボールはソケットが光り、3つで FEVER CHANCE ルーレット（FEVER STAGE・ボール×2・メダル）。左右の壁の横穴からはメダルがときどき逃げる。'));
+  h('p',undefined,'JPボールは重く、盤面に何個も乗る。ボールが手前に落ちるたびに BALL BONUS ルーレット（+10〜+50枚、BALL＝ボール追加）。手前のふちの赤いゾーン（真ん中）から落ちたボールはソケットが光り、3つで FEVER STAGE。左右の壁の横穴からはメダルがときどき逃げる。'));
  const table=h('div','pu-table');
  const row=(syms,text,cls)=>{const r=h('span',cls);const icons=h('i','pu-syms');for(const s of syms){const c=document.createElement('canvas');c.width=c.height=44;drawSym(c.getContext('2d'),s,22,22,34);icons.append(c);}r.append(icons,h('b',undefined,text));table.append(r);};
  row(['SEVEN','SEVEN','SEVEN'],'FEVER＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
@@ -215,13 +215,12 @@ function checkerHit(){
 const holdPos=i=>[W/2-98+i*28,249];
 const BALLS_NEED=3,sockPos=i=>[W-66+i*18,62+120];
 function addSocket(){st.ballStock++;st.sockFx=30;const sp=sockPos(st.ballStock-1);burst(sp[0],sp[1],34,'#ff6a80');WorldSound.bonus();
- if(st.ballStock>=BALLS_NEED){st.ballStock=0;st.roulQ.push('fc');st.shake=24;st.heatFx=18;st.winFx={t:0,big:true};WorldSound.fanfare();for(let i=0;i<3;i++){const q=sockPos(i);burst(q[0],q[1],40,'#ffd36b');}}
+ if(st.ballStock>=BALLS_NEED){st.ballStock=0;st.balls++;st.shake=24;st.heatFx=18;st.winFx={t:0,big:true};WorldSound.fanfare();for(let i=0;i<3;i++){const q=sockPos(i);burst(q[0],q[1],40,'#ffd36b');}}
  else{st.shake=Math.max(st.shake,8);WorldSound.tease();}save();}
 /* ---------- roulettes (16 equal segments, so what you see is the real chance) ----------
-   BALL BONUS: every JP ball that drops off the front.  FEVER CHANCE: when the 3 sockets are lit. */
+   BALL BONUS: every JP ball that drops off the front. */
 const ROULS={
- bb:{name:'BALL BONUS',col:'#ff9aa8',segs:['3','5','BALL','10','3','JP','5','3','BALL','3','5','JP','3','10','5','BALL']},
- fc:{name:'FEVER CHANCE',col:'#ffd36b',segs:['FEVER','30','50','B2','30','30','100','B2','FEVER','30','50','B2','FEVER','30','50','30']}};
+ bb:{name:'BALL BONUS',col:'#ff9aa8',segs:['10','20','BALL','10','30','10','20','BALL','10','50','10','20','BALL','10','30','20']}};
 const ROUL_T=170;
 const roulColor=v=>v==='FEVER'?'#ff4a6a':v==='BALL'||v==='B2'?'#ff9ae8':v==='JP'?'#b48cff':+v>=50?'#ffd36b':+v>=10?'#4ade80':'#5ab0ff';
 const roulLabel=v=>v==='FEVER'?'FEVER STAGE':v==='BALL'?'BALL+1':v==='B2'?'BALL+2':v==='JP'?'JP+10':'+'+v+'枚';
@@ -324,8 +323,9 @@ function drawWinSeq(g,x,y,w,hh){const q=st.winSeq,[ph,t]=seqPhase(q);if(ph==='al
  const s0=ph==='show'?Math.min(1,t/8):1,val=q.shown;
  let label='',lc='#fff1a0';if(ph==='kb'||(q.kb&&ph!=='show')){label='確変ボーナス +'+q.kb;lc='#ff9ae8';}
  if(ph==='cb'||ph==='end'&&q.cb){label=q.nk+'連 継続ボーナス +'+q.cb;lc='#ffd36b';}
+ if(!label&&ph==='show')label=q.inK?'確変 WIN':'WIN';
  if(label)small(label,cy-40,lc);
- g.save();g.translate(cx-(q.m>1&&(ph==='mult'&&t<24)?40:0),cy+18);g.scale(s0*(ph==='show'?1.25-.25*s0:1),s0*(ph==='show'?1.25-.25*s0:1));g.translate(-cx,-(cy+18));big(val+'枚'+(ph==='show'?'！':''),cy+18,ph==='mult'&&t>24||ph==='cb'||ph==='end'?56:50,'#fff1a0');g.restore();
+ g.save();g.translate(cx-(q.m>1&&(ph==='mult'&&t<24)?40:0),cy+18);g.scale(s0*(ph==='show'?1.25-.25*s0:1),s0*(ph==='show'?1.25-.25*s0:1));g.translate(-cx,-(cy+18));big(val+'枚',cy+18,ph==='mult'&&t>24||ph==='cb'||ph==='end'?56:50,'#fff1a0');g.restore();
  if(q.m>1&&(ph==='mult'&&t>=10&&t<24)){const k=Math.min(1,(t-10)/8),sc=3-2*k;g.save();g.translate(cx+86,cy+14);g.scale(sc,sc);g.font='italic 900 40px "Arial Black",Impact,sans-serif';g.lineWidth=6;g.strokeStyle='#000';g.strokeText('×'+q.m,0,12);g.fillStyle=q.m>=4?'#ff7ae0':'#7ff0ff';g.shadowColor=g.fillStyle;g.shadowBlur=20;g.fillText('×'+q.m,0,12);g.restore();}
  if(q.m>1&&(ph==='mult'&&t>=24||ph==='cb'||ph==='end'))small((q.base+q.kb)+'枚 × '+q.m,cy+52,q.m>=4?'#ff9ae8':'#9ff4ff');
  if(ph==='mult'&&t>=10&&t<16){g.globalAlpha=(16-t)/6;g.fillStyle='#fff';g.fillRect(x,y,w,hh);g.globalAlpha=1;}
@@ -620,7 +620,6 @@ function drawField(g){
  // pieces back to front (shadows first for balls)
  if(!gl){const pieces=sim.coins.slice().sort((a,b)=>a.y-b.y);
  for(const c of pieces){if(c.ball)ball3d(g,c.x,c.y,c.fresh?c.fresh*.6:0);else{const z=c.fresh?(c.fall?c.fresh*1.1:c.fresh>16?(c.fresh-16)*2.4:c.fresh*.12):0;if(z>1)shadow(g,c.x,c.y,S.R*.9,.25);coin3d(g,c.x,c.y,z);}}}
- for(const c of sim.coins)if(c.ball&&c.y>84){const q=P(c.x,c.y,S.BALL_R*2.6);g.strokeStyle=st.frame%16<8?'#ff4a6a':'#ffd36b';g.lineWidth=3;g.beginPath();g.arc(q[0],q[1]+16,20,0,Math.PI*2);g.stroke();g.fillStyle='#fff';g.font='900 11px Arial,sans-serif';g.fillText('あと少し！',q[0],q[1]-10);}
  // medals in the air from the chute
  if(!gl){for(const f of st.falling){if(f.t<LAND_T){const k=f.t/LAND_T,y=RAIL_Y+(RAMP_TOP+1-RAIL_Y)*k,z=26*(1-k)+rampZ(RAMP_TOP+1)*k+Math.sin(k*Math.PI)*8;coin3d(g,f.x,y,z);}
   else{const tot=f.roll+8,k=Math.min(1,(f.t-LAND_T)/Math.max(1,tot)),kh=Math.min(1,(f.t-LAND_T)/Math.max(1,f.roll)),x=f.x+f.dx*kh;
