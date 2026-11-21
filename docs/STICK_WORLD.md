@@ -157,3 +157,12 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - Every JP ball that drops off the front (besides lighting a socket) queues a BALL BONUS roulette on the LCD: 16 equal segments — +5 ×7, +10 ×4, +20 ×2, JP+30 ×2 (adds 30 to the progressive JACKPOT), BALL+1 ×1 (lights another socket; can complete the 3 for a FEVER STAGE).
 - Roulettes run before the next slot spin / FEVER STAGE. Pending ones are resolved on close. Adds ~1–2% RTP (sim ≈ 93%).
 - Update: the roulette's BALL segments (now 3 of 16, replacing two +5) drop an extra JP ball onto the field instead of lighting a socket, so balls can chain. To keep RTP, slot BALL weight 24→16 (確変 48→32) and MISS 1450→1520 (確変 1456).
+
+### FORTUNE PUSHER — 確変 rework, slow win counting, more balls, side holes
+- 確変: an odd win (1/3/5, and 777) enters 確変; it lasts until an even number lines up (no spin count). In 確変 the slot uses the boosted table and every win adds a 確変ボーナス of +10. An even win can be promoted to odd by a re-lottery (reels spin again; 25% normally, 30% in 確変). 継続ボーナス at 5/7/10/15/20/25 連 = 連数×10.
+- Win presentation is slower: the line freezes (~0.9 s), optional re-lottery spin, then "20枚！", +確変ボーナス, "×2" slam and a tick-tick count-up to the multiplied total, then 継続ボーナス — and only then the payout.
+- 虹 (rainbow) heat only when the plan allows it (wins 12–40%, misses 0.6%) → rainbow ≈ almost certain. Win effects are gold, not rainbow, unless the spin was a rainbow one. ×4 colour is magenta.
+- Missed reaches are mostly numbers now (7 and BALL 5% each) and lean to long/SP more often.
+- JP balls are much heavier (BALL_W .025) and far more common (slot BALL 16→70); 3–4 sit on the field. Every ball dropped spins the (now full-screen) BALL BONUS roulette (+3/+5/+10, JP+10, BALL); balls dropped through the red centre zone (x 30–70) light a socket; 3 sockets spin FEVER CHANCE (FEVER STAGE ×3/16, BALL×2, 30–100 medals).
+- Side holes in both walls (y 48–56) let medals pressed against the wall slip out now and then (closed while the FEVER walls are up).
+- Rebalanced: MISS 1650 (確変 1532), RTP ≈ 0.9–1.0 in the (noisy) queue-capped sim.

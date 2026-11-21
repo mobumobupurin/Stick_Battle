@@ -159,3 +159,11 @@ test('coin pusher apron: START is a real hole the medal has to pass over, flippe
  const off=rate([false,false]),on=rate([true,true]);
  assert.ok(off>0.06&&off<0.16,'off '+off);assert.ok(on>off*1.2&&on<0.28,'on '+on);
 });
+test('coin pusher: side holes leak a few medals (never balls, never behind the FEVER walls); 確変 constants',()=>{
+ const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
+ const s=P.create();let side=0;for(let k=0;k<400;k++){P.drop(s,6+(k%2)*88);for(let f=0;f<12;f++)side+=P.step(s).side;}
+ assert.ok(side>0,'side '+side);
+ s.wall=300;let sw=0;for(let k=0;k<20;k++){P.drop(s,6);for(let f=0;f<12;f++)sw+=P.step(s).side;}assert.equal(sw,0);
+ assert.equal(P.CHAIN_BONUS.join(),'5,7,10,15,20,25');assert.equal(P.KAK_BONUS,10);assert.ok(P.RELOT[0]>0&&P.RELOT[1]>0);
+ assert.ok(P.BALL_ZONE[0]<50&&P.BALL_ZONE[1]>50);
+});
