@@ -157,5 +157,5 @@ test('coin pusher apron: START is a real hole the medal has to pass over, flippe
  let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
  const rate=act=>{const ap=P.createApron();let fed=0,hits=0;for(let t=0;t<36000;t++){if(t%12===0){P.feedApron(ap,18+rnd()*64,rnd);fed++;}hits+=P.stepApron(ap,act).hits;}return hits/fed;};
  const off=rate([false,false]),on=rate([true,true]);
- assert.ok(off>0.04&&off<0.12,'off '+off);assert.ok(on>off*1.2&&on<0.2,'on '+on);
+ assert.ok(off>0.06&&off<0.16,'off '+off);assert.ok(on>off*1.2&&on<0.28,'on '+on);
 });

@@ -182,7 +182,7 @@ function award(n,label){if(!n)return;st.rain+=n;for(let i=0;i<Math.min(140,Math.
 function portFlight(ball){const side=st.portSide=(st.portSide?0:1);st.flights.push({side,x1:14+Math.random()*72,y1:st.sim.face+(ball?S.BALL_R:S.R)+1+Math.random()*12,t:0,dur:ball?44:26+rnd(12),ball});st.portGlow=24;if(ball)WorldSound.bonus();}
 // the centre chucker has a two-bladed shutter that turns irregularly; a medal falls in only through a gap
 // payout apron under the field edge: a slanted panel the medals slide down, with the START hole and a flipper each side (physics in PusherSim.stepApron)
-const AP=S.APRON,AP_D=[0,10/AP.L,-30/AP.L],AP_N=[0,30/AP.L,10/AP.L],AP_TILT=-Math.atan2(30,10),HOLE_VIS=4.4;
+const AP=S.APRON,AP_D=[0,10/AP.L,-30/AP.L],AP_N=[0,30/AP.L,10/AP.L],AP_TILT=-Math.atan2(30,10),HOLE_VIS=5;
 const apronPos=(u,v,h=0)=>[u,100+v*AP_D[1]+h*AP_N[1],v*AP_D[2]+h*AP_N[2]];const apronP=(u,v,h=0)=>P(...apronPos(u,v,h));
 const FIELD_SLOPE_Y=()=>startPos()[1]-20;
 const startPos=()=>{const q=apronP(AP.HOLE.u,AP.HOLE.v);return [q[0],q[1]];};
