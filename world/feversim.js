@@ -5,7 +5,7 @@
    Every 100 WIN opens the JPC hole; a ball that enters it plays the JP CHANCE dish (a rolling-ball croon), then returns to the stage.
    Results come from the simulation itself — nothing is decided in advance. Units: stage 100 x 150, y grows downward, 60 steps/s. */
 const FeverSim=(()=>{
- const W=100,H=150,BALL_R=3.2,G=0.05,KICK=2.35,MAX_V=3.6,BLOCK_Y=138,BLOCKS=6,BLOCK_HP=2,SHIELD_FRAMES=1200,GATE_HITS=50,ALLCLEAR=30,REVIVE_P=.2,MAX_FRAMES=60*150;
+ const W=100,H=150,BALL_R=3.2,G=0.05,KICK=2.35,MAX_V=3.6,BLOCK_Y=138,BLOCKS=6,BLOCK_HP=2,SHIELD_FRAMES=480,GATE_HITS=35,ALLCLEAR=30,REVIVE_P=.2,MAX_FRAMES=60*150;
  const BUMPERS=[{x:22,y:56,r:7,pay:2},{x:78,y:56,r:7,pay:2},{x:50,y:80,r:8,pay:2},{x:24,y:102,r:6.5,pay:2},{x:76,y:102,r:6.5,pay:2},{x:50,y:118,r:5.5,pay:2}];
  const HOLE={x:50,y:46,r:6.8};
  // JP CHANCE: two rolling-ball dishes (croons). The ball circles a bowl, bounces off pins and drops into a hole only when it is slow enough
