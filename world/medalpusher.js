@@ -90,7 +90,7 @@ function open(body){
  const how=h('div','pu-how');how.append(h('b',undefined,'あそびかた'),
   h('p',undefined,'タップした位置（または ◀▶ と DROP）にメダルを投入。メダルはスロープを転がって上段ステージへ。プッシャーが下がるたびに上段のメダルが押し出されて下段に落ち、下段の手前から落ちたメダルが払い出し。左右の端は OUT。'),
   h('p',undefined,'下段の手前から落ちたメダルは正面の坂を滑り落ちる。坂の真ん中の START の穴にメダルが落ちたらスロット抽選（保留は最大8）。上段のふちの CHANCE チェッカーをメダルが通ると、その側のフリッパーがパタパタ動いてメダルを START の方へ寄せてくれる。レバーで CHANCE チェッカーの上をねらおう。'),h('p',undefined,'保留が8個たまってからさらに START に入ると「2周目」：保留ランプが左から順に ×2 になる。全部 ×2 になったら「3周目」で ×4。その保留で当たると配当が2倍・4倍（777 は FEVER の配当、JPボールは個数が増える）。'),h('p',undefined,'奇数そろいは確変、777 は FEVER GAME。当たったメダルは奥の払い出し口から出てくる。'),
-  h('p',undefined,'JPボールを3個手前に落とすと FEVER STAGE（液晶の右に3つのソケット）。1個落ちるたびに BALL BONUS ルーレット（+5〜+20枚、JP+30、BALL+1）。ボールは重く、奥から押し出すまで時間がかかる。バンパーに当たるたび WIN。OUTブロックが割れて落ちたら終了。40 WIN ごとに JPC の穴が開き、JP CHANCE（2段のクルーン）へ。1段目で UP に入れば JP STAGE、JP の穴で JACKPOT。取っても続く！'));
+  h('p',undefined,'JPボールを3個手前に落とすと FEVER STAGE（液晶の右に3つのソケット）。1個落ちるたびに BALL BONUS ルーレット（+5〜+20枚、JP+30、BALL＝盤面にJPボール追加）。ボールは重く、奥から押し出すまで時間がかかる。バンパーに当たるたび WIN。OUTブロックが割れて落ちたら終了。40 WIN ごとに JPC の穴が開き、JP CHANCE（2段のクルーン）へ。1段目で UP に入れば JP STAGE、JP の穴で JACKPOT。取っても続く！'));
  const table=h('div','pu-table');
  const row=(syms,text,cls)=>{const r=h('span',cls);const icons=h('i','pu-syms');for(const s of syms){const c=document.createElement('canvas');c.width=c.height=44;drawSym(c.getContext('2d'),s,22,22,34);icons.append(c);}r.append(icons,h('b',undefined,text));table.append(r);};
  row(['SEVEN','SEVEN','SEVEN'],'FEVER＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
@@ -214,14 +214,14 @@ function addSocket(){st.ballStock++;st.sockFx=30;const sp=sockPos(st.ballStock-1
  else{st.shake=Math.max(st.shake,8);WorldSound.tease();}save();}
 /* ---------- BALL BONUS roulette: spins once for every JP ball that drops off the front ---------- */
 // 16 equal segments, so what you see is the real chance
-const ROUL=['5','10','5','20','5','JP','10','5','BALL','5','10','JP','5','20','10','5'],ROUL_T=150;
+const ROUL=['5','10','BALL','20','5','JP','10','5','BALL','5','10','JP','5','20','10','BALL'],ROUL_T=150;
 const roulColor=v=>v==='BALL'?'rainbow':v==='JP'?'#ff7ae0':v==='20'?'#ffd36b':v==='10'?'#4ade80':'#5ab0ff';
 const roulLabel=v=>v==='BALL'?'BALL+1':v==='JP'?'JP+30':'+'+v;
 function startRoul(){st.roulQ--;const i=rnd(ROUL.length),turns=4+rnd(2);st.roul={t:0,i,from:(st.roulA||0)%(Math.PI*2),to:turns*Math.PI*2+(-(i+.5)/ROUL.length*Math.PI*2),last:-1};WorldSound.spin();say('BALL BONUS ルーレット！','win');}
 function stepRoul(){const r=st.roul;r.t++;const k=Math.min(1,r.t/ROUL_T),e=1-Math.pow(1-k,3),a=r.from+(r.to-r.from)*e;st.roulA=a;
  const seg=Math.floor(((-a/(Math.PI*2))%1+1)%1*ROUL.length);if(seg!==r.last&&r.t<ROUL_T){r.last=seg;WorldSound.tick();}
  if(r.t===ROUL_T){const v=ROUL[r.i];st.heatFx=18;burst(W/2,148,v==='BALL'?80:40,v==='BALL'?'#ffffff':roulColor(v));
-  if(v==='BALL'){st.winFx={t:0,big:true};WorldSound.fanfare();addSocket();say('BALL+1！ ソケットが1つ光った！','win');}
+  if(v==='BALL'){st.winFx={t:0,big:true};WorldSound.fanfare();portFlight(true);say('JPボール追加！ 盤面に落ちてくる！','win');}
   else if(v==='JP'){st.jp=Math.min(S.JP_MAX,st.jp+30);WorldSound.bonus();pop('JACKPOT +30',{chance:true,at:[W/2,40]});burst(W/2,34,40,'#ff7ae0');say('JACKPOT が 30 枚アップ！','win');}
   else{WorldSound.win(+v>=20?3:2);say('BALL BONUS +'+v+'枚','win');}}
  if(r.t===ROUL_T+36&&/^\d+$/.test(ROUL[r.i]))award(+ROUL[r.i],'BALL BONUS');
@@ -700,7 +700,7 @@ function close(){if(!st)return;WorldSound.bgm(null);if(st.gl)st.gl.dispose();can
  const jpRun=()=>{const v=S.STAGE1[rnd(S.STAGE1.length)];if(v==='BALL'){S.addBall(st.sim);return 0;}if(v==='UP')return stage2(rnd(S.STAGE2.length));return v;};
  const jpVal=()=>{const n=Math.floor(st.jp);st.jp=S.JP_BASE;return n;};
  if(st.jpl){const j=st.jpl;rain+=j.total;let g=0;while(!j.over&&g++<60*400){FS.step(j,Math.random);for(const e of j.events){if(e.type==='hit')rain+=e.pay;if(e.type==='pocket'){if(e.value==='JP')rain+=jpVal();else if(typeof e.value==='number')rain+=e.value;}}}}
- {let n=st.roulQ+(st.roul&&st.roul.t<ROUL_T?1:0);let extra=0;if(st.roul&&st.roul.t>=ROUL_T&&st.roul.t<ROUL_T+36&&/^\d+$/.test(ROUL[st.roul.i]))rain+=+ROUL[st.roul.i];for(let i=0;i<n;i++){const v=ROUL[rnd(ROUL.length)];if(v==='JP')st.jp=Math.min(S.JP_MAX,st.jp+30);else if(v==='BALL'){if(++st.ballStock>=BALLS_NEED){st.ballStock=0;extra++;}}else rain+=+v;}st.balls+=extra;st.roulQ=0;st.roul=null;}
+ {let n=st.roulQ+(st.roul&&st.roul.t<ROUL_T?1:0);let extra=0;if(st.roul&&st.roul.t>=ROUL_T&&st.roul.t<ROUL_T+36&&/^\d+$/.test(ROUL[st.roul.i]))rain+=+ROUL[st.roul.i];for(let i=0;i<n;i++){const v=ROUL[rnd(ROUL.length)];if(v==='JP')st.jp=Math.min(S.JP_MAX,st.jp+30);else if(v==='BALL')S.addBall(st.sim);else rain+=+v;}st.balls+=extra;st.roulQ=0;st.roul=null;}
  for(let i=0;i<st.balls;i++)rain+=FS.simulate(Math.random,jpVal).total;
  const feverPay=()=>{let t=0;for(let i=0;i<S.FEVER_ROUNDS;i++)t+=S.FEVER_PAYS[rnd(S.FEVER_PAYS.length)];return t;};
  const apply=(name,add,grant,m=1)=>{if(name==='BALL'){for(let b=0;b<m;b++)S.addBall(st.sim);}else if(name==='SEVEN'){st.kak=S.KAKUHEN_SPINS;rain+=feverPay()*m;}else{rain+=add*m;if(grant)st.kak=Math.min(30,st.kak+grant);}};

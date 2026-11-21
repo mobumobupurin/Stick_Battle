@@ -156,3 +156,4 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 ### FORTUNE PUSHER — BALL BONUS roulette
 - Every JP ball that drops off the front (besides lighting a socket) queues a BALL BONUS roulette on the LCD: 16 equal segments — +5 ×7, +10 ×4, +20 ×2, JP+30 ×2 (adds 30 to the progressive JACKPOT), BALL+1 ×1 (lights another socket; can complete the 3 for a FEVER STAGE).
 - Roulettes run before the next slot spin / FEVER STAGE. Pending ones are resolved on close. Adds ~1–2% RTP (sim ≈ 93%).
+- Update: the roulette's BALL segments (now 3 of 16, replacing two +5) drop an extra JP ball onto the field instead of lighting a socket, so balls can chain. To keep RTP, slot BALL weight 24→16 (確変 48→32) and MISS 1450→1520 (確変 1456).
