@@ -11,7 +11,9 @@ const FeverSim=(()=>{
  // JP CHANCE: two rolling-ball dishes (croons). The ball circles a bowl, bounces off pins and drops into a hole only when it is slow enough
  // to fall in — a fast ball skims over holes. Stage 1: UP goes on to stage 2, which holds the JP. Everything is simulated.
  const DISHES=[{R:40,holeR:22,holes:['UP',30,'BLOCK',50,'UP',30,100,'UP'],pinR:31,pins:8,ringW:.006,pull:.032,friction:.9968,sink:.95},
-  {R:34,holeR:18,holes:['JP',100,200,100,300,100],pinR:26,pins:6,ringW:-.009,pull:.028,friction:.9979,sink:.85}];
+  {R:36,holeR:19,holes:['BLUE',100,'UP',200,'RED','UP',100,300,'UP'],pinR:28,pins:9,ringW:-.008,pull:.03,friction:.9975,sink:.88},
+  {R:32,holeR:16,holes:['GOLD',200,300,500,200,100],pinR:24,pins:6,ringW:.011,pull:.028,friction:.998,sink:.82}];
+ const JP_KINDS=['BLUE','RED','GOLD'],isJP=v=>JP_KINDS.includes(v);
  const DISH_R=40,POCKETS=DISHES[1].holes;
  function create(rnd){rnd=rnd||Math.random;const s={t:0,win:0,gateFrom:0,gateOpen:false,shield:SHIELD_FRAMES,blocks:Array(BLOCKS).fill(BLOCK_HP),ball:null,over:false,jpc:null,cool:[],events:[]};launch(s,rnd);return s;}
  function launch(s,rnd){rnd=rnd||Math.random;s.ball={x:8+rnd()*6,y:10,vx:1.2+rnd()*1.1,vy:-.2-rnd()*.6};}
@@ -48,7 +50,7 @@ const FeverSim=(()=>{
  const pinPos=(D,i)=>{const a=i*Math.PI*2/D.pins+Math.PI/D.pins;return [Math.cos(a)*D.pinR,Math.sin(a)*D.pinR];};
  function stepDish(s,rnd){const j=s.jpc,D=DISHES[j.stage];j.t++;
   if(j.pocket!==null){j.done++;const v=D.holes[j.pocket];if(j.done===1)s.events.push({type:'pocket',stage:j.stage,pocket:j.pocket,value:v});
-   if(j.done>=80){if(v==='UP'){startDish(s,rnd,1);s.events.push({type:'up'});return;}
+   if(j.done>=80){if(v==='UP'){startDish(s,rnd,j.stage+1);s.events.push({type:'up',stage:j.stage+1});return;}
     if(v==='BLOCK'&&s.t<MAX_FRAMES){for(let i=0;i<BLOCKS;i++)s.blocks[i]=BLOCK_HP;}
     s.jpc=null;launch(s,rnd);s.shield=Math.max(s.shield,90);s.events.push({type:'return'});}return;}
   j.ring+=D.ringW;
@@ -69,8 +71,8 @@ const FeverSim=(()=>{
   if(sp<.08){j.vx+=(rnd()-.5)*.06;j.vy+=(rnd()-.5)*.06;}
  }
  // run a whole stage headless; jpValue() returns the JP amount and is called on each JP
- function simulate(rnd,jpValue){const s=create(rnd);let pay=0,jps=0,jpcs=0,jpPaid=0;while(!s.over&&s.t<MAX_FRAMES*2){step(s,rnd);for(const e of s.events){if(e.type==='jpc')jpcs++;if(e.type==='pocket'){if(e.value==='JP'){jps++;const v=jpValue?jpValue():1000;jpPaid+=v;}else if(typeof e.value==='number')pay+=e.value;}}}
+ function simulate(rnd,jpValue){const s=create(rnd);let pay=0,jps=0,jpcs=0,jpPaid=0;while(!s.over&&s.t<MAX_FRAMES*2){step(s,rnd);for(const e of s.events){if(e.type==='jpc')jpcs++;if(e.type==='pocket'){if(isJP(e.value)){jps++;const v=jpValue?jpValue(e.value):1000;jpPaid+=v;}else if(typeof e.value==='number')pay+=e.value;}}}
   return {win:s.win,pay,jps,jpcs,jpPaid,total:s.win+pay+jpPaid,frames:s.t};}
- return {W,H,BALL_R,BLOCK_Y,BLOCKS,BLOCK_HP,SHIELD_FRAMES,GATE_WIN,BUMPERS,HOLE,DISHES,DISH_R,POCKETS,holePos,pinPos,create,launch,step,simulate};
+ return {JP_KINDS,isJP,W,H,BALL_R,BLOCK_Y,BLOCKS,BLOCK_HP,SHIELD_FRAMES,GATE_WIN,BUMPERS,HOLE,DISHES,DISH_R,POCKETS,holePos,pinPos,create,launch,step,simulate};
 })();
 if(typeof module!=='undefined')module.exports=FeverSim;else globalThis.FeverSim=FeverSim;
