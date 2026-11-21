@@ -579,6 +579,27 @@ document.getElementById('b-settings').onclick=()=>{resetTouch();settingsPaused=s
 settingsDialog.addEventListener('close',()=>{resetTouch();if(settingsPaused){scene='battle';simAcc=0;}settingsPaused=false;});
 document.getElementById('settings-close').onclick=()=>settingsDialog.close();
 for(const key of ['volume','music','shake','left','lowFlash','padSwap']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
+// ---- controller button setup: press the button for each action in turn (works for any pad, e.g. a sideways Joy-Con)
+{const startBtn=document.getElementById('pad-remap-start'),resetBtn=document.getElementById('pad-remap-reset'),msg=document.getElementById('pad-remap-msg');
+ const STEPS=[['attack','通常攻撃'],['special','特殊技'],['jump','ジャンプ'],['guard','カウンター（ガード・回避）'],['jump2','もう1つのジャンプ（なければ「スキップ」）']];
+ let job=null;
+ const pressedSet=g=>new Set((g&&g.buttons?Array.from(g.buttons):[]).map((b,i)=>b&&b.pressed?i:-1).filter(i=>i>=0));
+ const finish=(text)=>{if(job){cancelAnimationFrame(job.raf);job=null;}startBtn.textContent='設定する';if(msg)msg.textContent=text||'';};
+ if(startBtn)startBtn.onclick=()=>{
+  if(job){if(job.step===4){const m=job.map;m.jump=[m.jump];padMaps[job.id]={attack:m.attack,special:m.special,jump:m.jump,guard:[m.guard]};savePadMaps();finish('保存しました：'+job.name);}else finish('キャンセルしました');return;}
+  const g=currentGamepad();if(!g){if(msg)msg.textContent='コントローラーのボタンを何か押してから、もう一度「設定する」を押してね';return;}
+  job={id:g.id,name:g.id.replace(/\s*\(.*$/,''),step:0,map:{},held:pressedSet(g),raf:0};startBtn.textContent='キャンセル';
+  const ask=()=>{if(msg)msg.textContent='「'+STEPS[job.step][1]+'」にしたいボタンを押してね';if(job.step===4)startBtn.textContent='スキップ';};ask();
+  const loop=()=>{if(!job)return;const pads=navigator.getGamepads?navigator.getGamepads():[];const g2=Array.from(pads).find(p=>p&&p.id===job.id);
+   if(g2){const now=pressedSet(g2);let hit=-1;for(const i of now)if(!job.held.has(i)){hit=i;break;}job.held=now;
+    if(hit>=0){const key=STEPS[job.step][0],used=Object.values(job.map).flat();
+     if(used.includes(hit)){if(msg)msg.textContent='そのボタンはもう使っています。別のボタンを押してね';}
+     else{if(key==='jump2'){job.map.jump=[job.map.jump,hit];}else job.map[key]=hit;job.step++;
+      if(job.step>=STEPS.length){const m=job.map;padMaps[job.id]={attack:m.attack,special:m.special,jump:Array.isArray(m.jump)?m.jump:[m.jump],guard:[m.guard]};savePadMaps();finish('保存しました：'+job.name);return;}ask();}}}
+   job.raf=requestAnimationFrame(loop);};
+  job.raf=requestAnimationFrame(loop);};
+ if(resetBtn)resetBtn.onclick=()=>{finish();const g=currentGamepad();if(g&&padMaps[g.id]){delete padMaps[g.id];savePadMaps();if(msg)msg.textContent='標準の配置に戻しました';}else{padMaps={};savePadMaps();if(msg)msg.textContent='すべてのボタン設定をリセットしました';}};
+ settingsDialog.addEventListener('close',()=>finish());}
 const specialInputSelect=document.getElementById('pref-special-input');
 if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'direction';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'direction';applyPrefs();});}
 applyPrefs();
