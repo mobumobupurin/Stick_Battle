@@ -94,3 +94,5 @@ renderProfile();drawMap();if(window.STICK_WORLD_ONLINE){$('login').disabled=fals
 
 function renderGameCards(){const box=$('gameCards');if(!box)return;box.replaceChildren();for(const [id,floor,en,jp,desc,tag] of GAME_CARDS){const b=el('button',undefined,'cz-cab cz-cab-'+id);b.type='button';const topper=el('span',undefined,'cz-cab-top');topper.append(el('b',en));const screen=el('span',undefined,'cz-cab-screen');screen.append(el('i',spotIcons[id]||'◆','cz-cab-icon'),el('em',tag,'cz-cab-tag'));const info=el('span',undefined,'cz-cab-info');info.append(el('strong',jp),el('small',desc));b.append(topper,screen,info,el('span','PLAY ▶','cz-cab-play'));b.onclick=()=>{WorldSound.coin();if(p.floor!==floor)changeFloor(floor);const spot=mapdata[floor].spots.find(x=>x[0]===id);if(spot){p.x=spot[3];p.y=Math.min(93,spot[4]+12);moveDirty=true;renderAvatars();}show(id);};box.append(b);}}
 renderGameCards();
+// no long-press context menu (copy / save image) on game surfaces
+document.addEventListener('contextmenu',e=>{const t=e.target;if(t&&t.closest&&t.closest('.egm,.bj-table,.bc-table,canvas,button'))e.preventDefault();});
