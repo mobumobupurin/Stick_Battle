@@ -132,3 +132,10 @@ test('FEVER STAGE: physics decides bumper WIN, OUT blocks end the game, JP CHANC
  assert.ok(pocket!==null&&returned&&!s.over);
  assert.match(read('world/index.html'),/feversim\.js\?v=/);
 });
+
+test('coin pusher upper stage: medals ride the pusher, get held by the back edge and drop to the lower field',()=>{
+ const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
+ const s=P.create(),u={coins:[]};let fell=0;
+ for(let k=0;k<800;k++){u.coins.push({x:10+(k*31%80),y:-12+P.R+.5});for(let f=0;f<12;f++){const f0=s.face;P.step(s);fell+=P.stepUpper(u,s.face,s.face-f0,-12).length;}}
+ assert.ok(fell>600,'fell '+fell);assert.ok(u.coins.length<80);assert.ok(u.coins.every(c=>c.y>=-12+P.R-1e-6&&c.y<=s.face+0.6+1e-6));
+});
