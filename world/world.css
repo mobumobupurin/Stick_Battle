@@ -725,3 +725,7 @@ button.ry-desk:hover,button.ry-desk:focus-visible{border-color:#8a6a34;color:var
 .pu-table span.odd b{color:#ffb0f0}
 .pu-table span.fever b{color:#ffd36b}
 @media(max-width:760px){.pu-table{grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 10px}.pu-table span{font-size:10.5px}.pu-syms canvas{width:15px;height:15px}}
+
+.pu-leverbox{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1 1 140px;min-width:120px;color:#d9b56a;font:800 10px Arial,sans-serif;letter-spacing:.12em}
+.pu-lever{width:100%;accent-color:#ff4a5a;height:28px;cursor:pointer}
+@media(max-width:760px){.pu-deck .pu-leverbox{grid-column:1/-1;order:-1}}
