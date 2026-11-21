@@ -49,9 +49,11 @@ function sphere(la,lo){const v=[],pt=(i,j)=>{const t=i/la*Math.PI,p=j/lo*Math.PI
 function box(){const v=[],f=(n,a,b,c,d)=>{for(const q of [a,b,c,a,c,d])v.push(...q,...n);};
  f([0,0,1],[0,0,1],[1,0,1],[1,1,1],[0,1,1]);f([0,0,-1],[0,0,0],[0,1,0],[1,1,0],[1,0,0]);f([0,1,0],[0,1,0],[0,1,1],[1,1,1],[1,1,0]);f([0,-1,0],[0,0,0],[1,0,0],[1,0,1],[0,0,1]);f([1,0,0],[1,0,0],[1,1,0],[1,1,1],[1,0,1]);f([-1,0,0],[0,0,0],[0,0,1],[0,1,1],[0,1,0]);return new Float32Array(v);}
 function fbox(){const b=box();for(let i=0;i<b.length;i+=6)b[i+1]-=.5;return b;}
-function create(W,H,cam){
+let shared=null;
+function create(W,H,cam){if(shared&&shared.W===W&&shared.H===H&&shared.cam===cam&&!shared.gl.isContextLost())return shared.api;const api=build(W,H,cam);if(api)shared={W,H,cam,gl:api.gl,api};return api;}
+function build(W,H,cam){
  const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
- const gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true});if(!gl)return null;
+ const gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:false});if(!gl)return null;
  let prog;try{prog=gl.createProgram();gl.attachShader(prog,compile(gl,gl.VERTEX_SHADER,VS));gl.attachShader(prog,compile(gl,gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(prog));}catch(e){console.warn('Pusher3D',e);return null;}
  const U=n=>gl.getUniformLocation(prog,n),u={vp:U('uVP'),eye:U('uEye'),shine:U('uShine'),spec:U('uSpec'),alpha:U('uAlpha'),kind:U('uKind'),time:U('uTime'),metal:U('uMetal'),panel:U('uPanel'),hole:U('uHole'),flash:U('uFlash')};
  const meshes={};for(const [k,data] of Object.entries({coin:cylinder(28),ball:sphere(14,22),box:box(),fbox:fbox()})){const vao=gl.createVertexArray();gl.bindVertexArray(vao);const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
@@ -73,7 +75,7 @@ function create(W,H,cam){
   gl.uniform1i(u.kind,kind);gl.uniform1f(u.shine,shine);gl.uniform1f(u.spec,spec);gl.uniform1f(u.alpha,alpha);gl.uniform1f(u.metal,metal);gl.drawArraysInstanced(gl.TRIANGLES,0,m.count,list.length);}
  // a box item: [x,y,z, sx,sy,sz, tilt,spin, r,g,b] where (x,y,z) is the min corner
  const B3=(x0,y0,z0,x1,y1,z1,c)=>[x0,y0,z0,x1-x0,y1-y0,z1-z0,0,0,0,...c];
- return {canvas,ok:true,dispose(){try{const x=gl.getExtension('WEBGL_lose_context');x&&x.loseContext();}catch{}},render(scene){
+ return {canvas,gl,ok:true,dispose(){try{const x=gl.getExtension('WEBGL_lose_context');x&&x.loseContext();}catch{}},render(scene){
   gl.viewport(0,0,W,H);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.disable(gl.BLEND);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
   gl.useProgram(prog);gl.uniformMatrix4fv(u.vp,false,VP);gl.uniform3f(u.eye,...C);gl.uniform1f(u.time,scene.t||0);
   const S=scene,fc=S.fever?[.42,.28,.08]:S.kak?[.24,.1,.34]:[.07,.2,.34];

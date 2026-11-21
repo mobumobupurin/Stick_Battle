@@ -572,10 +572,9 @@ function buildScene(){
  const apron={flips,panel:[...apronPos(0,0,-1.2),100,AP.L,1.2,0,0,AP_TILT,.2,.07,.32],info:[AP.U0,AP.U1-AP.U0,AP.L,AP.HOLE.u,AP.HOLE.v,AP.HOLE.cup,HOLE_VIS,st.gateFlash>0?1:0]};
  return {t:st.frame,coins,balls,shadows,face,apron,sideHoles:S.SIDE_HOLES,ballZone:S.BALL_ZONE,fever:!!(st.fever||st.feverLeft>0),kak,wall:sim.wall>0,backY:BACK_Y,stageBack:STAGE_BACK,rampTop:RAMP_TOP,rampZ0:rampZ(STAGE_BACK),rampZ1:rampZ(RAMP_TOP),pusherH:PUSHER_H,wallH:WALL_H,gutter:S.GUTTER};
 }
-function ensureGL(){if(st.gl!==undefined)return st.gl;let r=null;try{if(typeof Pusher3D!=="undefined"&&!/[?&]gl=0/.test(location.search))r=Pusher3D.create(W,H,CAM);}catch(e){console.warn(e);r=null;}
- if(r){r.canvas.className='pu-canvas pu-gl';r.canvas.setAttribute('aria-hidden','true');st.cv.parentNode.insertBefore(r.canvas,st.cv);}return st.gl=r;}
+function ensureGL(){if(st.gl!==undefined)return st.gl;let r=null;try{if(typeof Pusher3D!=="undefined"&&!/[?&]gl=0/.test(location.search))r=Pusher3D.create(W,H,CAM);}catch(e){console.warn(e);r=null;}return st.gl=r;}
 function drawField(g){
- const gl=ensureGL();if(gl)gl.render(buildScene());
+ const gl=st.gl;
  const sim=st.sim,fever=!!(st.fever||st.feverLeft>0),kak=st.kak>0,live=!!(st.reel||st.fever||st.jpl||st.flash||st.rain),face=sim.face;
  // back wall
  if(!gl){quad(g,[[0,BACK_Y,0],[100,BACK_Y,0],[100,BACK_Y,WALL_H+8],[0,BACK_Y,WALL_H+8]],'#0c1826');
@@ -713,10 +712,9 @@ function draw(){
  let sdx=0,sdy=0;if(st.shake){const k=st.shake/10;sdx=(Math.random()-.5)*6*k;sdy=(Math.random()-.5)*6*k;g.translate(sdx,sdy);}
  const fever=!!(st.fever||st.feverLeft>0),kak=st.kak>0;
  const top=fever?'#2a1406':kak?'#1e0a2a':'#0a1622';
- if(ensureGL()){ // the WebGL layer sits behind this canvas: paint the backdrop on it and mirror the shake
-  const el=st.gl.canvas,bg=`linear-gradient(${top},#030609)`;if(el.dataset.bg!==bg){el.style.background=bg;el.dataset.bg=bg;}
-  const tf=st.shake?`translate(${(sdx/W*100).toFixed(2)}%,${(sdy/H*100).toFixed(2)}%)`:'';if(el.style.transform!==tf)el.style.transform=tf;}
- else{const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,top);gr.addColorStop(1,'#030609');g.fillStyle=gr;g.fillRect(-10,-10,W+20,H+20);}
+ {const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,top);gr.addColorStop(1,'#030609');g.fillStyle=gr;g.fillRect(-10,-10,W+20,H+20);}
+ // the 3D field is rendered off-screen and copied in as one image (a single visible canvas works the same on every browser)
+ {const gl=ensureGL();if(gl){try{gl.render(buildScene());g.drawImage(gl.canvas,0,0);}catch(e){console.warn('Pusher3D',e);st.gl=null;}}}
  drawLCD(g);drawField(g);if(st.jpl)drawJP(g);
  drawWinFx(g);
  if(st.roul)drawRoul(g);
@@ -726,7 +724,7 @@ function draw(){
   g.save();const y=(pp.at?pp.at[1]:420)-k*30-(pp.at?0:i*44);g.translate(pp.at?pp.at[0]:W/2,y);g.scale(sc,sc);g.fillStyle=pp.jp?'#ff4a6a':pp.fever?'#ffd36b':pp.chance?'#7ff0ff':'#fff1a0';g.font=`italic 900 ${pp.big?50:pp.small?16:pp.chance?(pp.at?20:28):36}px "Arial Black",Impact,sans-serif`;g.lineWidth=7;g.strokeStyle='#000b';g.strokeText(pp.text,0,0);g.fillText(pp.text,0,0);g.restore();g.globalAlpha=1;});
  g.restore();
 }
-function close(){if(!st)return;WorldSound.bgm(null);if(st.gl)st.gl.dispose();cancelAnimationFrame(st.raf);clearInterval(st.timer);if(st.hold)clearInterval(st.hold);
+function close(){if(!st)return;WorldSound.bgm(null);cancelAnimationFrame(st.raf);clearInterval(st.timer);if(st.hold)clearInterval(st.hold);
  // everything already won is resolved now and poured onto the field, so nothing paid for is lost
  for(const f of st.falling)st.upper.coins.push({x:Math.max(S.R,Math.min(100-S.R,f.x+f.dx)),y:STAGE_BACK+S.R+.5});
  for(const f of st.flights)if(!f.ball){st.upper.coins.push({x:f.x1,y:STAGE_BACK+S.R+.5});f.done=true;}

@@ -166,3 +166,6 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - JP balls are much heavier (BALL_W .025) and far more common (slot BALL 16→70); 3–4 sit on the field. Every ball dropped spins the (now full-screen) BALL BONUS roulette (+3/+5/+10, JP+10, BALL); balls dropped through the red centre zone (x 30–70) light a socket; 3 sockets spin FEVER CHANCE (FEVER STAGE ×3/16, BALL×2, 30–100 medals).
 - Side holes in both walls (y 48–56) let medals pressed against the wall slip out now and then (closed while the FEVER walls are up).
 - Rebalanced: MISS 1650 (確変 1532), RTP ≈ 0.9–1.0 in the (noisy) queue-capped sim.
+
+### FORTUNE PUSHER — single visible canvas (Safari fix)
+- iPad Safari showed only the WebGL layer (the 2D overlay canvas stayed blank). The WebGL field is now rendered off-screen and copied into the one visible 2D canvas each frame (`drawImage`), and one shared WebGL context is reused across openings instead of creating a new one every time.
