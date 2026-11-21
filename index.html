@@ -2682,6 +2682,7 @@ body #sc-hub-room .hub-card-name{line-height:1.25}
           <div class="howto-control-item"><span class="howto-control-key key-special">B</span><div><b>特殊技</b><small>方向＋Bで「横技・上技・下技」</small></div></div>
           <div class="howto-control-item"><span class="howto-control-key key-defense">R / ZR</span><div><b>カウンター ／ 回避</b><small>移動しながら押すと回避</small></div></div>
         </div>
+        <p class="howto-note">Proコン・ジョイコン・Xbox などに対応。A と B が逆になるときは <b>設定 →「コントローラーの A/B を入れ替え」</b>。</p>
       </div>
       <p class="howto-note">必殺技の効果はキャラごとに違う！ <b>キャラ選択画面の「特殊技・特性」</b>でチェックできます。</p>
     </section>
@@ -2735,6 +2736,7 @@ body #sc-hub-room .hub-card-name{line-height:1.25}
 <label class="setting-row">光刺激を抑える<input id="pref-lowFlash" type="checkbox"></label>
 <label class="setting-row">画面の揺れ<input id="pref-shake" type="checkbox"></label>
 <label class="setting-row">左右の操作を入れ替え<input id="pref-left" type="checkbox"></label>
+<label class="setting-row">コントローラーの A/B を入れ替え<input id="pref-padSwap" type="checkbox"></label>
 <p>iPhoneのSafariのアドレスバーが気になる場合は、共有メニュー → ホーム画面に追加 →「Webアプリとして開く」をオンにすると、ブラウザのツールバーがない表示で起動できます。ゲームプレイは横画面推奨です。</p>
 <p>スマホの基本操作：左スティックを倒しながら右のB（特殊）を押すと、上B・横B・下Bが使えます。スティックを倒さずBを押すと通常の特殊技。Bの長押しも可能です。設定から従来の個別ボタン式にも変更できます。</p>\n<p>移動エリアは触れた場所が中心になります。上＋Bで上必殺技を入力。弓使いと狂戦士の上技は上昇しません。<br>オンライン対戦中は設定を開いてもバトルが進行します。</p>
 <button id="settings-close">閉じる</button></dialog>
@@ -7611,8 +7613,12 @@ document.querySelectorAll('#bar button').forEach(b=>{if(b.id!=='btn-x')b.addEven
 
 // ========================================================
 // Switch Pro Controller / Gamepad
-// Standard Gamepad mappingを基準にする。Switch Proコンでは通常、
-// B=0 / A=1 / Y=2 / X=3 / L=4 / R=5 / ZL=6 / ZR=7 / 十字キー=12〜15 として扱われる。
+// ボタンは「本体に書いてある文字」で割り当てる: A=通常攻撃 / B=特殊 / X・Y・L・ZL=ジャンプ / R・ZR=カウンター（ガード・回避）
+// ブラウザによって番号の並びが違う:
+//  - Chrome / Edge / Firefox（標準マッピング＝位置）: 0=下 1=右 2=左 3=上 → Nintendo（Proコン・ジョイコン）は 下=B 右=A 左=Y 上=X
+//  - Safari（iPhone / iPad / Mac）は Nintendo のコントローラーも文字どおり 0=A 1=B 2=X 3=Y
+//  - Xbox などは どのブラウザでも 0=A 1=B 2=X 3=Y
+// うまく合わないときは 設定 →「コントローラーの A/B を入れ替え」。
 // ========================================================
 const GP_DEAD = 0.28;
 let activeGamepadIndex = null;
@@ -7635,6 +7641,15 @@ function currentGamepad() {
   return null;
 }
 
+function padLayout(g){
+  const id=String(g&&g.id||'').toLowerCase();
+  const nintendo=/nintendo|pro controller|joy-?con|057e/.test(id);
+  const safari=/apple/i.test(navigator.vendor||'');
+  const lay=(nintendo&&!safari&&g.mapping==='standard')?{a:1,b:0,x:3,y:2}:{a:0,b:1,x:2,y:3};
+  if(typeof prefs!=='undefined'&&prefs.padSwap){const t=lay.a;lay.a=lay.b;lay.b=t;}
+  return lay;
+}
+
 function gpButton(g, i) {
   return !!(g && g.buttons && g.buttons[i] && g.buttons[i].pressed);
 }
@@ -7646,11 +7661,11 @@ function readHuman() {
   const gx = gp && gp.axes.length > 0 ? gp.axes[0] : 0;
   const gy = gp && gp.axes.length > 1 ? gp.axes[1] : 0;
 
-  // Switch Proコン（物理ボタン表記）:
-  // Y/X/L/ZL=ジャンプ / A=攻撃 / B=特殊 / R・ZR=カウンター
-  const gpJump = gpButton(gp, 2) || gpButton(gp, 3) || gpButton(gp, 4) || gpButton(gp, 6);
-  const gpAttack = gpButton(gp, 1);
-  const gpSpecial = gpButton(gp, 0);
+  // A=通常攻撃 / B=特殊 / X・Y・L・ZL=ジャンプ / R・ZR=カウンター（ガード・回避）
+  const lay = gp ? padLayout(gp) : {a:0,b:1,x:2,y:3};
+  const gpJump = gpButton(gp, lay.x) || gpButton(gp, lay.y) || gpButton(gp, 4) || gpButton(gp, 6);
+  const gpAttack = gpButton(gp, lay.a);
+  const gpSpecial = gpButton(gp, lay.b);
   const gpCounter = gpButton(gp, 5) || gpButton(gp, 7);
 
   const gpLeft  = gx < -GP_DEAD || gpButton(gp, 14);
@@ -7982,7 +7997,7 @@ function buildMenus() {
   };
 }
 // Presentation and accessibility settings: no physics or combat parameters are modified.
-const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'direction',lowFlash:false};
+const prefs = {volume:.55,music:false,shake:true,left:false,controls:'auto',specialInput:'direction',lowFlash:false,padSwap:false};
 try { const saved=JSON.parse(localStorage.getItem('sbo.preferences')||'{}'); for(const k of Object.keys(prefs))if(typeof saved[k]===typeof prefs[k])prefs[k]=saved[k];prefs.volume=Math.max(0,Math.min(1,prefs.volume)); } catch(_) {}
 // Older installs saved 'swipe'; migrate them to directional B on upgrade.
 if(prefs.specialInput!=='classic')prefs.specialInput='direction';
@@ -8284,7 +8299,7 @@ const settingsDialog=document.getElementById('settings-dialog');let settingsPaus
 document.getElementById('b-settings').onclick=()=>{resetTouch();settingsPaused=scene==='battle'&&!online;if(settingsPaused)scene='pause';settingsDialog.showModal();};
 settingsDialog.addEventListener('close',()=>{resetTouch();if(settingsPaused){scene='battle';simAcc=0;}settingsPaused=false;});
 document.getElementById('settings-close').onclick=()=>settingsDialog.close();
-for(const key of ['volume','music','shake','left','lowFlash']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
+for(const key of ['volume','music','shake','left','lowFlash','padSwap']){const el=document.getElementById('pref-'+key);if(key==='volume')el.value=prefs.volume;else el.checked=prefs[key];el.oninput=()=>{prefs[key]=key==='volume'?Number(el.value):el.checked;applyPrefs();};}
 const specialInputSelect=document.getElementById('pref-special-input');
 if(specialInputSelect){specialInputSelect.value=prefs.specialInput==='classic'?'classic':'direction';specialInputSelect.addEventListener('change',e=>{resetTouch();prefs.specialInput=e.target.value==='classic'?'classic':'direction';applyPrefs();});}
 applyPrefs();

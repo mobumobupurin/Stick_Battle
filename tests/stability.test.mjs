@@ -90,8 +90,15 @@ test('keyboard, touch and gamepad edge inputs clear on blur/cancellation',()=>{
  g.dispatch('focus');g.run("prefs.specialInput='classic'");g.get('btn-s').dispatch('pointerdown',{pointerId:7});g.run('readHuman();byId(myId).sph=10;');
  assert.equal(g.run('hin.s'),true);
  g.dispatch('pointercancel',{pointerId:7});g.run('readHuman();');assert.equal(g.run('hin.s'),false);assert.equal(g.run('byId(myId).sph'),0);
- g.ctx.navigator.getGamepads=()=>[{connected:true,index:0,axes:[1,0],buttons:Array.from({length:16},(_,i)=>({pressed:i===1}))}];
+ g.ctx.navigator.getGamepads=()=>[{connected:true,index:0,id:'Pro Controller (Vendor: 057e Product: 2009)',mapping:'standard',axes:[1,0],buttons:Array.from({length:16},(_,i)=>({pressed:i===1}))}];
  g.run('readHuman();');assert.equal(g.run('hin.r&&hin.a'),true);
+ // Safari reports Nintendo pads by label (0=A), Xbox pads are 0=A everywhere; the A/B swap setting flips them
+ const pad=(id,b)=>()=>[{connected:true,index:0,id,mapping:'standard',axes:[0,0],buttons:Array.from({length:16},(_,i)=>({pressed:i===b}))}];
+ g.run('neutralHuman(true);');g.ctx.navigator.vendor='Apple Computer, Inc.';g.ctx.navigator.getGamepads=pad('Joy-Con (L/R)',0);g.run('readHuman();');assert.equal(g.run('hin.a&&!hin.s'),true);
+ g.run('neutralHuman(true);');g.ctx.navigator.vendor='Google Inc.';g.ctx.navigator.getGamepads=pad('Xbox Wireless Controller',0);g.run('readHuman();');assert.equal(g.run('hin.a&&!hin.s'),true);
+ g.run('neutralHuman(true);');g.run('prefs.padSwap=true');g.ctx.navigator.getGamepads=pad('Xbox Wireless Controller',0);g.run('readHuman();');assert.equal(g.run('hin.s&&!hin.a'),true);g.run('prefs.padSwap=false');
+ g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Pro Controller',5);g.run('readHuman();');assert.equal(g.run('raw.c'),true);
+ g.run('neutralHuman(true);');g.ctx.navigator.getGamepads=pad('Pro Controller',4);g.run('readHuman();');assert.equal(g.run('raw.j'),true);
 });
 
 test('Naruto short special preserves rasenshuriken and hold summons once per press and allows a second clone',()=>{

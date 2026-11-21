@@ -92,7 +92,7 @@ test('keyboard, touch, gamepad and blur reset use the shared input safely',()=>{
  run('readHuman()');assert.equal(run('hin.ac'),1,'held attack must not generate repeated press edges');
  handlers.get('blur')();assert.equal(run('hin.a'),false);assert.equal(run('heldKeys.size'),0);
  handlers.get('focus')();run('touch.s=true;readHuman()');assert.equal(run('hin.s'),true);
- run('resetTouch();navigator.getGamepads=()=>[{connected:true,index:0,axes:[1,0],buttons:[{pressed:true}]}];readHuman()');
+ run('resetTouch();navigator.getGamepads=()=>[{connected:true,index:0,id:"Pro Controller (Vendor: 057e Product: 2009)",mapping:"standard",axes:[1,0],buttons:[{pressed:true}]}];readHuman()');
  assert.equal(run('hin.r&&hin.s'),true);
  run('settingsDialog.open=true;readHuman()');assert.equal(run('hin.r||hin.s'),false);
 });

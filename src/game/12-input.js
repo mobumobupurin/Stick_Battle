@@ -91,8 +91,12 @@ document.querySelectorAll('#bar button').forEach(b=>{if(b.id!=='btn-x')b.addEven
 
 // ========================================================
 // Switch Pro Controller / Gamepad
-// Standard Gamepad mappingを基準にする。Switch Proコンでは通常、
-// B=0 / A=1 / Y=2 / X=3 / L=4 / R=5 / ZL=6 / ZR=7 / 十字キー=12〜15 として扱われる。
+// ボタンは「本体に書いてある文字」で割り当てる: A=通常攻撃 / B=特殊 / X・Y・L・ZL=ジャンプ / R・ZR=カウンター（ガード・回避）
+// ブラウザによって番号の並びが違う:
+//  - Chrome / Edge / Firefox（標準マッピング＝位置）: 0=下 1=右 2=左 3=上 → Nintendo（Proコン・ジョイコン）は 下=B 右=A 左=Y 上=X
+//  - Safari（iPhone / iPad / Mac）は Nintendo のコントローラーも文字どおり 0=A 1=B 2=X 3=Y
+//  - Xbox などは どのブラウザでも 0=A 1=B 2=X 3=Y
+// うまく合わないときは 設定 →「コントローラーの A/B を入れ替え」。
 // ========================================================
 const GP_DEAD = 0.28;
 let activeGamepadIndex = null;
@@ -115,6 +119,15 @@ function currentGamepad() {
   return null;
 }
 
+function padLayout(g){
+  const id=String(g&&g.id||'').toLowerCase();
+  const nintendo=/nintendo|pro controller|joy-?con|057e/.test(id);
+  const safari=/apple/i.test(navigator.vendor||'');
+  const lay=(nintendo&&!safari&&g.mapping==='standard')?{a:1,b:0,x:3,y:2}:{a:0,b:1,x:2,y:3};
+  if(typeof prefs!=='undefined'&&prefs.padSwap){const t=lay.a;lay.a=lay.b;lay.b=t;}
+  return lay;
+}
+
 function gpButton(g, i) {
   return !!(g && g.buttons && g.buttons[i] && g.buttons[i].pressed);
 }
@@ -126,11 +139,11 @@ function readHuman() {
   const gx = gp && gp.axes.length > 0 ? gp.axes[0] : 0;
   const gy = gp && gp.axes.length > 1 ? gp.axes[1] : 0;
 
-  // Switch Proコン（物理ボタン表記）:
-  // Y/X/L/ZL=ジャンプ / A=攻撃 / B=特殊 / R・ZR=カウンター
-  const gpJump = gpButton(gp, 2) || gpButton(gp, 3) || gpButton(gp, 4) || gpButton(gp, 6);
-  const gpAttack = gpButton(gp, 1);
-  const gpSpecial = gpButton(gp, 0);
+  // A=通常攻撃 / B=特殊 / X・Y・L・ZL=ジャンプ / R・ZR=カウンター（ガード・回避）
+  const lay = gp ? padLayout(gp) : {a:0,b:1,x:2,y:3};
+  const gpJump = gpButton(gp, lay.x) || gpButton(gp, lay.y) || gpButton(gp, 4) || gpButton(gp, 6);
+  const gpAttack = gpButton(gp, lay.a);
+  const gpSpecial = gpButton(gp, lay.b);
   const gpCounter = gpButton(gp, 5) || gpButton(gp, 7);
 
   const gpLeft  = gx < -GP_DEAD || gpButton(gp, 14);
