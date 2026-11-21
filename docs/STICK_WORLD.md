@@ -230,3 +230,4 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - The countdown sits right on the locked hole: "JP まで あと / N / 回", popping on every hit and flashing in the last 10; the top bar also reads "JP CHANCE まで あと N 回".
 - The opening shield (SAFE) is 20 s (was 8 s) so 50 hits stays reachable: P(JP CHANCE) ≈ 20% per game, EV ≈ 210 (unchanged).
 - Update: 50 hits + 20 s SAFE lost the tension. SAFE is back to 8 s and the hole opens after 35 hits (all bumpers still pay 2, countdown stays on the hole): P(JP CHANCE) ≈ 22% per game, EV ≈ 190.
+- Fix: roulettes and FEVER GAMEs share one queue handled in order — a ball's roulette, then the FEVER GAME its socket completed, then the roulettes of later balls (before, every pending roulette ran first and FEVER GAMEs could wait a long time).
