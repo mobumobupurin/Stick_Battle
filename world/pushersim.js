@@ -46,6 +46,18 @@ const PusherSim=(()=>{
     if(a.ball){c.splice(i,1);if(side&&!(s.wall>0))c.push({x:30+Math.random()*40,y:s.face+BALL_R+1,ball:true,fresh:18});else balls++;continue;}
     if(!(s.wall>0)&&side)lost++;else front++;c.splice(i,1);}}
   return {front,lost,balls};}
- return {R,BALL_R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,WALL_FRAMES,JP_BASE,JP_MAX,JP_RATE,KAKUHEN_SPINS,FEVER_ROUNDS,FEVER_PAYS,SYMBOLS,LOTTERY,LOTTERY_KAKUHEN,STAGE1,STAGE2,lotteryTotal,lottery,pick,total,create,faceAt,drop,scatter,addBall,step};
+ // Upper stage (the pusher's top surface). Medals ride with the pusher; when it pulls back, the fixed back edge holds them,
+ // so they shuffle forward and drop off the front edge onto the lower field. back = y of that fixed edge.
+ function stepUpper(u,face,dface,back){const c=u.coins,n=c.length,D=2*R,D2=D*D;
+  for(const a of c)a.y+=dface;
+  for(let it=0;it<3;it++){
+   for(const a of c)if(a.y<back+R)a.y=back+R;
+   for(let i=0;i<n;i++){const a=c[i];for(let j=i+1;j<n;j++){const b=c[j];const dx=b.x-a.x,dy=b.y-a.y;if(dx>D||dx<-D||dy>D||dy<-D)continue;const d2=dx*dx+dy*dy;if(d2>=D2)continue;
+     const d=Math.sqrt(d2)||0.001,o=(D-d)/2,nx=d2?dx/d:1,ny=d2?dy/d:0;const pa=a.y<=back+R+0.01,pb=b.y<=back+R+0.01;const wa=pa&&!pb?0:pb&&!pa?2:1,wb=2-wa;
+     a.x-=nx*o*wa;a.y-=ny*o*wa;b.x+=nx*o*wb;b.y+=ny*o*wb;}}
+   for(const a of c){if(a.x<R)a.x=R;else if(a.x>100-R)a.x=100-R;}
+  }
+  const fall=[];for(let i=c.length-1;i>=0;i--){if(c[i].y>face+0.6){fall.push(c[i].x);c.splice(i,1);}}return fall;}
+ return {R,BALL_R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,WALL_FRAMES,JP_BASE,JP_MAX,JP_RATE,KAKUHEN_SPINS,FEVER_ROUNDS,FEVER_PAYS,SYMBOLS,LOTTERY,LOTTERY_KAKUHEN,STAGE1,STAGE2,lotteryTotal,lottery,pick,total,create,faceAt,drop,scatter,addBall,step,stepUpper};
 })();
 if(typeof module!=='undefined')module.exports=PusherSim;else globalThis.PusherSim=PusherSim;
