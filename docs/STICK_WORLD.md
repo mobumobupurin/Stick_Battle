@@ -179,3 +179,11 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - Every JP ball that drops off the front lights a socket (no zone any more), then spins BALL BONUS. 3 sockets → FEVER STAGE.
 - A dropped ball no longer vanishes: it falls onto the payout apron, bounces, rolls down the slope (3D, and in the 2D fallback) and into the tray; its roulette starts once it has landed.
 - Rebalanced: slot BALL 30→20 (確変 60→40), MISS 1720 (確変 1652). Sim RTP ≈ 0.95.
+
+### FORTUNE PUSHER — cut-ins and trickling payouts
+- Cut-ins (full-screen, ~3 s) so the big moments don't start out of nowhere:
+  - FEVER STAGE: the three balls slam in one by one, flash, FEVER / STAGE title with rays, READY → GO!!
+  - FEVER GAME (777): three 7s spin and stop one by one, FEVER GAME 5 ROUNDS (× multiplier), golden walls rise, WALL UP.
+  - JACKPOT (in the FEVER STAGE, which pauses): heartbeat ring, JACKPOT slam, the amount rolls up under a coin rain, "TOTAL に加算".
+  - FEVER STAGE end: RESULT screen counting the TOTAL up (JACKPOT ×n), then the payout starts.
+- Payouts of 100+ pour the first 50 at once, then keep trickling while the counter ticks up.
