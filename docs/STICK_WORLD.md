@@ -152,3 +152,7 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - Win: full-screen white flash, expanding rings from the LCD, rainbow lamps, bouncing reels, fanfare.
 - ×2 / ×4 holds: electric arcs run round the LCD with a multiplier orb while they spin; on a win the base result shows, "×m" slams in (flash, shake, boom) and the number counts up to the multiplied pay before it is paid out.
 - JP balls: 3 balls dropped off the front start a FEVER STAGE (sockets on the right of the LCD, saved between sessions). BALL weight tripled (8→24, 確変 16→48) so FEVER STAGEs come about as often as before; RTP ≈ 92% in the queue-capped sim.
+
+### FORTUNE PUSHER — BALL BONUS roulette
+- Every JP ball that drops off the front (besides lighting a socket) queues a BALL BONUS roulette on the LCD: 16 equal segments — +5 ×7, +10 ×4, +20 ×2, JP+30 ×2 (adds 30 to the progressive JACKPOT), BALL+1 ×1 (lights another socket; can complete the 3 for a FEVER STAGE).
+- Roulettes run before the next slot spin / FEVER STAGE. Pending ones are resolved on close. Adds ~1–2% RTP (sim ≈ 93%).
