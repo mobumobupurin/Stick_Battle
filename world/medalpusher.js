@@ -229,7 +229,7 @@ const JP_ORDER=['BLUE','GOLD','RED'];
 function loadJps(v){const o={};for(const k in JPS){const x=v&&v.jps&&Number.isFinite(v.jps[k])?v.jps[k]:k==='RED'&&v&&Number.isFinite(v.jp)?v.jp:JPS[k].base;o[k]=Math.max(JPS[k].base,Math.min(JPS[k].max,x));}return o;}
 const BALLS_NEED=3,sockPos=i=>[W-66+i*18,62+120];
 function addSocket(){st.ballStock++;st.sockFx=30;const sp=sockPos(st.ballStock-1);burst(sp[0],sp[1],34,'#ff6a80');WorldSound.bonus();
- if(st.ballStock>=BALLS_NEED){st.ballStock=0;st.balls++;st.shake=24;st.heatFx=18;st.winFx={t:0,big:true};WorldSound.fanfare();for(let i=0;i<3;i++){const q=sockPos(i);burst(q[0],q[1],40,'#ffd36b');}}
+ if(st.ballStock>=BALLS_NEED){st.ballStock=0;st.balls++;st.roulQ.push('stage');st.shake=24;st.heatFx=18;st.winFx={t:0,big:true};WorldSound.fanfare();for(let i=0;i<3;i++){const q=sockPos(i);burst(q[0],q[1],40,'#ffd36b');}}
  else{st.shake=Math.max(st.shake,8);WorldSound.tease();}save();}
 /* ---------- roulettes (16 equal segments, so what you see is the real chance) ----------
    BALL BONUS: every JP ball that drops off the front. */
@@ -525,7 +525,8 @@ function tick(){
  if(st.roul)stepRoul();
  if(st.cut)stepCut();
  const idle=!st.reel&&!st.fever&&!st.jpl&&!st.payout&&!st.winSeq&&!st.roul&&!st.cut&&!st.freeze;
- if(idle){if(st.roulQ.length){if(!st.ballFalls.length)startRoul();}else if(st.balls>0)startCut('stage',{},startJP);else if(st.feverLeft>0)startFeverRound();else if(st.queue.length){startReel(st.queue.shift());}}
+ // one queue, handled in the order things happened: a ball's roulette, then the FEVER GAME its socket completed, then later balls
+ if(idle){if(st.roulQ.length){if(st.roulQ[0]==='stage'){st.roulQ.shift();if(st.balls>0)startCut('stage',{},startJP);}else if(!st.ballFalls.length)startRoul();}else if(st.balls>0)startCut('stage',{},startJP);else if(st.feverLeft>0)startFeverRound();else if(st.queue.length){startReel(st.queue.shift());}}
  if(st.freeze){const f=st.freeze;f.t++;if(f.t===f.len){st.freeze=null;st.heatFx=18;st.shake=30;WorldSound.boom();WorldSound.fanfare();burst(W/2,148,140,'#ffffff');st.winFx={t:0,big:true,rainbow:true};if(st.reel)heatUp(4);}}
  else if(st.reel)stepReel();
  if(st.banner&&++st.banner.t>(st.banner.big?120:80))st.banner=null;
@@ -901,7 +902,7 @@ function close(){if(!st)return;WorldSound.bgm(null);cancelAnimationFrame(st.raf)
  const jpVal=kind=>{const n=Math.floor(st.jps[kind]);st.jps[kind]=JPS[kind].base;return n;};
  if(st.jpl){const j=st.jpl;rain+=j.total;let g=0;while(!j.over&&g++<60*400){FS.step(j,Math.random);for(const e of j.events){if(e.type==='hit')rain+=e.pay;if(e.type==='pocket'){if(FS.isJP(e.value))rain+=jpVal(e.value);else if(typeof e.value==='number')rain+=e.value;}}}}
  {const q=st.roulQ.slice();st.roulQ=[];if(st.roul){const r=st.roul,v=ROULS[r.kind].segs[r.i];if(r.t<ROUL_T)q.unshift(r.kind);else if(r.t<ROUL_T+40&&/^\d+$/.test(v))rain+=+v;st.roul=null;}
-  for(let k=0;k<q.length;k++){const kind=q[k],v=ROULS[kind].segs[rnd(16)];rain+=roulPrize(kind,v,false);}}
+  for(let k=0;k<q.length;k++){const kind=q[k];if(!ROULS[kind])continue;const v=ROULS[kind].segs[rnd(16)];rain+=roulPrize(kind,v,false);}}
  for(let i=0;i<st.balls;i++)rain+=FS.simulate(Math.random,jpVal).total;
  const feverPay=()=>{let t=0;for(let i=0;i<S.FEVER_ROUNDS;i++)t+=S.FEVER_PAYS[rnd(S.FEVER_PAYS.length)];return t;};
  const apply=(name,add,grant,m=1)=>{const kb=st.kak>0?S.KAK_BONUS*m:0;if(name==='MISS')return;rain+=kb;if(name==='BALL'){for(let b=0;b<m;b++)S.addBall(st.sim);}else if(name==='SEVEN'){st.kak++;rain+=feverPay()*m;}else{rain+=add*m;st.kak=grant?st.kak+1:0;}};
