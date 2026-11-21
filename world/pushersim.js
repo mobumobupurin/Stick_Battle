@@ -2,14 +2,15 @@
 // STICK CASINO coin pusher: a small 2D field (top view) plus the lottery tables. Rendering lives in medalpusher.js.
 // Units: field is 100 wide, the front edge is at y=100. The pusher face moves between FACE_MIN and FACE_MAX.
 const PusherSim=(()=>{
+ const SIDE_HOLES=[[48,56]],SIDE_GAP=.2,SIDE_P=.0048,BALL_W=.025,BALL_ZONE=[30,70],KAK_BONUS=10,RELOT=[25,30],CHAIN_BONUS=[5,7,10,15,20,25];
  const R=4.2,BALL_R=6.4,FACE_MIN=10,FACE_MAX=27,PERIOD=150,GUTTER=18,EDGE=100;
  const CHANCE_RATE=0.028,WALL_FRAMES=900,JP_BASE=400,JP_MAX=2000,JP_RATE=0.05,KAKUHEN_SPINS=10;
  const FEVER_ROUNDS=5,FEVER_PAYS=[30,30,40,50,100];
  // CHECKER slot (3 reels): [result, medals rained onto the field, weight]. BALL puts a JP ball on the field; SEVEN starts FEVER.
  // Number slot 1–7 + BALL: [result, medals rained, weight, 確変 spins granted]. Odd numbers also start 確変; 777 is FEVER.
- const LOTTERY=[['MISS',0,1520,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,16,0],['SEVEN',0,3,0]];
+ const LOTTERY=[['MISS',0,1650,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,70,0],['SEVEN',0,3,0]];
  // after a FEVER the slot runs in 確変 (better odds) for KAKUHEN_SPINS spins
- const LOTTERY_KAKUHEN=[['MISS',0,1456,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,32,0],['SEVEN',0,6,0]];
+ const LOTTERY_KAKUHEN=[['MISS',0,1532,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,140,0],['SEVEN',0,6,0]];
  // reel faces: the digits 1–7 and the JP ball
  const SYMBOLS=['1','2','3','4','5','6','SEVEN','BALL'];
  // JP ball lottery: stage 1 (12 equal pockets) — medals, BALL (the ball goes back onto the field) or UP to stage 2 (6 pockets) with the JP
@@ -37,15 +38,17 @@ const PusherSim=(()=>{
      // the piece nearer the pusher is pinned against it, so the front piece takes the whole push
      const pa=a.y<=s.face+ra+0.01,pb=b.y<=s.face+rad(b)+0.01;let wa=pa&&!pb?0:pb&&!pa?2:1;
      // a ball is heavy: coins move out of its way more than it moves
-     if(wa===1&&a.ball!==b.ball)wa=a.ball?0.4:1.6;const wb=2-wa;
+     if(wa===1&&a.ball!==b.ball)wa=a.ball?BALL_W:2-BALL_W;const wb=2-wa;
      a.x-=nx*o*wa;a.y-=ny*o*wa;b.x+=nx*o*wb;b.y+=ny*o*wb;}}
    for(const a of c){const r=rad(a);if(a.x<r)a.x=r;else if(a.x>100-r)a.x=100-r;}
   }
-  if(s.wall>0)s.wall--;let front=0,lost=0,balls=0;
+  if(s.wall>0)s.wall--;let front=0,lost=0,balls=0,side=0;
+  // side holes in the walls: a medal pressed against the wall there slips out (balls are too big)
+  for(let i=c.length-1;i>=0;i--){const a=c[i];if(a.ball||s.wall>0)continue;if((a.x<=R+SIDE_GAP||a.x>=100-R-SIDE_GAP)&&SIDE_HOLES.some(([y0,y1])=>a.y>=y0&&a.y<=y1)&&Math.random()<SIDE_P){a.side=true;c.splice(i,1);lost++;side++;}}
   for(let i=c.length-1;i>=0;i--){const a=c[i];if(a.fresh)a.fresh--;if(a.y>EDGE){const side=a.x<GUTTER||a.x>100-GUTTER;
-    if(a.ball){c.splice(i,1);if(side&&!(s.wall>0))c.push({x:30+Math.random()*40,y:s.face+BALL_R+1,ball:true,fresh:18});else balls++;continue;}
+    if(a.ball){c.splice(i,1);if(side&&!(s.wall>0))c.push({x:30+Math.random()*40,y:s.face+BALL_R+1,ball:true,fresh:18});else{balls++;if(s.ballXs)s.ballXs.push(a.x);}continue;}
     if(!(s.wall>0)&&side)lost++;else{front++;if(s.frontXs)s.frontXs.push(a.x);}c.splice(i,1);}}
-  return {front,lost,balls};}
+  return {front,lost,balls,side};}
  // Upper stage (the pusher's top surface). Medals ride with the pusher; when it pulls back, the fixed back edge holds them,
  // so they shuffle forward and drop off the front edge onto the lower field. back = y of that fixed edge.
  function stepUpper(u,face,dface,back){const c=u.coins,n=c.length,D=2*R,D2=D*D;
@@ -83,6 +86,6 @@ const PusherSim=(()=>{
   for(let i=0;i<cs.length;i++)for(let j=i+1;j<cs.length;j++){const p=cs[i],q=cs[j],dx=q.u-p.u,dy=q.v-p.v,d=Math.hypot(dx,dy);if(d<2*R&&d>1e-6){const nx=dx/d,ny=dy/d,o=(2*R-d)/2;p.u-=nx*o;p.v-=ny*o;q.u+=nx*o;q.v+=ny*o;const vn=(q.vu-p.vu)*nx+(q.vv-p.vv)*ny;if(vn<0){const k=vn*.65;p.vu+=k*nx;p.vv+=k*ny;q.vu-=k*nx;q.vv-=k*ny;}}}
   for(let i=cs.length-1;i>=0;i--){const c=cs[i];if(Math.hypot(c.u-A.HOLE.u,c.v-A.HOLE.v)<A.HOLE.r){ev.hits++;ev.sunk.push({u:c.u,v:c.v});cs.splice(i,1);}else if(c.v>A.L+R){ev.out++;cs.splice(i,1);}}
   return ev;}
- return {APRON,createApron,feedApron,flipSeg,stepApron,R,BALL_R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,WALL_FRAMES,JP_BASE,JP_MAX,JP_RATE,KAKUHEN_SPINS,FEVER_ROUNDS,FEVER_PAYS,SYMBOLS,LOTTERY,LOTTERY_KAKUHEN,STAGE1,STAGE2,lotteryTotal,lottery,pick,total,create,faceAt,drop,scatter,addBall,step,stepUpper};
+ return {BALL_ZONE,SIDE_HOLES,SIDE_GAP,SIDE_P,BALL_W,KAK_BONUS,RELOT,CHAIN_BONUS,APRON,createApron,feedApron,flipSeg,stepApron,R,BALL_R,FACE_MIN,FACE_MAX,PERIOD,GUTTER,EDGE,CHANCE_RATE,WALL_FRAMES,JP_BASE,JP_MAX,JP_RATE,KAKUHEN_SPINS,FEVER_ROUNDS,FEVER_PAYS,SYMBOLS,LOTTERY,LOTTERY_KAKUHEN,STAGE1,STAGE2,lotteryTotal,lottery,pick,total,create,faceAt,drop,scatter,addBall,step,stepUpper};
 })();
 if(typeof module!=='undefined')module.exports=PusherSim;else globalThis.PusherSim=PusherSim;

@@ -89,6 +89,8 @@ function create(W,H,cam){
   draw('box',[B3(0,99.4,-.4,100,100.6,.8,[.95,.78,.3])],0,80,.9,1);
   // OUT zones / FEVER walls
   const out=S.wall?[.9,.75,.3]:[.55,.08,.14];draw('box',[B3(0,86,0,S.gutter,100,.05,out),B3(100-S.gutter,86,0,100,100,.05,out)],0,8,.05,1);
+  if(S.sideHoles){const hl=[];for(const [y0,y1] of S.sideHoles){hl.push(B3(-1.6,y0,-.1,.15,y1,4.2,[.01,.01,.02]),B3(99.85,y0,-.1,101.6,y1,4.2,[.01,.01,.02]));hl.push(B3(0,y0,.01,3.2,y1,.08,[.02,.02,.04]),B3(96.8,y0,.01,100,y1,.08,[.02,.02,.04]));hl.push(B3(-1.7,y0-.6,4.2,.2,y1+.6,4.9,[.95,.75,.3]),B3(99.8,y0-.6,4.2,101.7,y1+.6,4.9,[.95,.75,.3]));}draw('box',hl,0,40,.4,1);}
+  if(S.ballZone)draw('box',[B3(S.ballZone[0],99.3,.75,S.ballZone[1],100.7,1.05,[1,.35,.45])],0,80,.9,1);
   if(S.wall)draw('box',[B3(S.gutter-.8,84,0,S.gutter+.8,100,7,[1,.85,.4]),B3(100-S.gutter-.8,84,0,100-S.gutter+.8,100,7,[1,.85,.4])],0,60,.6,1);
   gl.enable(gl.CULL_FACE);
   // medals and balls
