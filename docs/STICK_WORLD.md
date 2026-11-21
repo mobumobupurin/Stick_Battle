@@ -146,3 +146,9 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - When the 8 holds are full, further START entries go round the lamps again: 2周目 turns holds ×2 from the left, 3周目 turns them ×4. Only when all 8 are ×4 does an entry become STOCK MAX.
 - A hold's multiplier applies when it wins: number wins ×m, 777 makes every FEVER GAME round pay ×m, JP BALL drops m balls. The LCD shows "×m CHANCE" while that hold spins.
 - Slot MISS weight raised to 1450 (確変 1394) so RTP stays ~93% in the queue-capped sim (mean multiplier ~1.6 in continuous play).
+
+### FORTUNE PUSHER — presentation without words, 3 JP balls
+- Heat (how hot a spin is) is shown only with colour, light and motion: a glowing LCD frame and lamp chase in blue → green → red → rainbow, breathing faster as it heats up, a flash + shake + burst every time it steps up, rotating rays and rising embers from red, rainbow everything at the top. Reach: the matched reels glow in the heat colour. Blackout: a heartbeat ring. The old 予告/REACH/CHANCE UP/SLIP/全回転/復活 word banners are gone.
+- Win: full-screen white flash, expanding rings from the LCD, rainbow lamps, bouncing reels, fanfare.
+- ×2 / ×4 holds: electric arcs run round the LCD with a multiplier orb while they spin; on a win the base result shows, "×m" slams in (flash, shake, boom) and the number counts up to the multiplied pay before it is paid out.
+- JP balls: 3 balls dropped off the front start a FEVER STAGE (sockets on the right of the LCD, saved between sessions). BALL weight tripled (8→24, 確変 16→48) so FEVER STAGEs come about as often as before; RTP ≈ 92% in the queue-capped sim.
