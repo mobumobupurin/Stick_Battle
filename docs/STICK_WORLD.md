@@ -174,3 +174,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - BALL BONUS roulette: +10 ×7, +20 ×4, +30 ×2, +50 ×1, BALL ×3 (no JP-up segment). 3 lit sockets start the FEVER STAGE straight away (no FEVER CHANCE roulette).
 - JACKPOT starts at 500. The "あと少し" ring over balls near the edge is gone. The win count-up shows "WIN / 20枚" without the exclamation mark.
 - Rebalanced: slot BALL 70→30 (確変 140→60), BALL_W .015 (heavier), socket zone x 35–65, MISS 1550 (確変 1472). Sim RTP ≈ 0.88–0.92, ~2 balls on the field.
+
+### FORTUNE PUSHER — every ball counts, balls visibly fall
+- Every JP ball that drops off the front lights a socket (no zone any more), then spins BALL BONUS. 3 sockets → FEVER STAGE.
+- A dropped ball no longer vanishes: it falls onto the payout apron, bounces, rolls down the slope (3D, and in the 2D fallback) and into the tray; its roulette starts once it has landed.
+- Rebalanced: slot BALL 30→20 (確変 60→40), MISS 1720 (確変 1652). Sim RTP ≈ 0.95.
