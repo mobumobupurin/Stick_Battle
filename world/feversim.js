@@ -5,7 +5,7 @@
    Every 100 WIN opens the JPC hole; a ball that enters it plays the JP CHANCE dish (a rolling-ball croon), then returns to the stage.
    Results come from the simulation itself — nothing is decided in advance. Units: stage 100 x 150, y grows downward, 60 steps/s. */
 const FeverSim=(()=>{
- const W=100,H=150,BALL_R=3.2,G=0.05,KICK=2.35,MAX_V=3.6,BLOCK_Y=138,BLOCKS=6,BLOCK_HP=2,SHIELD_FRAMES=480,GATE_WIN=40,ALLCLEAR=30,MAX_FRAMES=60*150;
+ const W=100,H=150,BALL_R=3.2,G=0.05,KICK=2.35,MAX_V=3.6,BLOCK_Y=138,BLOCKS=6,BLOCK_HP=2,SHIELD_FRAMES=480,GATE_WIN=40,ALLCLEAR=30,REVIVE_P=.2,MAX_FRAMES=60*150;
  const BUMPERS=[{x:22,y:56,r:7,pay:1},{x:78,y:56,r:7,pay:1},{x:50,y:80,r:8,pay:2},{x:24,y:102,r:6.5,pay:1},{x:76,y:102,r:6.5,pay:1},{x:50,y:118,r:5.5,pay:1}];
  const HOLE={x:50,y:46,r:6.8};
  // JP CHANCE: two rolling-ball dishes (croons). The ball circles a bowl, bounces off pins and drops into a hole only when it is slow enough
@@ -40,7 +40,10 @@ const FeverSim=(()=>{
      if(s.shield>0)s.events.push({type:'shield'});else{s.blocks[i]--;s.events.push({type:'block',i,hp:s.blocks[i]});
      // 全消し: every block broken while the ball is still alive → bonus and all blocks come back
      if(s.blocks.every(x=>x<=0)&&s.t<MAX_FRAMES){s.blocks.fill(BLOCK_HP);s.win+=ALLCLEAR;s.shield=Math.max(s.shield,120);s.events.push({type:'allclear',pay:ALLCLEAR});}}}}
-   if(b.y>H){s.over=true;s.events.push({type:'out'});return s;}
+   if(b.y>H){
+    // lost through the only broken block: 20% revival
+    if(s.t<MAX_FRAMES&&s.blocks.filter(x=>x<=0).length===1&&rnd()<REVIVE_P){launch(s,rnd);s.shield=Math.max(s.shield,150);s.events.push({type:'revive'});return s;}
+    s.over=true;s.events.push({type:'out'});return s;}
   }
   if(!s.gateOpen&&s.t<MAX_FRAMES&&s.win-s.gateFrom>=GATE_WIN){s.gateOpen=true;s.events.push({type:'gate'});}
   if(s.t>MAX_FRAMES){if(s.gateOpen)s.gateOpen=false;if(s.t%60===0){const i=s.blocks.findIndex(x=>x>0);if(i>=0)s.blocks[i]=0;}}
@@ -75,6 +78,6 @@ const FeverSim=(()=>{
  // run a whole stage headless; jpValue() returns the JP amount and is called on each JP
  function simulate(rnd,jpValue){const s=create(rnd);let pay=0,jps=0,jpcs=0,jpPaid=0;while(!s.over&&s.t<MAX_FRAMES*2){step(s,rnd);for(const e of s.events){if(e.type==='jpc')jpcs++;if(e.type==='pocket'){if(isJP(e.value)){jps++;const v=jpValue?jpValue(e.value):1000;jpPaid+=v;}else if(typeof e.value==='number')pay+=e.value;}}}
   return {win:s.win,pay,jps,jpcs,jpPaid,total:s.win+pay+jpPaid,frames:s.t};}
- return {ALLCLEAR,JP_KINDS,isJP,W,H,BALL_R,BLOCK_Y,BLOCKS,BLOCK_HP,SHIELD_FRAMES,GATE_WIN,BUMPERS,HOLE,DISHES,DISH_R,POCKETS,holePos,pinPos,create,launch,step,simulate};
+ return {REVIVE_P,ALLCLEAR,JP_KINDS,isJP,W,H,BALL_R,BLOCK_Y,BLOCKS,BLOCK_HP,SHIELD_FRAMES,GATE_WIN,BUMPERS,HOLE,DISHES,DISH_R,POCKETS,holePos,pinPos,create,launch,step,simulate};
 })();
 if(typeof module!=='undefined')module.exports=FeverSim;else globalThis.FeverSim=FeverSim;
