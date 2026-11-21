@@ -198,3 +198,4 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - JP CHANCE now has three dishes: 1st (UP ×3, 30/50/100, BLOCK), 2nd (BLUE JP, RED JP, UP ×3, 100/200/300), 3rd (GOLD JP, 100/200/300/500).
 - Three progressive jackpots on the topper: BLUE (500→2500), RED (500→3000), GOLD (1000→6000); every medal in adds to all three. The JACKPOT cut-in shows the colour and name. Saves migrate the old single JP into RED.
 - Per FEVER GAME: P(BLUE) ≈ 1.2%, P(RED) ≈ 1.3%, P(GOLD) ≈ 0.4%; EV ≈ 100. MISS 1900 (確変 1807) to compensate.
+- Update (after checking Spin Fever player reports: about 1 in 5 JP once on the dish): the JP CHANCE hole now opens at WIN 40 → P(JP CHANCE) ≈ 25% per FEVER GAME, JP per JP CHANCE ≈ 22% (BLUE 2.5%, RED 2%, GOLD ≈ 1% per game), EV ≈ 150. Slot BALL 45→40 (確変 80), 確変 MISS 1812.

@@ -8,9 +8,9 @@ const PusherSim=(()=>{
  const FEVER_ROUNDS=5,FEVER_PAYS=[30,30,40,50,100];
  // CHECKER slot (3 reels): [result, medals rained onto the field, weight]. BALL puts a JP ball on the field; SEVEN starts FEVER.
  // Number slot 1–7 + BALL: [result, medals rained, weight, 確変 spins granted]. Odd numbers also start 確変; 777 is FEVER.
- const LOTTERY=[['MISS',0,1900,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,45,0],['SEVEN',0,3,0]];
+ const LOTTERY=[['MISS',0,1900,0],['1',30,8,2],['2',20,12,0],['3',30,5,2],['4',20,10,0],['5',30,3,2],['6',20,7,0],['BALL',0,40,0],['SEVEN',0,3,0]];
  // after a FEVER the slot runs in 確変 (better odds) for KAKUHEN_SPINS spins
- const LOTTERY_KAKUHEN=[['MISS',0,1807,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,90,0],['SEVEN',0,6,0]];
+ const LOTTERY_KAKUHEN=[['MISS',0,1812,0],['1',30,16,2],['2',20,24,0],['3',30,10,2],['4',20,20,0],['5',30,6,2],['6',20,14,0],['BALL',0,80,0],['SEVEN',0,6,0]];
  // reel faces: the digits 1–7 and the JP ball
  const SYMBOLS=['1','2','3','4','5','6','SEVEN','BALL'];
  // JP ball lottery: stage 1 (12 equal pockets) — medals, BALL (the ball goes back onto the field) or UP to stage 2 (6 pockets) with the JP
