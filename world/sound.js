@@ -39,6 +39,11 @@ const WorldSound=(()=>{
   reach(){for(let i=0;i<10;i++)tone(440+i*60,.09,{type:'sawtooth',vol:.07,at:i*.07});},
   heartbeat(){tone(70,.12,{type:'sine',vol:.35});tone(62,.14,{type:'sine',vol:.3,at:.16});},
   fanfare(){const seq=[[0,.12],[0,.12],[0,.12],[3,.36],[1,.18],[3,.18],[4,.5]];let t=0;seq.forEach(([k,d])=>{tone(notes[k],d,{type:'square',vol:.15,at:t});tone(notes[k]/2,d,{type:'triangle',vol:.12,at:t});t+=d*.9;});},
+  // metallic medal sounds: bright partial pairs + a little noise, random pitch so a stream never sounds looped
+  clink(v=1){const f=2600+Math.random()*1800;tone(f,.045,{type:'triangle',vol:.05*v});tone(f*1.52,.06,{type:'sine',vol:.035*v,at:.004});noise(.02,{vol:.03*v,hp:5000});},
+  medalLand(){const f=1500+Math.random()*700;tone(f,.03,{type:'triangle',vol:.035});noise(.015,{vol:.025,hp:3000});},
+  medalFall(n=1){const k=Math.min(6,n);for(let i=0;i<k;i++){const f=2200+Math.random()*2000,at=i*.028+Math.random()*.01;tone(f,.05,{type:'triangle',vol:.045,at});tone(f*1.47,.05,{type:'sine',vol:.03,at:at+.004});}noise(.04+k*.01,{vol:.035,hp:4200});},
+  jingle(n=8){for(let i=0;i<n;i++){const f=2400+Math.random()*2200;tone(f,.05,{type:'triangle',vol:.04,at:i*.035+Math.random()*.015});}noise(.08+n*.02,{vol:.04,hp:4500});},
   coinRush(n=12){for(let i=0;i<n;i++){tone(1600+Math.random()*900,.05,{type:'square',vol:.06,at:i*.045});}},
   boom(){noise(.7,{vol:.25,hp:120});tone(90,.6,{type:'sine',vol:.4,slide:.4});},
   lose(){tone(330,.18,{type:'triangle',vol:.1});tone(247,.26,{type:'triangle',vol:.1,at:.16});},

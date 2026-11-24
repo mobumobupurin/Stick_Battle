@@ -231,3 +231,7 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - The opening shield (SAFE) is 20 s (was 8 s) so 50 hits stays reachable: P(JP CHANCE) ≈ 20% per game, EV ≈ 210 (unchanged).
 - Update: 50 hits + 20 s SAFE lost the tension. SAFE is back to 8 s and the hole opens after 35 hits (all bumpers still pay 2, countdown stays on the hole): P(JP CHANCE) ≈ 22% per game, EV ≈ 190.
 - Fix: roulettes and FEVER GAMEs share one queue handled in order — a ball's roulette, then the FEVER GAME its socket completed, then the roulettes of later balls (before, every pending roulette ran first and FEVER GAMEs could wait a long time).
+
+### FORTUNE PUSHER — medal sounds, FEVER GAME ranking
+- Sounds: `WorldSound.medalFall(n)` (a metallic clatter sized to how many medals went over the edge), `medalLand` (a medal landing from the rail), `clink` (payout pours and medals sliding into the tray), `jingle`.
+- FEVER GAME ranking: best total of a single FEVER GAME. Stored at `stick_world/pusherRank/$uid` = {name, best (0–30000, integer, never lowered), at}; readable by every signed-in player, writable only by the owner (database.rules.json). Spark action `pusherRank` {best?} submits a new best and returns the top 10 + your best; local mode keeps it in localStorage. The side panel shows the top 10 and your best; the RESULT cut-in shows NEW RECORD!. Until the new rules are published the panel says ランキング準備中 and the game is unaffected.
