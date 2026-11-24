@@ -235,3 +235,9 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 ### FORTUNE PUSHER — medal sounds, FEVER GAME ranking
 - Sounds: `WorldSound.medalFall(n)` (a metallic clatter sized to how many medals went over the edge), `medalLand` (a medal landing from the rail), `clink` (payout pours and medals sliding into the tray), `jingle`.
 - FEVER GAME ranking: best total of a single FEVER GAME. Stored at `stick_world/pusherRank/$uid` = {name, best (0–30000, integer, never lowered), at}; readable by every signed-in player, writable only by the owner (database.rules.json). Spark action `pusherRank` {best?} submits a new best and returns the top 10 + your best; local mode keeps it in localStorage. The side panel shows the top 10 and your best; the RESULT cut-in shows NEW RECORD!. Until the new rules are published the panel says ランキング準備中 and the game is unaffected.
+
+### FORTUNE PUSHER — medal piles (two-layer field)
+- PusherSim keeps medals in two layers: floor medals (l=0) push each other as before; a medal can ride on top (l=1). A medal dropped mostly onto another one stays on top (STACK_ON), and a floor medal squeezed hard against the pusher rides up onto its neighbour (PILE_O / PILE_P).
+- Top medals move with the floor medals under them (SUPPORT) and drop back to the floor when nothing holds them up any more (UNSUPPORT) or near the front edge, so piles build behind the edge and come down in little avalanches. Top medals are kept apart among themselves.
+- About 15% of the field sits in the top layer; the field holds ~20 more medals, the long-run flow over the edge is unchanged (0.62 per dropped medal with and without piles), so the balance stays as it was.
+- Rendering: top medals sit one medal higher and tip slightly toward what supports them (WebGL and the 2D fallback).
