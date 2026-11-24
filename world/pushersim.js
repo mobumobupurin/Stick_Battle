@@ -30,18 +30,36 @@ const PusherSim=(()=>{
  function scatter(s,n,rnd){rnd=rnd||Math.random;for(let i=0;i<n;i++)s.coins.push({x:R+rnd()*(100-2*R),y:s.face+R+1+rnd()*10,fresh:12});}
  function addBall(s,rnd){rnd=rnd||Math.random;s.coins.push({x:30+rnd()*40,y:s.face+BALL_R+1,ball:true,fresh:18});}
  // one frame; returns {front, lost, balls} — balls that fall off the front go to the JP lottery, balls in the side gutters roll back onto the field
+ // two layers: medals (l=0) on the floor push each other; a medal can ride on top (l=1) of the ones below it.
+ // Top medals move with what holds them up and drop back to the floor when nothing is under them —
+ // so piles build up behind the edge and come down in little avalanches.
+ const STACK_ON=.3,SUPPORT=1.6,UNSUPPORT=1.85,PILE_O=.24,PILE_P=.7;
  function step(s){s.t++;s.face=faceAt(s.t);const c=s.coins,n=c.length,M=2*BALL_R;
+  for(const a of c){a.px=a.x;a.py=a.y;if(a.l===undefined)a.l=0;}
   for(let it=0;it<4;it++){
    for(const a of c){const r=rad(a);if(a.y<s.face+r)a.y=s.face+r;}
-   for(let i=0;i<n;i++){const a=c[i],ra=rad(a);for(let j=i+1;j<n;j++){const b=c[j];const dx=b.x-a.x,dy=b.y-a.y;if(dx>M||dx<-M||dy>M||dy<-M)continue;const D=ra+rad(b),d2=dx*dx+dy*dy;if(d2>=D*D)continue;
+   for(let i=0;i<n;i++){const a=c[i],ra=rad(a);for(let j=i+1;j<n;j++){const b=c[j];if(a.l!==b.l)continue;const dx=b.x-a.x,dy=b.y-a.y;if(dx>M||dx<-M||dy>M||dy<-M)continue;const D=ra+rad(b),d2=dx*dx+dy*dy;if(d2>=D*D)continue;
      const d=Math.sqrt(d2)||0.001,o=(D-d)/2,nx=d2?dx/d:1,ny=d2?dy/d:0;
+     // a freshly dropped medal that lands mostly on another one stays up on top of it
+     if(it===0&&a.l===0&&!a.ball&&!b.ball){if(a.fresh>0&&o>R*STACK_ON){a.l=1;continue;}if(b.fresh>0&&o>R*STACK_ON){b.l=1;continue;}}
      // the piece nearer the pusher is pinned against it, so the front piece takes the whole push
      const pa=a.y<=s.face+ra+0.01,pb=b.y<=s.face+rad(b)+0.01;let wa=pa&&!pb?0:pb&&!pa?2:1;
      // a ball is heavy: coins move out of its way more than it moves
      if(wa===1&&a.ball!==b.ball)wa=a.ball?BALL_W:2-BALL_W;const wb=2-wa;
+     // squeezed hard against the pusher: the front medal rides up onto the next one
+     if(it===3&&a.l===0&&!a.ball&&!b.ball&&o>R*PILE_O&&(pa||pb)&&Math.random()<PILE_P){const up=pa?b:a;up.l=1;continue;}
      a.x-=nx*o*wa;a.y-=ny*o*wa;b.x+=nx*o*wb;b.y+=ny*o*wb;}}
    for(const a of c){const r=rad(a);if(a.x<r)a.x=r;else if(a.x>100-r)a.x=100-r;}
   }
+  // top layer: ride along with the medals underneath, fall back down when unsupported
+  for(const a of c){if(a.l!==1)continue;let mx=0,my=0,cx=0,cy=0,k=0,near=Infinity;
+   for(const b of c){if(b.l!==0||b===a)continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<near)near=d;if(d<SUPPORT*R){mx+=b.x-b.px;my+=b.y-b.py;cx+=dx;cy+=dy;k++;}}
+   if(k){a.x+=mx/k;a.y+=my/k;a.sx=-cx/k;a.sy=-cy/k;}
+   if(near>UNSUPPORT*R||a.y>EDGE-R*.2){a.l=0;a.fresh=Math.max(a.fresh||0,4);a.sx=a.sy=0;}
+   if(a.x<R)a.x=R;else if(a.x>100-R)a.x=100-R;if(a.y<s.face+R)a.y=s.face+R;}
+  // keep the top layer apart a little
+  for(let i=0;i<n;i++){const a=c[i];if(a.l!==1)continue;for(let j=i+1;j<n;j++){const b=c[j];if(b.l!==1)continue;const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy,D=2*R;if(d2>=D*D)continue;const d=Math.sqrt(d2)||.001,o=(D-d)/2;a.x-=dx/d*o;a.y-=dy/d*o;b.x+=dx/d*o;b.y+=dy/d*o;}}
+  for(const a of c){if(a.l!==1)continue;if(a.x<R)a.x=R;else if(a.x>100-R)a.x=100-R;if(a.y<s.face+R)a.y=s.face+R;}
   if(s.wall>0)s.wall--;let front=0,lost=0,balls=0,side=0;
   // side holes in the walls: a medal pressed against the wall there slips out (balls are too big)
   for(let i=c.length-1;i>=0;i--){const a=c[i];if(a.ball||s.wall>0)continue;if((a.x<=R+SIDE_GAP||a.x>=100-R-SIDE_GAP)&&SIDE_HOLES.some(([y0,y1])=>a.y>=y0&&a.y<=y1)&&Math.random()<SIDE_P){a.side=true;c.splice(i,1);lost++;side++;}}

@@ -96,7 +96,7 @@ test('coin pusher field pushes medals off the front and loses some in the side g
  const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
  const s=P.create();assert.ok(s.coins.length>=90);
  let front=0,lost=0;for(let k=0;k<300;k++){P.drop(s,8+(k*37%84));for(let f=0;f<14;f++){const r=P.step(s);front+=r.front;lost+=r.lost;}}
- assert.ok(front>150,'front '+front);assert.ok(lost>20,'lost '+lost);
+ assert.ok(front>100,'front '+front);assert.ok(lost>20,'lost '+lost);
  assert.ok(s.coins.every(c=>c.x>=P.R-1e-9&&c.x<=100-P.R+1e-9&&c.y>=s.face+P.R-1e-6));
  assert.equal(P.LOTTERY[P.lottery(P.lotteryTotal-1)][0],'SEVEN');assert.ok(P.STAGE2.includes('JP'));assert.ok(P.STAGE1.includes('UP'));
  // FEVER walls: nothing is lost while the walls are up
@@ -166,4 +166,11 @@ test('coin pusher: side holes leak a few medals (never balls, never behind the F
  s.wall=300;let sw=0;for(let k=0;k<20;k++){P.drop(s,6);for(let f=0;f<12;f++)sw+=P.step(s).side;}assert.equal(sw,0);
  assert.equal(P.CHAIN_BONUS.join(),'5,7,10,15,20,25');assert.equal(P.KAK_BONUS,10);assert.ok(P.RELOT[0]>0&&P.RELOT[1]>0);
  assert.ok(P.BALL_ZONE[0]<50&&P.BALL_ZONE[1]>50);
+});
+test('coin pusher medals pile up in a top layer and come down when nothing holds them',()=>{
+ const ctx={Math};vm.createContext(ctx);vm.runInContext(read('world/pushersim.js')+';globalThis.P=PusherSim',ctx);const P=ctx.P;
+ const s=P.create();let maxTop=0;for(let k=0;k<400;k++){P.drop(s,20+(k*29%60));for(let f=0;f<12;f++){P.step(s);}maxTop=Math.max(maxTop,s.coins.filter(c=>c.l===1).length);}
+ assert.ok(maxTop>=5,'top layer '+maxTop);
+ // a medal on top with nothing under it drops back to the floor
+ const e=P.create(0);e.coins.push({x:50,y:60,l:1});P.step(e);assert.equal(e.coins[0].l,0);
 });

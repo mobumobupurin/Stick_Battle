@@ -697,8 +697,11 @@ function stackZ(list,thick){ // fake piles: a medal overlapping one listed earli
 function coinItem(x,y,z,tilt,spin,col){return [x,y,z+.7,S.R,S.R,1.4,tilt||0,spin||0,0,...(col||GOLD)];}
 function buildScene(){
  const sim=st.sim,face=sim.face,coins=[],balls=[],kak=st.kak>0,col=kak?GOLD_K:GOLD;
- const lower=sim.coins.filter(c=>!c.ball),hs=stackZ(lower,1.3);
- lower.forEach((c,i)=>{const z=c.fresh?(c.fall?c.fresh*1.1:c.fresh>16?(c.fresh-16)*2.4:c.fresh*.12):0,h=hs[i];coins.push(coinItem(c.x,c.y,z+(z>0?0:h.z),z>0?.4:h.tilt,z>0?c.x:h.spin,col));});
+ // floor medals lie flat; medals in the top layer (c.l===1) sit one medal higher, tipped toward what holds them up
+ const lower=sim.coins.filter(c=>!c.ball);
+ lower.forEach(c=>{const z=c.fresh?(c.fall?c.fresh*1.1:c.fresh>16?(c.fresh-16)*2.4:c.fresh*.12):0,top=c.l===1,off=Math.hypot(c.sx||0,c.sy||0);
+  const tilt=top?Math.min(.16,off/S.R*.22):0,spin=top&&off>.01?Math.atan2(c.sy,c.sx)+Math.PI/2:c.x;
+  coins.push(coinItem(c.x,c.y,z+(top?1.25:0),z>0&&!top?.4:tilt,spin,col));});
  const ups=st.upper.coins,hu=stackZ(ups,1.3);
  ups.forEach((c,i)=>{const z=PUSHER_H+.05+(c.fresh?c.fresh*1.5:0),h=hu[i];coins.push(coinItem(c.x,c.y,z+h.z,h.tilt,h.spin,col));});
  for(const c of sim.coins)if(c.ball)balls.push([c.x,c.y,(c.fresh?c.fresh*.6:0)+S.BALL_R,S.BALL_R,S.BALL_R,S.BALL_R,.25,c.x*.3,0,...BALL_C]);
@@ -766,8 +769,8 @@ function drawField(g){
   g.fillStyle=c.lit?'#ff7ae0':'#3a2a40';if(c.lit){g.shadowColor='#ff7ae0';g.shadowBlur=12;}g.beginPath();g.arc(q[0],q[1]-9,4.5,0,Math.PI*2);g.fill();g.shadowBlur=0;
   g.fillStyle=c.lit?'#ffd0f4':'#8a7a90';g.font='900 8px Arial,sans-serif';g.fillText(c.lit?'CHANCE':Math.ceil(c.t/60)+'s',q[0],q[1]-16);});
  // pieces back to front (shadows first for balls)
- if(!gl){const pieces=sim.coins.slice().sort((a,b)=>a.y-b.y);
- for(const c of pieces){if(c.ball)ball3d(g,c.x,c.y,c.fresh?c.fresh*.6:0);else{const z=c.fresh?(c.fall?c.fresh*1.1:c.fresh>16?(c.fresh-16)*2.4:c.fresh*.12):0;if(z>1)shadow(g,c.x,c.y,S.R*.9,.25);coin3d(g,c.x,c.y,z);}}}
+ if(!gl){const pieces=sim.coins.slice().sort((a,b)=>(a.l|0)-(b.l|0)||a.y-b.y);
+ for(const c of pieces){if(c.ball)ball3d(g,c.x,c.y,c.fresh?c.fresh*.6:0);else{const z=c.fresh?(c.fall?c.fresh*1.1:c.fresh>16?(c.fresh-16)*2.4:c.fresh*.12):0;if(z>1)shadow(g,c.x,c.y,S.R*.9,.25);coin3d(g,c.x,c.y,z+(c.l===1?1.25:0));}}}
  // medals in the air from the chute
  if(!gl){for(const f of st.falling){if(f.t<LAND_T){const k=f.t/LAND_T,y=RAIL_Y+(RAMP_TOP+1-RAIL_Y)*k,z=26*(1-k)+rampZ(RAMP_TOP+1)*k+Math.sin(k*Math.PI)*8;coin3d(g,f.x,y,z);}
   else{const tot=f.roll+8,k=Math.min(1,(f.t-LAND_T)/Math.max(1,tot)),kh=Math.min(1,(f.t-LAND_T)/Math.max(1,f.roll)),x=f.x+f.dx*kh;
