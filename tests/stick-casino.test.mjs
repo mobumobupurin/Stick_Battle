@@ -174,3 +174,14 @@ test('coin pusher medals pile up in a top layer and come down when nothing holds
  // a medal on top with nothing under it drops back to the floor
  const e=P.create(0);e.coins.push({x:50,y:60,l:1});P.step(e);assert.equal(e.coins[0].l,0);
 });
+
+test('FORTUNE PUSHER ranking records the summed medals of a FEVER GAME run',()=>{
+ const src=readFileSync(new URL('../world/medalpusher.js',import.meta.url),'utf8');
+ assert.match(src,/st\.feverRun=\(st\.feverRun\|\|0\)\+tot/);
+ assert.match(src,/more=st\.balls>0\|\|st\.roulQ\.includes\('stage'\)/);
+ assert.match(src,/refreshRank\(run\)/);
+ const rules=readFileSync(new URL('../database.rules.json',import.meta.url),'utf8');
+ assert.match(rules,/newData\.child\('best'\)\.val\(\) <= 100000/);
+ const spark=readFileSync(new URL('../world/spark.js',import.meta.url),'utf8');
+ assert.match(spark,/Math\.min\(100000,best\)/);
+});

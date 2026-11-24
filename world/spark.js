@@ -14,7 +14,7 @@ function sparkAdapter(db, auth, C, random){
   let u=auth.currentUser;if(!u)throw Error('ログインが必要です');let uid=u.uid,ref=root.child('profiles').child(uid),a=d.action;
   // FEVER GAME best-total ranking (its own public node; the profile itself stays private)
   if(a==='pusherRank'){const rk=root.child('pusherRank');let best=Math.floor(Number(d.best)||0);
-   if(best>0){best=Math.min(30000,best);const me=await snap(rk.child(uid));if(!me||best>me.best){const pr=await snap(ref);await rk.child(uid).set({name:String(pr&&pr.name||'PLAYER').slice(0,20),best,at:firebase.database.ServerValue.TIMESTAMP});}}
+   if(best>0){best=Math.min(100000,best);const me=await snap(rk.child(uid));if(!me||best>me.best){const pr=await snap(ref);await rk.child(uid).set({name:String(pr&&pr.name||'PLAYER').slice(0,20),best,at:firebase.database.ServerValue.TIMESTAMP});}}
    const top=await snap(rk.orderByChild('best').limitToLast(10));const list=Object.entries(top||{}).map(([id,v])=>({name:v.name,best:v.best,me:id===uid})).sort((x,y)=>y.best-x.best);
    const mine=await snap(rk.child(uid));return {data:{rank:list,mine:mine?mine.best:0}};}
   if(a==='sync'){let p=await snap(ref);if(!p)p=await tx(ref,v=>v||fresh(d.nickname));await presence(uid,p);let rd=C.round(now());let previous=rd.id>0?await snap(root.child('rounds').child(String(rd.id-1))):null;let ps=await snap(root.child('presence').orderByChild('seenAt').startAt(now()-30000).limitToLast(60));let peers=Object.entries(ps||{}).filter(([k])=>k!==uid).map(([,v])=>v);return {data:{profile:p,peers,admin:await isAdmin(uid),round:{id:rd.id,open:now()<rd.close,previous:previous?.number??null}}};}

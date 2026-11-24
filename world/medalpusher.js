@@ -101,7 +101,7 @@ function open(body){
  const table=h('div','pu-table');
  const row=(syms,text,cls)=>{const r=h('span',cls);const icons=h('i','pu-syms');for(const s of syms){const c=document.createElement('canvas');c.width=c.height=44;drawSym(c.getContext('2d'),s,22,22,34);icons.append(c);}r.append(icons,h('b',undefined,text));table.append(r);};
  row(['SEVEN','SEVEN','SEVEN'],'777 RUSH＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
- const rank=h('div','pu-rank');rank.append(h('b',undefined,'FEVER GAME ランキング'),h('small','pu-rank-sub','1回の FEVER GAME で獲得した最高枚数'),h('ol','pu-rank-list'),h('p','pu-rank-me',''));
+ const rank=h('div','pu-rank');rank.append(h('b',undefined,'FEVER GAME 連続獲得ランキング'),h('small','pu-rank-sub','FEVER GAME 連続中に獲得した合計枚数のベスト'),h('ol','pu-rank-list'),h('p','pu-rank-me',''));
  side.append(rank,how,table);
  const stage=h('div','pu-stage');stage.append(cv);screen.append(stage,side);
  const msgBar=h('div','egm-msg','画面をタップ（または DROP）でメダル投入');
@@ -444,7 +444,9 @@ function drawCut(g){const c=st.cut,t=c.t,d=c.data,cx=W/2,cy=330;
   if(d.jp){g.font='900 16px Arial,sans-serif';g.fillStyle='#ff9aa8';if(t>30)g.fillText('JACKPOT ×'+d.jp,cx,cy-30);}
   if(t>40){g.font='900 '+(t>=140?62:52)+'px "Arial Black",Impact,sans-serif';g.lineWidth=8;g.strokeStyle='#000';const v=yen(d.shown||0);g.strokeText(v,cx,cy+40);g.fillStyle='#fff1a0';g.shadowColor='#ffb21e';g.shadowBlur=t>=140?30:8;g.fillText(v,cx,cy+40);g.shadowBlur=0;g.font='900 18px Arial,sans-serif';g.fillStyle='#ffd36b';g.fillText('枚',cx,cy+72);}
   if(t>=150){g.font='900 13px Arial,sans-serif';g.fillStyle='#fff';g.fillText('払い出し開始！',cx,cy+110);}
-  if(d.newBest&&t>=144){slam('NEW RECORD!',cy+150,26,'#ff9ae8',144,'#ff4ac8');}}
+  if(d.runN>1&&t>=100){g.font='900 15px Arial,sans-serif';g.lineWidth=4;g.strokeStyle='#000';const s1=d.runN+'連続  合計 '+yen(d.run)+' 枚';g.strokeText(s1,cx,cy+132);g.fillStyle='#7ff0ff';g.fillText(s1,cx,cy+132);}
+  if(d.more&&t>=120){g.font='900 16px Arial,sans-serif';g.lineWidth=4;g.strokeStyle='#000';g.globalAlpha=.65+.35*Math.sin(t*.2);const s2='▶ 次の FEVER GAME へ つづく！';g.strokeText(s2,cx,cy+205);g.fillStyle='#ffd36b';g.fillText(s2,cx,cy+205);g.globalAlpha=1;}
+  if(d.newBest&&t>=144){slam('NEW RECORD!',cy+(d.runN>1?170:150),26,'#ff9ae8',144,'#ff4ac8');}}
  g.restore();}
 /* ---------- 777 RUSH ---------- */
 function startFeverRound(){
@@ -490,7 +492,7 @@ function stepJP(){
   else if(e.type==='pin'){const now=performance.now();if(now-(st.lastPin||0)>70){WorldSound.tick();st.lastPin=now;}}
   else if(e.type==='up'){j.upFx=40;st.shake=Math.max(st.shake,20);WorldSound.boom();say(e.stage>=2?'GOLD JP STAGE！ GOLD に入れ…！！':'JP STAGE！ BLUE か RED に入れ…！','win');}
   else if(e.type==='return'){say('FEVER GAME 続行！ TOTAL '+yen(j.total),'win');}
-  else if(e.type==='out'){const tot=j.total,jp=j.jpCount;st.jpl=null;const nb=tot>(st.myBest||0)&&tot>0;startCut('result',{tot,jp,newBest:nb},()=>{st.flash=60;award(tot,jp?'JACKPOT':'FEVER GAME');});if(tot>0)refreshRank(tot);say('FEVER GAME 終了  合計 '+yen(tot)+' 枚'+(j.jpCount?'（JP×'+j.jpCount+'）':''),'win');return;}
+  else if(e.type==='out'){const tot=j.total,jp=j.jpCount;st.jpl=null;st.feverRun=(st.feverRun||0)+tot;st.feverRunN=(st.feverRunN||0)+1;const run=st.feverRun,runN=st.feverRunN,more=st.balls>0||st.roulQ.includes('stage');const nb=run>(st.myBest||0)&&run>0;if(nb)st.myBest=run;startCut('result',{tot,jp,newBest:nb,run,runN,more},()=>{st.flash=60;award(tot,jp?'JACKPOT':'FEVER GAME');});if(run>0)refreshRank(run);if(!more){st.feverRun=0;st.feverRunN=0;}say('FEVER GAME 終了  合計 '+yen(tot)+' 枚'+(j.jpCount?'（JP×'+j.jpCount+'）':''),'win');return;}
  }
  if(j.popups)for(let i=j.popups.length-1;i>=0;i--)if(++j.popups[i].t>30)j.popups.splice(i,1);
 }
