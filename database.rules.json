@@ -133,7 +133,7 @@
         ],
         "$uid": {
           ".write": "auth !== null && auth.uid === $uid",
-          ".validate": "newData.hasChildren(['name','best','at']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 20 && newData.child('best').isNumber() && newData.child('best').val() >= 0 && newData.child('best').val() <= 30000 && newData.child('best').val() % 1 === 0 && newData.child('at').isNumber() && newData.child('at').val() <= now + 1000 && (!data.exists() || newData.child('best').val() >= data.child('best').val())",
+          ".validate": "newData.hasChildren(['name','best','at']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 20 && newData.child('best').isNumber() && newData.child('best').val() >= 0 && newData.child('best').val() <= 100000 && newData.child('best').val() % 1 === 0 && newData.child('at').isNumber() && newData.child('at').val() <= now + 1000 && (!data.exists() || newData.child('best').val() >= data.child('best').val())",
           "name": {
             ".validate": "true"
           },

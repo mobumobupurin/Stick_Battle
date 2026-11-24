@@ -241,3 +241,8 @@ STICK WORLD を独立ゲーム「STICK CASINO」に改名。本編メインメ�
 - Top medals move with the floor medals under them (SUPPORT) and drop back to the floor when nothing holds them up any more (UNSUPPORT) or near the front edge, so piles build behind the edge and come down in little avalanches. Top medals are kept apart among themselves.
 - About 15% of the field sits in the top layer; the field holds ~20 more medals, the long-run flow over the edge is unchanged (0.62 per dropped medal with and without piles), so the balance stays as it was.
 - Rendering: top medals sit one medal higher and tip slightly toward what supports them (WebGL and the 2D fallback).
+
+### FEVER GAME 連続獲得ランキング (casino41)
+- The ranking now records the summed medals of a FEVER GAME run: while another FEVER GAME is already waiting (balls in stock or a queued stage) when one ends, its total is added to the run. The run's running total is submitted after every game (the server keeps only the max, so partial submissions are safe).
+- RESULT cut-in: shows 「n連続 合計 X 枚」 from the 2nd game of a run, 「▶ 次の FEVER GAME へ つづく！」 when the run continues, and NEW RECORD! when the run beats your best.
+- Cap raised to 100000 (database.rules.json `pusherRank` validate and spark.js).
