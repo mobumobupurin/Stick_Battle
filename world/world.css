@@ -735,3 +735,13 @@ button.ry-desk:hover,button.ry-desk:focus-visible{border-color:#8a6a34;color:var
 .egm,.egm *,.bj-table,.bj-table *,.bc-table,.bc-table *,canvas,button,img{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .egm canvas,.egm button,.bj-table button,.bc-table button{touch-action:manipulation}
 input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+/* FORTUNE PUSHER: FEVER GAME ranking */
+.pu-rank{padding:10px 12px;border:1px solid #ffd36b55;border-radius:10px;background:linear-gradient(#1a1206,#0a0804)}
+.pu-rank>b{display:block;font:800 13px Georgia,serif;letter-spacing:.1em;color:#ffd36b}
+.pu-rank-sub{display:block;margin:2px 0 6px;font-size:11px;color:#b8a07a}
+.pu-rank-list{margin:0;padding:0;list-style:none;font-size:13px}
+.pu-rank-list li{display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px dashed #ffffff14}
+.pu-rank-list li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pu-rank-list li b{color:#fff1c4;font-variant-numeric:tabular-nums}
+.pu-rank-list li.me{color:#ff9ae8}.pu-rank-list li.me b{color:#ff9ae8}
+.pu-rank-me{margin:6px 0 0;font-size:12px;color:#9fd8ff}

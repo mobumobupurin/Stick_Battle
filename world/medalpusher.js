@@ -82,6 +82,13 @@ function drawSym(g,sym,x,y,s){g.save();g.translate(x,y);g.scale(s/40,s/40);g.tex
 const isOdd=n=>n==='1'||n==='3'||n==='5';
 
 /* ---------- UI ---------- */
+/* ---------- FEVER GAME ranking (best total of one FEVER GAME) ---------- */
+let rankBusy=false;
+async function refreshRank(best){if(!st||rankBusy&&!best)return;rankBusy=true;const box=st.root.querySelector('.pu-rank');try{const r=await request('pusherRank',best?{best}:{});if(!st)return;renderRank(r);}catch(e){if(box){box.querySelector('.pu-rank-list').innerHTML='';box.querySelector('.pu-rank-me').textContent=/permission|PERMISSION/i.test(String(e&&e.message))?'ランキング準備中（管理者のルール更新待ち）':'ランキングを読み込めませんでした';}}finally{rankBusy=false;}}
+function renderRank(r){const box=st&&st.root.querySelector('.pu-rank');if(!box)return;const ol=box.querySelector('.pu-rank-list');ol.innerHTML='';
+ (r.rank||[]).forEach((x,i)=>{const li=document.createElement('li');if(x.me)li.className='me';const n=document.createElement('span');n.textContent=(i+1)+'. '+x.name;const v=document.createElement('b');v.textContent=yen(x.best)+' 枚';li.append(n,v);ol.append(li);});
+ if(!(r.rank||[]).length){const li=document.createElement('li');li.textContent='まだ記録がありません';ol.append(li);}
+ st.myBest=r.mine||0;box.querySelector('.pu-rank-me').textContent='あなたのベスト：'+(r.mine?yen(r.mine)+' 枚':'—')+(r.local?'（オフライン）':'');}
 function open(body){
  const root=h('div','egm egm-pusher');
  const top=h('div','egm-topper');top.append(h('small',undefined,'STICK CASINO MEDAL CORNER'),h('b','egm-title','FORTUNE PUSHER'),h('span','egm-sub','1〜7のナンバースロット × JPボール'));
@@ -94,7 +101,8 @@ function open(body){
  const table=h('div','pu-table');
  const row=(syms,text,cls)=>{const r=h('span',cls);const icons=h('i','pu-syms');for(const s of syms){const c=document.createElement('canvas');c.width=c.height=44;drawSym(c.getContext('2d'),s,22,22,34);icons.append(c);}r.append(icons,h('b',undefined,text));table.append(r);};
  row(['SEVEN','SEVEN','SEVEN'],'777 RUSH＋確変','fever');row(['BALL','BALL','BALL'],'JPボール投入','jp');row(['5','5','5'],'30枚＋確変','odd');row(['6','6','6'],'20枚');row(['3','3','3'],'30枚＋確変','odd');row(['4','4','4'],'20枚');row(['1','1','1'],'30枚＋確変','odd');row(['2','2','2'],'20枚');
- side.append(how,table);
+ const rank=h('div','pu-rank');rank.append(h('b',undefined,'FEVER GAME ランキング'),h('small','pu-rank-sub','1回の FEVER GAME で獲得した最高枚数'),h('ol','pu-rank-list'),h('p','pu-rank-me',''));
+ side.append(rank,how,table);
  const stage=h('div','pu-stage');stage.append(cv);screen.append(stage,side);
  const msgBar=h('div','egm-msg','画面をタップ（または DROP）でメダル投入');
  const meters=h('div','egm-meters');const [mC,vCredit]=meter('CREDIT'),[mI,vIn]=meter('IN'),[mO,vOut]=meter('OUT');meters.append(mC,mI,mO);
@@ -131,7 +139,7 @@ function open(body){
  st.timer=setInterval(()=>{if(!st)return;const now=performance.now();if(pending.spent+pending.won>0&&(now-st.lastAct>SETTLE_IDLE||pending.spent>=SETTLE_SPENT||pending.won>=SETTLE_WON))settle();if(now-st.lastSave>4000){st.lastSave=now;save();}},1000);
  if(pending.spent+pending.won>0)settle();
  if(st.kak)say('確変 '+st.kak+'連 からスタート！','win');
- sync();st.raf=requestAnimationFrame(frame);
+ sync();st.raf=requestAnimationFrame(frame);setTimeout(()=>refreshRank(),600);
 }
 function say(t,kind){if(!st)return;st.msgBar.textContent=t;st.msgBar.dataset.kind=kind||'';}
 function sync(){if(!st)return;if(st.lever&&document.activeElement!==st.lever)st.lever.value=String(st.aim);st.vIn.textContent=yen(st.sessionIn);st.vOut.textContent=yen(st.sessionOut);paintCredit();st.drop.disabled=p.cash-pending.spent<1;}
@@ -435,7 +443,8 @@ function drawCut(g){const c=st.cut,t=c.t,d=c.data,cx=W/2,cy=330;
   rays('#ffd36b',t>=140?.16:.07);slam('FEVER GAME',cy-110,32,'#ffd36b',4);slam('RESULT',cy-74,26,'#fff',12);
   if(d.jp){g.font='900 16px Arial,sans-serif';g.fillStyle='#ff9aa8';if(t>30)g.fillText('JACKPOT ×'+d.jp,cx,cy-30);}
   if(t>40){g.font='900 '+(t>=140?62:52)+'px "Arial Black",Impact,sans-serif';g.lineWidth=8;g.strokeStyle='#000';const v=yen(d.shown||0);g.strokeText(v,cx,cy+40);g.fillStyle='#fff1a0';g.shadowColor='#ffb21e';g.shadowBlur=t>=140?30:8;g.fillText(v,cx,cy+40);g.shadowBlur=0;g.font='900 18px Arial,sans-serif';g.fillStyle='#ffd36b';g.fillText('枚',cx,cy+72);}
-  if(t>=150){g.font='900 13px Arial,sans-serif';g.fillStyle='#fff';g.fillText('払い出し開始！',cx,cy+110);}}
+  if(t>=150){g.font='900 13px Arial,sans-serif';g.fillStyle='#fff';g.fillText('払い出し開始！',cx,cy+110);}
+  if(d.newBest&&t>=144){slam('NEW RECORD!',cy+150,26,'#ff9ae8',144,'#ff4ac8');}}
  g.restore();}
 /* ---------- 777 RUSH ---------- */
 function startFeverRound(){
@@ -481,7 +490,7 @@ function stepJP(){
   else if(e.type==='pin'){const now=performance.now();if(now-(st.lastPin||0)>70){WorldSound.tick();st.lastPin=now;}}
   else if(e.type==='up'){j.upFx=40;st.shake=Math.max(st.shake,20);WorldSound.boom();say(e.stage>=2?'GOLD JP STAGE！ GOLD に入れ…！！':'JP STAGE！ BLUE か RED に入れ…！','win');}
   else if(e.type==='return'){say('FEVER GAME 続行！ TOTAL '+yen(j.total),'win');}
-  else if(e.type==='out'){const tot=j.total,jp=j.jpCount;st.jpl=null;startCut('result',{tot,jp},()=>{st.flash=60;award(tot,jp?'JACKPOT':'FEVER GAME');});say('FEVER GAME 終了  合計 '+yen(tot)+' 枚'+(j.jpCount?'（JP×'+j.jpCount+'）':''),'win');return;}
+  else if(e.type==='out'){const tot=j.total,jp=j.jpCount;st.jpl=null;const nb=tot>(st.myBest||0)&&tot>0;startCut('result',{tot,jp,newBest:nb},()=>{st.flash=60;award(tot,jp?'JACKPOT':'FEVER GAME');});if(tot>0)refreshRank(tot);say('FEVER GAME 終了  合計 '+yen(tot)+' 枚'+(j.jpCount?'（JP×'+j.jpCount+'）':''),'win');return;}
  }
  if(j.popups)for(let i=j.popups.length-1;i>=0;i--)if(++j.popups[i].t>30)j.popups.splice(i,1);
 }
@@ -505,7 +514,7 @@ function tick(){
  {const h=st.reel?st.reel.heat||0:0;if(h>=3){for(let k=0;k<(h>=4?3:2);k++)st.embers.push({x:24+Math.random()*(W-48),y:228,vy:-1-Math.random()*2.2,vx:(Math.random()-.5)*.6,t:0,life:50+Math.random()*30,c:h>=4?rainbow(Math.random()*360):Math.random()<.5?'#ff4a2a':'#ffb21e'});}
   for(let i=st.embers.length-1;i>=0;i--){const e=st.embers[i];e.t++;e.x+=e.vx+Math.sin((e.t+i)*.15)*.4;e.y+=e.vy;if(e.t>e.life)st.embers.splice(i,1);}}
  for(let i=st.falling.length-1;i>=0;i--){const f=st.falling[i];f.t++;
-  if(f.t===LAND_T)WorldSound.tick();
+  if(f.t===LAND_T)WorldSound.medalLand();
   // crossing the CHANCE hole on the ramp
   if(!f.checked&&f.t>=LAND_T+f.roll)f.checked=true;
   // down the rest of the ramp and onto the upper stage
@@ -519,7 +528,7 @@ function tick(){
  if(st.shift>0)st.shift--;
  if(st.rain>0){const big=st.payout?st.payout.total:st.rain,given=st.payout?st.payout.given:0;
   // 100+ : the first 50 pour out at once, the rest keeps trickling while the counter ticks up
-  const n=big>=100?(given<50?5:big>=300?1:(st.frame%2===0?1:0)):big>=40?2:(st.frame%2===0?1:0);for(let k=0;k<n&&st.rain>0;k++){portFlight(false);st.rain--;if(st.payout&&st.payout.given<st.payout.total)st.payout.given++;}
+  const n=big>=100?(given<50?5:big>=300?1:(st.frame%2===0?1:0)):big>=40?2:(st.frame%2===0?1:0);if(n>0&&st.frame%5===0)WorldSound.clink(.8);for(let k=0;k<n&&st.rain>0;k++){portFlight(false);st.rain--;if(st.payout&&st.payout.given<st.payout.total)st.payout.given++;}
   const now=performance.now();if(now-(st.lastCoinSnd||0)>48){WorldSound.coin();st.lastCoinSnd=now;}}
  if(st.payout){const pp=st.payout;pp.t++;if(pp.given>=pp.total){pp.done=(pp.done||0)+1;if(pp.done===1){WorldSound.win(pp.total>=300?5:pp.total>=100?4:3);if(pp.total>=100)WorldSound.bigWin();}if(pp.done>70)st.payout=null;}}
  if(st.roul)stepRoul();
@@ -549,10 +558,10 @@ function tick(){
    // a JP ball drops onto the payout apron and rolls down into the tray
    if(c.ball){st.ballFalls.push({u:Math.max(AP.U0+S.BALL_R,Math.min(AP.U1-S.BALL_R,c.x)),v:0,h:S.BALL_R*1.6,vh:.8,vv:.12,spin:0});continue;}
    st.outs.push(o);}
-  if(r.front){pending.won+=r.front;st.sessionOut+=r.front;st.lastAct=performance.now();st.outBurst=Math.min(40,st.outBurst+r.front*6);sync();const now=performance.now();if(now-st.lastTick>55){WorldSound.tick();st.lastTick=now;}if(pending.won>=MAX_WON()-80)settle();}}
+  if(r.front){pending.won+=r.front;st.sessionOut+=r.front;st.lastAct=performance.now();st.outBurst=Math.min(40,st.outBurst+r.front*6);sync();const now=performance.now();if(now-st.lastTick>55){WorldSound.medalFall(r.front);st.lastTick=now;}if(pending.won>=MAX_WON()-80)settle();}}
  for(let i=st.outs.length-1;i>=0;i--){const o=st.outs[i];
   o.y+=o.vy;o.vz-=.5;o.z+=o.vz;if(o.z<-26)st.outs.splice(i,1);}
- {const ev=S.stepApron(st.apron,[!st.cc[0].lit,!st.cc[1].lit]);for(const sk of ev.sunk){st.apSink.push({u:sk.u,v:sk.v,t:0});st.sinks.push({x:50,t:0});checkerHit();}
+ {const ev=S.stepApron(st.apron,[!st.cc[0].lit,!st.cc[1].lit]);if(ev.out&&Math.random()<.5)WorldSound.clink(.6);for(const sk of ev.sunk){st.apSink.push({u:sk.u,v:sk.v,t:0});st.sinks.push({x:50,t:0});checkerHit();}
   for(let i=st.apSink.length-1;i>=0;i--)if(++st.apSink[i].t>18)st.apSink.splice(i,1);
   // near miss: a medal skimming the cup rim
   for(const c of st.apron.coins){const d=Math.hypot(c.u-AP.HOLE.u,c.v-AP.HOLE.v);if(d<AP.HOLE.cup&&d>AP.HOLE.r&&!c.rim){c.rim=1;const q=apronP(c.u,c.v);if(d<AP.HOLE.r+1.6){pop('おしい！',{small:true,at:[q[0],q[1]-18]});WorldSound.tick();}}}

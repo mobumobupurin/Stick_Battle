@@ -125,6 +125,28 @@
           ".write": "auth !== null && root.child('stick_world/admins').child(auth.uid).val() === true && !data.exists() && newData.exists() && newData.child('actor').val() === auth.uid",
           ".validate": "newData.hasChildren(['actor','target','operation','amount','reason','at'])"
         }
+      },
+      "pusherRank": {
+        ".read": "auth !== null",
+        ".indexOn": [
+          "best"
+        ],
+        "$uid": {
+          ".write": "auth !== null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['name','best','at']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 20 && newData.child('best').isNumber() && newData.child('best').val() >= 0 && newData.child('best').val() <= 30000 && newData.child('best').val() % 1 === 0 && newData.child('at').isNumber() && newData.child('at').val() <= now + 1000 && (!data.exists() || newData.child('best').val() >= data.child('best').val())",
+          "name": {
+            ".validate": "true"
+          },
+          "best": {
+            ".validate": "true"
+          },
+          "at": {
+            ".validate": "true"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        }
       }
     }
   }
